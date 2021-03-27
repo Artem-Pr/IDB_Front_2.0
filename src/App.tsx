@@ -1,12 +1,14 @@
 import React from 'react'
 import { Layout } from 'antd'
 
-import Header from './app/Components/Header'
+import UploadPage from './app/Pages/UploadPage'
+import { Header } from './app/Components'
 
 function App() {
   return (
     <Layout>
       <Header />
+      <UploadPage />
     </Layout>
   )
 }

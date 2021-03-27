@@ -16,10 +16,6 @@
 		"allowImportExportEverywhere": true,
 		"sourceType": "module",
 		"ecmaVersion": 2020,
-		"ecmaFeatures": {
-			"jsx": true,
-			"modules": true
-		},
 		"project": "./tsconfig.json"
 	},
 	"globals": {
@@ -41,6 +37,7 @@
 		"functional/functional-parameters": 0,
 		"@typescript-eslint/explicit-function-return-type": 0,
 		"@typescript-eslint/explicit-module-boundary-types": 0,
+		"@typescript-eslint/no-explicit-any": 0,
 		"functional/no-expression-statement": 0,
 		"@typescript-eslint/no-unused-vars": 2,
 		"react/no-unescaped-entities": 0,

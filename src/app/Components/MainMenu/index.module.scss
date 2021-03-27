@@ -1,0 +1,13 @@
+@import 'src/styles/_vars';
+
+.sider {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+}
+
+.menu {
+  height: 100%;
+  border-right: 0;
+}
