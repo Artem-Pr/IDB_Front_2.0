@@ -1,37 +1,22 @@
-import React from 'react'
+import React, { Key } from 'react'
 import { Tree } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { folderTree } from '../../../redux/selectors'
+import { setCurrentFolderPath } from '../../../redux/reducers/foldersSlice-reducer'
+import { getFolderPathFromTreeKey } from '../../common/utils'
 
 const { DirectoryTree } = Tree
 
-const treeData = [
-  {
-    title: 'parent 0',
-    key: '0-0',
-    children: [
-      { title: 'leaf 0-0', key: '0-0-0', isLeaf: true },
-      { title: 'leaf 0-1', key: '0-0-1', isLeaf: true }
-    ]
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      { title: 'leaf 1-0', key: '0-1-0', isLeaf: true },
-      { title: 'leaf 1-1', key: '0-1-1', isLeaf: true }
-    ]
-  }
-]
-
 const FolderTree = () => {
-  const onSelect = (keys: React.Key[], info: any) => {
-    console.log('Trigger Select', keys, info)
+  const treeData = useSelector(folderTree)
+  const dispatch = useDispatch()
+
+  const onSelect = (keys: Key[]) => {
+    dispatch(setCurrentFolderPath(getFolderPathFromTreeKey(keys[0].toString(), treeData)))
   }
 
-  const onExpand = () => {
-    console.log('Trigger Expand')
-  }
-
-  return <DirectoryTree multiple defaultExpandAll onSelect={onSelect} onExpand={onExpand} treeData={treeData} />
+  return <DirectoryTree defaultExpandAll onSelect={onSelect} treeData={treeData} />
 }
 
 export default FolderTree
