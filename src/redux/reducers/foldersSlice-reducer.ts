@@ -8,6 +8,7 @@ import { FolderTreeItem } from '../types'
 interface State {
   folderTree: FolderTreeItem[]
   currentFolderPath: string
+  pathsArr: string[]
 }
 
 const initialState: State = {
@@ -30,7 +31,8 @@ const initialState: State = {
       ],
     },
   ],
-  currentFolderPath: '/',
+  currentFolderPath: '',
+  pathsArr: ['folder1/Bom-bom', 'folder2/Bom/sdf'],
 }
 
 const folderSlice = createSlice({
@@ -43,9 +45,12 @@ const folderSlice = createSlice({
     setCurrentFolderPath(state, action: PayloadAction<string>) {
       state.currentFolderPath = action.payload
     },
+    setPathsArr(state, action: PayloadAction<string[]>) {
+      state.pathsArr = action.payload
+    },
   },
 })
 
-export const { setFolderTree, setCurrentFolderPath } = folderSlice.actions
+export const { setFolderTree, setCurrentFolderPath, setPathsArr } = folderSlice.actions
 
 export default folderSlice.reducer

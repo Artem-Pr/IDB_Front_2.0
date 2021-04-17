@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { folderTree } from '../../../redux/selectors'
 import { setCurrentFolderPath } from '../../../redux/reducers/foldersSlice-reducer'
-import { getFolderPathFromTreeKey } from '../../common/utils'
+import { getFolderPathFromTreeKey } from '../../common/folderTree'
 
 const { DirectoryTree } = Tree
 
