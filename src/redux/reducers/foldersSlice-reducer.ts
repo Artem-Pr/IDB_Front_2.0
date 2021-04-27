@@ -2,8 +2,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { FolderTreeItem } from '../types'
-
-// import { AppThunk } from './store'
+import { AppThunk } from '../store/store'
+import api from '../../api/api'
+import { errorMessage } from '../../app/common/notifications'
 
 interface State {
   folderTree: FolderTreeItem[]
@@ -32,7 +33,7 @@ const initialState: State = {
     },
   ],
   currentFolderPath: '',
-  pathsArr: ['folder1/Bom-bom', 'folder2/Bom/sdf'],
+  pathsArr: [],
 }
 
 const folderSlice = createSlice({
@@ -54,3 +55,10 @@ const folderSlice = createSlice({
 export const { setFolderTree, setCurrentFolderPath, setPathsArr } = folderSlice.actions
 
 export default folderSlice.reducer
+
+export const fetchPathsList = (): AppThunk => dispatch => {
+  api
+    .getPathsList()
+    .then(({ data }) => data.length && dispatch(setPathsArr(data)))
+    .catch(error => errorMessage(error, 'Ошибка при получении Paths: '))
+}

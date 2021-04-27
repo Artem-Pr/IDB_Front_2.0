@@ -3,17 +3,31 @@ import React from 'react'
 import { Upload, message, UploadProps } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 import { UploadChangeParam } from 'antd/lib/upload/interface'
+import { useDispatch, useSelector } from 'react-redux'
 
 import styles from './index.module.scss'
+import { folderElement } from '../../../redux/selectors'
+import { fetchPhotosPreview } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Dragger } = Upload
 
 const DropZone = () => {
+  const { currentFolderPath } = useSelector(folderElement)
+  const dispatch = useDispatch()
+
   const props: UploadProps = {
+    accept: 'image/*, video/*',
     className: styles.dropZone,
     name: 'file',
     multiple: true,
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    showUploadList: false,
+    headers: {
+      path: currentFolderPath,
+      'Content-Type': 'application/json',
+    },
+    customRequest(info) {
+      dispatch(fetchPhotosPreview(info.file))
+    },
     onChange(info: UploadChangeParam) {
       const { status } = info.file
       status !== 'uploading' && console.log(info.file, info.fileList)

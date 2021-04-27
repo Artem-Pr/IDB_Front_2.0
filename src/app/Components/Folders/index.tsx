@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { AutoComplete, Button, Tooltip } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -8,20 +8,28 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FolderTree } from '../index'
 import styles from './index.module.scss'
 
-import { currentFolderPath, folderTree, pathsArr, pathsArrOptions } from '../../../redux/selectors'
-import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../../redux/reducers/foldersSlice-reducer'
+import { folderElement, pathsArr, pathsArrOptions } from '../../../redux/selectors'
+import {
+  fetchPathsList,
+  setCurrentFolderPath,
+  setFolderTree,
+  setPathsArr,
+} from '../../../redux/reducers/foldersSlice-reducer'
 import { addFolderToFolderTree } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
 
 const Folders = () => {
   const dispatch = useDispatch()
-  const tree = useSelector(folderTree)
-  const folderPath = useSelector(currentFolderPath)
+  const { folderTree, currentFolderPath } = useSelector(folderElement)
   const directoriesArr = useSelector(pathsArr)
   const options = useSelector(pathsArrOptions)
 
-  const cleanFolderPath = useMemo(() => removeExtraSlash(folderPath), [folderPath])
+  const cleanFolderPath = useMemo(() => removeExtraSlash(currentFolderPath), [currentFolderPath])
   const isButtonAddDisabled = useMemo(() => directoriesArr.includes(cleanFolderPath), [cleanFolderPath, directoriesArr])
+
+  useEffect(() => {
+    !directoriesArr.length && dispatch(fetchPathsList())
+  }, [dispatch, directoriesArr])
 
   const onChange = (data: string) => {
     dispatch(setCurrentFolderPath(data))
@@ -29,11 +37,11 @@ const Folders = () => {
 
   const setNewFolder = (): void => {
     dispatch(setPathsArr([...directoriesArr, cleanFolderPath]))
-    dispatch(setFolderTree(addFolderToFolderTree(cleanFolderPath, tree)))
+    dispatch(setFolderTree(addFolderToFolderTree(cleanFolderPath, folderTree)))
   }
 
   const handleAddClick = () => {
-    folderPath !== '' && setNewFolder()
+    currentFolderPath !== '' && setNewFolder()
   }
 
   return (
@@ -44,8 +52,8 @@ const Folders = () => {
         <AutoComplete
           className="flex-1"
           options={options}
-          defaultValue={folderPath}
-          value={folderPath}
+          defaultValue={currentFolderPath}
+          value={currentFolderPath}
           onChange={onChange}
           filterOption={(inputValue, option) => option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
         />
