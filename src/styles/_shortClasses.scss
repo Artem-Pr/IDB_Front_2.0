@@ -2,12 +2,24 @@
   display: flex !important;
 }
 
+.d-grid {
+  display: grid;
+}
+
 .justify-content-between {
   justify-content: space-between;
 }
 
+.justify-content-center {
+  justify-content: center;
+}
+
 .align-items-center {
   align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .flex-1 {
