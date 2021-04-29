@@ -1,14 +1,26 @@
 import React from 'react'
 import { Layout } from 'antd'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { DropZone, Gallery, MainMenu } from '../../Components'
-import { upload } from '../../../redux/selectors'
+import { uploadPageGalleryProps } from '../../../redux/selectors'
+import {
+  addToSelectedList,
+  clearSelectedList,
+  removeFromSelectedList,
+} from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Content } = Layout
 
 const UploadPage = () => {
-  const { uploadingFiles } = useSelector(upload)
+  const dispatch = useDispatch()
+  const props = useSelector(uploadPageGalleryProps)
+  const galleryProps = {
+    ...props,
+    removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
+    addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
+    clearSelectedList: () => dispatch(clearSelectedList()),
+  }
 
   return (
     <Layout>
@@ -16,7 +28,7 @@ const UploadPage = () => {
       <Layout>
         <Content>
           <DropZone />
-          <Gallery imageArr={uploadingFiles} />
+          <Gallery {...galleryProps} />
         </Content>
       </Layout>
     </Layout>

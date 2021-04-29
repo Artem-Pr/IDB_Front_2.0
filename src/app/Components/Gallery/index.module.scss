@@ -8,10 +8,24 @@
 
 .item {
   height: 150px;
+  background: black;
+  opacity: 1;
+  cursor: pointer;
+  border-radius: 5px;
+
+  :hover {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  &:global.active {
+    box-shadow: 0 0 0 5px $primary;
+  }
 }
 
 .img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 5px;
 }

@@ -7,3 +7,8 @@ export const pathsArr = (state: RootState) => state.folderReducer.pathsArr // TO
 export const upload = (state: RootState) => state.uploadReducer
 
 export const pathsArrOptions = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
+export const uploadPageGalleryProps = createSelector(upload, ({ uploadingFiles, selectedList, edit }) => ({
+  ...edit,
+  imageArr: uploadingFiles,
+  selectedList,
+}))
