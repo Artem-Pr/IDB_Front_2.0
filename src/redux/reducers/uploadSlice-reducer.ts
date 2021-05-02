@@ -6,24 +6,16 @@ import api from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
 import { UploadingObject } from '../types'
 
-interface EditGalleryItem {
-  isEditOne: boolean
-  isEditMany: boolean
-}
-
 interface State {
   uploadingFiles: UploadingObject[]
   selectedList: number[]
-  edit: EditGalleryItem
+  openMenus: string[]
 }
 
 const initialState: State = {
   uploadingFiles: [],
   selectedList: [],
-  edit: {
-    isEditOne: false,
-    isEditMany: false,
-  },
+  openMenus: ['folders'],
 }
 
 const uploadSlice = createSlice({
@@ -46,15 +38,17 @@ const uploadSlice = createSlice({
     clearSelectedList(state) {
       state.selectedList = []
     },
+    updateOpenMenus(state, action: PayloadAction<string[]>) {
+      state.openMenus = action.payload
+    },
+    removeFromOpenMenus(state, action: PayloadAction<string>) {
+      const set = new Set(state.openMenus)
+      set.delete(action.payload)
+      state.openMenus = Array.from(set)
+    },
     clearUploadingState(state) {
       state.uploadingFiles = []
       state.selectedList = []
-    },
-    setIsEditOne(state, action: PayloadAction<boolean>) {
-      state.edit.isEditOne = action.payload
-    },
-    setIsEditMany(state, action: PayloadAction<boolean>) {
-      state.edit.isEditMany = action.payload
     },
   },
 })
@@ -62,9 +56,11 @@ const uploadSlice = createSlice({
 export const {
   addUploadingFile,
   addToSelectedList,
-  clearSelectedList,
-  clearUploadingState,
   removeFromSelectedList,
+  clearSelectedList,
+  updateOpenMenus,
+  removeFromOpenMenus,
+  clearUploadingState,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer

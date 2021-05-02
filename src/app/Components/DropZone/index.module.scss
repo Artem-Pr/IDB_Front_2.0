@@ -1,3 +1,11 @@
 .dropZone {
-  height: auto !important;
+  height: 150px !important;
+  opacity: 1;
+  transition: all 0.2s ease !important;
+  overflow: hidden;
+
+  &:global.active {
+    height: 0 !important;
+    opacity: 0;
+  }
 }

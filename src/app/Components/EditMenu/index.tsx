@@ -26,10 +26,10 @@ const EditMenu = () => {
   return (
     <Form {...layout} name="basic" onFinish={onFinish}>
       <Form.Item className={styles.item} label="Name" name="name">
-        <Input />
+        <Input className={styles.itemWidth} placeholder="Edit name" />
       </Form.Item>
       <Form.Item className={styles.item} label="OriginalDate" name="originalDate">
-        <DatePicker style={{ width: '100%' }} />
+        <DatePicker className={styles.itemWidth} placeholder="Edit date" />
       </Form.Item>
       <Form.Item className={styles.item} {...tailLayout}>
         <Button type="primary" htmlType="submit">

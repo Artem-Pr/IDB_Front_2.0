@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { Upload, message, UploadProps } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 import { UploadChangeParam } from 'antd/lib/upload/interface'
 import { useDispatch, useSelector } from 'react-redux'
+import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { folderElement } from '../../../redux/selectors'
@@ -11,13 +12,19 @@ import { fetchPhotosPreview } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Dragger } = Upload
 
-const DropZone = () => {
+interface Props {
+  openMenus: string[]
+}
+
+const DropZone = ({ openMenus }: Props) => {
   const { currentFolderPath } = useSelector(folderElement)
   const dispatch = useDispatch()
+  const isEditOne = useMemo(() => openMenus.includes('edit'), [openMenus])
+  const isEditMany = useMemo(() => openMenus.includes('template'), [openMenus])
 
   const props: UploadProps = {
     accept: 'image/*, video/*',
-    className: styles.dropZone,
+    className: cn(styles.dropZone, { active: isEditOne || isEditMany }),
     name: 'file',
     multiple: true,
     showUploadList: false,

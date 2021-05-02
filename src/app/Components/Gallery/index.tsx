@@ -5,8 +5,7 @@ import styles from './index.module.scss'
 import { UploadingObject } from '../../../redux/types'
 
 interface Props {
-  isEditOne: boolean
-  isEditMany: boolean
+  openMenus: string[]
   imageArr: UploadingObject[]
   selectedList: number[]
   removeFromSelectedList: (index: number) => void
@@ -15,13 +14,12 @@ interface Props {
 }
 
 const Gallery = ({
+  openMenus,
   imageArr,
   selectedList,
   addToSelectedList,
   removeFromSelectedList,
   clearSelectedList,
-  isEditOne,
-  isEditMany,
 }: Props) => {
   const handleImageClick = (i: number) => {
     const selectOnlyOne = () => {
@@ -31,8 +29,8 @@ const Gallery = ({
     const selectAnyQuantity = () => {
       selectedList.includes(i) ? removeFromSelectedList(i) : addToSelectedList(i)
     }
-    isEditOne && selectOnlyOne()
-    isEditMany && selectAnyQuantity()
+    openMenus.includes('edit') && selectOnlyOne()
+    openMenus.includes('template') && selectAnyQuantity()
   }
   return (
     <div className={cn(styles.wrapper, 'd-grid')}>
