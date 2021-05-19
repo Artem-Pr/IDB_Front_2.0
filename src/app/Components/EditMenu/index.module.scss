@@ -1,7 +1,16 @@
 .item {
   margin-bottom: 10px !important;
+  margin-top: 5px !important;
 }
 
 .itemWidth {
   width: 80% !important;
+}
+
+.extension {
+  margin-left: 2px;
+}
+
+.space:global > .ant-space-item {
+  margin-right: 5px;
 }

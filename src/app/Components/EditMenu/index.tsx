@@ -1,14 +1,17 @@
-import React from 'react'
-import { Form, Input, Button, DatePicker } from 'antd'
+import React, { useEffect, useMemo } from 'react'
+import { Form, Input, Button, DatePicker, Space } from 'antd'
+import moment from 'moment'
 
 import styles from './index.module.scss'
+import { UploadingObject } from '../../../redux/types'
+import { dateFormat, getNameParts } from '../../common/utils'
 
 const layout = {
   labelCol: {
     span: 8,
   },
   wrapperCol: {
-    span: 15,
+    span: 16,
   },
 }
 const tailLayout = {
@@ -18,21 +21,60 @@ const tailLayout = {
   },
 }
 
-const EditMenu = () => {
+const initialFileObject = {
+  name: '-',
+  originalDate: '',
+}
+
+interface Props {
+  uploadingFiles: UploadingObject[]
+  selectedList: number[]
+  isEditMany?: boolean
+}
+
+const EditMenu = ({ uploadingFiles, selectedList }: Props) => {
+  const [form] = Form.useForm()
+  const { name, originalDate } = useMemo(
+    () => (!selectedList.length ? initialFileObject : uploadingFiles[selectedList[selectedList.length - 1]]),
+    [uploadingFiles, selectedList]
+  )
+  const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
+  const { shortName, ext } = useMemo(() => getNameParts(name), [name])
+
+  useEffect(() => {
+    form.setFieldsValue({
+      name: shortName,
+      originalDate: originalDate === '-' ? '' : originalDate,
+    })
+  }, [form, shortName, originalDate])
+
   const onFinish = (values: any) => {
-    console.log('Success:', values)
+    console.log({
+      name: values.name + ext,
+      date: moment(values.originalDate).format(dateFormat),
+    })
   }
 
   return (
-    <Form {...layout} name="basic" onFinish={onFinish}>
+    <Form {...layout} form={form} name="basic" onFinish={onFinish}>
       <Form.Item className={styles.item} label="Name" name="name">
-        <Input className={styles.itemWidth} placeholder="Edit name" />
+        <Space className={styles.space}>
+          <Form.Item name="name" noStyle>
+            <Input placeholder="Edit name" disabled={disabledInputs} />
+          </Form.Item>
+          <span className={styles.extension}>{ext}</span>
+        </Space>
       </Form.Item>
       <Form.Item className={styles.item} label="OriginalDate" name="originalDate">
-        <DatePicker className={styles.itemWidth} placeholder="Edit date" />
+        <DatePicker
+          format={dateFormat}
+          className={styles.itemWidth}
+          placeholder="Edit date"
+          disabled={disabledInputs}
+        />
       </Form.Item>
       <Form.Item className={styles.item} {...tailLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" disabled={disabledInputs}>
           Submit
         </Button>
       </Form.Item>

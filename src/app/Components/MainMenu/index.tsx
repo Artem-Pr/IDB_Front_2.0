@@ -4,17 +4,22 @@ import { UserOutlined, EditFilled, CreditCardFilled } from '@ant-design/icons'
 
 import style from './index.module.scss'
 import { EditMenu, Folders } from '../index'
+import { UploadingObject } from '../../../redux/types'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
 
 interface Props {
+  uploadingFiles: UploadingObject[]
+  selectedList: number[]
   openKeys: string[]
   updateOpenMenus: (value: string[]) => void
+  clearSelectedList: () => void
 }
 
-const MainMenu = ({ openKeys, updateOpenMenus }: Props) => {
+const MainMenu = ({ uploadingFiles, selectedList, openKeys, updateOpenMenus, clearSelectedList }: Props) => {
   const handleTitleClick = ({ key }: { key: string }) => {
+    clearSelectedList()
     const openKeysSet = new Set(openKeys)
     key === 'edit' && openKeysSet.delete('template')
     key === 'template' && openKeysSet.delete('edit')
@@ -29,10 +34,10 @@ const MainMenu = ({ openKeys, updateOpenMenus }: Props) => {
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu />
+          <EditMenu {...{ uploadingFiles, selectedList }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
-          <EditMenu />
+          <EditMenu {...{ uploadingFiles, selectedList, isEditMany: true }} />
         </SubMenu>
       </Menu>
     </Sider>

@@ -7,7 +7,7 @@ import {
   createKeyForFolderTree,
   getFolderPathFromTreeKey,
 } from '../../app/common/folderTree'
-import { removeExtraSlash } from '../../app/common/utils'
+import { getNameParts, removeExtraSlash } from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
   folderTreeForTest1,
@@ -155,5 +155,27 @@ describe('utils: ', () => {
   it('getFolderPathFromTreeKey should return valid path', () => {
     const folderPath = getFolderPathFromTreeKey('0-1-0', foldersSliceFolderTree)
     expect(folderPath).toBe('parent 1/leaf 1-0')
+  })
+  describe('getNameParts: ', () => {
+    it('should return right object', () => {
+      const fullName = 'myPhoto.jpg'
+      const fullName2 = 'myPhoto.bom-bom.bom.jpeg'
+      const { shortName, ext } = getNameParts(fullName)
+      const { shortName: shortName2, ext: ext2 } = getNameParts(fullName2)
+      expect(shortName).toBe('myPhoto')
+      expect(shortName2).toBe('myPhoto.bom-bom.bom')
+      expect(ext).toBe('.jpg')
+      expect(ext2).toBe('.jpeg')
+    })
+    it('should return empty values if name is not valid', () => {
+      const fullName = ''
+      const fullName2 = '-'
+      const { shortName, ext } = getNameParts(fullName)
+      const { shortName: shortName2, ext: ext2 } = getNameParts(fullName2)
+      expect(shortName).toBe('-')
+      expect(shortName2).toBe('-')
+      expect(ext).toBe('')
+      expect(ext2).toBe('')
+    })
   })
 })

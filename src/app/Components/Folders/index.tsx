@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FolderTree } from '../index'
 import styles from './index.module.scss'
 
-import { folderElement, pathsArr, pathsArrOptions } from '../../../redux/selectors'
+import { folderElement, pathsArr, pathsArrOptionsSelector } from '../../../redux/selectors'
 import {
   fetchPathsList,
   setCurrentFolderPath,
@@ -22,7 +22,7 @@ const Folders = () => {
   const dispatch = useDispatch()
   const { folderTree, currentFolderPath } = useSelector(folderElement)
   const directoriesArr = useSelector(pathsArr)
-  const options = useSelector(pathsArrOptions)
+  const options = useSelector(pathsArrOptionsSelector)
 
   const cleanFolderPath = useMemo(() => removeExtraSlash(currentFolderPath), [currentFolderPath])
   const isButtonAddDisabled = useMemo(() => directoriesArr.includes(cleanFolderPath), [cleanFolderPath, directoriesArr])
