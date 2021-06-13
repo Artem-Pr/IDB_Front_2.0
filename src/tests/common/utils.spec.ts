@@ -1,3 +1,5 @@
+import { keys } from 'ramda'
+
 import {
   addChildToTreeElem,
   addFolderToFolderTree,
@@ -7,13 +9,22 @@ import {
   createKeyForFolderTree,
   getFolderPathFromTreeKey,
 } from '../../app/common/folderTree'
-import { getNameParts, removeExtraSlash } from '../../app/common/utils'
+import {
+  copyByJSON,
+  getNameParts,
+  removeEmptyFields,
+  removeExtraSlash,
+  updateFilesArrItemByField,
+  editFilesArr,
+  renameEqualStrings,
+} from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
   folderTreeForTest1,
   folderTreeForTest2,
   folderTreeForTest3,
   folderTreeForTest4,
+  uploadingFilesMock,
 } from './mock'
 
 describe('utils: ', () => {
@@ -176,6 +187,66 @@ describe('utils: ', () => {
       expect(shortName2).toBe('-')
       expect(ext).toBe('')
       expect(ext2).toBe('')
+    })
+  })
+  describe('updateFilesArrItemByField: ', () => {
+    it('should return updated obj', () => {
+      const originalObjArr = uploadingFilesMock
+      const objectForUpdate = {
+        tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
+        keywords: ['bom-bom'],
+        megapixels: 24,
+        originalDate: '12.12.2012',
+      }
+      const updatedObjArr = updateFilesArrItemByField('tempPath', originalObjArr, objectForUpdate)
+      expect(updatedObjArr[1].name).toBe('IMG_20190624_110245.jpg')
+      expect(updatedObjArr[1].keywords).toHaveLength(1)
+      expect(updatedObjArr[1].keywords).toEqual(['bom-bom'])
+      expect(updatedObjArr[1].megapixels).toEqual(24)
+      expect(updatedObjArr[1].originalDate).toBe('12.12.2012')
+      expect(updatedObjArr).toHaveLength(3)
+      expect(updatedObjArr[2].originalDate).toBe('24.09.2016')
+    })
+  })
+
+  describe('removeEmptyFields: ', () => {
+    it('should remove empty fields', () => {
+      const textOpj = {
+        tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
+        keywords: '',
+        megapixels: null,
+        originalDate: '12.12.2012',
+      }
+      const cleanObj = removeEmptyFields(textOpj)
+      expect(keys(cleanObj)).toHaveLength(2)
+      expect(cleanObj.tempPath).toBe('temp/f3a168e5d6c61fd02b9b227219011462')
+      expect(cleanObj.originalDate).toBe('12.12.2012')
+    })
+  })
+
+  describe('editFilesArr: ', () => {
+    it('should return edited files arr', () => {
+      const editedFields = {
+        name: 'bom-bom',
+        originalDate: '10.10.2010',
+      }
+      const editedFiles = editFilesArr([0, 2], copyByJSON(uploadingFilesMock), editedFields)
+      expect(editedFiles).toHaveLength(3)
+      expect(editedFiles[0].name).toBe('bom-bom')
+      expect(editedFiles[2].name).toBe('bom-bom')
+      expect(editedFiles[0].originalDate).toBe('10.10.2010')
+      expect(editedFiles[2].originalDate).toBe('10.10.2010')
+      expect(editedFiles[1].name).toBe('IMG_20190624_110245.jpg')
+      expect(editedFiles[1].originalDate).toBe('-')
+    })
+  })
+
+  describe('renameEqualStrings: ', () => {
+    it('should return ...', () => {
+      const arr = ['hello', 'test', 'hello', 'what', 'oh', 'hello', 'oh', 'no']
+      const newArr = renameEqualStrings(arr)
+      expect(newArr).toHaveLength(8)
+      expect(newArr).toEqual(['hello_001', 'test', 'hello_002', 'what', 'oh_001', 'hello_003', 'oh_002', 'no'])
     })
   })
 })
