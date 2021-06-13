@@ -15,9 +15,10 @@ interface Props {
   openKeys: string[]
   updateOpenMenus: (value: string[]) => void
   clearSelectedList: () => void
+  selectAll: () => void
 }
 
-const MainMenu = ({ uploadingFiles, selectedList, openKeys, updateOpenMenus, clearSelectedList }: Props) => {
+const MainMenu = ({ uploadingFiles, selectedList, openKeys, updateOpenMenus, clearSelectedList, selectAll }: Props) => {
   const handleTitleClick = ({ key }: { key: string }) => {
     clearSelectedList()
     const openKeysSet = new Set(openKeys)
@@ -37,7 +38,7 @@ const MainMenu = ({ uploadingFiles, selectedList, openKeys, updateOpenMenus, cle
           <EditMenu {...{ uploadingFiles, selectedList }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ uploadingFiles, selectedList, isEditMany: true }} />
+          <EditMenu {...{ uploadingFiles, selectedList, selectAll, clearAll: clearSelectedList, isEditMany: true }} />
         </SubMenu>
       </Menu>
     </Sider>

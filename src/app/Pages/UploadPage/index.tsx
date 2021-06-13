@@ -9,6 +9,7 @@ import {
   clearSelectedList,
   removeFromSelectedList,
   updateOpenMenus,
+  selectAll,
 } from '../../../redux/reducers/uploadSlice-reducer'
 import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
@@ -34,6 +35,7 @@ const UploadPage = () => {
     selectedList,
     openKeys: openMenus,
     clearSelectedList: () => dispatch(clearSelectedList()),
+    selectAll: () => dispatch(selectAll()),
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
   }
 

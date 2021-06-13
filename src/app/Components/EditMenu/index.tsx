@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Form, Input, Button, DatePicker, Space, Modal } from 'antd'
 import moment from 'moment'
 import { curry, isEmpty } from 'ramda'
@@ -32,6 +32,8 @@ interface Props {
   uploadingFiles: UploadingObject[]
   selectedList: number[]
   isEditMany?: boolean
+  selectAll?: () => void
+  clearAll?: () => void
 }
 
 const config = {
@@ -39,9 +41,10 @@ const config = {
   content: 'Please enter another name',
 }
 
-const EditMenu = ({ uploadingFiles, selectedList, isEditMany }: Props) => {
+const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAll }: Props) => {
   const [form] = Form.useForm()
   const [modal, contextHolder] = Modal.useModal()
+  const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const editUploadingFiles = useEditFilesArr(selectedList, uploadingFiles)
   const { name, originalDate } = useMemo(
     () => (!selectedList.length ? initialFileObject : uploadingFiles[getLastItem(selectedList)]),
@@ -49,6 +52,11 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany }: Props) => {
   )
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
   const { shortName, ext } = useMemo(() => getNameParts(name), [name])
+
+  useEffect(() => {
+    !selectedList.length && setIsSelectAllBtn(true)
+    selectedList.length === uploadingFiles.length && setIsSelectAllBtn(false)
+  }, [selectedList.length, uploadingFiles.length])
 
   useEffect(() => {
     form.setFieldsValue({
@@ -77,6 +85,12 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany }: Props) => {
     needModalIsDuplicate ? modal.warning(config) : updateValues()
   }
 
+  const handleSelectAll = () => {
+    isSelectAllBtn && selectAll && selectAll()
+    !isSelectAllBtn && clearAll && clearAll()
+    setIsSelectAllBtn(!isSelectAllBtn)
+  }
+
   return (
     <div>
       <Form {...layout} form={form} name="editForm" onFinish={onFinish}>
@@ -97,9 +111,20 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany }: Props) => {
           />
         </Form.Item>
         <Form.Item className={styles.item} {...tailLayout}>
-          <Button type="primary" htmlType="submit" disabled={disabledInputs}>
-            Edit
-          </Button>
+          <Space>
+            <Form.Item>
+              <Button style={{ marginRight: 10 }} type="primary" htmlType="submit" disabled={disabledInputs}>
+                Edit
+              </Button>
+              {isEditMany ? (
+                <Button onClick={handleSelectAll} type="primary">
+                  {isSelectAllBtn ? 'Select all' : 'Unselect all'}
+                </Button>
+              ) : (
+                ''
+              )}
+            </Form.Item>
+          </Space>
         </Form.Item>
       </Form>
       {contextHolder}

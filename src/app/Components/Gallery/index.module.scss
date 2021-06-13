@@ -10,7 +10,7 @@
   height: 150px;
   border-radius: 5px;
 
-  &:hover > .imgInfo:global.active {
+  &:hover > .imgInfo {
     opacity: 0.6;
   }
 

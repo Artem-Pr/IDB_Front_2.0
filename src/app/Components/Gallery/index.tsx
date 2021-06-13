@@ -74,8 +74,8 @@ const Gallery = ({
           <div
             className={cn(
               styles.imgInfo,
-              { active: !isEditMenu && !isTemplateMenu },
-              'position-absolute d-flex align-items-center'
+              `${isEditMenu || isTemplateMenu ? 'd-none' : 'd-flex'} `,
+              'position-absolute align-items-center'
             )}
           >
             <h3 style={{ width: '70%' }} className={styles.imgName}>

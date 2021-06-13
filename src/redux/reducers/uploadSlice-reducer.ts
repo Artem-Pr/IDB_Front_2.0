@@ -54,6 +54,9 @@ const uploadSlice = createSlice({
     clearSelectedList(state) {
       state.selectedList = []
     },
+    selectAll(state) {
+      state.selectedList = state.uploadingFiles.map((_, i) => i)
+    },
     updateOpenMenus(state, action: PayloadAction<string[]>) {
       state.openMenus = action.payload
     },
@@ -76,6 +79,7 @@ export const {
   addToSelectedList,
   removeFromSelectedList,
   clearSelectedList,
+  selectAll,
   updateOpenMenus,
   removeFromOpenMenus,
   clearUploadingState,
