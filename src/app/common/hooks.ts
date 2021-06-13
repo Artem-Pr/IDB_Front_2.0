@@ -3,8 +3,8 @@ import { compose, curry } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { upload } from '../../redux/selectors'
-import { editFilesArr, getNameParts, getTempPath, isExifExist, renameShortNames } from './utils'
-import { addToSelectedList, fetchFullExif, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
+import { editFilesArr, getNameParts, renameShortNames } from './utils'
+import { fetchFullExif, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
 import { UploadingObject } from '../../redux/types'
 
 export const usePrevious = (value: any) => {
@@ -18,18 +18,11 @@ export const usePrevious = (value: any) => {
 
 export const useUpdateFields = () => {
   const dispatch = useDispatch()
-  const { uploadingFiles, fullExifFilesList } = useSelector(upload)
-  const getTempPathByIndex = useMemo(() => curry(getTempPath)(uploadingFiles), [uploadingFiles])
+  const { fullExifFilesList } = useSelector(upload)
 
-  const isExifExistByIndex = useMemo(() => {
-    const getIsExifExist = curry(isExifExist)(fullExifFilesList)
-    return compose(getIsExifExist, getTempPathByIndex)
-  }, [fullExifFilesList, getTempPathByIndex])
-
-  const updateUploadingFiles = (index: number) => {
-    const isExifExist = isExifExistByIndex(index)
-    !isExifExist && compose(dispatch, fetchFullExif, getTempPathByIndex)(index)
-    dispatch(addToSelectedList(index))
+  const updateUploadingFiles = (tempPath: string) => {
+    const isExifExist = !!fullExifFilesList[tempPath]
+    !isExifExist && compose(dispatch, fetchFullExif)(tempPath)
   }
 
   return {

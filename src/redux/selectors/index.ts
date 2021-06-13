@@ -9,14 +9,12 @@ export const openMenus = (state: RootState) => state.uploadReducer.openMenus
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
 
-export const uploadPageGalleryPropsSelector = createSelector(upload, ({ uploadingFiles, selectedList, openMenus }) => ({
-  openMenus,
-  selectedList,
-  imageArr: uploadingFiles,
-}))
-
-// export const selectedElementsSelector = createSelector(upload, ({ selectedList, uploadingFiles }) => {
-//   const selectedElementsMap: Map<number, UploadingObject> = new Map()
-//   selectedList.forEach(index => selectedElementsMap.set(index, uploadingFiles[index]))
-//   return selectedElementsMap
-// })
+export const uploadPageGalleryPropsSelector = createSelector(
+  upload,
+  ({ uploadingFiles, selectedList, openMenus, fullExifFilesList }) => ({
+    openMenus,
+    selectedList,
+    fullExifFilesList,
+    imageArr: uploadingFiles,
+  })
+)

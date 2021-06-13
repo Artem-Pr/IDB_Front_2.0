@@ -4,8 +4,14 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { CustomAlert, DropZone, Gallery, MainMenu } from '../../Components'
 import { upload, uploadPageGalleryPropsSelector } from '../../../redux/selectors'
-import { clearSelectedList, removeFromSelectedList, updateOpenMenus } from '../../../redux/reducers/uploadSlice-reducer'
+import {
+  addToSelectedList,
+  clearSelectedList,
+  removeFromSelectedList,
+  updateOpenMenus,
+} from '../../../redux/reducers/uploadSlice-reducer'
 import { useUpdateFields } from '../../common/hooks'
+import { GalleryProps } from '../../Components/Gallery'
 
 const { Content } = Layout
 
@@ -15,11 +21,12 @@ const UploadPage = () => {
   const props = useSelector(uploadPageGalleryPropsSelector)
   const { updateUploadingFiles } = useUpdateFields()
 
-  const galleryProps = {
+  const galleryProps: GalleryProps = {
     ...props,
     removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
-    addToSelectedList: (index: number) => updateUploadingFiles(index),
+    addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
     clearSelectedList: () => dispatch(clearSelectedList()),
+    updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
   }
 
   const mainMenuProps = {

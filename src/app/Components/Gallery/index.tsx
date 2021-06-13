@@ -1,48 +1,108 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import cn from 'classnames'
+import { compose, keys, map } from 'ramda'
+import { Modal } from 'antd'
 
 import styles from './index.module.scss'
-import { UploadingObject } from '../../../redux/types'
+import { ExifFilesList, UploadingObject } from '../../../redux/types'
 
-interface Props {
+export interface GalleryProps {
   openMenus: string[]
   imageArr: UploadingObject[]
+  fullExifFilesList: ExifFilesList
   selectedList: number[]
   removeFromSelectedList: (index: number) => void
   addToSelectedList: (index: number) => void
   clearSelectedList: () => void
+  updateFiles: (tempPath: string) => void
 }
 
 const Gallery = ({
   openMenus,
   imageArr,
+  fullExifFilesList,
   selectedList,
   addToSelectedList,
   removeFromSelectedList,
   clearSelectedList,
-}: Props) => {
-  const handleImageClick = (i: number) => {
+  updateFiles,
+}: GalleryProps) => {
+  const [currentTempPath, setCurrentTempPath] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const isEditMenu = useMemo(() => openMenus.includes('edit'), [openMenus])
+  const isTemplateMenu = useMemo(() => openMenus.includes('template'), [openMenus])
+  const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
+
+  const getExif = (tempPath: string) => {
+    !fullExifFilesList[tempPath] && updateFiles(tempPath)
+    setCurrentTempPath(tempPath)
+    setShowModal(true)
+  }
+
+  const handleImageClick = (i: number, tempPath: string) => {
+    const updateFilesArr = () => {
+      addToSelectedList(i)
+      updateFiles(tempPath)
+    }
+
     const selectOnlyOne = () => {
       clearSelectedList()
-      addToSelectedList(i)
+      updateFilesArr()
     }
     const selectAnyQuantity = () => {
-      selectedList.includes(i) ? removeFromSelectedList(i) : addToSelectedList(i)
+      selectedList.includes(i) ? removeFromSelectedList(i) : updateFilesArr()
     }
-    openMenus.includes('edit') && selectOnlyOne()
-    openMenus.includes('template') && selectAnyQuantity()
+    isEditMenu && selectOnlyOne()
+    isTemplateMenu && selectAnyQuantity()
   }
+
   return (
     <div className={cn(styles.wrapper, 'd-grid')}>
-      {imageArr.map(({ preview }, i) => (
+      {imageArr.map(({ preview, name, tempPath }, i) => (
         <div
           key={preview}
-          className={cn(styles.item, { active: selectedList.includes(i) })}
-          onClick={() => handleImageClick(i)}
+          className={cn(
+            styles.item,
+            {
+              active: selectedList.includes(i),
+              pointer: isEditMenu || isTemplateMenu,
+            },
+            'position-relative'
+          )}
+          onClick={() => handleImageClick(i, tempPath)}
         >
+          <div
+            className={cn(
+              styles.imgInfo,
+              { active: !isEditMenu && !isTemplateMenu },
+              'position-absolute d-flex align-items-center'
+            )}
+          >
+            <h3 style={{ width: '70%' }} className={styles.imgName}>
+              {name}
+            </h3>
+            <h3
+              style={{ marginLeft: 'auto' }}
+              className={cn(styles.imgName, 'pointer')}
+              onClick={() => getExif(tempPath)}
+            >
+              Exif
+            </h3>
+          </div>
           <img className={styles.img} src={preview} alt="image-preview" />
         </div>
       ))}
+      <Modal title="Exif list" footer={null} visible={showModal} onCancel={() => setShowModal(false)}>
+        {compose(
+          map((item: string) => (
+            <div key={item}>
+              <span className="bold">{item + ':'}</span>
+              <span style={{ marginLeft: 5 }}>{exif[item]}</span>
+            </div>
+          )),
+          keys
+        )(exif)}
+      </Modal>
     </div>
   )
 }

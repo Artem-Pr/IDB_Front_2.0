@@ -1,3 +1,11 @@
+.position-absolute {
+  position: absolute;
+}
+
+.position-relative {
+  position: relative;
+}
+
 .d-flex {
   display: flex !important;
 }
@@ -24,4 +32,12 @@
 
 .flex-1 {
   flex: 1;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.pointer {
+  cursor: pointer;
 }
