@@ -1,6 +1,6 @@
 import { Layout, Menu } from 'antd'
 import React from 'react'
-import { UserOutlined, EditFilled, CreditCardFilled } from '@ant-design/icons'
+import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
 
 import style from './index.module.scss'
 import { EditMenu, Folders } from '../index'
@@ -16,9 +16,18 @@ interface Props {
   updateOpenMenus: (value: string[]) => void
   clearSelectedList: () => void
   selectAll: () => void
+  loading: boolean
 }
 
-const MainMenu = ({ uploadingFiles, selectedList, openKeys, updateOpenMenus, clearSelectedList, selectAll }: Props) => {
+const MainMenu = ({
+  uploadingFiles,
+  selectedList,
+  openKeys,
+  updateOpenMenus,
+  clearSelectedList,
+  selectAll,
+  loading,
+}: Props) => {
   const handleTitleClick = ({ key }: { key: string }) => {
     clearSelectedList()
     const openKeysSet = new Set(openKeys)
@@ -35,10 +44,22 @@ const MainMenu = ({ uploadingFiles, selectedList, openKeys, updateOpenMenus, cle
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ uploadingFiles, selectedList }} />
+          <EditMenu {...{ uploadingFiles, selectedList, loading }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ uploadingFiles, selectedList, selectAll, clearAll: clearSelectedList, isEditMany: true }} />
+          <EditMenu
+            {...{
+              uploadingFiles,
+              selectedList,
+              selectAll,
+              loading,
+              clearAll: clearSelectedList,
+              isEditMany: true,
+            }}
+          />
+        </SubMenu>
+        <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
+          <div>Bom-Bom</div>
         </SubMenu>
       </Menu>
     </Sider>

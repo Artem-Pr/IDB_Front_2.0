@@ -31,6 +31,7 @@ const initialFileObject = {
 interface Props {
   uploadingFiles: UploadingObject[]
   selectedList: number[]
+  loading: boolean
   isEditMany?: boolean
   selectAll?: () => void
   clearAll?: () => void
@@ -41,7 +42,7 @@ const config = {
   content: 'Please enter another name',
 }
 
-const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAll }: Props) => {
+const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAll, loading }: Props) => {
   const [form] = Form.useForm()
   const [modal, contextHolder] = Modal.useModal()
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
@@ -117,7 +118,7 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAl
                 Edit
               </Button>
               {isEditMany ? (
-                <Button onClick={handleSelectAll} type="primary">
+                <Button onClick={handleSelectAll} type="primary" loading={loading}>
                   {isSelectAllBtn ? 'Select all' : 'Unselect all'}
                 </Button>
               ) : (

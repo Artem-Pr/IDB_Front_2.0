@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { upload } from '../../redux/selectors'
 import { editFilesArr, getNameParts, renameShortNames } from './utils'
-import { fetchFullExif, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
+import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
 import { UploadingObject } from '../../redux/types'
 
 export const usePrevious = (value: any) => {
@@ -17,12 +17,22 @@ export const usePrevious = (value: any) => {
 }
 
 export const useUpdateFields = () => {
-  const dispatch = useDispatch()
-  const { fullExifFilesList } = useSelector(upload)
+  const dispatch = useDispatch<any>()
+  const { fullExifFilesList, uploadingFiles } = useSelector(upload)
 
-  const updateUploadingFiles = (tempPath: string) => {
+  const updateOne = (tempPath: string): Promise<boolean> | boolean => {
     const isExifExist = !!fullExifFilesList[tempPath]
-    !isExifExist && compose(dispatch, fetchFullExif)(tempPath)
+    return !isExifExist && dispatch(fetchFullExif(tempPath))
+  }
+
+  const updateAll = (): Array<Promise<boolean> | boolean> => {
+    return uploadingFiles.map(({ tempPath }) => updateOne(tempPath))
+  }
+
+  const updateUploadingFiles = (tempPath: string, all = false) => {
+    const response = all ? updateAll() : [updateOne(tempPath)]
+    dispatch(setLoading(true))
+    Promise.all(response).then(() => dispatch(setLoading(false)))
   }
 
   return {

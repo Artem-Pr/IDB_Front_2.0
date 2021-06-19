@@ -18,7 +18,7 @@ const { Content } = Layout
 
 const UploadPage = () => {
   const dispatch = useDispatch()
-  const { openMenus, uploadingFiles, selectedList } = useSelector(upload)
+  const { openMenus, uploadingFiles, selectedList, loading } = useSelector(upload)
   const props = useSelector(uploadPageGalleryPropsSelector)
   const { updateUploadingFiles } = useUpdateFields()
 
@@ -33,9 +33,13 @@ const UploadPage = () => {
   const mainMenuProps = {
     uploadingFiles,
     selectedList,
+    loading,
     openKeys: openMenus,
     clearSelectedList: () => dispatch(clearSelectedList()),
-    selectAll: () => dispatch(selectAll()),
+    selectAll: () => {
+      dispatch(selectAll())
+      updateUploadingFiles('_', true)
+    },
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
   }
 

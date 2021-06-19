@@ -18,6 +18,7 @@ interface State {
   fullExifFilesList: ExifFilesList
   selectedList: number[]
   openMenus: string[]
+  loading: boolean
 }
 
 const initialState: State = {
@@ -25,6 +26,7 @@ const initialState: State = {
   fullExifFilesList: {},
   selectedList: [],
   openMenus: ['folders'],
+  loading: false,
 }
 
 const uploadSlice = createSlice({
@@ -69,6 +71,9 @@ const uploadSlice = createSlice({
       state.uploadingFiles = []
       state.selectedList = []
     },
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.loading = action.payload
+    },
   },
 })
 
@@ -83,6 +88,7 @@ export const {
   updateOpenMenus,
   removeFromOpenMenus,
   clearUploadingState,
+  setLoading,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer
@@ -109,8 +115,8 @@ export const fetchPhotosPreview = (file: any): AppThunk => dispatch => {
     .catch(error => errorMessage(error, 'Ошибка при получении Превью: '))
 }
 
-export const fetchFullExif = (tempPath: string): AppThunk => (dispatch, getState) => {
-  api
+export const fetchFullExif = (tempPath: string): AppThunk => async (dispatch, getState) => {
+  await api
     .getKeywordsFromPhoto(tempPath)
     .then(({ data }) => {
       dispatch(addFullExifFile({ tempPath, fullExifObj: data }))
@@ -122,5 +128,7 @@ export const fetchFullExif = (tempPath: string): AppThunk => (dispatch, getState
 
       dispatch(updateUploadingFiles)
     })
-    .catch(error => errorMessage(error, 'Ошибка при получении данных Exif: '))
+    .catch(error => {
+      errorMessage(error, 'Ошибка при получении данных Exif: ')
+    })
 }
