@@ -1,12 +1,12 @@
 /* eslint-disable functional/no-let */
 import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice-reducer'
-import { addUploadingFile } from '../../redux/reducers/uploadSlice-reducer'
+import { addFullExifFile, addUploadingFile } from '../../redux/reducers/uploadSlice-reducer'
 import store from '../../redux/store/store'
-import { foldersSliceFolderTree, uploadingFilesMock } from '../common/mock'
+import { foldersSliceFolderTree, uploadingFilesMock, fullExifObjArr } from '../common/mock'
 import { RootState } from '../../redux/store/rootReducer'
-import { pathsArr, pathsArrOptionsSelector } from '../../redux/selectors'
+import { allUploadKeywords, pathsArr, pathsArrOptionsSelector } from '../../redux/selectors'
 import { copyByJSON } from '../../app/common/utils'
-import { UploadingObject } from '../../redux/types'
+import { FullExifObj, UploadingObject } from '../../redux/types'
 
 describe('selectors: ', () => {
   let initialState: RootState
@@ -31,26 +31,26 @@ describe('selectors: ', () => {
     expect(pathsOptions).toHaveLength(4)
     expect(pathsOptions[3].value).toBe('/home')
   })
-  // it('should return selectedElement', async function () {
-  //   const selectedList: number[] = [1]
-  //   selectedList.forEach(item => store.dispatch(addToSelectedList(item)))
-  //   await Promise.all(selectedList)
-  //   const state = store.getState()
-  //   const selectedElementsMap: Map<number, UploadingObject> = selectedElementsSelector(state)
-  //   expect(selectedElementsMap.size).toBe(1)
-  //   expect(selectedElementsMap.has(1)).toBeTruthy()
-  //   expect(selectedElementsMap.get(1)?.originalDate).toBe('-')
-  // })
-  // it('should return selectedElements arr', async function () {
-  //   const selectedList: number[] = [1, 2]
-  //   selectedList.forEach(item => store.dispatch(addToSelectedList(item)))
-  //   await Promise.all(selectedList)
-  //   const state = store.getState()
-  //   const selectedElementsMap: Map<number, UploadingObject> = selectedElementsSelector(state)
-  //   expect(selectedElementsMap.size).toBe(2)
-  //   expect(selectedElementsMap.has(1)).toBeTruthy()
-  //   expect(selectedElementsMap.has(2)).toBeTruthy()
-  //   expect(selectedElementsMap.get(1)?.originalDate).toBe('-')
-  //   expect(selectedElementsMap.get(2)?.originalDate).toBe('24.09.2016')
-  // })
+  it('should return all keywords', async function () {
+    const fullExifObjArrOriginal = fullExifObjArr
+    const uploadingFiles: UploadingObject[] = copyByJSON(uploadingFilesMock)
+    const fullExifArr: FullExifObj[] = copyByJSON(fullExifObjArrOriginal)
+    const promises = uploadingFiles.map(({ tempPath }, i) =>
+      store.dispatch(
+        addFullExifFile({
+          tempPath,
+          fullExifObj: fullExifArr[i],
+        })
+      )
+    )
+    await Promise.all(promises)
+    const initialState = store.getState()
+    const allKeywords = allUploadKeywords(initialState)
+    expect(allKeywords).toHaveLength(5)
+    expect(allKeywords.includes('Озеро')).toBeTruthy()
+    expect(allKeywords.includes('Эстония')).toBeTruthy()
+    expect(allKeywords.includes('Оля')).toBeTruthy()
+    expect(allKeywords.includes('Карта')).toBeTruthy()
+    expect(allKeywords.includes('Велосипед')).toBeTruthy()
+  })
 })

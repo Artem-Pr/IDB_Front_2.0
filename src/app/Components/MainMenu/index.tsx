@@ -1,10 +1,12 @@
-import { Layout, Menu } from 'antd'
-import React from 'react'
+import { Layout, Menu, Spin } from 'antd'
+import React, { useState } from 'react'
 import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
+import cn from 'classnames'
 
-import style from './index.module.scss'
+import styles from './index.module.scss'
 import { EditMenu, Folders } from '../index'
 import { UploadingObject } from '../../../redux/types'
+import KeywordsMenu from '../KeywordsMenu'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -13,10 +15,12 @@ interface Props {
   uploadingFiles: UploadingObject[]
   selectedList: number[]
   openKeys: string[]
+  loading: boolean
+  uniqKeywords: string[]
   updateOpenMenus: (value: string[]) => void
   clearSelectedList: () => void
   selectAll: () => void
-  loading: boolean
+  updateKeywords: () => Promise<any>
 }
 
 const MainMenu = ({
@@ -24,22 +28,31 @@ const MainMenu = ({
   selectedList,
   openKeys,
   updateOpenMenus,
+  updateKeywords,
   clearSelectedList,
   selectAll,
   loading,
+  uniqKeywords,
 }: Props) => {
+  const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
+  const loadKeywords = () => {
+    setIsKeywordsMenuLoading(true)
+    updateKeywords().then(() => setIsKeywordsMenuLoading(false))
+  }
+
   const handleTitleClick = ({ key }: { key: string }) => {
     clearSelectedList()
     const openKeysSet = new Set(openKeys)
     key === 'edit' && openKeysSet.delete('template')
     key === 'template' && openKeysSet.delete('edit')
+    key === 'keywords' && loadKeywords()
     openKeysSet.has(key) ? openKeysSet.delete(key) : openKeysSet.add(key)
     updateOpenMenus(Array.from(openKeysSet))
   }
 
   return (
-    <Sider theme="light" className={style.sider} width="300">
-      <Menu mode="inline" className={style.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
+    <Sider theme="light" className={styles.sider} width="300">
+      <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
         <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
           <Folders />
         </SubMenu>
@@ -59,7 +72,9 @@ const MainMenu = ({
           />
         </SubMenu>
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
-          <div>Bom-Bom</div>
+          <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
+            {isKeywordsMenuLoading ? <Spin tip="Loading..." /> : <KeywordsMenu keywords={uniqKeywords} />}
+          </div>
         </SubMenu>
       </Menu>
     </Sider>

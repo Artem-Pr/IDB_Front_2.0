@@ -1,4 +1,4 @@
-import { UploadingObject } from '../../redux/types'
+import { FullExifObj, UploadingObject } from '../../redux/types'
 
 export const foldersSliceFolderTree = [
   {
@@ -125,5 +125,53 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2812368,
     tempPath: 'temp/33237a85357bbb9c4d7c8da122ef3c0a',
     type: 'image/jpeg',
+  },
+]
+
+export const fullExifObjArr: FullExifObj[] = [
+  {
+    Megapixels: 8,
+    DateTimeOriginal: '2019:06:24 11:02:25',
+    Keywords: ['Озеро', 'Эстония', 'Оля'],
+    ISO: 100,
+    ImageHeight: 2448,
+    ImageSize: '3264x2448',
+    ImageWidth: 3264,
+    InteropIndex: 'R98 - DCF basic file (sRGB)',
+    InteropVersion: '0100',
+    JFIFVersion: 1.01,
+    LightValue: 12,
+    Luminance: '0 80 0',
+    Make: 'LGE',
+  },
+  {
+    Megapixels: 8,
+    DateTimeOriginal: '2019:06:24 11:02:25',
+    Keywords: ['Эстония', 'Карта'],
+    ISO: 100,
+    ImageHeight: 2448,
+    ImageSize: '3264x2448',
+    ImageWidth: 3264,
+    InteropIndex: 'R98 - DCF basic file (sRGB)',
+    InteropVersion: '0100',
+    JFIFVersion: 1.01,
+    LightValue: 12,
+    Luminance: '0 80 0',
+    Make: 'LGE',
+  },
+  {
+    Megapixels: 8,
+    DateTimeOriginal: '2019:06:24 11:02:25',
+    Keywords: ['Эстония', 'Озеро', 'Велосипед', 'Оля'],
+    ISO: 100,
+    ImageHeight: 2448,
+    ImageSize: '3264x2448',
+    ImageWidth: 3264,
+    InteropIndex: 'R98 - DCF basic file (sRGB)',
+    InteropVersion: '0100',
+    JFIFVersion: 1.01,
+    LightValue: 12,
+    Luminance: '0 80 0',
+    Make: 'LGE',
   },
 ]

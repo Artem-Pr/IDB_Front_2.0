@@ -13,7 +13,7 @@ export interface FullExifObj {
   DateTimeOriginal: string
 }
 
-export type ExifFilesList = { [key: string]: FullExifObj }
+export type ExifFilesList = Record<string, FullExifObj>
 
 export interface AxiosPreviews {
   preview: string

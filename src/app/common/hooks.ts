@@ -20,19 +20,25 @@ export const useUpdateFields = () => {
   const dispatch = useDispatch<any>()
   const { fullExifFilesList, uploadingFiles } = useSelector(upload)
 
-  const updateOne = (tempPath: string): Promise<boolean> | boolean => {
-    const isExifExist = !!fullExifFilesList[tempPath]
-    return !isExifExist && dispatch(fetchFullExif(tempPath))
+  const isExifExist = (tempPath: string): boolean => !!fullExifFilesList[tempPath]
+
+  const updateOne = (tempPath: string): Promise<boolean> | false => {
+    return !isExifExist(tempPath) && dispatch(fetchFullExif([tempPath]))
   }
 
-  const updateAll = (): Array<Promise<boolean> | boolean> => {
-    return uploadingFiles.map(({ tempPath }) => updateOne(tempPath))
+  const updateAll = (): Promise<boolean> | false => {
+    const tempPathArr = uploadingFiles.map(({ tempPath }) => tempPath).filter(tempPath => !isExifExist(tempPath))
+    return !!tempPathArr.length && dispatch(fetchFullExif(tempPathArr))
   }
 
-  const updateUploadingFiles = (tempPath: string, all = false) => {
-    const response = all ? updateAll() : [updateOne(tempPath)]
+  const load = (response: Promise<boolean>): Promise<boolean> => {
     dispatch(setLoading(true))
-    Promise.all(response).then(() => dispatch(setLoading(false)))
+    return response.then(() => dispatch(setLoading(false)))
+  }
+
+  const updateUploadingFiles = (tempPath: string, all = false): Promise<boolean> => {
+    const response = all ? updateAll() : updateOne(tempPath)
+    return response ? load(response) : Promise.resolve(true)
   }
 
   return {

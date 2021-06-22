@@ -1,6 +1,6 @@
 /* eslint functional/immutable-data: 0 */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { compose, curry } from 'ramda'
+import { compose, curry, keys, reduce } from 'ramda'
 
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
@@ -43,6 +43,9 @@ const uploadSlice = createSlice({
       const { tempPath, fullExifObj } = action.payload
       state.fullExifFilesList[tempPath] = fullExifObj
     },
+    updateFullExifFile(state, action: PayloadAction<ExifFilesList>) {
+      state.fullExifFilesList = { ...state.fullExifFilesList, ...action.payload }
+    },
     addToSelectedList(state, action: PayloadAction<number>) {
       const set = new Set(state.selectedList)
       set.add(action.payload)
@@ -81,6 +84,7 @@ export const {
   addUploadingFile,
   updateUploadingFilesArr,
   addFullExifFile,
+  updateFullExifFile,
   addToSelectedList,
   removeFromSelectedList,
   clearSelectedList,
@@ -115,18 +119,25 @@ export const fetchPhotosPreview = (file: any): AppThunk => dispatch => {
     .catch(error => errorMessage(error, 'Ошибка при получении Превью: '))
 }
 
-export const fetchFullExif = (tempPath: string): AppThunk => async (dispatch, getState) => {
+export const fetchFullExif = (tempPathArr: string[]): AppThunk => async (dispatch, getState) => {
   await api
-    .getKeywordsFromPhoto(tempPath)
+    .getKeywordsFromPhoto(tempPathArr)
     .then(({ data }) => {
-      dispatch(addFullExifFile({ tempPath, fullExifObj: data }))
+      dispatch(updateFullExifFile(data))
 
       const { uploadingFiles, fullExifFilesList } = getState().uploadReducer
       const getUpdatingObj = curry(getUpdatedExifFieldsObj)(fullExifFilesList)
-      const getUpdatedFilesArr = curry(updateFilesArrItemByField)('tempPath', uploadingFiles)
-      const updateUploadingFiles = compose(updateUploadingFilesArr, getUpdatedFilesArr, getUpdatingObj)(tempPath)
 
-      dispatch(updateUploadingFiles)
+      const loadExifToUploadingFiles = (acc: UploadingObject[], tempPath: string): UploadingObject[] => {
+        const loadUpdatingObjToFilesArr = curry(updateFilesArrItemByField)('tempPath')(acc)
+        return compose(loadUpdatingObjToFilesArr, getUpdatingObj)(tempPath)
+      }
+
+      const getUploadingFiles = (tempPathArr: string[]) => {
+        return reduce<string, UploadingObject[]>(loadExifToUploadingFiles, uploadingFiles, tempPathArr)
+      }
+      const uploadingFilesArr = compose(getUploadingFiles, keys)(data)
+      dispatch(updateUploadingFilesArr(uploadingFilesArr))
     })
     .catch(error => {
       errorMessage(error, 'Ошибка при получении данных Exif: ')

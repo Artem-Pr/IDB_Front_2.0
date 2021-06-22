@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { AxiosPreviews, FullExifObj, UpdatedObject, UploadingObject } from '../redux/types'
+import { AxiosPreviews, ExifFilesList, UpdatedObject, UploadingObject } from '../redux/types'
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
@@ -42,10 +42,12 @@ const mainApi = {
     return instance.get('/paths')
   },
 
-  getKeywordsFromPhoto(tempPath: string): Promise<AxiosResponse<FullExifObj>> {
+  getKeywordsFromPhoto(tempPath: string[]): Promise<AxiosResponse<ExifFilesList>> {
     // need to get something even if exif is not exist
-    return instance.get('/image-exif', {
-      params: { tempPath },
+    return instance.post('/image-exif', tempPath, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
   },
 

@@ -3,7 +3,7 @@ import { Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { CustomAlert, DropZone, Gallery, MainMenu } from '../../Components'
-import { upload, uploadPageGalleryPropsSelector } from '../../../redux/selectors'
+import { allUploadKeywords, upload, uploadPageGalleryPropsSelector } from '../../../redux/selectors'
 import {
   addToSelectedList,
   clearSelectedList,
@@ -19,6 +19,7 @@ const { Content } = Layout
 const UploadPage = () => {
   const dispatch = useDispatch()
   const { openMenus, uploadingFiles, selectedList, loading } = useSelector(upload)
+  const uniqKeywords = useSelector(allUploadKeywords)
   const props = useSelector(uploadPageGalleryPropsSelector)
   const { updateUploadingFiles } = useUpdateFields()
 
@@ -34,6 +35,7 @@ const UploadPage = () => {
     uploadingFiles,
     selectedList,
     loading,
+    uniqKeywords,
     openKeys: openMenus,
     clearSelectedList: () => dispatch(clearSelectedList()),
     selectAll: () => {
@@ -41,6 +43,7 @@ const UploadPage = () => {
       updateUploadingFiles('_', true)
     },
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
+    updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
   }
 
   return (
