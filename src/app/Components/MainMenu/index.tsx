@@ -1,4 +1,4 @@
-import { Layout, Menu, Spin } from 'antd'
+import { Empty, Layout, Menu, Spin } from 'antd'
 import React, { useState } from 'react'
 import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
 import cn from 'classnames'
@@ -74,6 +74,7 @@ const MainMenu = ({
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
           <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
             {isKeywordsMenuLoading ? <Spin tip="Loading..." /> : <KeywordsMenu keywords={uniqKeywords} />}
+            {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
           </div>
         </SubMenu>
       </Menu>
