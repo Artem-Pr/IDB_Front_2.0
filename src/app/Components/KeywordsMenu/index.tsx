@@ -1,5 +1,6 @@
 import React from 'react'
 import { Tag } from 'antd'
+import { identity, sortBy } from 'ramda'
 
 interface Props {
   keywords: string[]
@@ -13,7 +14,7 @@ const KeywordsMenu = ({ keywords, removeKeyword }: Props) => {
 
   return (
     <div>
-      {keywords.map(item => (
+      {sortBy(identity, keywords).map(item => (
         <Tag key={item} closable onClose={() => handleClose(item)}>
           {item}
         </Tag>
