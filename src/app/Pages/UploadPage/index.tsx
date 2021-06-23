@@ -10,9 +10,11 @@ import {
   removeFromSelectedList,
   updateOpenMenus,
   selectAll,
+  updateUploadingFilesArr,
 } from '../../../redux/reducers/uploadSlice-reducer'
 import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
+import { removeKeywordFromEveryFile } from '../../common/utils'
 
 const { Content } = Layout
 
@@ -44,6 +46,10 @@ const UploadPage = () => {
     },
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
     updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
+    removeKeyword: (keyword: string) => {
+      const filesArrWithoutKeyword = removeKeywordFromEveryFile(keyword, uploadingFiles)
+      dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))
+    },
   }
 
   return (

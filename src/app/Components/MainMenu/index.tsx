@@ -1,5 +1,5 @@
-import { Empty, Layout, Menu, Spin } from 'antd'
 import React, { useState } from 'react'
+import { Empty, Layout, Menu, Spin } from 'antd'
 import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
 import cn from 'classnames'
 
@@ -21,6 +21,7 @@ interface Props {
   clearSelectedList: () => void
   selectAll: () => void
   updateKeywords: () => Promise<any>
+  removeKeyword: (keyword: string) => void
 }
 
 const MainMenu = ({
@@ -29,6 +30,7 @@ const MainMenu = ({
   openKeys,
   updateOpenMenus,
   updateKeywords,
+  removeKeyword,
   clearSelectedList,
   selectAll,
   loading,
@@ -73,7 +75,11 @@ const MainMenu = ({
         </SubMenu>
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
           <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
-            {isKeywordsMenuLoading ? <Spin tip="Loading..." /> : <KeywordsMenu keywords={uniqKeywords} />}
+            {isKeywordsMenuLoading ? (
+              <Spin tip="Loading..." />
+            ) : (
+              <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} />
+            )}
             {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
           </div>
         </SubMenu>

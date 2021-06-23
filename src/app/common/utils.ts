@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { dec, inc, includes, mapAccumRight, reject } from 'ramda'
+import { dec, inc, includes, mapAccumRight, reject, without } from 'ramda'
 
 import { ExifFilesList, NameParts, UpdatingFieldsWithPath, UploadingObject } from '../../redux/types'
 
@@ -12,6 +12,17 @@ export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
 export const formatDateTimeOriginal = (DateTimeOriginal: string) =>
   moment(DateTimeOriginal, 'YYYY:MM:DD hh:mm:ss').format(dateFormat)
+
+const getArrayWithoutKeyword = (keyword: string, fileItem: UploadingObject): string[] => {
+  return without([keyword], fileItem.keywords || [])
+}
+
+export const removeKeywordFromEveryFile = (keyword: string, filesArr: UploadingObject[]): UploadingObject[] => {
+  return filesArr.map(item => ({
+    ...item,
+    keywords: getArrayWithoutKeyword(keyword, item),
+  }))
+}
 
 export const getNameParts = (fullName: string): NameParts => {
   const getNameObj = (fullName: string) => {

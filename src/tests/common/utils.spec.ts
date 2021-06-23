@@ -17,6 +17,7 @@ import {
   updateFilesArrItemByField,
   editFilesArr,
   renameEqualStrings,
+  removeKeywordFromEveryFile,
 } from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
@@ -25,6 +26,7 @@ import {
   folderTreeForTest3,
   folderTreeForTest4,
   uploadingFilesMock,
+  uploadingFilesWithKeywordsMock,
 } from './mock'
 
 describe('utils: ', () => {
@@ -242,11 +244,21 @@ describe('utils: ', () => {
   })
 
   describe('renameEqualStrings: ', () => {
-    it('should return ...', () => {
+    it('should return renamed array', () => {
       const arr = ['hello', 'test', 'hello', 'what', 'oh', 'hello', 'oh', 'no']
       const newArr = renameEqualStrings(arr)
       expect(newArr).toHaveLength(8)
       expect(newArr).toEqual(['hello_001', 'test', 'hello_002', 'what', 'oh_001', 'hello_003', 'oh_002', 'no'])
+    })
+  })
+
+  describe('removeKeywordFromEveryFile: ', () => {
+    it('should return files array without certain keyword', () => {
+      const newFilesArr = removeKeywordFromEveryFile('Оля', copyByJSON(uploadingFilesWithKeywordsMock))
+      expect(newFilesArr).toHaveLength(3)
+      expect(JSON.stringify(newFilesArr[0].keywords)).toBe("[\"Озеро\",\"Эстония\"]")
+      expect(JSON.stringify(newFilesArr[1].keywords)).toBe("[\"Эстония\",\"Карта\"]")
+      expect(JSON.stringify(newFilesArr[2].keywords)).toBe("[\"Эстония\",\"Озеро\",\"Велосипед\"]")
     })
   })
 })

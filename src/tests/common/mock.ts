@@ -175,3 +175,8 @@ export const fullExifObjArr: FullExifObj[] = [
     Make: 'LGE',
   },
 ]
+
+export const uploadingFilesWithKeywordsMock = uploadingFilesMock.map((item, i) => ({
+  ...item,
+  keywords: fullExifObjArr[i].Keywords,
+}))
