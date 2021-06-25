@@ -1,12 +1,30 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Form, Input, Button, DatePicker, Space, Modal } from 'antd'
+import { Form, Input, Button, DatePicker, Space, Modal, Select } from 'antd'
 import moment from 'moment'
-import { curry, isEmpty } from 'ramda'
+import { curry, identity, isEmpty, sortBy } from 'ramda'
 
 import styles from './index.module.scss'
 import { UploadingObject } from '../../../redux/types'
 import { dateFormat, getLastItem, getNameParts, removeEmptyFields } from '../../common/utils'
 import { useEditFilesArr } from '../../common/hooks'
+
+const { Option } = Select
+
+interface Props {
+  uploadingFiles: UploadingObject[]
+  selectedList: number[]
+  loading: boolean
+  sameKeywords: string[]
+  isEditMany?: boolean
+  selectAll?: () => void
+  clearAll?: () => void
+}
+
+interface InitialFileObject {
+  name: string
+  originalDate: string
+  keywords: string[]
+}
 
 const layout = {
   labelCol: {
@@ -23,18 +41,10 @@ const tailLayout = {
   },
 }
 
-const initialFileObject = {
+const initialFileObject: InitialFileObject = {
   name: '-',
   originalDate: '',
-}
-
-interface Props {
-  uploadingFiles: UploadingObject[]
-  selectedList: number[]
-  loading: boolean
-  isEditMany?: boolean
-  selectAll?: () => void
-  clearAll?: () => void
+  keywords: [],
 }
 
 const config = {
@@ -42,12 +52,12 @@ const config = {
   content: 'Please enter another name',
 }
 
-const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAll, loading }: Props) => {
+const EditMenu = ({ uploadingFiles, selectedList, sameKeywords, isEditMany, selectAll, clearAll, loading }: Props) => {
   const [form] = Form.useForm()
   const [modal, contextHolder] = Modal.useModal()
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
-  const editUploadingFiles = useEditFilesArr(selectedList, uploadingFiles)
-  const { name, originalDate } = useMemo(
+  const editUploadingFiles = useEditFilesArr(selectedList, uploadingFiles, sameKeywords)
+  const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
     () => (!selectedList.length ? initialFileObject : uploadingFiles[getLastItem(selectedList)]),
     [uploadingFiles, selectedList]
   )
@@ -63,10 +73,11 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAl
     form.setFieldsValue({
       name: shortName,
       originalDate: originalDate === '-' ? '' : moment(originalDate, dateFormat),
+      keywords: sortBy(identity, sameKeywords || []),
     })
-  }, [form, shortName, originalDate])
+  }, [form, shortName, originalDate, sameKeywords])
 
-  const onFinish = ({ name, originalDate }: any) => {
+  const onFinish = ({ name, originalDate, keywords }: any) => {
     const isDuplicateName = curry((filesArr: UploadingObject[], currentName: string) => {
       const fileArrNames = filesArr.map(({ name }) => name)
       return fileArrNames.includes(currentName)
@@ -76,6 +87,7 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAl
       const preparedValue = {
         name: name ? name + ext : '',
         originalDate: originalDate ? moment(originalDate).format(dateFormat) : null,
+        keywords,
       }
       const editedFields = removeEmptyFields(preparedValue)
       !isEmpty(editedFields) && editUploadingFiles(editedFields)
@@ -110,6 +122,16 @@ const EditMenu = ({ uploadingFiles, selectedList, isEditMany, selectAll, clearAl
             placeholder="Edit date"
             disabled={disabledInputs}
           />
+        </Form.Item>
+        <Form.Item className={styles.item} label="Keywords" name="keywords">
+          <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
+            {sameKeywords &&
+              sameKeywords.map(keyword => (
+                <Option key={keyword} value={keyword}>
+                  {keyword}
+                </Option>
+              ))}
+          </Select>
         </Form.Item>
         <Form.Item className={styles.item} {...tailLayout}>
           <Space>

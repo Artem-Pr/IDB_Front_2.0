@@ -1,9 +1,15 @@
 import { useEffect, useMemo, useRef } from 'react'
-import { compose, curry } from 'ramda'
+import { compose, curry, isEmpty, omit } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { upload } from '../../redux/selectors'
-import { editFilesArr, getNameParts, renameShortNames } from './utils'
+import {
+  addKeywordsToAllFiles,
+  getNameParts,
+  removeIntersectingKeywords,
+  renameShortNames,
+  updateFilesArrayItems,
+} from './utils'
 import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
 import { UploadingObject } from '../../redux/types'
 
@@ -46,7 +52,7 @@ export const useUpdateFields = () => {
   }
 }
 
-export const useEditFilesArr = (selectedList: number[], uploadingFiles: UploadingObject[]) => {
+export const useEditFilesArr = (selectedList: number[], filesArr: UploadingObject[], sameKeywords: string[] = []) => {
   const dispatch = useDispatch()
   return useMemo(() => {
     const getRenamedObjects = (filesArr: UploadingObject[]): UploadingObject[] => {
@@ -58,8 +64,26 @@ export const useEditFilesArr = (selectedList: number[], uploadingFiles: Uploadin
       })
     }
 
-    const editFilesArrByEditedFields = curry(editFilesArr)(selectedList, uploadingFiles)
+    const addEditedFieldsToFileArr = (
+      filesArr: UploadingObject[],
+      editedFields: Record<string, any>
+    ): UploadingObject[] => {
+      const keywords: string[] = editedFields?.keywords || []
+      const updatedFileArr = isEmpty(keywords) ? filesArr : addKeywordsToAllFiles(keywords, filesArr)
+      return updatedFileArr.map(item => ({ ...item, ...omit(['keywords'], editedFields) }))
+    }
 
-    return compose(dispatch, updateUploadingFilesArr, getRenamedObjects, editFilesArrByEditedFields)
-  }, [dispatch, selectedList, uploadingFiles])
+    const selectedFilesArr = filesArr.filter((_, idx) => selectedList.includes(idx))
+    const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFilesArr)
+    const AddEditedFieldsToFilteredFileArr = curry(addEditedFieldsToFileArr)(selectedFilesWithoutSameKeywords)
+    const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)(filesArr)
+
+    return compose(
+      dispatch,
+      updateUploadingFilesArr,
+      mixUpdatedFilesItemsWithOriginalOnes,
+      getRenamedObjects,
+      AddEditedFieldsToFilteredFileArr
+    )
+  }, [dispatch, selectedList, filesArr, sameKeywords])
 }

@@ -15,9 +15,10 @@ import {
   removeEmptyFields,
   removeExtraSlash,
   updateFilesArrItemByField,
-  editFilesArr,
   renameEqualStrings,
-  removeKeywordFromEveryFile,
+  removeIntersectingKeywords,
+  addKeywordsToAllFiles,
+  updateFilesArrayItems,
 } from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
@@ -28,6 +29,7 @@ import {
   uploadingFilesMock,
   uploadingFilesWithKeywordsMock,
 } from './mock'
+import { UploadingObject } from '../../redux/types'
 
 describe('utils: ', () => {
   it('removeExtraSlash should remove slash at the end of string', () => {
@@ -226,23 +228,6 @@ describe('utils: ', () => {
     })
   })
 
-  describe('editFilesArr: ', () => {
-    it('should return edited files arr', () => {
-      const editedFields = {
-        name: 'bom-bom',
-        originalDate: '10.10.2010',
-      }
-      const editedFiles = editFilesArr([0, 2], copyByJSON(uploadingFilesMock), editedFields)
-      expect(editedFiles).toHaveLength(3)
-      expect(editedFiles[0].name).toBe('bom-bom')
-      expect(editedFiles[2].name).toBe('bom-bom')
-      expect(editedFiles[0].originalDate).toBe('10.10.2010')
-      expect(editedFiles[2].originalDate).toBe('10.10.2010')
-      expect(editedFiles[1].name).toBe('IMG_20190624_110245.jpg')
-      expect(editedFiles[1].originalDate).toBe('-')
-    })
-  })
-
   describe('renameEqualStrings: ', () => {
     it('should return renamed array', () => {
       const arr = ['hello', 'test', 'hello', 'what', 'oh', 'hello', 'oh', 'no']
@@ -254,11 +239,47 @@ describe('utils: ', () => {
 
   describe('removeKeywordFromEveryFile: ', () => {
     it('should return files array without certain keyword', () => {
-      const newFilesArr = removeKeywordFromEveryFile('Оля', copyByJSON(uploadingFilesWithKeywordsMock))
+      const newFilesArr = removeIntersectingKeywords(['Оля'], copyByJSON(uploadingFilesWithKeywordsMock))
+      const newFilesArr2 = removeIntersectingKeywords(['Оля', 'Карта'], copyByJSON(uploadingFilesWithKeywordsMock))
       expect(newFilesArr).toHaveLength(3)
-      expect(JSON.stringify(newFilesArr[0].keywords)).toBe("[\"Озеро\",\"Эстония\"]")
-      expect(JSON.stringify(newFilesArr[1].keywords)).toBe("[\"Эстония\",\"Карта\"]")
-      expect(JSON.stringify(newFilesArr[2].keywords)).toBe("[\"Эстония\",\"Озеро\",\"Велосипед\"]")
+      expect(JSON.stringify(newFilesArr[0].keywords)).toBe('["Озеро","Эстония"]')
+      expect(JSON.stringify(newFilesArr[1].keywords)).toBe('["Эстония","Карта"]')
+      expect(JSON.stringify(newFilesArr[2].keywords)).toBe('["Эстония","Озеро","Велосипед"]')
+      expect(newFilesArr2).toHaveLength(3)
+      expect(JSON.stringify(newFilesArr2[0].keywords)).toBe('["Озеро","Эстония"]')
+      expect(JSON.stringify(newFilesArr2[1].keywords)).toBe('["Эстония"]')
+      expect(JSON.stringify(newFilesArr2[2].keywords)).toBe('["Эстония","Озеро","Велосипед"]')
+    })
+  })
+
+  describe('addKeywordsToAllFiles: ', () => {
+    it('should add new keywords to every file in array', () => {
+      const fileArr = copyByJSON(uploadingFilesWithKeywordsMock)
+      const newFilesArr = addKeywordsToAllFiles(['Природа'], fileArr)
+      const newFilesArr2 = addKeywordsToAllFiles(['Природа', 'Покатушки', 'Оля'], fileArr)
+      expect(newFilesArr).toHaveLength(3)
+      expect(JSON.stringify(newFilesArr[0].keywords)).toBe('["Природа","Озеро","Эстония","Оля"]')
+      expect(JSON.stringify(newFilesArr[1].keywords)).toBe('["Природа","Эстония","Карта"]')
+      expect(JSON.stringify(newFilesArr[2].keywords)).toBe('["Природа","Эстония","Озеро","Велосипед","Оля"]')
+      expect(newFilesArr2).toHaveLength(3)
+      expect(JSON.stringify(newFilesArr2[0].keywords)).toBe('["Природа","Покатушки","Оля","Озеро","Эстония"]')
+      expect(JSON.stringify(newFilesArr2[1].keywords)).toBe('["Природа","Покатушки","Оля","Эстония","Карта"]')
+      expect(JSON.stringify(newFilesArr2[2].keywords)).toBe(
+        '["Природа","Покатушки","Оля","Эстония","Озеро","Велосипед"]'
+      )
+    })
+  })
+
+  describe('updateFilesArrayItems: ', () => {
+    it('should return updated filesArr', () => {
+      const originalFileArr: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
+      const filteredFilesArr = originalFileArr.filter((_, i) => i !== 1)
+      const changedFilteredArr = filteredFilesArr.map(item => ({ ...item, name: 'bom' }))
+      const updatedFilesArr = updateFilesArrayItems(originalFileArr, changedFilteredArr)
+      expect(updatedFilesArr).toHaveLength(3)
+      expect(updatedFilesArr[0].name).toBe('bom')
+      expect(updatedFilesArr[1].name).toBe('IMG_20190624_110245.jpg')
+      expect(updatedFilesArr[2].name).toBe('bom')
     })
   })
 })

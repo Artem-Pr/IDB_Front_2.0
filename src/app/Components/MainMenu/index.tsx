@@ -17,6 +17,7 @@ interface Props {
   openKeys: string[]
   loading: boolean
   uniqKeywords: string[]
+  sameKeywords: string[]
   updateOpenMenus: (value: string[]) => void
   clearSelectedList: () => void
   selectAll: () => void
@@ -35,6 +36,7 @@ const MainMenu = ({
   selectAll,
   loading,
   uniqKeywords,
+  sameKeywords,
 }: Props) => {
   const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
   const loadKeywords = () => {
@@ -59,13 +61,14 @@ const MainMenu = ({
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ uploadingFiles, selectedList, loading }} />
+          <EditMenu {...{ uploadingFiles, selectedList, sameKeywords, loading }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
           <EditMenu
             {...{
               uploadingFiles,
               selectedList,
+              sameKeywords,
               selectAll,
               loading,
               clearAll: clearSelectedList,

@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { dec, inc, includes, mapAccumRight, reject, without } from 'ramda'
+import { dec, inc, mapAccumRight, reject, union, without } from 'ramda'
 
 import { ExifFilesList, NameParts, UpdatingFieldsWithPath, UploadingObject } from '../../redux/types'
 
@@ -12,17 +12,6 @@ export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
 export const formatDateTimeOriginal = (DateTimeOriginal: string) =>
   moment(DateTimeOriginal, 'YYYY:MM:DD hh:mm:ss').format(dateFormat)
-
-const getArrayWithoutKeyword = (keyword: string, fileItem: UploadingObject): string[] => {
-  return without([keyword], fileItem.keywords || [])
-}
-
-export const removeKeywordFromEveryFile = (keyword: string, filesArr: UploadingObject[]): UploadingObject[] => {
-  return filesArr.map(item => ({
-    ...item,
-    keywords: getArrayWithoutKeyword(keyword, item),
-  }))
-}
 
 export const getNameParts = (fullName: string): NameParts => {
   const getNameObj = (fullName: string) => {
@@ -59,17 +48,6 @@ export const updateFilesArrItemByField = (
   })
 }
 
-export const editFilesArr = (
-  selectedList: number[],
-  filesArr: UploadingObject[],
-  editedFields: Record<string, any>
-): UploadingObject[] => {
-  return filesArr.map((item, i) => {
-    const isEditFile = includes(i, selectedList)
-    return isEditFile ? { ...item, ...editedFields } : item
-  })
-}
-
 export const renameEqualStrings = (strArr: string[]) => {
   const count = (accum: Record<string, number>, curValue: string) => {
     const numberOf = accum[curValue] ? inc(accum[curValue]) : 1
@@ -95,4 +73,28 @@ export const renameShortNames = (namePartArr: NameParts[]): NameParts[] => {
   const shortNames = namePartArr.map(({ shortName }) => shortName)
   const renamedShortNames = renameEqualStrings(shortNames)
   return renamedShortNames.map((item, i) => ({ shortName: item, ext: namePartArr[i].ext }))
+}
+
+export const removeIntersectingKeywords = (sameKeywords: string[], filesArr: UploadingObject[]): UploadingObject[] => {
+  return filesArr.map(item => {
+    return { ...item, keywords: without(sameKeywords, item.keywords || []) }
+  })
+}
+
+export const addKeywordsToAllFiles = (newKeywords: string[], filesArr: UploadingObject[]): UploadingObject[] => {
+  return filesArr.map(item => {
+    return { ...item, keywords: union(newKeywords, item.keywords || []) }
+  })
+}
+
+export const updateFilesArrayItems = (
+  originalFilesArr: UploadingObject[],
+  filteredFilesArr: UploadingObject[]
+): UploadingObject[] => {
+  const filteredArrOfTempPaths: string[] = filteredFilesArr.map(item => item.tempPath)
+  return originalFilesArr.map(item => {
+    const getFilteredArrItem = () => filteredFilesArr.find(({ tempPath }) => item.tempPath === tempPath) || item
+    const isUpdatedFile = filteredArrOfTempPaths.includes(item.tempPath)
+    return isUpdatedFile ? getFilteredArrItem() : item
+  })
 }
