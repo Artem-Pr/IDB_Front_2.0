@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Empty, Layout, Menu, Spin } from 'antd'
+import { Button, Empty, Layout, Menu, Spin } from 'antd'
 import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
 import cn from 'classnames'
 
@@ -23,6 +23,7 @@ interface Props {
   selectAll: () => void
   updateKeywords: () => Promise<any>
   removeKeyword: (keyword: string) => void
+  removeFiles: () => void
 }
 
 const MainMenu = ({
@@ -37,6 +38,7 @@ const MainMenu = ({
   loading,
   uniqKeywords,
   sameKeywords,
+  removeFiles,
 }: Props) => {
   const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
   const loadKeywords = () => {
@@ -86,6 +88,11 @@ const MainMenu = ({
             {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
           </div>
         </SubMenu>
+        <div className="d-flex justify-content-center">
+          <Button disabled={!uploadingFiles.length} type="primary" onClick={removeFiles}>
+            Remove files
+          </Button>
+        </div>
       </Menu>
     </Sider>
   )

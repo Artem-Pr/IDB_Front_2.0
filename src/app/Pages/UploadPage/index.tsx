@@ -11,6 +11,7 @@ import {
   updateOpenMenus,
   selectAll,
   updateUploadingFilesArr,
+  clearUploadingState,
 } from '../../../redux/reducers/uploadSlice-reducer'
 import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
@@ -52,6 +53,7 @@ const UploadPage = () => {
       const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], uploadingFiles)
       dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))
     },
+    removeFiles: () => dispatch(clearUploadingState()),
   }
 
   return (
