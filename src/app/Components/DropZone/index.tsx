@@ -8,7 +8,7 @@ import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { folderElement } from '../../../redux/selectors'
-import { fetchPhotosPreview } from '../../../redux/reducers/uploadSlice-reducer'
+import { fetchPhotosPreview, setUploadingStatus } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Dragger } = Upload
 
@@ -34,6 +34,7 @@ const DropZone = ({ openMenus }: Props) => {
     },
     customRequest(info) {
       dispatch(fetchPhotosPreview(info.file))
+      dispatch(setUploadingStatus('empty'))
     },
     onChange(info: UploadChangeParam) {
       const { status } = info.file

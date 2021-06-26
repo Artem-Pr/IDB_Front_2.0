@@ -72,6 +72,7 @@ const MainMenu = ({
   const handleUploadClick = () => {
     dispatch(uploadFiles(uploadingFiles, currentFolderPath))
     removeFiles()
+    updateOpenMenus(['folders'])
   }
 
   return (
@@ -111,7 +112,7 @@ const MainMenu = ({
           <Button disabled={!uploadingFiles.length} type="primary" onClick={removeFiles}>
             Remove files
           </Button>
-          <Button disabled={!currentFolderPath} type="primary" onClick={handleUploadClick}>
+          <Button disabled={!currentFolderPath || !uploadingFiles.length} type="primary" onClick={handleUploadClick}>
             Upload files
           </Button>
         </div>

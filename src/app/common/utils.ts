@@ -30,10 +30,11 @@ export const isExifExist = (exifList: ExifFilesList, tempPath: string): boolean 
 
 export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: string): UpdatingFieldsWithPath => {
   const exifObj = exifList[tempPath]
+  const originalDate = exifObj?.DateTimeOriginal ? formatDateTimeOriginal(exifObj?.DateTimeOriginal as string) : '-'
   return {
     keywords: exifObj?.Keywords || null,
     megapixels: exifObj?.Megapixels || '',
-    originalDate: formatDateTimeOriginal(exifObj?.DateTimeOriginal as string),
+    originalDate,
     tempPath,
   }
 }
