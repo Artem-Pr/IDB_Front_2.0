@@ -1,10 +1,13 @@
 /* eslint functional/immutable-data: 0 */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { reduce } from 'ramda'
 
 import { FolderTreeItem } from '../types'
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
+import { removeExtraSlash } from '../../app/common/utils'
+import { addFolderToFolderTree } from '../../app/common/folderTree'
 
 interface State {
   folderTree: FolderTreeItem[]
@@ -44,9 +47,18 @@ export const { setFolderTree, setCurrentFolderPath, setPathsArr, setKeywordsList
 export default folderSlice.reducer
 
 export const fetchPathsList = (): AppThunk => dispatch => {
+  const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
+    const cleanFolderPath = removeExtraSlash(path)
+    return addFolderToFolderTree(cleanFolderPath, folderTree)
+  }
+  const createFolderTree = (paths: string[]) => reduce(updateFolderTree, [], paths)
+
   api
     .getPathsList()
-    .then(({ data }) => data.length && dispatch(setPathsArr(data)))
+    .then(({ data }) => {
+      data.length && dispatch(setPathsArr(data))
+      data.length && dispatch(setFolderTree(createFolderTree(data)))
+    })
     .catch(error => errorMessage(error, 'Error when getting Paths: '))
 }
 
