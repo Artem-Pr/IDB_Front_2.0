@@ -116,7 +116,7 @@ export const fetchPhotosPreview = (file: any): AppThunk => dispatch => {
       }
       dispatch(addUploadingFile(uploadingFile))
     })
-    .catch(error => errorMessage(error, 'Ошибка при получении Превью: '))
+    .catch(error => errorMessage(error, 'Error when getting Preview: '))
 }
 
 export const fetchFullExif = (tempPathArr: string[]): AppThunk => async (dispatch, getState) => {
@@ -140,6 +140,6 @@ export const fetchFullExif = (tempPathArr: string[]): AppThunk => async (dispatc
       dispatch(updateUploadingFilesArr(uploadingFilesArr))
     })
     .catch(error => {
-      errorMessage(error, 'Ошибка при получении данных Exif: ')
+      errorMessage(error, 'Error when getting Exif: ')
     })
 }

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Button, Empty, Layout, Menu, Spin } from 'antd'
 import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
 import cn from 'classnames'
@@ -7,6 +8,8 @@ import styles from './index.module.scss'
 import { EditMenu, Folders } from '../index'
 import { UploadingObject } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
+import { folderElement } from '../../../redux/selectors'
+import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -18,6 +21,7 @@ interface Props {
   loading: boolean
   uniqKeywords: string[]
   sameKeywords: string[]
+  currentFolderPath: string
   updateOpenMenus: (value: string[]) => void
   clearSelectedList: () => void
   selectAll: () => void
@@ -33,6 +37,7 @@ const MainMenu = ({
   updateOpenMenus,
   updateKeywords,
   removeKeyword,
+  currentFolderPath,
   clearSelectedList,
   selectAll,
   loading,
@@ -40,7 +45,14 @@ const MainMenu = ({
   sameKeywords,
   removeFiles,
 }: Props) => {
+  const dispatch = useDispatch()
+  const { keywordsList: allKeywords } = useSelector(folderElement)
   const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
+
+  useEffect(() => {
+    dispatch(fetchKeywordsList())
+  }, [dispatch])
+
   const loadKeywords = () => {
     setIsKeywordsMenuLoading(true)
     updateKeywords().then(() => setIsKeywordsMenuLoading(false))
@@ -63,7 +75,7 @@ const MainMenu = ({
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ uploadingFiles, selectedList, sameKeywords, loading }} />
+          <EditMenu {...{ uploadingFiles, selectedList, sameKeywords, loading, allKeywords }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
           <EditMenu
@@ -73,6 +85,7 @@ const MainMenu = ({
               sameKeywords,
               selectAll,
               loading,
+              allKeywords,
               clearAll: clearSelectedList,
               isEditMany: true,
             }}
@@ -88,9 +101,12 @@ const MainMenu = ({
             {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
           </div>
         </SubMenu>
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-around">
           <Button disabled={!uploadingFiles.length} type="primary" onClick={removeFiles}>
             Remove files
+          </Button>
+          <Button disabled={!currentFolderPath || !uploadingFiles.length} type="primary" onClick={removeFiles}>
+            Upload files
           </Button>
         </div>
       </Menu>

@@ -3,7 +3,13 @@ import { Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { CustomAlert, DropZone, Gallery, MainMenu } from '../../Components'
-import { allSameKeywords, allUploadKeywords, upload, uploadPageGalleryPropsSelector } from '../../../redux/selectors'
+import {
+  allSameKeywords,
+  allUploadKeywords,
+  folderElement,
+  upload,
+  uploadPageGalleryPropsSelector,
+} from '../../../redux/selectors'
 import {
   addToSelectedList,
   clearSelectedList,
@@ -25,6 +31,7 @@ const UploadPage = () => {
   const uniqKeywords = useSelector(allUploadKeywords)
   const sameKeywords = useSelector(allSameKeywords)
   const props = useSelector(uploadPageGalleryPropsSelector)
+  const { currentFolderPath } = useSelector(folderElement)
   const { updateUploadingFiles } = useUpdateFields()
 
   const galleryProps: GalleryProps = {
@@ -42,6 +49,7 @@ const UploadPage = () => {
     uniqKeywords,
     sameKeywords,
     openKeys: openMenus,
+    currentFolderPath,
     clearSelectedList: () => dispatch(clearSelectedList()),
     selectAll: () => {
       dispatch(selectAll())

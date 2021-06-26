@@ -10,30 +10,14 @@ interface State {
   folderTree: FolderTreeItem[]
   currentFolderPath: string
   pathsArr: string[]
+  keywordsList: string[]
 }
 
 const initialState: State = {
-  folderTree: [
-    {
-      title: 'parent 0',
-      key: '0-0',
-      children: [
-        { title: 'leaf 0-0', key: '0-0-0' },
-        { title: 'leaf 0-1', key: '0-0-1' },
-        { title: 'parent 0-2', key: '0-0-2' },
-      ],
-    },
-    {
-      title: 'parent 1',
-      key: '0-1',
-      children: [
-        { title: 'leaf 1-0', key: '0-1-0' },
-        { title: 'leaf 1-1', key: '0-1-1' },
-      ],
-    },
-  ],
+  folderTree: [],
   currentFolderPath: '',
   pathsArr: [],
+  keywordsList: [],
 }
 
 const folderSlice = createSlice({
@@ -49,10 +33,13 @@ const folderSlice = createSlice({
     setPathsArr(state, action: PayloadAction<string[]>) {
       state.pathsArr = action.payload
     },
+    setKeywordsList(state, action: PayloadAction<string[]>) {
+      state.keywordsList = action.payload
+    },
   },
 })
 
-export const { setFolderTree, setCurrentFolderPath, setPathsArr } = folderSlice.actions
+export const { setFolderTree, setCurrentFolderPath, setPathsArr, setKeywordsList } = folderSlice.actions
 
 export default folderSlice.reducer
 
@@ -60,5 +47,12 @@ export const fetchPathsList = (): AppThunk => dispatch => {
   api
     .getPathsList()
     .then(({ data }) => data.length && dispatch(setPathsArr(data)))
-    .catch(error => errorMessage(error, 'Ошибка при получении Paths: '))
+    .catch(error => errorMessage(error, 'Error when getting Paths: '))
+}
+
+export const fetchKeywordsList = (): AppThunk => dispatch => {
+  api
+    .getKeywordsList()
+    .then(({ data }) => data.length && dispatch(setKeywordsList(data)))
+    .catch(error => errorMessage(error, 'Error when getting Keywords List: '))
 }

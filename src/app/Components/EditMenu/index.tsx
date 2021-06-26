@@ -15,6 +15,7 @@ interface Props {
   selectedList: number[]
   loading: boolean
   sameKeywords: string[]
+  allKeywords: string[]
   isEditMany?: boolean
   selectAll?: () => void
   clearAll?: () => void
@@ -52,7 +53,16 @@ const config = {
   content: 'Please enter another name',
 }
 
-const EditMenu = ({ uploadingFiles, selectedList, sameKeywords, isEditMany, selectAll, clearAll, loading }: Props) => {
+const EditMenu = ({
+  uploadingFiles,
+  selectedList,
+  sameKeywords,
+  isEditMany,
+  selectAll,
+  clearAll,
+  loading,
+  allKeywords,
+}: Props) => {
   const [form] = Form.useForm()
   const [modal, contextHolder] = Modal.useModal()
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
@@ -125,8 +135,8 @@ const EditMenu = ({ uploadingFiles, selectedList, sameKeywords, isEditMany, sele
         </Form.Item>
         <Form.Item className={styles.item} label="Keywords" name="keywords">
           <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
-            {sameKeywords &&
-              sameKeywords.map(keyword => (
+            {allKeywords &&
+              allKeywords.map(keyword => (
                 <Option key={keyword} value={keyword}>
                   {keyword}
                 </Option>
