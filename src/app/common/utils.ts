@@ -1,7 +1,8 @@
 import moment from 'moment'
 import { dec, inc, mapAccumRight, reject, union, without } from 'ramda'
+import { ResultStatusType } from 'antd/lib/result'
 
-import { ExifFilesList, NameParts, UpdatingFieldsWithPath, UploadingObject } from '../../redux/types'
+import { ExifFilesList, LoadingStatus, NameParts, UpdatingFieldsWithPath, UploadingObject } from '../../redux/types'
 
 export const dateFormat = 'YYYY.MM.DD'
 
@@ -97,4 +98,8 @@ export const updateFilesArrayItems = (
     const isUpdatedFile = filteredArrOfTempPaths.includes(item.tempPath)
     return isUpdatedFile ? getFilteredArrItem() : item
   })
+}
+
+export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | null => {
+  return status !== 'empty' && status !== 'loading' ? status : null
 }

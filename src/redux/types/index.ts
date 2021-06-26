@@ -1,4 +1,5 @@
 export type Keywords = string[] | null
+export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 
 export interface NameParts {
   shortName: string

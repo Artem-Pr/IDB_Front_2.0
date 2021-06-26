@@ -5,7 +5,7 @@ import { compose, curry, keys, reduce } from 'ramda'
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
-import { ExifFilesList, FullExifObj, UploadingObject } from '../types'
+import { ExifFilesList, FullExifObj, LoadingStatus, UploadingObject } from '../types'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../app/common/utils'
 
 interface FullExifPayload {
@@ -19,6 +19,7 @@ interface State {
   selectedList: number[]
   openMenus: string[]
   loading: boolean
+  uploadingStatus: LoadingStatus
 }
 
 const initialState: State = {
@@ -27,6 +28,7 @@ const initialState: State = {
   selectedList: [],
   openMenus: ['folders'],
   loading: false,
+  uploadingStatus: 'empty',
 }
 
 const uploadSlice = createSlice({
@@ -77,6 +79,9 @@ const uploadSlice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload
     },
+    setUploadingStatus(state, action: PayloadAction<LoadingStatus>) {
+      state.uploadingStatus = action.payload
+    },
   },
 })
 
@@ -93,9 +98,23 @@ export const {
   removeFromOpenMenus,
   clearUploadingState,
   setLoading,
+  setUploadingStatus,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer
+
+export const uploadFiles = (filesArr: UploadingObject[], folderPath: string): AppThunk => dispatch => {
+  api
+    .sendPhotos(filesArr, folderPath)
+    .then(({ data }) => {
+      data === 'Файлы загружены' && dispatch(setUploadingStatus('success'))
+      data === 'Ошибка при загрузке файлов' && dispatch(setUploadingStatus('error'))
+    })
+    .catch(error => {
+      dispatch(setUploadingStatus('error'))
+      console.error('Error when getting Preview: ' + error)
+    })
+}
 
 export const fetchPhotosPreview = (file: any): AppThunk => dispatch => {
   const { lastModified: changeDate, name, size, type } = file

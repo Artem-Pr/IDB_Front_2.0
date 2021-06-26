@@ -10,10 +10,9 @@ const instance = axios.create({
 })
 
 const mainApi = {
-  sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<any>> {
-    return instance.post('/upload', files, {
+  sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<string>> {
+    return instance.post(`/upload?path=${path}`, files, {
       headers: {
-        path: path,
         'Content-Type': 'application/json',
       },
     })

@@ -10,6 +10,7 @@ import { UploadingObject } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
 import { folderElement } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
+import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -68,6 +69,11 @@ const MainMenu = ({
     updateOpenMenus(Array.from(openKeysSet))
   }
 
+  const handleUploadClick = () => {
+    dispatch(uploadFiles(uploadingFiles, currentFolderPath))
+    removeFiles()
+  }
+
   return (
     <Sider theme="light" className={styles.sider} width="300">
       <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
@@ -105,7 +111,7 @@ const MainMenu = ({
           <Button disabled={!uploadingFiles.length} type="primary" onClick={removeFiles}>
             Remove files
           </Button>
-          <Button disabled={!currentFolderPath || !uploadingFiles.length} type="primary" onClick={removeFiles}>
+          <Button disabled={!currentFolderPath} type="primary" onClick={handleUploadClick}>
             Upload files
           </Button>
         </div>
