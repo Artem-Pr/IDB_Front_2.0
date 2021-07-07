@@ -1,8 +1,29 @@
 import moment from 'moment'
-import { dec, inc, mapAccumRight, reject, union, without } from 'ramda'
+import {
+  addIndex,
+  compose,
+  dec,
+  filter,
+  inc,
+  includes,
+  intersection,
+  map,
+  mapAccumRight,
+  reject,
+  union,
+  without,
+} from 'ramda'
 import { ResultStatusType } from 'antd/lib/result'
 
-import { ExifFilesList, LoadingStatus, NameParts, UpdatingFieldsWithPath, UploadingObject } from '../../redux/types'
+import {
+  DownloadingObject,
+  ExifFilesList,
+  LoadingStatus,
+  NameParts,
+  UpdatingFields,
+  UpdatingFieldsWithPath,
+  UploadingObject,
+} from '../../redux/types'
 
 export const dateFormat = 'YYYY.MM.DD'
 
@@ -77,7 +98,7 @@ export const renameShortNames = (namePartArr: NameParts[]): NameParts[] => {
   return renamedShortNames.map((item, i) => ({ shortName: item, ext: namePartArr[i].ext }))
 }
 
-export const removeIntersectingKeywords = (sameKeywords: string[], filesArr: UploadingObject[]): UploadingObject[] => {
+export const removeIntersectingKeywords = <T extends UpdatingFields>(sameKeywords: string[], filesArr: T[]): T[] => {
   return filesArr.map(item => {
     return { ...item, keywords: without(sameKeywords, item.keywords || []) }
   })
@@ -103,4 +124,22 @@ export const updateFilesArrayItems = (
 
 export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | null => {
   return status !== 'empty' && status !== 'loading' ? status : null
+}
+
+export const getSameKeywords = (
+  filesArr: UploadingObject[] | DownloadingObject[],
+  selectedList: number[]
+): string[] => {
+  const filterIndexed = addIndex(filter)
+  const getIntersectionArr = (keywordsArrays: string[][]) => {
+    return keywordsArrays.length
+      ? keywordsArrays.reduce((previousValue, currentValue): string[] => intersection(previousValue, currentValue))
+      : []
+  }
+
+  return compose<UploadingObject[], UploadingObject[], string[][], string[]>(
+    getIntersectionArr,
+    map((item: UploadingObject) => item.keywords || []),
+    filterIndexed((bom, index) => includes(index, selectedList))
+  )(filesArr)
 }

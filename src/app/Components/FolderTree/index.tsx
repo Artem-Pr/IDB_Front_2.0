@@ -16,7 +16,7 @@ const FolderTree = () => {
     dispatch(setCurrentFolderPath(getFolderPathFromTreeKey(keys[0].toString(), folderTree)))
   }
 
-  return <DirectoryTree defaultExpandAll onSelect={onSelect} treeData={folderTree} />
+  return <DirectoryTree onSelect={onSelect} treeData={folderTree} />
 }
 
 export default FolderTree

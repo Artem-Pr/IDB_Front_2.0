@@ -51,8 +51,8 @@ const MainMenu = ({
   const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
 
   useEffect(() => {
-    dispatch(fetchKeywordsList())
-  }, [dispatch])
+    !allKeywords.length && dispatch(fetchKeywordsList())
+  }, [allKeywords.length, dispatch])
 
   const loadKeywords = () => {
     setIsKeywordsMenuLoading(true)

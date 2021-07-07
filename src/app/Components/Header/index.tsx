@@ -1,20 +1,23 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { Layout, Menu, Typography } from 'antd'
 
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
 
 const Header = () => {
+  const { pathname } = useLocation()
+  const currentPageNumber = useMemo(() => (pathname === '/upload' ? '2' : '1'), [pathname])
+
   return (
     <HeaderLayout className="d-flex justify-content-between align-items-center">
       <Title>IDBase</Title>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[currentPageNumber]}>
         <Menu.Item key="1">
-          <Link to="/">Main page</Link>
+          <NavLink to="/">Main page</NavLink>
         </Menu.Item>
         <Menu.Item key="2">
-          <Link to="/upload">Upload</Link>
+          <NavLink to="/upload">Upload</NavLink>
         </Menu.Item>
       </Menu>
     </HeaderLayout>

@@ -44,6 +44,22 @@ export interface UploadingObject extends AxiosPreviews, UpdatingFields {
   type: string
 }
 
+export interface DownloadingObject extends UploadingObject {
+  _id: string
+  filePath: string
+  imageSize: string
+  originalPath: string
+}
+
+export interface DownloadingRawObject extends UpdatingFields, Omit<DownloadingObject, keyof UploadingObject> {
+  changeDate: number
+  mimetype: string
+  originalName: string
+  preview: string
+  size: number
+  tempPath: string
+}
+
 export interface UpdatedObject {
   id: string
   updatedFields: {

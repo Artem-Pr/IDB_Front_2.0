@@ -75,6 +75,7 @@ const uploadSlice = createSlice({
     clearUploadingState(state) {
       state.uploadingFiles = []
       state.selectedList = []
+      state.fullExifFilesList = {}
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload
