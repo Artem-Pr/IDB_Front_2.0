@@ -51,8 +51,8 @@ const mainApi = {
   },
 
   getPhotosByTags(
-    searchTags: Set<string>,
-    excludeTags: Set<string>,
+    searchTags: string[],
+    excludeTags: string[],
     currentPage: number,
     nPerPage: number
   ): Promise<AxiosResponse<any>> {

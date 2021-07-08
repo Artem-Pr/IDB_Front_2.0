@@ -35,15 +35,16 @@ const statusMessage: Record<LoadingStatus, string> = {
 
 const UploadPage = () => {
   const dispatch = useDispatch()
-  const { openMenus, uploadingFiles, selectedList, loading, uploadingStatus } = useSelector(upload)
+  const { loading, uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywords)
   const sameKeywords = useSelector(allSameKeywords)
-  const props = useSelector(uploadPageGalleryPropsSelector)
+  const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
+  const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)
   const { updateUploadingFiles } = useUpdateFields()
 
   const galleryProps: GalleryProps = {
-    ...props,
+    ...mainGalleryProps,
     removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
     addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
     clearSelectedList: () => dispatch(clearSelectedList()),
@@ -51,7 +52,7 @@ const UploadPage = () => {
   }
 
   const mainMenuProps = {
-    uploadingFiles,
+    uploadingFiles: imageArr,
     selectedList,
     loading,
     uniqKeywords,
@@ -66,7 +67,7 @@ const UploadPage = () => {
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
     updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
     removeKeyword: (keyword: string) => {
-      const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], uploadingFiles)
+      const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
       dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))
     },
     removeFiles: () => dispatch(clearUploadingState()),

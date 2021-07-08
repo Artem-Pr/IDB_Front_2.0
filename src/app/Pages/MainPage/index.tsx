@@ -26,15 +26,16 @@ const { Content } = Layout
 
 const MainPage = () => {
   const dispatch = useDispatch()
-  const { dOpenMenus, downloadingFiles, dSelectedList, loading } = useSelector(main)
+  const { loading } = useSelector(main)
   const uniqKeywords = useSelector(allDownloadingKeywords)
   const sameKeywords = useSelector(dAllSameKeywords)
-  const props = useSelector(dPageGalleryPropsSelector)
+  const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
+  const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)
   // const { updateUploadingFiles } = useUpdateFields()
 
   const galleryProps: GalleryProps = {
-    ...props,
+    ...mainGalleryProps,
     removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
     addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
     clearSelectedList: () => dispatch(clearDSelectedList()),
@@ -45,12 +46,12 @@ const MainPage = () => {
   }
 
   const mainMenuProps = {
-    uploadingFiles: downloadingFiles,
-    selectedList: dSelectedList,
+    uploadingFiles: imageArr,
+    selectedList: selectedList,
     loading,
     uniqKeywords,
     sameKeywords,
-    openKeys: dOpenMenus,
+    openKeys: openMenus,
     currentFolderPath,
     clearSelectedList: () => dispatch(clearDSelectedList()),
     selectAll: () => {
@@ -64,7 +65,7 @@ const MainPage = () => {
       // updateUploadingFiles('_', true)
     },
     removeKeyword: (keyword: string) => {
-      const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], downloadingFiles)
+      const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
       dispatch(setDownloadingFiles(filesArrWithoutKeyword))
     },
     removeFiles: () => dispatch(clearDownloadingState()),
@@ -75,8 +76,8 @@ const MainPage = () => {
       <MainMenu {...mainMenuProps} />
       <Layout>
         <Content>
-          <CustomAlert message="Edit mode" hide={!dOpenMenus.includes('edit')} type="info" />
-          <CustomAlert message="Template mode" hide={!dOpenMenus.includes('template')} type="success" />
+          <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
+          <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
           <Gallery {...galleryProps} />
         </Content>
       </Layout>
