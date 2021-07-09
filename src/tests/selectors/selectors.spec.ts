@@ -4,7 +4,12 @@ import { selectAll, updateUploadingFilesArr } from '../../redux/reducers/uploadS
 import store from '../../redux/store/store'
 import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../common/mock'
 import { RootState } from '../../redux/store/rootReducer'
-import { allSameKeywords, allUploadKeywords, pathsArr, pathsArrOptionsSelector } from '../../redux/selectors'
+import {
+  allSameKeywordsSelector,
+  allUploadKeywordsSelector,
+  pathsArr,
+  pathsArrOptionsSelector,
+} from '../../redux/selectors'
 import { copyByJSON } from '../../app/common/utils'
 import { UploadingObject } from '../../redux/types'
 
@@ -35,7 +40,7 @@ describe('selectors: ', () => {
     const uploadingFiles: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
     await store.dispatch(updateUploadingFilesArr(uploadingFiles))
     const initialState = store.getState()
-    const allKeywords = allUploadKeywords(initialState)
+    const allKeywords = allUploadKeywordsSelector(initialState)
     expect(allKeywords).toHaveLength(5)
     expect(allKeywords.includes('Озеро')).toBeTruthy()
     expect(allKeywords.includes('Эстония')).toBeTruthy()
@@ -48,7 +53,7 @@ describe('selectors: ', () => {
     await store.dispatch(updateUploadingFilesArr(uploadingFiles))
     await store.dispatch(selectAll())
     const initialState = store.getState()
-    const allKeywords = allSameKeywords(initialState)
+    const allKeywords = allSameKeywordsSelector(initialState)
     expect(allKeywords).toHaveLength(1)
     expect(allKeywords.includes('Эстония')).toBeTruthy()
   })

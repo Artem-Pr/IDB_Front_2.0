@@ -62,7 +62,10 @@ const uploadSlice = createSlice({
     selectAllD(state) {
       state.dSelectedList = state.downloadingFiles.map((_, i) => i)
     },
-    setGalleryPagination(state, action: PayloadAction<Record<keyof GalleryPagination, number>>) {
+    setGalleryPagination(
+      state,
+      action: PayloadAction<{ currentPage?: number; nPerPage?: number; resultsCount?: number; totalPages?: number }>
+    ) {
       state.galleryPagination = { ...current(state).galleryPagination, ...action.payload }
     },
     clearDownloadingState(state) {

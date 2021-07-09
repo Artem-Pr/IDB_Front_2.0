@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { CustomAlert, DropZone, Gallery, MainMenu } from '../../Components'
 import {
-  allSameKeywords,
-  allUploadKeywords,
+  allSameKeywordsSelector,
+  allUploadKeywordsSelector,
   folderElement,
   upload,
   uploadPageGalleryPropsSelector,
@@ -36,8 +36,8 @@ const statusMessage: Record<LoadingStatus, string> = {
 const UploadPage = () => {
   const dispatch = useDispatch()
   const { loading, uploadingStatus } = useSelector(upload)
-  const uniqKeywords = useSelector(allUploadKeywords)
-  const sameKeywords = useSelector(allSameKeywords)
+  const uniqKeywords = useSelector(allUploadKeywordsSelector)
+  const sameKeywords = useSelector(allSameKeywordsSelector)
   const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)

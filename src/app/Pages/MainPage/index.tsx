@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
-import { Layout, Pagination } from 'antd'
+import { Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
 
 import { CustomAlert, Gallery, MainMenu } from '../../Components'
 import {
-  allDownloadingKeywords,
-  dAllSameKeywords,
+  allDownloadingKeywordsSelector,
+  dAllSameKeywordsSelector,
   dPageGalleryPropsSelector,
   folderElement,
   main,
@@ -23,14 +23,15 @@ import {
   setDownloadingFiles,
   updateDOpenMenus,
 } from '../../../redux/reducers/mainPageSlice-reducer'
+import PaginationMenu from '../../Components/PaginationMenu'
 
 const { Content } = Layout
 
 const MainPage = () => {
   const dispatch = useDispatch()
   const { loading } = useSelector(main)
-  const uniqKeywords = useSelector(allDownloadingKeywords)
-  const sameKeywords = useSelector(dAllSameKeywords)
+  const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
+  const sameKeywords = useSelector(dAllSameKeywordsSelector)
   const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)
@@ -84,8 +85,9 @@ const MainPage = () => {
         <Content>
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
-          <Pagination />
+          <PaginationMenu />
           <Gallery {...galleryProps} />
+          <PaginationMenu />
         </Content>
       </Layout>
     </Layout>

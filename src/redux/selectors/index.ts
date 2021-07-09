@@ -14,6 +14,7 @@ export const selectedList = (state: RootState) => state.uploadReducer.selectedLi
 export const main = (state: RootState) => state.mainPageReducer
 export const downloadingFiles = (state: RootState) => state.mainPageReducer.downloadingFiles
 export const dSelectedList = (state: RootState) => state.mainPageReducer.dSelectedList
+export const pagination = (state: RootState) => state.mainPageReducer.galleryPagination
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
 
@@ -39,7 +40,7 @@ export const dPageGalleryPropsSelector = createSelector(
 )
 
 //Todo: get rid of duplicated code
-export const allUploadKeywords = createSelector(uploadingFiles, uploadingFiles => {
+export const allUploadKeywordsSelector = createSelector(uploadingFiles, uploadingFiles => {
   const getUniqArr = (keywordsArrays: string[][]) => reduce<string[], string[]>(union, [], keywordsArrays)
   return compose(
     getUniqArr,
@@ -47,7 +48,7 @@ export const allUploadKeywords = createSelector(uploadingFiles, uploadingFiles =
   )(uploadingFiles)
 })
 
-export const allDownloadingKeywords = createSelector(downloadingFiles, downloadingFiles => {
+export const allDownloadingKeywordsSelector = createSelector(downloadingFiles, downloadingFiles => {
   const getUniqArr = (keywordsArrays: string[][]) => reduce<string[], string[]>(union, [], keywordsArrays)
   return compose(
     getUniqArr,
@@ -55,10 +56,14 @@ export const allDownloadingKeywords = createSelector(downloadingFiles, downloadi
   )(downloadingFiles)
 })
 
-export const allSameKeywords = createSelector(uploadingFiles, selectedList, (uploadingFiles, selectedList) => {
+export const allSameKeywordsSelector = createSelector(uploadingFiles, selectedList, (uploadingFiles, selectedList) => {
   return getSameKeywords(uploadingFiles, selectedList)
 })
 
-export const dAllSameKeywords = createSelector(downloadingFiles, dSelectedList, (downloadingFiles, dSelectedList) => {
-  return getSameKeywords(downloadingFiles, dSelectedList)
-})
+export const dAllSameKeywordsSelector = createSelector(
+  downloadingFiles,
+  dSelectedList,
+  (downloadingFiles, dSelectedList) => {
+    return getSameKeywords(downloadingFiles, dSelectedList)
+  }
+)
