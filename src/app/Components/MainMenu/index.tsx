@@ -11,12 +11,13 @@ import KeywordsMenu from '../KeywordsMenu'
 import { folderElement } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
+import { useCurrentPage } from '../../common/hooks'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
 
 interface Props {
-  uploadingFiles: UploadingObject[]
+  filesArr: UploadingObject[]
   selectedList: number[]
   openKeys: string[]
   loading: boolean
@@ -32,7 +33,7 @@ interface Props {
 }
 
 const MainMenu = ({
-  uploadingFiles,
+  filesArr,
   selectedList,
   openKeys,
   updateOpenMenus,
@@ -49,6 +50,7 @@ const MainMenu = ({
   const dispatch = useDispatch()
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
+  const { isUploadingPage } = useCurrentPage()
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())
@@ -56,7 +58,9 @@ const MainMenu = ({
 
   const loadKeywords = () => {
     setIsKeywordsMenuLoading(true)
-    updateKeywords().then(() => setIsKeywordsMenuLoading(false))
+    isUploadingPage && filesArr.length
+      ? updateKeywords().then(() => setIsKeywordsMenuLoading(false))
+      : setIsKeywordsMenuLoading(false)
   }
 
   const handleTitleClick = ({ key }: { key: string }) => {
@@ -70,7 +74,7 @@ const MainMenu = ({
   }
 
   const handleUploadClick = () => {
-    dispatch(uploadFiles(uploadingFiles, currentFolderPath))
+    dispatch(uploadFiles(filesArr, currentFolderPath))
     removeFiles()
     updateOpenMenus(['folders'])
   }
@@ -82,12 +86,12 @@ const MainMenu = ({
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ uploadingFiles, selectedList, sameKeywords, loading, allKeywords }} />
+          <EditMenu {...{ filesArr, selectedList, sameKeywords, loading, allKeywords }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
           <EditMenu
             {...{
-              uploadingFiles,
+              filesArr,
               selectedList,
               sameKeywords,
               selectAll,
@@ -109,10 +113,10 @@ const MainMenu = ({
           </div>
         </SubMenu>
         <div className="d-flex justify-content-around">
-          <Button disabled={!uploadingFiles.length} type="primary" onClick={removeFiles}>
+          <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
             Remove files
           </Button>
-          <Button disabled={!currentFolderPath || !uploadingFiles.length} type="primary" onClick={handleUploadClick}>
+          <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
             Upload files
           </Button>
         </div>

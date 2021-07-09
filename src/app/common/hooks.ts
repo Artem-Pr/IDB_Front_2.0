@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { compose, curry, isEmpty, omit } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 import { upload } from '../../redux/selectors'
 import {
@@ -11,20 +12,21 @@ import {
   updateFilesArrayItems,
 } from './utils'
 import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
-import { UploadingObject } from '../../redux/types'
+import { DownloadingObject, UploadingObject } from '../../redux/types'
 
-export const usePrevious = (value: any) => {
-  const ref = useRef()
-  useEffect(() => {
-    // eslint-disable-next-line functional/immutable-data
-    ref.current = value
-  })
-  return ref.current || value
+export const useCurrentPage = () => {
+  const { pathname } = useLocation()
+  const isUploadingPage = pathname === '/upload'
+  return {
+    isUploadingPage,
+    isMainPage: !isUploadingPage,
+    currentPageNumber: useMemo(() => (isUploadingPage ? '2' : '1'), [isUploadingPage]),
+  }
 }
 
-export const useUpdateFields = () => {
+export const useUpdateFields = (filesArr: Array<UploadingObject | DownloadingObject>) => {
   const dispatch = useDispatch<any>()
-  const { fullExifFilesList, uploadingFiles } = useSelector(upload)
+  const { fullExifFilesList } = useSelector(upload)
 
   const isExifExist = (tempPath: string): boolean => !!fullExifFilesList[tempPath]
 
@@ -33,7 +35,7 @@ export const useUpdateFields = () => {
   }
 
   const updateAll = (): Promise<boolean> | false => {
-    const tempPathArr = uploadingFiles.map(({ tempPath }) => tempPath).filter(tempPath => !isExifExist(tempPath))
+    const tempPathArr = filesArr.map(({ tempPath }) => tempPath).filter(tempPath => !isExifExist(tempPath))
     return !!tempPathArr.length && dispatch(fetchFullExif(tempPathArr))
   }
 

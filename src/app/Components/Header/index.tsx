@@ -1,13 +1,14 @@
-import React, { useMemo } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import React from 'react'
+import { NavLink } from 'react-router-dom'
 import { Layout, Menu, Typography } from 'antd'
+
+import { useCurrentPage } from '../../common/hooks'
 
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
 
 const Header = () => {
-  const { pathname } = useLocation()
-  const currentPageNumber = useMemo(() => (pathname === '/upload' ? '2' : '1'), [pathname])
+  const { currentPageNumber } = useCurrentPage()
 
   return (
     <HeaderLayout className="d-flex justify-content-between align-items-center">

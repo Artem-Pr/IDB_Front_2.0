@@ -12,7 +12,7 @@ import {
   main,
 } from '../../../redux/selectors'
 import { addToSelectedList, removeFromSelectedList } from '../../../redux/reducers/uploadSlice-reducer'
-// import { useUpdateFields } from '../../common/hooks'
+import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { removeIntersectingKeywords } from '../../common/utils'
 import {
@@ -35,7 +35,7 @@ const MainPage = () => {
   const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)
-  // const { updateUploadingFiles } = useUpdateFields()
+  const { updateUploadingFiles } = useUpdateFields(imageArr)
 
   useEffect(() => {
     isEmpty(imageArr) && dispatch(fetchPhotos())
@@ -47,13 +47,12 @@ const MainPage = () => {
     addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
     clearSelectedList: () => dispatch(clearDSelectedList()),
     updateFiles: (tempPath: string) => {
-      console.log('updateUploadingFiles', tempPath)
-      // updateUploadingFiles(tempPath)
+      updateUploadingFiles(tempPath)
     },
   }
 
   const mainMenuProps = {
-    uploadingFiles: imageArr,
+    filesArr: imageArr,
     selectedList: selectedList,
     loading,
     uniqKeywords,
@@ -63,14 +62,10 @@ const MainPage = () => {
     clearSelectedList: () => dispatch(clearDSelectedList()),
     selectAll: () => {
       dispatch(selectAllD())
-      // updateUploadingFiles('_', true)
+      updateUploadingFiles('_', true)
     },
     updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
-    updateKeywords: (): Promise<any> => {
-      console.log('updateUploadingFiles')
-      return Promise.resolve(true)
-      // updateUploadingFiles('_', true)
-    },
+    updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
     removeKeyword: (keyword: string) => {
       const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
       dispatch(setDownloadingFiles(filesArrWithoutKeyword))

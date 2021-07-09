@@ -41,7 +41,7 @@ const UploadPage = () => {
   const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)
-  const { updateUploadingFiles } = useUpdateFields()
+  const { updateUploadingFiles } = useUpdateFields(imageArr)
 
   const galleryProps: GalleryProps = {
     ...mainGalleryProps,
@@ -52,7 +52,7 @@ const UploadPage = () => {
   }
 
   const mainMenuProps = {
-    uploadingFiles: imageArr,
+    filesArr: imageArr,
     selectedList,
     loading,
     uniqKeywords,

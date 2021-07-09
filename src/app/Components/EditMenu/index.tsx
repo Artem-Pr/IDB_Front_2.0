@@ -11,7 +11,7 @@ import { useEditFilesArr } from '../../common/hooks'
 const { Option } = Select
 
 interface Props {
-  uploadingFiles: UploadingObject[]
+  filesArr: UploadingObject[]
   selectedList: number[]
   loading: boolean
   sameKeywords: string[]
@@ -54,7 +54,7 @@ const config = {
 }
 
 const EditMenu = ({
-  uploadingFiles,
+  filesArr,
   selectedList,
   sameKeywords,
   isEditMany,
@@ -66,18 +66,18 @@ const EditMenu = ({
   const [form] = Form.useForm()
   const [modal, contextHolder] = Modal.useModal()
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
-  const editUploadingFiles = useEditFilesArr(selectedList, uploadingFiles, sameKeywords)
+  const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords)
   const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
-    () => (!selectedList.length ? initialFileObject : uploadingFiles[getLastItem(selectedList)]),
-    [uploadingFiles, selectedList]
+    () => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]),
+    [filesArr, selectedList]
   )
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
   const { shortName, ext } = useMemo(() => getNameParts(name), [name])
 
   useEffect(() => {
     !selectedList.length && setIsSelectAllBtn(true)
-    selectedList.length === uploadingFiles.length && setIsSelectAllBtn(false)
-  }, [selectedList.length, uploadingFiles.length])
+    selectedList.length === filesArr.length && setIsSelectAllBtn(false)
+  }, [selectedList.length, filesArr.length])
 
   useEffect(() => {
     form.setFieldsValue({
@@ -91,7 +91,7 @@ const EditMenu = ({
     const isDuplicateName = curry((filesArr: UploadingObject[], currentName: string) => {
       const fileArrNames = filesArr.map(({ name }) => name)
       return fileArrNames.includes(currentName)
-    })(uploadingFiles)
+    })(filesArr)
 
     const updateValues = () => {
       const preparedValue = {
