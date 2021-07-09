@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
-import { Modal } from 'antd'
+import { Modal, Spin } from 'antd'
 
 import styles from './index.module.scss'
 import { ExifFilesList, UploadingObject } from '../../../redux/types'
@@ -15,6 +15,7 @@ export interface GalleryProps {
   addToSelectedList: (index: number) => void
   clearSelectedList: () => void
   updateFiles: (tempPath: string) => void
+  isLoading?: boolean
 }
 
 const Gallery = ({
@@ -26,6 +27,7 @@ const Gallery = ({
   removeFromSelectedList,
   clearSelectedList,
   updateFiles,
+  isLoading,
 }: GalleryProps) => {
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -57,53 +59,55 @@ const Gallery = ({
   }
 
   return (
-    <div className={cn(styles.wrapper, 'd-grid')}>
-      {imageArr.map(({ preview, name, tempPath }, i) => (
-        <div
-          key={preview}
-          className={cn(
-            styles.item,
-            {
-              active: selectedList.includes(i),
-              pointer: isEditMenu || isTemplateMenu,
-            },
-            'position-relative'
-          )}
-          onClick={() => handleImageClick(i, tempPath)}
-        >
+    <Spin className={styles.spinner} spinning={isLoading} size="large">
+      <div className={cn(styles.wrapper, 'd-grid')}>
+        {imageArr.map(({ preview, name, tempPath }, i) => (
           <div
+            key={preview}
             className={cn(
-              styles.imgInfo,
-              `${isEditMenu || isTemplateMenu ? 'd-none' : 'd-flex'} `,
-              'position-absolute align-items-center'
+              styles.item,
+              {
+                active: selectedList.includes(i),
+                pointer: isEditMenu || isTemplateMenu,
+              },
+              'position-relative'
             )}
+            onClick={() => handleImageClick(i, tempPath)}
           >
-            <h3 style={{ width: '70%' }} className={styles.imgName}>
-              {name}
-            </h3>
-            <h3
-              style={{ marginLeft: 'auto' }}
-              className={cn(styles.imgName, 'pointer')}
-              onClick={() => getExif(tempPath)}
+            <div
+              className={cn(
+                styles.imgInfo,
+                `${isEditMenu || isTemplateMenu ? 'd-none' : 'd-flex'} `,
+                'position-absolute align-items-center'
+              )}
             >
-              Exif
-            </h3>
-          </div>
-          <img className={styles.img} src={preview} alt="image-preview" />
-        </div>
-      ))}
-      <Modal title="Exif list" footer={null} visible={showModal} onCancel={() => setShowModal(false)}>
-        {compose(
-          map((item: string) => (
-            <div key={item}>
-              <span className="bold">{item + ':'}</span>
-              <span style={{ marginLeft: 5 }}>{exif[item]}</span>
+              <h3 style={{ width: '70%' }} className={styles.imgName}>
+                {name}
+              </h3>
+              <h3
+                style={{ marginLeft: 'auto' }}
+                className={cn(styles.imgName, 'pointer')}
+                onClick={() => getExif(tempPath)}
+              >
+                Exif
+              </h3>
             </div>
-          )),
-          keys
-        )(exif)}
-      </Modal>
-    </div>
+            <img className={styles.img} src={preview} alt="image-preview" />
+          </div>
+        ))}
+        <Modal title="Exif list" footer={null} visible={showModal} onCancel={() => setShowModal(false)}>
+          {compose(
+            map((item: string) => (
+              <div key={item}>
+                <span className="bold">{item + ':'}</span>
+                <span style={{ marginLeft: 5 }}>{exif[item]}</span>
+              </div>
+            )),
+            keys
+          )(exif)}
+        </Modal>
+      </div>
+    </Spin>
   )
 }
 

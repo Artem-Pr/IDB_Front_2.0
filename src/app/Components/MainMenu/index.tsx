@@ -20,7 +20,7 @@ interface Props {
   filesArr: UploadingObject[]
   selectedList: number[]
   openKeys: string[]
-  loading: boolean
+  isExifLoading: boolean
   uniqKeywords: string[]
   sameKeywords: string[]
   currentFolderPath: string
@@ -42,7 +42,7 @@ const MainMenu = ({
   currentFolderPath,
   clearSelectedList,
   selectAll,
-  loading,
+  isExifLoading,
   uniqKeywords,
   sameKeywords,
   removeFiles,
@@ -86,7 +86,7 @@ const MainMenu = ({
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ filesArr, selectedList, sameKeywords, loading, allKeywords }} />
+          <EditMenu {...{ filesArr, selectedList, sameKeywords, isExifLoading, allKeywords }} />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
           <EditMenu
@@ -95,7 +95,7 @@ const MainMenu = ({
               selectedList,
               sameKeywords,
               selectAll,
-              loading,
+              isExifLoading,
               allKeywords,
               clearAll: clearSelectedList,
               isEditMany: true,

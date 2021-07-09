@@ -29,7 +29,7 @@ const { Content } = Layout
 
 const MainPage = () => {
   const dispatch = useDispatch()
-  const { loading } = useSelector(main)
+  const { isExifLoading, isGalleryLoading } = useSelector(main)
   const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
   const sameKeywords = useSelector(dAllSameKeywordsSelector)
   const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
@@ -46,15 +46,14 @@ const MainPage = () => {
     removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
     addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
     clearSelectedList: () => dispatch(clearDSelectedList()),
-    updateFiles: (tempPath: string) => {
-      updateUploadingFiles(tempPath)
-    },
+    updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
+    isLoading: isGalleryLoading,
   }
 
   const mainMenuProps = {
     filesArr: imageArr,
     selectedList: selectedList,
-    loading,
+    isExifLoading,
     uniqKeywords,
     sameKeywords,
     openKeys: openMenus,

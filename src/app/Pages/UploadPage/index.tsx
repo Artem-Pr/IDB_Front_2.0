@@ -35,7 +35,7 @@ const statusMessage: Record<LoadingStatus, string> = {
 
 const UploadPage = () => {
   const dispatch = useDispatch()
-  const { loading, uploadingStatus } = useSelector(upload)
+  const { isExifLoading, uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywordsSelector)
   const sameKeywords = useSelector(allSameKeywordsSelector)
   const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
@@ -49,12 +49,13 @@ const UploadPage = () => {
     addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
     clearSelectedList: () => dispatch(clearSelectedList()),
     updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
+    isLoading: false,
   }
 
   const mainMenuProps = {
     filesArr: imageArr,
     selectedList,
-    loading,
+    isExifLoading,
     uniqKeywords,
     sameKeywords,
     openKeys: openMenus,

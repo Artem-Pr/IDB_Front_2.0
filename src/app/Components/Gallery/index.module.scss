@@ -1,5 +1,9 @@
 @import "src/styles/vars";
 
+.spinner {
+  max-height: fit-content !important;
+}
+
 .wrapper {
   gap: 10px;
   grid-template-columns: repeat(auto-fill,minmax(150px, 1fr));

@@ -13,7 +13,7 @@ const { Option } = Select
 interface Props {
   filesArr: UploadingObject[]
   selectedList: number[]
-  loading: boolean
+  isExifLoading: boolean
   sameKeywords: string[]
   allKeywords: string[]
   isEditMany?: boolean
@@ -60,7 +60,7 @@ const EditMenu = ({
   isEditMany,
   selectAll,
   clearAll,
-  loading,
+  isExifLoading,
   allKeywords,
 }: Props) => {
   const [form] = Form.useForm()
@@ -150,7 +150,7 @@ const EditMenu = ({
                 Edit
               </Button>
               {isEditMany ? (
-                <Button onClick={handleSelectAll} type="primary" loading={loading}>
+                <Button onClick={handleSelectAll} type="primary" loading={isExifLoading}>
                   {isSelectAllBtn ? 'Select all' : 'Unselect all'}
                 </Button>
               ) : (

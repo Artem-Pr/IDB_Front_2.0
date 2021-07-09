@@ -18,7 +18,7 @@ interface State {
   fullExifFilesList: ExifFilesList
   selectedList: number[]
   openMenus: string[]
-  loading: boolean
+  isExifLoading: boolean
   uploadingStatus: LoadingStatus
 }
 
@@ -27,7 +27,7 @@ const initialState: State = {
   fullExifFilesList: {},
   selectedList: [],
   openMenus: ['folders'],
-  loading: false,
+  isExifLoading: false,
   uploadingStatus: 'empty',
 }
 
@@ -78,7 +78,7 @@ const uploadSlice = createSlice({
       state.fullExifFilesList = {}
     },
     setLoading(state, action: PayloadAction<boolean>) {
-      state.loading = action.payload
+      state.isExifLoading = action.payload
     },
     setUploadingStatus(state, action: PayloadAction<LoadingStatus>) {
       state.uploadingStatus = action.payload

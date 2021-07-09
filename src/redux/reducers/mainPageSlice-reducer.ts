@@ -13,10 +13,11 @@ interface State {
   downloadingFiles: DownloadingObject[]
   dSelectedList: number[]
   dOpenMenus: string[]
-  loading: boolean
   searchTags: string[]
   excludeTags: string[]
   galleryPagination: GalleryPagination
+  isExifLoading: boolean
+  isGalleryLoading: boolean
 }
 
 const initialState: State = {
@@ -24,7 +25,6 @@ const initialState: State = {
   downloadingFiles: [],
   dSelectedList: [],
   dOpenMenus: [],
-  loading: false,
   searchTags: [],
   excludeTags: [],
   galleryPagination: {
@@ -33,6 +33,8 @@ const initialState: State = {
     resultsCount: 0,
     totalPages: 1,
   },
+  isExifLoading: false,
+  isGalleryLoading: false,
 }
 
 const uploadSlice = createSlice({
@@ -53,9 +55,6 @@ const uploadSlice = createSlice({
     updateDOpenMenus(state, action: PayloadAction<string[]>) {
       state.dOpenMenus = action.payload
     },
-    setDLoading(state, action: PayloadAction<boolean>) {
-      state.loading = action.payload
-    },
     clearDSelectedList(state) {
       state.dSelectedList = []
     },
@@ -72,6 +71,12 @@ const uploadSlice = createSlice({
       state.downloadingFiles = []
       state.dSelectedList = []
     },
+    setDLoading(state, action: PayloadAction<boolean>) {
+      state.isExifLoading = action.payload
+    },
+    setDGalleryLoading(state, action: PayloadAction<boolean>) {
+      state.isGalleryLoading = action.payload
+    },
   },
 })
 
@@ -80,11 +85,12 @@ export const {
   setRawFiles,
   setDownloadingFiles,
   updateDOpenMenus,
-  setDLoading,
   clearDSelectedList,
   selectAllD,
   clearDownloadingState,
   setGalleryPagination,
+  setDLoading,
+  setDGalleryLoading,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer
@@ -95,6 +101,7 @@ export const fetchPhotos = (page?: number): AppThunk => (dispatch, getState) => 
   const { currentPage, nPerPage } = currentState.galleryPagination
   const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
   const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
+  dispatch(setDGalleryLoading(true))
   api
     .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags)
     .then(({ data }) => {
@@ -105,4 +112,5 @@ export const fetchPhotos = (page?: number): AppThunk => (dispatch, getState) => 
       dispatch(setGalleryPagination(data.searchPagination))
     })
     .catch(error => errorMessage(error, 'downloading files error: '))
+    .finally(() => dispatch(setDGalleryLoading(false)))
 }
