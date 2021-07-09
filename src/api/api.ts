@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { AxiosPreviews, ExifFilesList, UpdatedObject, UploadingObject } from '../redux/types'
+import { AxiosPreviews, ExifFilesList, FetchingGalleryContent, UpdatedObject, UploadingObject } from '../redux/types'
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
@@ -51,18 +51,13 @@ const mainApi = {
   },
 
   getPhotosByTags(
-    searchTags: string[],
-    excludeTags: string[],
-    currentPage: number,
-    nPerPage: number
-  ): Promise<AxiosResponse<any>> {
+    page: number,
+    perPage: number,
+    searchTags: string[] | undefined,
+    excludeTags: string[] | undefined
+  ): Promise<AxiosResponse<FetchingGalleryContent>> {
     return instance.get('/filtered-photos', {
-      params: {
-        searchTags: Array.from(searchTags),
-        excludeTags: Array.from(excludeTags),
-        page: currentPage,
-        perPage: nPerPage,
-      },
+      params: { page, perPage, searchTags, excludeTags },
     })
   },
 }

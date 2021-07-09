@@ -9,6 +9,7 @@ import {
   intersection,
   map,
   mapAccumRight,
+  omit,
   reject,
   union,
   without,
@@ -17,6 +18,7 @@ import { ResultStatusType } from 'antd/lib/result'
 
 import {
   DownloadingObject,
+  DownloadingRawObject,
   ExifFilesList,
   LoadingStatus,
   NameParts,
@@ -142,4 +144,13 @@ export const getSameKeywords = (
     map((item: UploadingObject) => item.keywords || []),
     filterIndexed((bom, index) => includes(index, selectedList))
   )(filesArr)
+}
+
+export const convertDownLoadingRawObj = (downLoadingRawObj: DownloadingRawObject): DownloadingObject => {
+  const { originalName, mimetype } = downLoadingRawObj
+  return { ...omit(['mimetype', 'originalName'], downLoadingRawObj), name: originalName, type: mimetype }
+}
+
+export const convertDownloadingRawObjectArr = (rawArr: DownloadingRawObject[]): DownloadingObject[] => {
+  return rawArr.map(item => convertDownLoadingRawObj(item))
 }

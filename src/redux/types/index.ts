@@ -38,7 +38,7 @@ export interface FolderTreeItem {
 }
 
 export interface UploadingObject extends AxiosPreviews, UpdatingFields {
-  changeDate: string
+  changeDate: number
   name: string
   size: number
   type: string
@@ -51,13 +51,14 @@ export interface DownloadingObject extends UploadingObject {
   originalPath: string
 }
 
-export interface DownloadingRawObject extends UpdatingFields, Omit<DownloadingObject, keyof UploadingObject> {
+export interface DownloadingRawObject
+  extends UpdatingFields,
+    AxiosPreviews,
+    Omit<DownloadingObject, keyof UploadingObject> {
   changeDate: number
   mimetype: string
   originalName: string
-  preview: string
   size: number
-  tempPath: string
 }
 
 export interface UpdatedObject {
@@ -68,4 +69,16 @@ export interface UpdatedObject {
     originalDate?: string
     keywords?: string[]
   }
+}
+
+export interface GalleryPagination {
+  currentPage: number
+  nPerPage: number
+  resultsCount: number
+  totalPages: number
+}
+
+export interface FetchingGalleryContent {
+  files: DownloadingRawObject[]
+  searchPagination: GalleryPagination
 }

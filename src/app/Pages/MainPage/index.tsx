@@ -1,6 +1,7 @@
-import React from 'react'
-import { Layout } from 'antd'
+import React, { useEffect } from 'react'
+import { Layout, Pagination } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
+import { isEmpty } from 'ramda'
 
 import { CustomAlert, Gallery, MainMenu } from '../../Components'
 import {
@@ -17,6 +18,7 @@ import { removeIntersectingKeywords } from '../../common/utils'
 import {
   clearDownloadingState,
   clearDSelectedList,
+  fetchPhotos,
   selectAllD,
   setDownloadingFiles,
   updateDOpenMenus,
@@ -33,6 +35,10 @@ const MainPage = () => {
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(folderElement)
   // const { updateUploadingFiles } = useUpdateFields()
+
+  useEffect(() => {
+    isEmpty(imageArr) && dispatch(fetchPhotos())
+  }, [dispatch, imageArr])
 
   const galleryProps: GalleryProps = {
     ...mainGalleryProps,
@@ -78,6 +84,7 @@ const MainPage = () => {
         <Content>
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
+          <Pagination />
           <Gallery {...galleryProps} />
         </Content>
       </Layout>

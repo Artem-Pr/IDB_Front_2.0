@@ -94,7 +94,7 @@ export const folderTreeForTest4 = [
 
 export const uploadingFilesMock: UploadingObject[] = [
   {
-    changeDate: '24.06.2019',
+    changeDate: 1601655242277,
     keywords: [],
     megapixels: 8,
     name: '123.jpg',
@@ -105,7 +105,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     type: 'image/jpeg',
   },
   {
-    changeDate: '01.01.2021',
+    changeDate: 1601655242277,
     keywords: null,
     megapixels: '',
     name: 'IMG_20190624_110245.jpg',
@@ -116,7 +116,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     type: 'image/jpeg',
   },
   {
-    changeDate: '12.12.2017',
+    changeDate: 1601655242277,
     keywords: null,
     megapixels: 12,
     name: 'IMG_20190624_110312.jpg',
