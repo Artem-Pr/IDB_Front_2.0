@@ -2,7 +2,7 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { isEmpty } from 'ramda'
 
-import { DownloadingObject, DownloadingRawObject, GalleryPagination } from '../types'
+import { DownloadingObject, DownloadingRawObject, GalleryPagination, UpdatedObject } from '../types'
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
@@ -52,6 +52,11 @@ const uploadSlice = createSlice({
       set.add(action.payload)
       state.dSelectedList = Array.from(set)
     },
+    removeFromDSelectedList(state, action: PayloadAction<number>) {
+      const set = new Set(state.dSelectedList)
+      set.delete(action.payload)
+      state.dSelectedList = Array.from(set)
+    },
     updateDOpenMenus(state, action: PayloadAction<string[]>) {
       state.dOpenMenus = action.payload
     },
@@ -82,6 +87,7 @@ const uploadSlice = createSlice({
 
 export const {
   addToDSelectedList,
+  removeFromDSelectedList,
   setRawFiles,
   setDownloadingFiles,
   updateDOpenMenus,
@@ -107,10 +113,25 @@ export const fetchPhotos = (page?: number): AppThunk => (dispatch, getState) => 
     .then(({ data }) => {
       const rawFiles: DownloadingRawObject[] = data?.files || []
       const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
+      dispatch(clearDSelectedList())
       dispatch(setRawFiles(rawFiles))
       dispatch(setDownloadingFiles(files))
       dispatch(setGalleryPagination(data.searchPagination))
     })
     .catch(error => errorMessage(error, 'downloading files error: '))
+    .finally(() => dispatch(setDGalleryLoading(false)))
+}
+
+export const updatePhotos = (updatedObjArr: UpdatedObject[]): AppThunk => dispatch => {
+  dispatch(setDGalleryLoading(true))
+  api
+    .updatePhotos(updatedObjArr)
+    .then(response => {
+      response.data?.error && errorMessage(new Error(response.data.error), 'updating files error: ', 0)
+    })
+    .catch(error => {
+      console.log('error', error)
+      errorMessage(error.error, 'updating files error: ')
+    })
     .finally(() => dispatch(setDGalleryLoading(false)))
 }

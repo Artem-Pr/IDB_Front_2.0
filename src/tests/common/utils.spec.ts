@@ -19,6 +19,9 @@ import {
   removeIntersectingKeywords,
   addKeywordsToAllFiles,
   updateFilesArrayItems,
+  getRenamedObjects,
+  renameShortNames,
+  getFilesWithUpdatedKeywords,
 } from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
@@ -26,10 +29,11 @@ import {
   folderTreeForTest2,
   folderTreeForTest3,
   folderTreeForTest4,
+  namePartsArrMock,
   uploadingFilesMock,
   uploadingFilesWithKeywordsMock,
 } from './mock'
-import { UploadingObject } from '../../redux/types'
+import { NameParts, UploadingObject } from '../../redux/types'
 
 describe('utils: ', () => {
   it('removeExtraSlash should remove slash at the end of string', () => {
@@ -212,7 +216,6 @@ describe('utils: ', () => {
       expect(updatedObjArr[2].originalDate).toBe('24.09.2016')
     })
   })
-
   describe('removeEmptyFields: ', () => {
     it('should remove empty fields', () => {
       const textOpj = {
@@ -227,7 +230,6 @@ describe('utils: ', () => {
       expect(cleanObj.originalDate).toBe('12.12.2012')
     })
   })
-
   describe('renameEqualStrings: ', () => {
     it('should return renamed array', () => {
       const arr = ['hello', 'test', 'hello', 'what', 'oh', 'hello', 'oh', 'no']
@@ -236,7 +238,26 @@ describe('utils: ', () => {
       expect(newArr).toEqual(['hello_001', 'test', 'hello_002', 'what', 'oh_001', 'hello_003', 'oh_002', 'no'])
     })
   })
-
+  describe('renameShortNames: ', () => {
+    it('should return NameParts with updated names if names are the same', () => {
+      const nameParts = namePartsArrMock.map(item => ({ ...item, shortName: 'дорога домой' }))
+      const newNameParts: NameParts[] = renameShortNames(nameParts)
+      expect(newNameParts).toHaveLength(3)
+      expect(JSON.stringify(newNameParts[0])).toBe('{"shortName":"дорога домой_001","ext":"img"}')
+      expect(JSON.stringify(newNameParts[1])).toBe('{"shortName":"дорога домой_002","ext":"mp4"}')
+      expect(JSON.stringify(newNameParts[2])).toBe('{"shortName":"дорога домой_003","ext":"somethingLong"}')
+    })
+  })
+  describe('getRenamedObjects: ', () => {
+    it('should return array of objects with updated names', () => {
+      const filesArr: UploadingObject[] = uploadingFilesMock.map(item => ({ ...item, name: 'IMG_20190624_110245.jpg' }))
+      const newNamesObjectArr = getRenamedObjects(filesArr)
+      expect(newNamesObjectArr).toHaveLength(3)
+      expect(newNamesObjectArr[0].name).toBe('IMG_20190624_110245_001.jpg')
+      expect(newNamesObjectArr[1].name).toBe('IMG_20190624_110245_002.jpg')
+      expect(newNamesObjectArr[2].name).toBe('IMG_20190624_110245_003.jpg')
+    })
+  })
   describe('removeKeywordFromEveryFile: ', () => {
     it('should return files array without certain keyword', () => {
       const newFilesArr = removeIntersectingKeywords(['Оля'], copyByJSON(uploadingFilesWithKeywordsMock))
@@ -251,7 +272,6 @@ describe('utils: ', () => {
       expect(JSON.stringify(newFilesArr2[2].keywords)).toBe('["Эстония","Озеро","Велосипед"]')
     })
   })
-
   describe('addKeywordsToAllFiles: ', () => {
     it('should add new keywords to every file in array', () => {
       const fileArr = copyByJSON(uploadingFilesWithKeywordsMock)
@@ -269,7 +289,6 @@ describe('utils: ', () => {
       )
     })
   })
-
   describe('updateFilesArrayItems: ', () => {
     it('should return updated filesArr', () => {
       const originalFileArr: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
@@ -280,6 +299,16 @@ describe('utils: ', () => {
       expect(updatedFilesArr[0].name).toBe('bom')
       expect(updatedFilesArr[1].name).toBe('IMG_20190624_110245.jpg')
       expect(updatedFilesArr[2].name).toBe('bom')
+    })
+  })
+  describe('getFilesWithUpdatedKeywords: ', () => {
+    it('should return files array with updated keywords', () => {
+      const filesArr = copyByJSON(uploadingFilesWithKeywordsMock)
+      const updatedFilesArr = getFilesWithUpdatedKeywords(filesArr, ['Велосипед', 'google'])
+      expect(updatedFilesArr).toHaveLength(3)
+      expect(JSON.stringify(updatedFilesArr[0].keywords)).toBe('["Велосипед","google","Озеро","Эстония","Оля"]')
+      expect(JSON.stringify(updatedFilesArr[1].keywords)).toBe('["Велосипед","google","Эстония","Карта"]')
+      expect(JSON.stringify(updatedFilesArr[2].keywords)).toBe('["Велосипед","google","Эстония","Озеро","Оля"]')
     })
   })
 })

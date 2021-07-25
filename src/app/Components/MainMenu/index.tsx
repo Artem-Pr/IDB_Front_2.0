@@ -6,7 +6,7 @@ import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { EditMenu, Folders } from '../index'
-import { UploadingObject } from '../../../redux/types'
+import { ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
 import { folderElement } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
@@ -17,7 +17,7 @@ const { Sider } = Layout
 const { SubMenu } = Menu
 
 interface Props {
-  filesArr: UploadingObject[]
+  filesArr: Array<UploadingObject & ExtraDownloadingFields>
   selectedList: number[]
   openKeys: string[]
   isExifLoading: boolean
@@ -50,7 +50,7 @@ const MainMenu = ({
   const dispatch = useDispatch()
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
-  const { isUploadingPage } = useCurrentPage()
+  const { isUploadingPage, isMainPage } = useCurrentPage()
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())
@@ -86,7 +86,16 @@ const MainMenu = ({
           <Folders />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu {...{ filesArr, selectedList, sameKeywords, isExifLoading, allKeywords }} />
+          <EditMenu
+            {...{
+              filesArr,
+              selectedList,
+              sameKeywords,
+              isExifLoading,
+              allKeywords,
+              isMainPage,
+            }}
+          />
         </SubMenu>
         <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
           <EditMenu
@@ -99,6 +108,7 @@ const MainMenu = ({
               allKeywords,
               clearAll: clearSelectedList,
               isEditMany: true,
+              isMainPage,
             }}
           />
         </SubMenu>
@@ -112,14 +122,18 @@ const MainMenu = ({
             {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
           </div>
         </SubMenu>
-        <div className="d-flex justify-content-around">
-          <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
-            Remove files
-          </Button>
-          <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
-            Upload files
-          </Button>
-        </div>
+        {isUploadingPage ? (
+          <div className="d-flex justify-content-around">
+            <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
+              Remove files
+            </Button>
+            <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
+              Upload files
+            </Button>
+          </div>
+        ) : (
+          ''
+        )}
       </Menu>
     </Sider>
   )

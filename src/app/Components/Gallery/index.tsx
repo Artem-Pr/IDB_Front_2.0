@@ -46,7 +46,6 @@ const Gallery = ({
       addToSelectedList(i)
       updateFiles(tempPath)
     }
-
     const selectOnlyOne = () => {
       clearSelectedList()
       updateFilesArr()

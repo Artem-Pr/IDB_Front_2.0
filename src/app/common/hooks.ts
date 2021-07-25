@@ -4,15 +4,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
 import { upload } from '../../redux/selectors'
-import {
-  addKeywordsToAllFiles,
-  getNameParts,
-  removeIntersectingKeywords,
-  renameShortNames,
-  updateFilesArrayItems,
-} from './utils'
+import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from './utils'
 import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
 import { DownloadingObject, UploadingObject } from '../../redux/types'
+import { setDownloadingFiles } from '../../redux/reducers/mainPageSlice-reducer'
 
 export const useCurrentPage = () => {
   const { pathname } = useLocation()
@@ -54,18 +49,16 @@ export const useUpdateFields = (filesArr: Array<UploadingObject | DownloadingObj
   }
 }
 
-export const useEditFilesArr = (selectedList: number[], filesArr: UploadingObject[], sameKeywords: string[] = []) => {
+export const useEditFilesArr = (
+  selectedList: number[],
+  filesArr: UploadingObject[],
+  sameKeywords: string[] = [],
+  isMainPage: boolean
+) => {
   const dispatch = useDispatch()
-  return useMemo(() => {
-    const getRenamedObjects = (filesArr: UploadingObject[]): UploadingObject[] => {
-      const fileNameParts = filesArr.map(({ name }) => getNameParts(name))
-      const renamedNameParts = renameShortNames(fileNameParts)
-      return filesArr.map((item, i) => {
-        const { shortName, ext } = renamedNameParts[i]
-        return { ...item, name: shortName + ext }
-      })
-    }
+  const updatingAction = useMemo(() => (isMainPage ? setDownloadingFiles : updateUploadingFilesArr), [isMainPage])
 
+  return useMemo(() => {
     const addEditedFieldsToFileArr = (
       filesArr: UploadingObject[],
       editedFields: Record<string, any>
@@ -82,10 +75,10 @@ export const useEditFilesArr = (selectedList: number[], filesArr: UploadingObjec
 
     return compose(
       dispatch,
-      updateUploadingFilesArr,
+      updatingAction,
       mixUpdatedFilesItemsWithOriginalOnes,
       getRenamedObjects,
       AddEditedFieldsToFilteredFileArr
     )
-  }, [dispatch, selectedList, filesArr, sameKeywords])
+  }, [filesArr, sameKeywords, dispatch, updatingAction, selectedList])
 }

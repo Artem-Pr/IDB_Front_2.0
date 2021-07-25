@@ -7,6 +7,7 @@ import {
   inc,
   includes,
   intersection,
+  isEmpty,
   map,
   mapAccumRight,
   omit,
@@ -20,9 +21,9 @@ import {
   DownloadingObject,
   DownloadingRawObject,
   ExifFilesList,
+  Keywords,
   LoadingStatus,
   NameParts,
-  UpdatingFields,
   UpdatingFieldsWithPath,
   UploadingObject,
 } from '../../redux/types'
@@ -100,13 +101,26 @@ export const renameShortNames = (namePartArr: NameParts[]): NameParts[] => {
   return renamedShortNames.map((item, i) => ({ shortName: item, ext: namePartArr[i].ext }))
 }
 
-export const removeIntersectingKeywords = <T extends UpdatingFields>(sameKeywords: string[], filesArr: T[]): T[] => {
+export const getRenamedObjects = <T extends { name: string }>(filesArr: T[]): T[] => {
+  const newFilesArr: T[] = copyByJSON(filesArr)
+  const fileNameParts: NameParts[] = newFilesArr.map(({ name }) => getNameParts(name))
+  const renamedNameParts = renameShortNames(fileNameParts)
+  return newFilesArr.map((item, i) => {
+    const { shortName, ext } = renamedNameParts[i]
+    return { ...item, name: shortName + ext }
+  })
+}
+
+export const removeIntersectingKeywords = <T extends { keywords: Keywords }>(
+  sameKeywords: string[],
+  filesArr: T[]
+): T[] => {
   return filesArr.map(item => {
     return { ...item, keywords: without(sameKeywords, item.keywords || []) }
   })
 }
 
-export const addKeywordsToAllFiles = (newKeywords: string[], filesArr: UploadingObject[]): UploadingObject[] => {
+export const addKeywordsToAllFiles = <T extends { keywords: Keywords }>(newKeywords: string[], filesArr: T[]): T[] => {
   return filesArr.map(item => {
     return { ...item, keywords: union(newKeywords, item.keywords || []) }
   })
@@ -153,4 +167,12 @@ export const convertDownLoadingRawObj = (downLoadingRawObj: DownloadingRawObject
 
 export const convertDownloadingRawObjectArr = (rawArr: DownloadingRawObject[]): DownloadingObject[] => {
   return rawArr.map(item => convertDownLoadingRawObj(item))
+}
+
+export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
+  filesArr: T[],
+  keywords: string[]
+): T[] => {
+  const newFilesArr = copyByJSON(filesArr)
+  return isEmpty(keywords) ? newFilesArr : addKeywordsToAllFiles(keywords, newFilesArr)
 }

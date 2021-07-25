@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
@@ -11,14 +11,15 @@ import {
   folderElement,
   main,
 } from '../../../redux/selectors'
-import { addToSelectedList, removeFromSelectedList } from '../../../redux/reducers/uploadSlice-reducer'
 import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { removeIntersectingKeywords } from '../../common/utils'
 import {
+  addToDSelectedList,
   clearDownloadingState,
   clearDSelectedList,
   fetchPhotos,
+  removeFromDSelectedList,
   selectAllD,
   setDownloadingFiles,
   updateDOpenMenus,
@@ -29,6 +30,7 @@ const { Content } = Layout
 
 const MainPage = () => {
   const dispatch = useDispatch()
+  const [isFilesLoaded, setIsFilesLoaded] = useState(false)
   const { isExifLoading, isGalleryLoading } = useSelector(main)
   const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
   const sameKeywords = useSelector(dAllSameKeywordsSelector)
@@ -38,13 +40,14 @@ const MainPage = () => {
   const { updateUploadingFiles } = useUpdateFields(imageArr)
 
   useEffect(() => {
-    isEmpty(imageArr) && dispatch(fetchPhotos())
-  }, [dispatch, imageArr])
+    isEmpty(imageArr) && !isFilesLoaded && dispatch(fetchPhotos())
+    setIsFilesLoaded(true)
+  }, [dispatch, imageArr, isFilesLoaded])
 
   const galleryProps: GalleryProps = {
     ...mainGalleryProps,
-    removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
-    addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
+    removeFromSelectedList: (index: number) => dispatch(removeFromDSelectedList(index)),
+    addToSelectedList: (index: number) => dispatch(addToDSelectedList(index)),
     clearSelectedList: () => dispatch(clearDSelectedList()),
     updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
     isLoading: isGalleryLoading,

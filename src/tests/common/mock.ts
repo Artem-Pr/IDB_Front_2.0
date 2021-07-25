@@ -1,4 +1,4 @@
-import { FullExifObj, UploadingObject } from '../../redux/types'
+import { FullExifObj, NameParts, UploadingObject } from '../../redux/types'
 
 export const foldersSliceFolderTree = [
   {
@@ -180,3 +180,9 @@ export const uploadingFilesWithKeywordsMock: UploadingObject[] = uploadingFilesM
   ...item,
   keywords: fullExifObjArr[i].Keywords,
 }))
+
+export const namePartsArrMock: NameParts[] = [
+  { shortName: 'дорога домой', ext: 'img' },
+  { shortName: 'Estonia', ext: 'mp4' },
+  { shortName: 'bom-bom', ext: 'somethingLong' },
+]

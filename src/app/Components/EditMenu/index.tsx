@@ -1,17 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Form, Input, Button, DatePicker, Space, Modal, Select } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Select, Space } from 'antd'
+import { useDispatch } from 'react-redux'
 import moment from 'moment'
 import { curry, identity, isEmpty, sortBy } from 'ramda'
 
 import styles from './index.module.scss'
-import { UploadingObject } from '../../../redux/types'
-import { dateFormat, getLastItem, getNameParts, removeEmptyFields } from '../../common/utils'
+import { ExtraDownloadingFields, UpdatedObject, UploadingObject } from '../../../redux/types'
+import {
+  dateFormat,
+  getFilesWithUpdatedKeywords,
+  getLastItem,
+  getNameParts,
+  getRenamedObjects,
+  removeEmptyFields,
+  removeIntersectingKeywords,
+} from '../../common/utils'
 import { useEditFilesArr } from '../../common/hooks'
+import { updatePhotos } from '../../../redux/reducers/mainPageSlice-reducer'
 
 const { Option } = Select
 
 interface Props {
-  filesArr: UploadingObject[]
+  filesArr: Array<UploadingObject & ExtraDownloadingFields>
   selectedList: number[]
   isExifLoading: boolean
   sameKeywords: string[]
@@ -19,6 +29,7 @@ interface Props {
   isEditMany?: boolean
   selectAll?: () => void
   clearAll?: () => void
+  isMainPage: boolean
 }
 
 interface InitialFileObject {
@@ -62,11 +73,13 @@ const EditMenu = ({
   clearAll,
   isExifLoading,
   allKeywords,
+  isMainPage,
 }: Props) => {
   const [form] = Form.useForm()
   const [modal, contextHolder] = Modal.useModal()
+  const dispatch = useDispatch()
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
-  const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords)
+  const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords, isMainPage)
   const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
     () => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]),
     [filesArr, selectedList]
@@ -87,7 +100,38 @@ const EditMenu = ({
     })
   }, [form, shortName, originalDate, sameKeywords])
 
+  const fetchUpdatedFiles = (currentName: string, currentOriginalDate: string | null, keywords: string[]) => {
+    const selectedFiles = filesArr
+      .filter((_, idx) => selectedList.includes(idx))
+      .map(({ _id, keywords }) => ({
+        _id,
+        keywords,
+        name: currentName,
+      }))
+    const newNamesArr: string[] = getRenamedObjects(selectedFiles).map(({ name }) => name)
+    const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFiles)
+    const newKeywordsArr: string[][] = getFilesWithUpdatedKeywords(selectedFilesWithoutSameKeywords, keywords).map(
+      ({ keywords }) => keywords || []
+    )
+
+    const getUpdatedFields = (idx: number) => {
+      return {
+        originalName: newNamesArr[idx].startsWith('-') ? undefined : newNamesArr[idx],
+        originalDate: currentOriginalDate || undefined,
+        keywords: newKeywordsArr[idx],
+      }
+    }
+    const updatedFiles: UpdatedObject[] = selectedFiles.map(({ _id }, i) => ({
+      id: _id || '',
+      updatedFields: getUpdatedFields(i),
+    }))
+
+    updatedFiles.length && dispatch(updatePhotos(updatedFiles))
+  }
+
   const onFinish = ({ name, originalDate, keywords }: any) => {
+    const currentName = name ? name + ext : ''
+    const currentOriginalDate = originalDate ? moment(originalDate).format(dateFormat) : null
     const isDuplicateName = curry((filesArr: UploadingObject[], currentName: string) => {
       const fileArrNames = filesArr.map(({ name }) => name)
       return fileArrNames.includes(currentName)
@@ -95,10 +139,12 @@ const EditMenu = ({
 
     const updateValues = () => {
       const preparedValue = {
-        name: name ? name + ext : '',
-        originalDate: originalDate ? moment(originalDate).format(dateFormat) : null,
+        name: currentName,
+        originalDate: currentOriginalDate,
         keywords,
       }
+
+      isMainPage && fetchUpdatedFiles(currentName, currentOriginalDate, keywords)
       const editedFields = removeEmptyFields(preparedValue)
       !isEmpty(editedFields) && editUploadingFiles(editedFields)
     }
