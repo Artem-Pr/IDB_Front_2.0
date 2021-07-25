@@ -9,6 +9,7 @@ import * as serviceWorker from './serviceWorker'
 import store from './redux/store/store'
 
 import 'antd/dist/antd.css'
+import 'react-image-gallery/styles/scss/image-gallery.scss'
 import './styles/index.scss'
 
 ReactDOM.render(

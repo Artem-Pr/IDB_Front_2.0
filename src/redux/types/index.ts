@@ -89,3 +89,9 @@ export interface FetchingGalleryContent {
   files: DownloadingRawObject[]
   searchPagination: GalleryPagination
 }
+
+export interface IGallery {
+  thumbnail: string
+  original: string
+  renderItem?: () => any
+}

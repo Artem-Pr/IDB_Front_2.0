@@ -1,0 +1,14 @@
+.image-modal {
+  & .ant-modal {
+    height: 90%;
+    padding-bottom: 0;
+
+    & .ant-modal-content {
+      height: 100%;
+
+      & .ant-modal-body {
+        height: 100%;
+      }
+    }
+  }
+}

@@ -51,6 +51,7 @@ const MainPage = () => {
     clearSelectedList: () => dispatch(clearDSelectedList()),
     updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
     isLoading: isGalleryLoading,
+    isMainPage: true,
   }
 
   const mainMenuProps = {
