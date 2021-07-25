@@ -117,7 +117,7 @@ const MainMenu = ({
             {isKeywordsMenuLoading ? (
               <Spin tip="Loading..." />
             ) : (
-              <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} />
+              <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} isUploadingPage={isUploadingPage} />
             )}
             {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
           </div>
