@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
 import { Modal, Spin } from 'antd'
@@ -85,7 +85,8 @@ const Gallery = ({
       )
   }, [imageArr, isMainPage, showVideo, videoItem])
 
-  const getExif = (tempPath: string) => {
+  const getExif = (e: MouseEvent, tempPath: string) => {
+    e.stopPropagation()
     !fullExifFilesList[tempPath] && updateFiles(tempPath)
     setCurrentTempPath(tempPath)
     setShowModal(true)
@@ -149,7 +150,7 @@ const Gallery = ({
               <h3
                 style={{ marginLeft: 'auto' }}
                 className={cn(styles.imgName, 'pointer')}
-                onClick={() => getExif(tempPath)}
+                onClick={e => getExif(e, tempPath)}
               >
                 Exif
               </h3>
