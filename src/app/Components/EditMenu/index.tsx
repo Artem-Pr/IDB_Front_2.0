@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, DatePicker, Form, Input, Modal, Select, Space } from 'antd'
+import { Button, Checkbox, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
 import { curry, identity, isEmpty, sortBy } from 'ramda'
+import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { ExtraDownloadingFields, UpdatedObject, UploadingObject } from '../../../redux/types'
@@ -32,36 +33,32 @@ interface Props {
   isMainPage: boolean
 }
 
-interface InitialFileObject {
+type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords'
+type Checkboxes = Record<CheckboxType, boolean>
+
+interface InitialFileObject extends Checkboxes {
   name: string
   originalDate: string
   keywords: string[]
-}
-
-const layout = {
-  labelCol: {
-    span: 8,
-  },
-  wrapperCol: {
-    span: 16,
-  },
-}
-const tailLayout = {
-  wrapperCol: {
-    offset: 8,
-    span: 16,
-  },
 }
 
 const initialFileObject: InitialFileObject = {
   name: '-',
   originalDate: '',
   keywords: [],
+  isName: false,
+  isOriginalDate: false,
+  isKeywords: false,
 }
 
-const config = {
+const duplicateConfig = {
   title: 'Duplicate names',
   content: 'Please enter another name',
+}
+
+const emptyCheckboxesConfig = {
+  title: 'Nothing to edit',
+  content: 'Please check one of the checkboxes',
 }
 
 const EditMenu = ({
@@ -97,10 +94,18 @@ const EditMenu = ({
       name: shortName,
       originalDate: originalDate === '-' ? '' : moment(originalDate, dateFormat),
       keywords: sortBy(identity, sameKeywords || []),
+      isName: false,
+      isOriginalDate: false,
+      isKeywords: false,
     })
   }, [form, shortName, originalDate, sameKeywords])
 
-  const fetchUpdatedFiles = (currentName: string, currentOriginalDate: string | null, keywords: string[]) => {
+  const fetchUpdatedFiles = (
+    currentName: string,
+    currentOriginalDate: string | null,
+    keywords: string[],
+    checkboxes: Checkboxes
+  ) => {
     const selectedFiles = filesArr
       .filter((_, idx) => selectedList.includes(idx))
       .map(({ _id, keywords }) => ({
@@ -115,10 +120,11 @@ const EditMenu = ({
     )
 
     const getUpdatedFields = (idx: number) => {
+      const { isName, isOriginalDate, isKeywords } = checkboxes
       return {
-        originalName: newNamesArr[idx].startsWith('-') ? undefined : newNamesArr[idx],
-        originalDate: currentOriginalDate || undefined,
-        keywords: newKeywordsArr[idx],
+        originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] : undefined,
+        originalDate: (isOriginalDate && currentOriginalDate) || undefined,
+        keywords: isKeywords ? newKeywordsArr[idx] : undefined,
       }
     }
     const updatedFiles: UpdatedObject[] = selectedFiles.map(({ _id }, i) => ({
@@ -129,7 +135,7 @@ const EditMenu = ({
     updatedFiles.length && dispatch(updatePhotos(updatedFiles))
   }
 
-  const onFinish = ({ name, originalDate, keywords }: any) => {
+  const onFinish = ({ name, originalDate, keywords, isName, isOriginalDate, isKeywords }: any) => {
     const currentName = name ? name + ext : ''
     const currentOriginalDate = originalDate ? moment(originalDate).format(dateFormat) : null
     const isDuplicateName = curry((filesArr: UploadingObject[], currentName: string) => {
@@ -139,19 +145,23 @@ const EditMenu = ({
 
     const updateValues = () => {
       const preparedValue = {
-        name: currentName,
-        originalDate: currentOriginalDate,
-        keywords,
+        name: isName ? currentName : undefined,
+        originalDate: isOriginalDate ? currentOriginalDate : undefined,
+        keywords: isKeywords ? keywords : sortBy(identity, sameKeywords || []),
       }
 
-      isMainPage && fetchUpdatedFiles(currentName, currentOriginalDate, keywords)
+      const checkboxes: Checkboxes = { isName, isOriginalDate, isKeywords }
+
+      isMainPage && fetchUpdatedFiles(currentName, currentOriginalDate, keywords, checkboxes)
       const editedFields = removeEmptyFields(preparedValue)
       !isEmpty(editedFields) && editUploadingFiles(editedFields)
     }
 
-    const needModalIsDuplicate = !isEditMany && isDuplicateName(name + ext)
-
-    needModalIsDuplicate ? modal.warning(config) : updateValues()
+    const needModalIsDuplicate = !isEditMany && isName && isDuplicateName(name + ext)
+    const isEmptyCheckboxes = !isName && !isOriginalDate && !isKeywords
+    needModalIsDuplicate && modal.warning(duplicateConfig)
+    isEmptyCheckboxes && modal.warning(emptyCheckboxesConfig)
+    !needModalIsDuplicate && !isEmptyCheckboxes && updateValues()
   }
 
   const handleSelectAll = () => {
@@ -162,49 +172,82 @@ const EditMenu = ({
 
   return (
     <div>
-      <Form {...layout} form={form} name="editForm" onFinish={onFinish}>
-        <Form.Item className={styles.item} label="Name" name="name">
-          <Space className={styles.space}>
-            <Form.Item name="name" noStyle>
+      <Form form={form} name="editForm" onFinish={onFinish}>
+        <Row className={styles.item} gutter={10}>
+          <Col span={8} offset={1} style={{ textAlign: 'left' }}>
+            <Form.Item name="isName" valuePropName="checked">
+              <Checkbox>Name:</Checkbox>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="name">
               <Input placeholder="Edit name" disabled={disabledInputs} allowClear />
             </Form.Item>
-            <span className={styles.extension}>{ext}</span>
-          </Space>
-        </Form.Item>
-        <Form.Item className={styles.item} label="OriginalDate" name="originalDate">
-          <DatePicker
-            format={dateFormat}
-            className={styles.itemWidth}
-            placeholder="Edit date"
-            disabled={disabledInputs}
-          />
-        </Form.Item>
-        <Form.Item className={styles.item} label="Keywords" name="keywords">
-          <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
-            {allKeywords &&
-              allKeywords.map(keyword => (
-                <Option key={keyword} value={keyword}>
-                  {keyword}
-                </Option>
-              ))}
-          </Select>
-        </Form.Item>
-        <Form.Item className={styles.item} {...tailLayout}>
-          <Space>
+          </Col>
+          <Col span={3}>
+            <span className={cn(styles.extension, 'd-block')}>{ext}</span>
+          </Col>
+        </Row>
+
+        <Row gutter={10}>
+          <Col span={8} offset={1} style={{ textAlign: 'left' }}>
+            <Form.Item name="isOriginalDate" valuePropName="checked">
+              <Checkbox>OriginalDate:</Checkbox>
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item name="originalDate">
+              <DatePicker format={dateFormat} placeholder="Edit date" disabled={disabledInputs} className="w-100" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={10}>
+          <Col span={8} offset={1} style={{ textAlign: 'left' }}>
+            <Form.Item name="isKeywords" valuePropName="checked">
+              <Checkbox>Keywords:</Checkbox>
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item name="keywords">
+              <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
+                {allKeywords &&
+                  allKeywords.map(keyword => (
+                    <Option key={keyword} value={keyword}>
+                      {keyword}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={10}>
+          <Col span={7} offset={9}>
             <Form.Item>
-              <Button style={{ marginRight: 10 }} type="primary" htmlType="submit" disabled={disabledInputs}>
+              <Button
+                className="w-100"
+                style={{ marginRight: 10 }}
+                type="primary"
+                htmlType="submit"
+                disabled={disabledInputs}
+              >
                 Edit
               </Button>
+            </Form.Item>
+          </Col>
+          <Col span={7}>
+            <Form.Item>
               {isEditMany ? (
-                <Button onClick={handleSelectAll} type="primary" loading={isExifLoading}>
+                <Button className="w-100" onClick={handleSelectAll} type="primary" loading={isExifLoading}>
                   {isSelectAllBtn ? 'Select all' : 'Unselect all'}
                 </Button>
               ) : (
                 ''
               )}
             </Form.Item>
-          </Space>
-        </Form.Item>
+          </Col>
+        </Row>
       </Form>
       {contextHolder}
     </div>

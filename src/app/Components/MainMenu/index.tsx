@@ -80,7 +80,7 @@ const MainMenu = ({
   }
 
   return (
-    <Sider theme="light" className={styles.sider} width="300">
+    <Sider theme="light" className={styles.sider} width="400">
       <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
         <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
           <Folders />
