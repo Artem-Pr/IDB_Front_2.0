@@ -1,3 +1,5 @@
+import { reduce } from 'ramda'
+
 import { FolderTreeItem } from '../../redux/types'
 import { copyByJSON, removeExtraSlash } from './utils'
 
@@ -53,3 +55,10 @@ export const getFolderPathFromTreeKey = (key: string, tree: FolderTreeItem[]): s
   const result = foundItem ? getFoundElementPath(key, foundItem) : ''
   return removeExtraSlash(result)
 }
+
+export const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
+  const cleanFolderPath = removeExtraSlash(path)
+  return addFolderToFolderTree(cleanFolderPath, folderTree)
+}
+export const addPathsArrToFolderTree = (paths: string[], originalFolderTree: FolderTreeItem[] = []) =>
+  reduce(updateFolderTree, originalFolderTree, paths)

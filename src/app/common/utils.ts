@@ -30,8 +30,10 @@ import {
 
 export const dateFormat = 'YYYY.MM.DD'
 
+export const invokableCompose = <any>compose
 export const copyByJSON = (obj: any) => JSON.parse(JSON.stringify(obj))
 export const removeExtraSlash = (value: string): string => (value.endsWith('/') ? value.slice(0, -1) : value)
+export const removeExtraFirstSlash = (value: string): string => (value.startsWith('/') ? value.slice(1) : value)
 // Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
@@ -126,16 +128,13 @@ export const addKeywordsToAllFiles = <T extends { keywords: Keywords }>(newKeywo
   })
 }
 
-export const updateFilesArrayItems = (
-  originalFilesArr: UploadingObject[],
-  filteredFilesArr: UploadingObject[]
-): UploadingObject[] => {
-  const filteredArrOfTempPaths: string[] = filteredFilesArr.map(item => item.tempPath)
-  return originalFilesArr.map(item => {
-    const getFilteredArrItem = () => filteredFilesArr.find(({ tempPath }) => item.tempPath === tempPath) || item
-    const isUpdatedFile = filteredArrOfTempPaths.includes(item.tempPath)
-    return isUpdatedFile ? getFilteredArrItem() : item
-  })
+export const updateFilesArrayItems = <T extends Record<string, any>>(
+  uniqField: keyof T,
+  originalFilesArr: T[],
+  newFilesArr: T[]
+): T[] => {
+  const findUpdatedObj = (originalUniqField: string) => newFilesArr.find(file => file[uniqField] === originalUniqField)
+  return originalFilesArr.map(file => findUpdatedObj(file[uniqField]) || file)
 }
 
 export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | null => {
@@ -175,4 +174,8 @@ export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
 ): T[] => {
   const newFilesArr = copyByJSON(filesArr)
   return isEmpty(keywords) ? newFilesArr : addKeywordsToAllFiles(keywords, newFilesArr)
+}
+
+export const getFilePathWithoutName = (fullPath: string): string => {
+  return fullPath.split('/').slice(0, -1).join('/')
 }

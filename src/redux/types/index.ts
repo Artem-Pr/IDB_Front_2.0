@@ -95,3 +95,9 @@ export interface IGallery {
   original: string
   renderItem?: () => any
 }
+
+export interface UpdatePhotosRequest {
+  files?: DownloadingRawObject[]
+  newFilePath?: string[]
+  error?: string
+}

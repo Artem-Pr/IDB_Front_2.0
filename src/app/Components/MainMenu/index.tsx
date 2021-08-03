@@ -49,7 +49,7 @@ const MainMenu = ({
 }: Props) => {
   const dispatch = useDispatch()
   const { keywordsList: allKeywords } = useSelector(folderElement)
-  const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(true)
+  const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(false)
   const { isUploadingPage, isMainPage } = useCurrentPage()
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const MainMenu = ({
     const openKeysSet = new Set(openKeys)
     key === 'edit' && openKeysSet.delete('template')
     key === 'template' && openKeysSet.delete('edit')
-    key === 'keywords' && loadKeywords()
+    key === 'keywords' && !isKeywordsMenuLoading && loadKeywords()
     openKeysSet.has(key) ? openKeysSet.delete(key) : openKeysSet.add(key)
     updateOpenMenus(Array.from(openKeysSet))
   }
@@ -78,6 +78,17 @@ const MainMenu = ({
     removeFiles()
     updateOpenMenus(['folders'])
   }
+
+  const KeywordsMenuWrapper = () => (
+    <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
+      {isKeywordsMenuLoading ? (
+        <Spin tip="Loading..." />
+      ) : (
+        <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} isUploadingPage={isUploadingPage} />
+      )}
+      {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
+    </div>
+  )
 
   return (
     <Sider theme="light" className={styles.sider} width="400">
@@ -113,27 +124,22 @@ const MainMenu = ({
           />
         </SubMenu>
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
-          <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
-            {isKeywordsMenuLoading ? (
-              <Spin tip="Loading..." />
-            ) : (
-              <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} isUploadingPage={isUploadingPage} />
-            )}
-            {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
-          </div>
+          <KeywordsMenuWrapper />
         </SubMenu>
-        {isUploadingPage ? (
-          <div className="d-flex justify-content-around">
-            <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
-              Remove files
-            </Button>
-            <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
-              Upload files
-            </Button>
-          </div>
-        ) : (
-          ''
-        )}
+        <Menu.Item key="buttons-menu">
+          {isUploadingPage ? (
+            <div className="d-flex justify-content-around">
+              <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
+                Remove files
+              </Button>
+              <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
+                Upload files
+              </Button>
+            </div>
+          ) : (
+            ''
+          )}
+        </Menu.Item>
       </Menu>
     </Sider>
   )

@@ -104,62 +104,68 @@ export const {
 
 export default uploadSlice.reducer
 
-export const uploadFiles = (filesArr: UploadingObject[], folderPath: string): AppThunk => dispatch => {
-  api
-    .sendPhotos(filesArr, folderPath)
-    .then(({ data }) => {
-      data === 'Файлы загружены' && dispatch(setUploadingStatus('success'))
-      data === 'Ошибка при загрузке файлов' && dispatch(setUploadingStatus('error'))
-    })
-    .catch(error => {
-      dispatch(setUploadingStatus('error'))
-      console.error('Error when getting Preview: ' + error)
-    })
-}
+export const uploadFiles =
+  (filesArr: UploadingObject[], folderPath: string): AppThunk =>
+  dispatch => {
+    api
+      .sendPhotos(filesArr, folderPath)
+      .then(({ data }) => {
+        data === 'Файлы загружены' && dispatch(setUploadingStatus('success'))
+        data === 'Ошибка при загрузке файлов' && dispatch(setUploadingStatus('error'))
+      })
+      .catch(error => {
+        dispatch(setUploadingStatus('error'))
+        console.error('Error when getting Preview: ' + error)
+      })
+  }
 
-export const fetchPhotosPreview = (file: any): AppThunk => dispatch => {
-  const { lastModified: changeDate, name, size, type } = file
-  api
-    .sendPhoto(file)
-    .then(({ data }) => {
-      const { preview, tempPath } = data
-      const uploadingFile: UploadingObject = {
-        changeDate,
-        name,
-        size,
-        type,
-        preview,
-        tempPath,
-        originalDate: '-',
-        keywords: null,
-        megapixels: '',
-      }
-      dispatch(addUploadingFile(uploadingFile))
-    })
-    .catch(error => errorMessage(error, 'Error when getting Preview: '))
-}
+export const fetchPhotosPreview =
+  (file: any): AppThunk =>
+  dispatch => {
+    const { lastModified: changeDate, name, size, type } = file
+    api
+      .sendPhoto(file)
+      .then(({ data }) => {
+        const { preview, tempPath } = data
+        const uploadingFile: UploadingObject = {
+          changeDate,
+          name,
+          size,
+          type,
+          preview,
+          tempPath,
+          originalDate: '-',
+          keywords: null,
+          megapixels: '',
+        }
+        dispatch(addUploadingFile(uploadingFile))
+      })
+      .catch(error => errorMessage(error, 'Error when getting Preview: '))
+  }
 
-export const fetchFullExif = (tempPathArr: string[]): AppThunk => async (dispatch, getState) => {
-  await api
-    .getKeywordsFromPhoto(tempPathArr)
-    .then(({ data }) => {
-      dispatch(updateFullExifFile(data))
+export const fetchFullExif =
+  (tempPathArr: string[]): AppThunk =>
+  async (dispatch, getState) => {
+    await api
+      .getKeywordsFromPhoto(tempPathArr)
+      .then(({ data }) => {
+        dispatch(updateFullExifFile(data))
 
-      const { uploadingFiles, fullExifFilesList } = getState().uploadReducer
-      const getUpdatingObj = curry(getUpdatedExifFieldsObj)(fullExifFilesList)
+        const { uploadingFiles, fullExifFilesList } = getState().uploadReducer
+        const getUpdatingObj = curry(getUpdatedExifFieldsObj)(fullExifFilesList)
 
-      const loadExifToUploadingFiles = (acc: UploadingObject[], tempPath: string): UploadingObject[] => {
-        const loadUpdatingObjToFilesArr = curry(updateFilesArrItemByField)('tempPath')(acc)
-        return compose(loadUpdatingObjToFilesArr, getUpdatingObj)(tempPath)
-      }
+        const loadExifToUploadingFiles = (acc: UploadingObject[], tempPath: string): UploadingObject[] => {
+          const loadUpdatingObjToFilesArr = curry(updateFilesArrItemByField)('tempPath')(acc)
+          return compose(loadUpdatingObjToFilesArr, getUpdatingObj)(tempPath)
+        }
 
-      const getUploadingFiles = (tempPathArr: string[]) => {
-        return reduce<string, UploadingObject[]>(loadExifToUploadingFiles, uploadingFiles, tempPathArr)
-      }
-      const uploadingFilesArr = compose(getUploadingFiles, keys)(data)
-      dispatch(updateUploadingFilesArr(uploadingFilesArr))
-    })
-    .catch(error => {
-      errorMessage(error, 'Error when getting Exif: ')
-    })
-}
+        const getUploadingFiles = (tempPathArr: string[]) => {
+          return reduce<string, UploadingObject[]>(loadExifToUploadingFiles, uploadingFiles, tempPathArr)
+        }
+        const uploadingFilesArr = compose(getUploadingFiles, keys)(data)
+        dispatch(updateUploadingFilesArr(uploadingFilesArr))
+      })
+      .catch(error => {
+        errorMessage(error, 'Error when getting Exif: ')
+      })
+  }

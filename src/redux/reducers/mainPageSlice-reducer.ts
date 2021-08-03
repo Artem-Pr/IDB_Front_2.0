@@ -1,12 +1,14 @@
 /* eslint functional/immutable-data: 0 */
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
-import { isEmpty } from 'ramda'
+import { identity, isEmpty, sortBy } from 'ramda'
 
 import { DownloadingObject, DownloadingRawObject, GalleryPagination, UpdatedObject } from '../types'
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
-import { errorMessage } from '../../app/common/notifications'
+import { errorMessage, successMessage } from '../../app/common/notifications'
 import { convertDownloadingRawObjectArr } from '../../app/common/utils'
+import { setFolderTree, setPathsArr } from './foldersSlice-reducer'
+import { addPathsArrToFolderTree } from '../../app/common/folderTree'
 
 interface State {
   rawFiles: DownloadingRawObject[]
@@ -68,9 +70,17 @@ const uploadSlice = createSlice({
     },
     setGalleryPagination(
       state,
-      action: PayloadAction<{ currentPage?: number; nPerPage?: number; resultsCount?: number; totalPages?: number }>
+      action: PayloadAction<{
+        currentPage?: number
+        nPerPage?: number
+        resultsCount?: number
+        totalPages?: number
+      }>
     ) {
-      state.galleryPagination = { ...current(state).galleryPagination, ...action.payload }
+      state.galleryPagination = {
+        ...current(state).galleryPagination,
+        ...action.payload,
+      }
     },
     clearDownloadingState(state) {
       state.downloadingFiles = []
@@ -101,37 +111,64 @@ export const {
 
 export default uploadSlice.reducer
 
-export const fetchPhotos = (page?: number): AppThunk => (dispatch, getState) => {
-  const currentState = getState().mainPageReducer
-  const { searchTags, excludeTags } = currentState
-  const { currentPage, nPerPage } = currentState.galleryPagination
-  const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
-  const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
-  dispatch(setDGalleryLoading(true))
-  api
-    .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags)
-    .then(({ data }) => {
-      const rawFiles: DownloadingRawObject[] = data?.files || []
-      const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
-      dispatch(clearDSelectedList())
-      dispatch(setRawFiles(rawFiles))
-      dispatch(setDownloadingFiles(files))
-      dispatch(setGalleryPagination(data.searchPagination))
-    })
-    .catch(error => errorMessage(error, 'downloading files error: '))
-    .finally(() => dispatch(setDGalleryLoading(false)))
-}
+export const fetchPhotos =
+  (page?: number): AppThunk =>
+  (dispatch, getState) => {
+    const currentState = getState().mainPageReducer
+    const { searchTags, excludeTags } = currentState
+    const { currentPage, nPerPage } = currentState.galleryPagination
+    const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
+    const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
+    dispatch(setDGalleryLoading(true))
+    api
+      .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags)
+      .then(({ data }) => {
+        const rawFiles: DownloadingRawObject[] = data?.files || []
+        const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
+        dispatch(clearDSelectedList())
+        dispatch(setRawFiles(rawFiles))
+        console.log('fetchPhotos', files)
+        dispatch(setDownloadingFiles(files))
+        dispatch(setGalleryPagination(data.searchPagination))
+      })
+      .catch(error => errorMessage(error, 'downloading files error: '))
+      .finally(() => dispatch(setDGalleryLoading(false)))
+  }
 
-export const updatePhotos = (updatedObjArr: UpdatedObject[]): AppThunk => dispatch => {
-  dispatch(setDGalleryLoading(true))
-  api
-    .updatePhotos(updatedObjArr)
-    .then(response => {
-      response.data?.error && errorMessage(new Error(response.data.error), 'updating files error: ', 0)
-    })
-    .catch(error => {
-      console.log('error', error)
-      errorMessage(error.error, 'updating files error: ')
-    })
-    .finally(() => dispatch(setDGalleryLoading(false)))
-}
+export const updatePhotos =
+  (updatedObjArr: UpdatedObject[]): AppThunk =>
+  (dispatch, getState) => {
+    const { folderReducer } = getState()
+    const addNewPathsArr = (newPathsArr: string[]) => {
+      const { pathsArr, folderTree } = folderReducer
+      dispatch(setPathsArr(sortBy(identity, [...pathsArr, ...newPathsArr])))
+      dispatch(setFolderTree(addPathsArrToFolderTree(newPathsArr, folderTree)))
+    }
+
+    //Todo: to recover this code, need to add an actual "preview" for image and video files,
+    // and possible fix some frontend bugs
+
+    // const dispatchNewFiles = (newFiles: DownloadingRawObject[]) => {
+    //   const { rawFiles, downloadingFiles } = mainPageReducer
+    //   const updateRawFiles = curry(updateFilesArrayItems)('_id', rawFiles)
+    //   const updateDownloadingFiles = curry(updateFilesArrayItems)('_id', downloadingFiles)
+    //   invokableCompose(dispatch, setRawFiles, updateRawFiles)(newFiles)
+    //   invokableCompose(dispatch, setDownloadingFiles, convertDownloadingRawObjectArr, updateDownloadingFiles)(newFiles)
+    // }
+
+    dispatch(setDGalleryLoading(true))
+    api
+      .updatePhotos(updatedObjArr)
+      .then(response => {
+        const { error, files, newFilePath } = response.data
+        error && errorMessage(new Error(error), 'updating files error: ', 0)
+        files && newFilePath && successMessage('Files updated successfully')
+        newFilePath?.length && addNewPathsArr(newFilePath)
+        // files && dispatchNewFiles(files)
+      })
+      .catch(error => {
+        console.log('error', error)
+        errorMessage(error.error, 'updating files error: ')
+      })
+      .finally(() => dispatch(setDGalleryLoading(false)))
+  }

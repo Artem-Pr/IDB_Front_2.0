@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { AutoComplete, Button, Tooltip } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -9,12 +9,7 @@ import { FolderTree } from '../index'
 import styles from './index.module.scss'
 
 import { folderElement, pathsArr, pathsArrOptionsSelector } from '../../../redux/selectors'
-import {
-  fetchPathsList,
-  setCurrentFolderPath,
-  setFolderTree,
-  setPathsArr,
-} from '../../../redux/reducers/foldersSlice-reducer'
+import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../../redux/reducers/foldersSlice-reducer'
 import { addFolderToFolderTree } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
 
@@ -26,10 +21,6 @@ const Folders = () => {
 
   const cleanFolderPath = useMemo(() => removeExtraSlash(currentFolderPath), [currentFolderPath])
   const isButtonAddDisabled = useMemo(() => directoriesArr.includes(cleanFolderPath), [cleanFolderPath, directoriesArr])
-
-  useEffect(() => {
-    !directoriesArr.length && dispatch(fetchPathsList())
-  }, [dispatch, directoriesArr])
 
   const onChange = (data: string) => {
     dispatch(setCurrentFolderPath(data))

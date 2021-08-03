@@ -71,7 +71,7 @@ export const useEditFilesArr = (
     const selectedFilesArr = filesArr.filter((_, idx) => selectedList.includes(idx))
     const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFilesArr)
     const AddEditedFieldsToFilteredFileArr = curry(addEditedFieldsToFileArr)(selectedFilesWithoutSameKeywords)
-    const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)(filesArr)
+    const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)(isMainPage ? '_id' : 'tempPath', filesArr)
 
     return compose(
       dispatch,
@@ -80,5 +80,5 @@ export const useEditFilesArr = (
       getRenamedObjects,
       AddEditedFieldsToFilteredFileArr
     )
-  }, [filesArr, sameKeywords, dispatch, updatingAction, selectedList])
+  }, [filesArr, sameKeywords, isMainPage, dispatch, updatingAction, selectedList])
 }

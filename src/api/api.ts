@@ -1,6 +1,13 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { AxiosPreviews, ExifFilesList, FetchingGalleryContent, UpdatedObject, UploadingObject } from '../redux/types'
+import {
+  AxiosPreviews,
+  ExifFilesList,
+  FetchingGalleryContent,
+  UpdatedObject,
+  UpdatePhotosRequest,
+  UploadingObject,
+} from '../redux/types'
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
@@ -18,7 +25,7 @@ const mainApi = {
     })
   },
 
-  updatePhotos(files: UpdatedObject[]): Promise<AxiosResponse<any>> {
+  updatePhotos(files: UpdatedObject[]): Promise<AxiosResponse<UpdatePhotosRequest>> {
     return instance.put('/update', files, {
       headers: {
         'Content-Type': 'application/json',
@@ -33,11 +40,11 @@ const mainApi = {
     return instance.post('/uploadItem', formData)
   },
 
-  getKeywordsList(): Promise<AxiosResponse<any>> {
+  getKeywordsList(): Promise<AxiosResponse<string[]>> {
     return instance.get('/keywords')
   },
 
-  getPathsList(): Promise<AxiosResponse<any>> {
+  getPathsList(): Promise<AxiosResponse<string[]>> {
     return instance.get('/paths')
   },
 

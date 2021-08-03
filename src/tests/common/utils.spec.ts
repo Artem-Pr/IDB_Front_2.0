@@ -22,6 +22,7 @@ import {
   getRenamedObjects,
   renameShortNames,
   getFilesWithUpdatedKeywords,
+  getFilePathWithoutName,
 } from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
@@ -294,7 +295,7 @@ describe('utils: ', () => {
       const originalFileArr: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
       const filteredFilesArr = originalFileArr.filter((_, i) => i !== 1)
       const changedFilteredArr = filteredFilesArr.map(item => ({ ...item, name: 'bom' }))
-      const updatedFilesArr = updateFilesArrayItems(originalFileArr, changedFilteredArr)
+      const updatedFilesArr = updateFilesArrayItems('tempPath', originalFileArr, changedFilteredArr)
       expect(updatedFilesArr).toHaveLength(3)
       expect(updatedFilesArr[0].name).toBe('bom')
       expect(updatedFilesArr[1].name).toBe('IMG_20190624_110245.jpg')
@@ -309,6 +310,13 @@ describe('utils: ', () => {
       expect(JSON.stringify(updatedFilesArr[0].keywords)).toBe('["Велосипед","google","Озеро","Эстония","Оля"]')
       expect(JSON.stringify(updatedFilesArr[1].keywords)).toBe('["Велосипед","google","Эстония","Карта"]')
       expect(JSON.stringify(updatedFilesArr[2].keywords)).toBe('["Велосипед","google","Эстония","Озеро","Оля"]')
+    })
+  })
+  describe('getFilePathWithoutName: ', () => {
+    it('should return file path without name', () => {
+      const fullFilePath = 'rootDirectory/директория с файлом/Имя для удаления.jpeg'
+      const resultFilePath = 'rootDirectory/директория с файлом'
+      expect(getFilePathWithoutName(fullFilePath)).toBe(resultFilePath)
     })
   })
 })
