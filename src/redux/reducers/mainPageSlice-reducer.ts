@@ -68,6 +68,12 @@ const uploadSlice = createSlice({
     selectAllD(state) {
       state.dSelectedList = state.downloadingFiles.map((_, i) => i)
     },
+    setSearchTags(state, action: PayloadAction<string[]>) {
+      state.searchTags = action.payload
+    },
+    setExcludeTags(state, action: PayloadAction<string[]>) {
+      state.excludeTags = action.payload
+    },
     setGalleryPagination(
       state,
       action: PayloadAction<{
@@ -103,6 +109,8 @@ export const {
   updateDOpenMenus,
   clearDSelectedList,
   selectAllD,
+  setSearchTags,
+  setExcludeTags,
   clearDownloadingState,
   setGalleryPagination,
   setDLoading,
@@ -115,8 +123,8 @@ export const fetchPhotos =
   (page?: number): AppThunk =>
   (dispatch, getState) => {
     const currentState = getState().mainPageReducer
-    const { searchTags, excludeTags } = currentState
-    const { currentPage, nPerPage } = currentState.galleryPagination
+    const { searchTags, excludeTags, galleryPagination } = currentState
+    const { currentPage, nPerPage } = galleryPagination
     const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
     const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
     dispatch(setDGalleryLoading(true))
@@ -127,7 +135,6 @@ export const fetchPhotos =
         const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
         dispatch(clearDSelectedList())
         dispatch(setRawFiles(rawFiles))
-        console.log('fetchPhotos', files)
         dispatch(setDownloadingFiles(files))
         dispatch(setGalleryPagination(data.searchPagination))
       })

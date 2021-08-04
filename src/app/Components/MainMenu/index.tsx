@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Empty, Layout, Menu, Spin } from 'antd'
-import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined } from '@ant-design/icons'
+import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined, SearchOutlined } from '@ant-design/icons'
 import cn from 'classnames'
 
 import styles from './index.module.scss'
-import { EditMenu, Folders } from '../index'
+import { EditMenu, Folders, SearchMenu } from '../index'
 import { ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
 import { folderElement } from '../../../redux/selectors'
@@ -93,6 +93,9 @@ const MainMenu = ({
   return (
     <Sider theme="light" className={styles.sider} width="400">
       <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
+        <SubMenu key="search" icon={<SearchOutlined />} title="Search" onTitleClick={handleTitleClick}>
+          <SearchMenu />
+        </SubMenu>
         <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
           <Folders />
         </SubMenu>
@@ -126,8 +129,8 @@ const MainMenu = ({
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
           <KeywordsMenuWrapper />
         </SubMenu>
-        <Menu.Item key="buttons-menu">
-          {isUploadingPage ? (
+        {isUploadingPage ? (
+          <Menu.Item key="buttons-menu">
             <div className="d-flex justify-content-around">
               <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
                 Remove files
@@ -136,10 +139,10 @@ const MainMenu = ({
                 Upload files
               </Button>
             </div>
-          ) : (
-            ''
-          )}
-        </Menu.Item>
+          </Menu.Item>
+        ) : (
+          ''
+        )}
       </Menu>
     </Sider>
   )
