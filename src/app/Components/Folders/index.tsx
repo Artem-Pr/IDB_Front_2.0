@@ -13,7 +13,11 @@ import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../../redux
 import { addFolderToFolderTree } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
 
-const Folders = () => {
+interface Props {
+  isMainPage: boolean
+}
+
+const Folders = ({ isMainPage }: Props) => {
   const dispatch = useDispatch()
   const { folderTree, currentFolderPath } = useSelector(folderElement)
   const directoriesArr = useSelector(pathsArr)
@@ -37,7 +41,7 @@ const Folders = () => {
 
   return (
     <div className={styles.folderWrapper}>
-      <FolderTree />
+      <FolderTree isMainPage={isMainPage} />
       <div className="d-flex align-items-center">
         <span className={styles.label}>Directory:</span>
         <AutoComplete

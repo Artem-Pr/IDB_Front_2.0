@@ -173,7 +173,7 @@ describe('utils: ', () => {
     })
   })
   it('getFolderPathFromTreeKey should return valid path', () => {
-    const folderPath = getFolderPathFromTreeKey('0-1-0', foldersSliceFolderTree)
+    const folderPath = getFolderPathFromTreeKey(foldersSliceFolderTree, '0-1-0')
     expect(folderPath).toBe('parent 1/leaf 1-0')
   })
   describe('getNameParts: ', () => {

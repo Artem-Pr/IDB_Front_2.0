@@ -47,9 +47,9 @@ export const addFolderToFolderTree = (folderPath: string, tree: FolderTreeItem[]
   return getNewFolderTree(titlesArr, tree.length ? tree : createBasicTree(titlesArr[0]))
 }
 
-export const getFolderPathFromTreeKey = (key: string, tree: FolderTreeItem[]): string => {
+export const getFolderPathFromTreeKey = (tree: FolderTreeItem[], key: string): string => {
   const getFoundElementPath = (targetKey: string, { children, title }: FolderTreeItem): string =>
-    !children ? title : `${title}/${getFolderPathFromTreeKey(targetKey, children)}`
+    !children ? title : `${title}/${getFolderPathFromTreeKey(children, targetKey)}`
 
   const foundItem = tree.find(item => key.startsWith(item.key))
   const result = foundItem ? getFoundElementPath(key, foundItem) : ''

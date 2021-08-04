@@ -122,14 +122,15 @@ export default uploadSlice.reducer
 export const fetchPhotos =
   (page?: number): AppThunk =>
   (dispatch, getState) => {
-    const currentState = getState().mainPageReducer
-    const { searchTags, excludeTags, galleryPagination } = currentState
+    const { mainPageReducer, folderReducer } = getState()
+    const { searchTags, excludeTags, galleryPagination } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
     const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
     const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
+    const curFolderPath = folderReducer.currentFolderPath || undefined
     dispatch(setDGalleryLoading(true))
     api
-      .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags)
+      .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags, curFolderPath)
       .then(({ data }) => {
         const rawFiles: DownloadingRawObject[] = data?.files || []
         const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)

@@ -97,7 +97,7 @@ const MainMenu = ({
           <SearchMenu />
         </SubMenu>
         <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
-          <Folders />
+          <Folders isMainPage={isMainPage} />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
           <EditMenu
