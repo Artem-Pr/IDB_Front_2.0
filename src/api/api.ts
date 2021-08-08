@@ -64,8 +64,11 @@ const mainApi = {
     excludeTags: string[] | undefined,
     folderPath: string | undefined
   ): Promise<AxiosResponse<FetchingGalleryContent>> {
-    return instance.get('/filtered-photos', {
-      params: { page, perPage, searchTags, excludeTags, folderPath },
+    const params = { page, perPage, searchTags, excludeTags, folderPath }
+    return instance.post('/filtered-photos', params, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
   },
 }
