@@ -5,6 +5,8 @@ import { Pagination } from 'antd'
 import { pagination } from '../../../redux/selectors'
 import { fetchPhotos, setGalleryPagination } from '../../../redux/reducers/mainPageSlice-reducer'
 
+const option = ['30', '60', '100', '200']
+
 const PaginationMenu = () => {
   const dispatch = useDispatch()
   const { currentPage, resultsCount, nPerPage } = useSelector(pagination)
@@ -23,6 +25,7 @@ const PaginationMenu = () => {
       pageSize={nPerPage}
       current={currentPage}
       showSizeChanger
+      pageSizeOptions={option}
       onChange={handleChange}
     />
   )
