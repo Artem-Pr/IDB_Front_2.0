@@ -11,7 +11,7 @@ import {
   folderElement,
   main,
 } from '../../../redux/selectors'
-import { useUpdateFields } from '../../common/hooks'
+import { useUpdateFields } from '../../common/hooks/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { removeIntersectingKeywords } from '../../common/utils'
 import {

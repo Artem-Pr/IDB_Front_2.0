@@ -3,11 +3,11 @@ import { compose, curry, isEmpty, omit } from 'ramda'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
-import { upload } from '../../redux/selectors'
-import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from './utils'
-import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
-import { DownloadingObject, UploadingObject } from '../../redux/types'
-import { setDownloadingFiles } from '../../redux/reducers/mainPageSlice-reducer'
+import { upload } from '../../../redux/selectors'
+import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from '../utils'
+import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice-reducer'
+import { DownloadingObject, UploadingObject } from '../../../redux/types'
+import { setDownloadingFiles } from '../../../redux/reducers/mainPageSlice-reducer'
 
 export const useCurrentPage = () => {
   const { pathname } = useLocation()

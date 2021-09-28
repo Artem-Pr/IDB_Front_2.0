@@ -19,7 +19,7 @@ import {
   updateUploadingFilesArr,
   clearUploadingState,
 } from '../../../redux/reducers/uploadSlice-reducer'
-import { useUpdateFields } from '../../common/hooks'
+import { useUpdateFields } from '../../common/hooks/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import { LoadingStatus } from '../../../redux/types'

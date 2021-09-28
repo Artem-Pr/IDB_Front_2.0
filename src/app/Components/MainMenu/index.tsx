@@ -11,7 +11,7 @@ import KeywordsMenu from '../KeywordsMenu'
 import { folderElement } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
-import { useCurrentPage } from '../../common/hooks'
+import { useCurrentPage } from '../../common/hooks/hooks'
 
 const { Sider } = Layout
 const { SubMenu } = Menu

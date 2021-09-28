@@ -1,5 +1,7 @@
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
+export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath'
+export type Checkboxes = Record<CheckboxType, boolean>
 
 export interface NameParts {
   shortName: string

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Layout, Menu, Typography } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useCurrentPage } from '../../common/hooks'
+import { useCurrentPage } from '../../common/hooks/hooks'
 import { fetchPathsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { pathsArr } from '../../../redux/selectors'
 
