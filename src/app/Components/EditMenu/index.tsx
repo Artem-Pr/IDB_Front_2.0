@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { AutoComplete, Button, Checkbox, Col, DatePicker, Form, Input, Row, Select } from 'antd'
-import { useSelector } from 'react-redux'
-import moment from 'moment'
+import { AutoComplete, Button, Checkbox, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd'
+import { useDispatch, useSelector } from 'react-redux'
 import { compose, identity, sortBy } from 'ramda'
+import moment from 'moment'
 import cn from 'classnames'
 
 import styles from './index.module.scss'
@@ -14,8 +14,10 @@ import {
   getNameParts,
   removeExtraFirstSlash,
 } from '../../common/utils'
-import { pathsArrOptionsSelector } from '../../../redux/selectors'
+import { isDeleteProcessing, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useFinishEdit } from '../../common/hooks/useFinishEdit'
+import { deleteConfirmation } from '../../../assets/modulConfig'
+import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
 
 const { Option } = Select
 
@@ -60,8 +62,11 @@ const EditMenu = ({
   allKeywords,
   isMainPage,
 }: Props) => {
+  const dispatch = useDispatch()
   const [form] = Form.useForm()
+  const [modal, contextHolder] = Modal.useModal()
   const pathsListOptions = useSelector(pathsArrOptionsSelector)
+  const isDeleting = useSelector(isDeleteProcessing)
   const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
@@ -70,7 +75,7 @@ const EditMenu = ({
   )
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
   const { shortName, ext } = useMemo(() => getNameParts(name), [name])
-  const { contextHolder, onFinish } = useFinishEdit({
+  const { onFinish } = useFinishEdit({
     filesArr,
     sameKeywords,
     selectedList,
@@ -78,6 +83,7 @@ const EditMenu = ({
     name,
     isMainPage,
     isEditMany,
+    modal,
   })
 
   useEffect(() => {
@@ -111,6 +117,16 @@ const EditMenu = ({
     !isSelectAllBtn && clearAll && clearAll()
     setIsSelectAllBtn(!isSelectAllBtn)
   }, [clearAll, isSelectAllBtn, selectAll])
+
+  const handleDelete = () => {
+    const onOk = () => {
+      dispatch(removeCurrentPhoto())
+    }
+    const onCancel = () => {
+      console.log('cancel')
+    }
+    modal.confirm(deleteConfirmation(onOk, onCancel))
+  }
 
   return (
     <div>
@@ -203,9 +219,19 @@ const EditMenu = ({
           </Col>
           <Col span={7}>
             <Form.Item>
-              {isEditMany && (
+              {isEditMany ? (
                 <Button className="w-100" onClick={handleSelectAll} type="primary" loading={isExifLoading}>
                   {isSelectAllBtn ? 'Select all' : 'Unselect all'}
+                </Button>
+              ) : (
+                <Button
+                  className="w-100"
+                  type="primary"
+                  disabled={disabledInputs}
+                  loading={isDeleting}
+                  onClick={handleDelete}
+                >
+                  Delete
                 </Button>
               )}
             </Form.Item>

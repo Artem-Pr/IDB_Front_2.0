@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { compose, curry, identity, isEmpty, sortBy } from 'ramda'
-import { Modal } from 'antd'
+import { ModalStaticFunctions } from 'antd/lib/modal/confirm'
 import moment from 'moment'
 
 import {
@@ -16,20 +16,11 @@ import {
 import { Checkboxes, ExtraDownloadingFields, UpdatedObject, UploadingObject } from '../../../redux/types'
 import { updatePhotos } from '../../../redux/reducers/mainPageSlice-reducer'
 import { useEditFilesArr } from './hooks'
+import { duplicateConfig, emptyCheckboxesConfig } from '../../../assets/modulConfig'
 
 const getNewFilePath = (isName: boolean, newName: string, originalName: string, filePath: string) => {
   const preparedFilePath = compose(removeExtraSlash, removeExtraFirstSlash)(filePath)
   return `${preparedFilePath}/${isName ? newName : originalName}`
-}
-
-const duplicateConfig = {
-  title: 'Duplicate names',
-  content: 'Please enter another name',
-}
-
-const emptyCheckboxesConfig = {
-  title: 'Nothing to edit',
-  content: 'Please check one of the checkboxes',
 }
 
 interface Props {
@@ -38,13 +29,22 @@ interface Props {
   selectedList: number[]
   ext: string
   name: string
+  modal: Omit<ModalStaticFunctions, 'warn'>
   isMainPage: boolean
   isEditMany?: boolean
 }
 
-export const useFinishEdit = ({ filesArr, sameKeywords, selectedList, ext, name, isMainPage, isEditMany }: Props) => {
+export const useFinishEdit = ({
+  filesArr,
+  sameKeywords,
+  selectedList,
+  ext,
+  name,
+  isMainPage,
+  isEditMany,
+  modal,
+}: Props) => {
   const dispatch = useDispatch()
-  const [modal, contextHolder] = Modal.useModal()
   const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords, isMainPage)
 
   const fetchUpdatedFiles = useCallback(
@@ -131,5 +131,5 @@ export const useFinishEdit = ({ filesArr, sameKeywords, selectedList, ext, name,
     [editUploadingFiles, ext, fetchUpdatedFiles, filesArr, isEditMany, isMainPage, modal, name, sameKeywords]
   )
 
-  return { contextHolder, onFinish }
+  return { onFinish }
 }

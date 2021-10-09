@@ -2,7 +2,7 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { identity, isEmpty, sortBy } from 'ramda'
 
-import { DownloadingObject, DownloadingRawObject, GalleryPagination, UpdatedObject } from '../types'
+import { DownloadingObject, DownloadingRawObject, ElementsPerPage, GalleryPagination, UpdatedObject } from '../types'
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
@@ -20,6 +20,7 @@ interface State {
   galleryPagination: GalleryPagination
   isExifLoading: boolean
   isGalleryLoading: boolean
+  isDeleteProcessing: boolean
 }
 
 const initialState: State = {
@@ -31,12 +32,13 @@ const initialState: State = {
   excludeTags: [],
   galleryPagination: {
     currentPage: 1,
-    nPerPage: 60,
+    nPerPage: 10,
     resultsCount: 0,
     totalPages: 1,
   },
   isExifLoading: false,
   isGalleryLoading: false,
+  isDeleteProcessing: false,
 }
 
 const uploadSlice = createSlice({
@@ -48,6 +50,9 @@ const uploadSlice = createSlice({
     },
     setDownloadingFiles(state, action: PayloadAction<DownloadingObject[]>) {
       state.downloadingFiles = action.payload
+    },
+    removeDownloadingFilesItem(state, action: PayloadAction<string>) {
+      state.downloadingFiles = current(state).downloadingFiles.filter(({ _id }) => _id !== action.payload)
     },
     addToDSelectedList(state, action: PayloadAction<number>) {
       const set = new Set(current(state).dSelectedList)
@@ -78,7 +83,7 @@ const uploadSlice = createSlice({
       state,
       action: PayloadAction<{
         currentPage?: number
-        nPerPage?: number
+        nPerPage?: ElementsPerPage
         resultsCount?: number
         totalPages?: number
       }>
@@ -98,6 +103,9 @@ const uploadSlice = createSlice({
     setDGalleryLoading(state, action: PayloadAction<boolean>) {
       state.isGalleryLoading = action.payload
     },
+    setIsDeleteProcessing(state, action: PayloadAction<boolean>) {
+      state.isDeleteProcessing = action.payload
+    },
   },
 })
 
@@ -106,6 +114,7 @@ export const {
   removeFromDSelectedList,
   setRawFiles,
   setDownloadingFiles,
+  removeDownloadingFilesItem,
   updateDOpenMenus,
   clearDSelectedList,
   selectAllD,
@@ -115,6 +124,7 @@ export const {
   setGalleryPagination,
   setDLoading,
   setDGalleryLoading,
+  setIsDeleteProcessing,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer
@@ -176,7 +186,25 @@ export const updatePhotos =
       })
       .catch(error => {
         console.log('error', error)
-        errorMessage(error.error, 'updating files error: ')
+        errorMessage(error.message, 'updating files error: ', 0)
       })
       .finally(() => dispatch(setDGalleryLoading(false)))
   }
+
+export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
+  const { dSelectedList, downloadingFiles } = getState().mainPageReducer
+  const currentPhotoId = downloadingFiles[dSelectedList[0]]._id
+  setIsDeleteProcessing(true)
+  api
+    .deletePhoto(currentPhotoId)
+    .then(({ data: { success, error } }) => {
+      success && successMessage('File deleted successfully')
+      success && dispatch(fetchPhotos())
+      error && errorMessage(new Error(error), 'Deleting file error: ', 0)
+    })
+    .catch(error => {
+      console.log('error', error)
+      errorMessage(error.message, 'Deleting file error: ', 0)
+    })
+    .finally(() => setIsDeleteProcessing(false))
+}

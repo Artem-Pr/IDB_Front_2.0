@@ -2,6 +2,7 @@ export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath'
 export type Checkboxes = Record<CheckboxType, boolean>
+export type ElementsPerPage = 10 | 20 | 50 | 100
 
 export interface NameParts {
   shortName: string
@@ -82,7 +83,7 @@ export interface UpdatedObject {
 
 export interface GalleryPagination {
   currentPage: number
-  nPerPage: number
+  nPerPage: ElementsPerPage
   resultsCount: number
   totalPages: number
 }
@@ -101,5 +102,10 @@ export interface IGallery {
 export interface UpdatePhotosRequest {
   files?: DownloadingRawObject[]
   newFilePath?: string[]
+  error?: string
+}
+
+export interface RemovePhoto {
+  success?: string
   error?: string
 }

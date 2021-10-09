@@ -4,6 +4,7 @@ import {
   AxiosPreviews,
   ExifFilesList,
   FetchingGalleryContent,
+  RemovePhoto,
   UpdatedObject,
   UpdatePhotosRequest,
   UploadingObject,
@@ -66,6 +67,14 @@ const mainApi = {
   ): Promise<AxiosResponse<FetchingGalleryContent>> {
     const params = { page, perPage, searchTags, excludeTags, folderPath }
     return instance.post('/filtered-photos', params, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  },
+
+  deletePhoto(_id: string): Promise<AxiosResponse<RemovePhoto>> {
+    return instance.delete(`/photo/${_id}`, {
       headers: {
         'Content-Type': 'application/json',
       },
