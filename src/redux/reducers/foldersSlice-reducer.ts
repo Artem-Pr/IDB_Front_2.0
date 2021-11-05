@@ -1,24 +1,28 @@
 /* eslint functional/immutable-data: 0 */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { reduce } from 'ramda'
 
-import { FolderTreeItem } from '../types'
+import { CheckedDirectoryRequest, DirectoryInfo, FolderTreeItem, QueryResponse } from '../types'
 import { AppThunk } from '../store/store'
 import api from '../../api/api'
-import { errorMessage } from '../../app/common/notifications'
-import { removeExtraSlash } from '../../app/common/utils'
-import { addFolderToFolderTree } from '../../app/common/folderTree'
+import { errorMessage, successMessage } from '../../app/common/notifications'
+import { createFolderTree } from '../../app/common/folderTree'
+import { fetchPhotos } from './mainPageSlice-reducer'
 
 interface State {
   folderTree: FolderTreeItem[]
-  currentFolderPath: string
+  currentFolderInfo: Omit<DirectoryInfo, keyof QueryResponse>
   pathsArr: string[]
   keywordsList: string[]
 }
 
 const initialState: State = {
   folderTree: [],
-  currentFolderPath: '',
+  currentFolderInfo: {
+    numberOfFiles: 0,
+    numberOfSubdirectories: 0,
+    currentFolderPath: '',
+    showInfoModal: false,
+  },
   pathsArr: [],
   keywordsList: [],
 }
@@ -31,7 +35,7 @@ const folderSlice = createSlice({
       state.folderTree = action.payload
     },
     setCurrentFolderPath(state, action: PayloadAction<string>) {
-      state.currentFolderPath = action.payload
+      state.currentFolderInfo.currentFolderPath = action.payload
     },
     setPathsArr(state, action: PayloadAction<string[]>) {
       state.pathsArr = action.payload
@@ -39,20 +43,31 @@ const folderSlice = createSlice({
     setKeywordsList(state, action: PayloadAction<string[]>) {
       state.keywordsList = action.payload
     },
+    setNumberOfFilesInDirectory(state, action: PayloadAction<number>) {
+      state.currentFolderInfo.numberOfFiles = action.payload
+    },
+    setNumberOfSubdirectories(state, action: PayloadAction<number>) {
+      state.currentFolderInfo.numberOfSubdirectories = action.payload
+    },
+    setShowInfoModal(state, action: PayloadAction<boolean>) {
+      state.currentFolderInfo.showInfoModal = action.payload
+    },
   },
 })
 
-export const { setFolderTree, setCurrentFolderPath, setPathsArr, setKeywordsList } = folderSlice.actions
+export const {
+  setFolderTree,
+  setCurrentFolderPath,
+  setPathsArr,
+  setKeywordsList,
+  setNumberOfFilesInDirectory,
+  setNumberOfSubdirectories,
+  setShowInfoModal,
+} = folderSlice.actions
 
 export default folderSlice.reducer
 
 export const fetchPathsList = (): AppThunk => dispatch => {
-  const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
-    const cleanFolderPath = removeExtraSlash(path)
-    return addFolderToFolderTree(cleanFolderPath, folderTree)
-  }
-  const createFolderTree = (paths: string[]) => reduce(updateFolderTree, [], paths)
-
   api
     .getPathsList()
     .then(({ data }) => {
@@ -67,4 +82,38 @@ export const fetchKeywordsList = (): AppThunk => dispatch => {
     .getKeywordsList()
     .then(({ data }) => data.length && dispatch(setKeywordsList(data)))
     .catch(error => errorMessage(error, 'Error when getting Keywords List: '))
+}
+
+export const checkDirectory = (): AppThunk => (dispatch, getState) => {
+  const dispatchDirectoryInfo = ({ numberOfFiles, numberOfSubdirectories }: CheckedDirectoryRequest) => {
+    dispatch(setNumberOfFilesInDirectory(numberOfFiles))
+    dispatch(setNumberOfSubdirectories(numberOfSubdirectories))
+    dispatch(setShowInfoModal(true))
+  }
+
+  const { currentFolderPath } = getState().folderReducer.currentFolderInfo
+  api
+    .checkDirectory(currentFolderPath)
+    .then(({ data }) => {
+      data.error && errorMessage(new Error(data.error), 'Directory checking ERROR: ', 0)
+      data.success && dispatchDirectoryInfo(data)
+    })
+    .catch(error => errorMessage(new Error(error), 'Directory checking ERROR: ', 0))
+}
+
+export const removeDirectory = (): AppThunk => (dispatch, getState) => {
+  const { currentFolderPath } = getState().folderReducer.currentFolderInfo
+  const updateContent = (filePaths: string[]) => {
+    dispatch(setFolderTree(createFolderTree(filePaths)))
+    dispatch(setPathsArr(filePaths))
+    dispatch(fetchPhotos())
+    successMessage('Folder was deleted successfully!')
+  }
+  api
+    .deleteDirectory(currentFolderPath)
+    .then(({ data }) => {
+      data.error && errorMessage(new Error(data.error), 'Directory deleting ERROR: ', 0)
+      data.success && updateContent(data.filePaths)
+    })
+    .catch(error => errorMessage(new Error(error), 'Directory deleting ERROR: ', 0))
 }

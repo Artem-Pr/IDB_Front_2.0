@@ -110,8 +110,8 @@ export const uploadFiles =
     api
       .sendPhotos(filesArr, folderPath)
       .then(({ data }) => {
-        data === 'Файлы загружены' && dispatch(setUploadingStatus('success'))
-        data === 'Ошибка при загрузке файлов' && dispatch(setUploadingStatus('error'))
+        data === 'Files uploaded successfully' && dispatch(setUploadingStatus('success'))
+        data === 'Uploading files error' && dispatch(setUploadingStatus('error'))
       })
       .catch(error => {
         dispatch(setUploadingStatus('error'))

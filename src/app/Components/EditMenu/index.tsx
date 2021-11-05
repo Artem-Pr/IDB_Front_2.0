@@ -16,7 +16,7 @@ import {
 } from '../../common/utils'
 import { isDeleteProcessing, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useFinishEdit } from '../../common/hooks/useFinishEdit'
-import { deleteConfirmation } from '../../../assets/modulConfig'
+import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
 
 const { Option } = Select
@@ -122,10 +122,7 @@ const EditMenu = ({
     const onOk = () => {
       dispatch(removeCurrentPhoto())
     }
-    const onCancel = () => {
-      console.log('cancel')
-    }
-    modal.confirm(deleteConfirmation(onOk, onCancel))
+    modal.confirm(deleteConfirmation({ onOk, type: 'file' }))
   }
 
   return (

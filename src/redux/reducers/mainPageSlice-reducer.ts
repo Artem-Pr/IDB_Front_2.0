@@ -8,7 +8,7 @@ import api from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
 import { convertDownloadingRawObjectArr } from '../../app/common/utils'
 import { setFolderTree, setPathsArr } from './foldersSlice-reducer'
-import { addPathsArrToFolderTree } from '../../app/common/folderTree'
+import { createFolderTree } from '../../app/common/folderTree'
 
 interface State {
   rawFiles: DownloadingRawObject[]
@@ -132,12 +132,15 @@ export default uploadSlice.reducer
 export const fetchPhotos =
   (page?: number): AppThunk =>
   (dispatch, getState) => {
-    const { mainPageReducer, folderReducer } = getState()
+    const {
+      mainPageReducer,
+      folderReducer: { currentFolderInfo },
+    } = getState()
     const { searchTags, excludeTags, galleryPagination } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
     const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
     const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
-    const curFolderPath = folderReducer.currentFolderPath || undefined
+    const curFolderPath = currentFolderInfo.currentFolderPath || undefined
     dispatch(setDGalleryLoading(true))
     api
       .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags, curFolderPath)
@@ -155,24 +158,11 @@ export const fetchPhotos =
 
 export const updatePhotos =
   (updatedObjArr: UpdatedObject[]): AppThunk =>
-  (dispatch, getState) => {
-    const { folderReducer } = getState()
+  dispatch => {
     const addNewPathsArr = (newPathsArr: string[]) => {
-      const { pathsArr, folderTree } = folderReducer
-      dispatch(setPathsArr(sortBy(identity, [...pathsArr, ...newPathsArr])))
-      dispatch(setFolderTree(addPathsArrToFolderTree(newPathsArr, folderTree)))
+      dispatch(setPathsArr(sortBy(identity, newPathsArr)))
+      dispatch(setFolderTree(createFolderTree(newPathsArr)))
     }
-
-    //Todo: to recover this code, need to add an actual "preview" for image and video files,
-    // and possible fix some frontend bugs
-
-    // const dispatchNewFiles = (newFiles: DownloadingRawObject[]) => {
-    //   const { rawFiles, downloadingFiles } = mainPageReducer
-    //   const updateRawFiles = curry(updateFilesArrayItems)('_id', rawFiles)
-    //   const updateDownloadingFiles = curry(updateFilesArrayItems)('_id', downloadingFiles)
-    //   invokableCompose(dispatch, setRawFiles, updateRawFiles)(newFiles)
-    //   invokableCompose(dispatch, setDownloadingFiles, convertDownloadingRawObjectArr, updateDownloadingFiles)(newFiles)
-    // }
 
     dispatch(setDGalleryLoading(true))
     api

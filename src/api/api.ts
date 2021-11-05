@@ -2,9 +2,10 @@ import axios, { AxiosResponse } from 'axios'
 
 import {
   AxiosPreviews,
+  CheckedDirectoryRequest,
   ExifFilesList,
   FetchingGalleryContent,
-  RemovePhoto,
+  QueryResponse,
   UpdatedObject,
   UpdatePhotosRequest,
   UploadingObject,
@@ -12,33 +13,26 @@ import {
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
-  headers: {
-    'Content-Type': 'multipart/form-data',
-  },
 })
 
 const mainApi = {
   sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<string>> {
-    return instance.post(`/upload?path=${path}`, files, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    return instance.post(`/upload?path=${path}`, files)
   },
 
   updatePhotos(files: UpdatedObject[]): Promise<AxiosResponse<UpdatePhotosRequest>> {
-    return instance.put('/update', files, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    return instance.put('/update', files)
   },
 
   sendPhoto(file: any): Promise<AxiosResponse<AxiosPreviews>> {
     const formData = new FormData()
     formData.append('filedata', file)
 
-    return instance.post('/uploadItem', formData)
+    return instance.post('/uploadItem', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
   },
 
   getKeywordsList(): Promise<AxiosResponse<string[]>> {
@@ -49,13 +43,15 @@ const mainApi = {
     return instance.get('/paths')
   },
 
+  checkDirectory(directory: string): Promise<AxiosResponse<CheckedDirectoryRequest>> {
+    return instance.get('/check-directory', {
+      params: { directory },
+    })
+  },
+
   getKeywordsFromPhoto(tempPath: string[]): Promise<AxiosResponse<ExifFilesList>> {
     // need to get something even if exif is not exist
-    return instance.post('/image-exif', tempPath, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    return instance.post('/image-exif', tempPath)
   },
 
   getPhotosByTags(
@@ -66,18 +62,16 @@ const mainApi = {
     folderPath: string | undefined
   ): Promise<AxiosResponse<FetchingGalleryContent>> {
     const params = { page, perPage, searchTags, excludeTags, folderPath }
-    return instance.post('/filtered-photos', params, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    return instance.post('/filtered-photos', params)
   },
 
-  deletePhoto(_id: string): Promise<AxiosResponse<RemovePhoto>> {
-    return instance.delete(`/photo/${_id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  deletePhoto(_id: string): Promise<AxiosResponse<QueryResponse>> {
+    return instance.delete(`/photo/${_id}`)
+  },
+
+  deleteDirectory(directory: string): Promise<AxiosResponse<QueryResponse & { filePaths: string[] }>> {
+    return instance.delete(`/directory`, {
+      params: { name: directory },
     })
   },
 }

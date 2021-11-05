@@ -1,8 +1,10 @@
+import { ReactNode } from 'react'
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath'
 export type Checkboxes = Record<CheckboxType, boolean>
 export type ElementsPerPage = 10 | 20 | 50 | 100
+export type DeleteConfirmationType = 'file' | 'directory'
 
 export interface NameParts {
   shortName: string
@@ -99,13 +101,34 @@ export interface IGallery {
   renderItem?: () => any
 }
 
-export interface UpdatePhotosRequest {
-  files?: DownloadingRawObject[]
-  newFilePath?: string[]
+export interface QueryResponse {
   error?: string
+  success?: string
 }
 
-export interface RemovePhoto {
-  success?: string
-  error?: string
+export interface UpdatePhotosRequest extends QueryResponse {
+  files?: DownloadingRawObject[]
+  newFilePath?: string[]
+}
+
+export interface CheckedDirectoryRequest extends QueryResponse {
+  numberOfFiles: number
+  numberOfSubdirectories: number
+}
+
+export interface DirectoryInfo extends CheckedDirectoryRequest {
+  currentFolderPath: string
+  showInfoModal: boolean
+}
+
+export interface DeleteConfirmation {
+  onOk: () => void
+  type: DeleteConfirmationType
+  onCancel?: () => void
+}
+
+export interface CheckFolderConfirmation {
+  content: ReactNode
+  onOk: () => void
+  onCancel?: () => void
 }

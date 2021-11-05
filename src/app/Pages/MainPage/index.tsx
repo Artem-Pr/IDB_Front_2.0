@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
@@ -6,9 +6,9 @@ import { isEmpty } from 'ramda'
 import { CustomAlert, Gallery, MainMenu } from '../../Components'
 import {
   allDownloadingKeywordsSelector,
+  curFolderInfo,
   dAllSameKeywordsSelector,
   dPageGalleryPropsSelector,
-  folderElement,
   main,
 } from '../../../redux/selectors'
 import { useUpdateFields } from '../../common/hooks/hooks'
@@ -32,11 +32,11 @@ const MainPage = () => {
   const dispatch = useDispatch()
   const [isFilesLoaded, setIsFilesLoaded] = useState(false)
   const { isExifLoading, isGalleryLoading } = useSelector(main)
+  const { currentFolderPath } = useSelector(curFolderInfo)
   const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
   const sameKeywords = useSelector(dAllSameKeywordsSelector)
   const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
-  const { currentFolderPath } = useSelector(folderElement)
   const { updateUploadingFiles } = useUpdateFields(imageArr)
 
   useEffect(() => {
@@ -44,37 +44,53 @@ const MainPage = () => {
     setIsFilesLoaded(true)
   }, [dispatch, imageArr, isFilesLoaded])
 
-  const galleryProps: GalleryProps = {
-    ...mainGalleryProps,
-    removeFromSelectedList: (index: number) => dispatch(removeFromDSelectedList(index)),
-    addToSelectedList: (index: number) => dispatch(addToDSelectedList(index)),
-    clearSelectedList: () => dispatch(clearDSelectedList()),
-    updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
-    isLoading: isGalleryLoading,
-    isMainPage: true,
-  }
+  const galleryProps: GalleryProps = useMemo(
+    () => ({
+      ...mainGalleryProps,
+      removeFromSelectedList: (index: number) => dispatch(removeFromDSelectedList(index)),
+      addToSelectedList: (index: number) => dispatch(addToDSelectedList(index)),
+      clearSelectedList: () => dispatch(clearDSelectedList()),
+      updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
+      isLoading: isGalleryLoading,
+      isMainPage: true,
+    }),
+    [dispatch, isGalleryLoading, mainGalleryProps, updateUploadingFiles]
+  )
 
-  const mainMenuProps = {
-    filesArr: imageArr,
-    selectedList: selectedList,
-    isExifLoading,
-    uniqKeywords,
-    sameKeywords,
-    openKeys: openMenus,
-    currentFolderPath,
-    clearSelectedList: () => dispatch(clearDSelectedList()),
-    selectAll: () => {
-      dispatch(selectAllD())
-      updateUploadingFiles('_', true)
-    },
-    updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
-    updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
-    removeKeyword: (keyword: string) => {
-      const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
-      dispatch(setDownloadingFiles(filesArrWithoutKeyword))
-    },
-    removeFiles: () => dispatch(clearDownloadingState()),
-  }
+  const mainMenuProps = useMemo(
+    () => ({
+      filesArr: imageArr,
+      selectedList: selectedList,
+      isExifLoading,
+      uniqKeywords,
+      sameKeywords,
+      openKeys: openMenus,
+      currentFolderPath,
+      clearSelectedList: () => dispatch(clearDSelectedList()),
+      selectAll: () => {
+        dispatch(selectAllD())
+        updateUploadingFiles('_', true)
+      },
+      updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
+      updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
+      removeKeyword: (keyword: string) => {
+        const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
+        dispatch(setDownloadingFiles(filesArrWithoutKeyword))
+      },
+      removeFiles: () => dispatch(clearDownloadingState()),
+    }),
+    [
+      currentFolderPath,
+      dispatch,
+      imageArr,
+      isExifLoading,
+      openMenus,
+      sameKeywords,
+      selectedList,
+      uniqKeywords,
+      updateUploadingFiles,
+    ]
+  )
 
   return (
     <Layout>

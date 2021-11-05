@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 
 import styles from './index.module.scss'
-import { folderElement } from '../../../redux/selectors'
+import { curFolderInfo } from '../../../redux/selectors'
 import { fetchPhotosPreview, setUploadingStatus } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Dragger } = Upload
@@ -17,7 +17,7 @@ interface Props {
 }
 
 const DropZone = ({ openMenus }: Props) => {
-  const { currentFolderPath } = useSelector(folderElement)
+  const { currentFolderPath } = useSelector(curFolderInfo)
   const dispatch = useDispatch()
   const isEditOne = useMemo(() => openMenus.includes('edit'), [openMenus])
   const isEditMany = useMemo(() => openMenus.includes('template'), [openMenus])

@@ -6,7 +6,7 @@ import { CustomAlert, DropZone, Gallery, MainMenu } from '../../Components'
 import {
   allSameKeywordsSelector,
   allUploadKeywordsSelector,
-  folderElement,
+  curFolderInfo,
   upload,
   uploadPageGalleryPropsSelector,
 } from '../../../redux/selectors'
@@ -40,7 +40,7 @@ const UploadPage = () => {
   const sameKeywords = useSelector(allSameKeywordsSelector)
   const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
-  const { currentFolderPath } = useSelector(folderElement)
+  const { currentFolderPath } = useSelector(curFolderInfo)
   const { updateUploadingFiles } = useUpdateFields(imageArr)
 
   const galleryProps: GalleryProps = {

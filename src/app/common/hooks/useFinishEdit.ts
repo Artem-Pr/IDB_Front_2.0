@@ -16,7 +16,7 @@ import {
 import { Checkboxes, ExtraDownloadingFields, UpdatedObject, UploadingObject } from '../../../redux/types'
 import { updatePhotos } from '../../../redux/reducers/mainPageSlice-reducer'
 import { useEditFilesArr } from './hooks'
-import { duplicateConfig, emptyCheckboxesConfig } from '../../../assets/modulConfig'
+import { duplicateConfig, emptyCheckboxesConfig } from '../../../assets/config/moduleConfig'
 
 const getNewFilePath = (isName: boolean, newName: string, originalName: string, filePath: string) => {
   const preparedFilePath = compose(removeExtraSlash, removeExtraFirstSlash)(filePath)

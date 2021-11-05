@@ -6,6 +6,7 @@ import { UploadingObject } from '../types'
 import { getSameKeywords } from '../../app/common/utils'
 
 export const folderElement = (state: RootState) => state.folderReducer
+export const curFolderInfo = (state: RootState) => state.folderReducer.currentFolderInfo
 export const pathsArr = (state: RootState) => state.folderReducer.pathsArr // TODO: used only in another selector
 export const upload = (state: RootState) => state.uploadReducer
 export const openMenus = (state: RootState) => state.uploadReducer.openMenus

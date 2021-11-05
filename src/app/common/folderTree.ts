@@ -56,9 +56,11 @@ export const getFolderPathFromTreeKey = (tree: FolderTreeItem[], key: string): s
   return removeExtraSlash(result)
 }
 
-export const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
+const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
   const cleanFolderPath = removeExtraSlash(path)
   return addFolderToFolderTree(cleanFolderPath, folderTree)
 }
-export const addPathsArrToFolderTree = (paths: string[], originalFolderTree: FolderTreeItem[] = []) =>
-  reduce(updateFolderTree, originalFolderTree, paths)
+
+export const createFolderTree = (paths: string[]) => {
+  return reduce(updateFolderTree, [], paths)
+}
