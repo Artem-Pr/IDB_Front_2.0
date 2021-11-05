@@ -132,8 +132,8 @@ const MainMenu = ({
         {isUploadingPage ? (
           <Menu.Item key="buttons-menu">
             <div className="d-flex justify-content-around">
-              <Button disabled={!filesArr.length} type="primary" onClick={removeFiles}>
-                Remove files
+              <Button disabled={!filesArr.length} type="primary" onClick={removeFiles} danger>
+                Delete all files
               </Button>
               <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
                 Upload files

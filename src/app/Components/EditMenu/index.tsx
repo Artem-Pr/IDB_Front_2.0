@@ -18,6 +18,7 @@ import { isDeleteProcessing, pathsArrOptionsSelector } from '../../../redux/sele
 import { useFinishEdit } from '../../common/hooks/useFinishEdit'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
+import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Option } = Select
 
@@ -118,9 +119,11 @@ const EditMenu = ({
     setIsSelectAllBtn(!isSelectAllBtn)
   }, [clearAll, isSelectAllBtn, selectAll])
 
+  const isDeleteBtn = useMemo(() => !(isMainPage && isEditMany), [isEditMany, isMainPage])
+
   const handleDelete = () => {
     const onOk = () => {
-      dispatch(removeCurrentPhoto())
+      isMainPage ? dispatch(removeCurrentPhoto()) : dispatch(removeFileFromUploadState())
     }
     modal.confirm(deleteConfirmation({ onOk, type: 'file' }))
   }
@@ -201,7 +204,7 @@ const EditMenu = ({
         </Row>
 
         <Row gutter={10}>
-          <Col span={7} offset={9}>
+          <Col span={7} offset={isDeleteBtn && isEditMany ? 2 : 9}>
             <Form.Item>
               <Button
                 className="w-100"
@@ -214,25 +217,31 @@ const EditMenu = ({
               </Button>
             </Form.Item>
           </Col>
-          <Col span={7}>
-            <Form.Item>
-              {isEditMany ? (
+          {isEditMany && (
+            <Col span={7}>
+              <Form.Item>
                 <Button className="w-100" onClick={handleSelectAll} type="primary" loading={isExifLoading}>
                   {isSelectAllBtn ? 'Select all' : 'Unselect all'}
                 </Button>
-              ) : (
+              </Form.Item>
+            </Col>
+          )}
+          {isDeleteBtn && (
+            <Col span={7}>
+              <Form.Item>
                 <Button
                   className="w-100"
                   type="primary"
                   disabled={disabledInputs}
                   loading={isDeleting}
                   onClick={handleDelete}
+                  danger
                 >
                   Delete
                 </Button>
-              )}
-            </Form.Item>
-          </Col>
+              </Form.Item>
+            </Col>
+          )}
         </Row>
       </Form>
       {contextHolder}

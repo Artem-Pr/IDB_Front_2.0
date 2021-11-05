@@ -169,3 +169,10 @@ export const fetchFullExif =
         errorMessage(error, 'Error when getting Exif: ')
       })
   }
+
+export const removeFileFromUploadState = (): AppThunk => (dispatch, getState) => {
+  const { uploadingFiles, selectedList } = getState().uploadReducer
+  const filteredUploadingFiles = uploadingFiles.filter((_, idx) => !selectedList.includes(idx))
+  dispatch(updateUploadingFilesArr(filteredUploadingFiles))
+  dispatch(clearSelectedList())
+}

@@ -1,7 +1,7 @@
 import { CheckFolderConfirmation, DeleteConfirmation, DeleteConfirmationType } from '../../redux/types'
 
 export const deleteMessageConst: Record<DeleteConfirmationType, string> = {
-  file: 'Are you sure you want to delete this file?',
+  file: 'Are you sure you want to delete selected files?',
   directory: 'Are you sure you want to delete this Directory?',
 }
 
