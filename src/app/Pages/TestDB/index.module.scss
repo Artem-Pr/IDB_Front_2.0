@@ -1,0 +1,17 @@
+.container {
+  height: calc(100vh - 64px);
+  padding: 20px;
+  overflow: scroll;
+}
+
+.progressBar {
+  padding: 5px 10px !important;
+}
+
+.card {
+  :global {
+    .ant-card-body {
+      padding-top: 0 !important;
+    }
+  }
+}

@@ -4,7 +4,7 @@ import { identity, isEmpty, sortBy } from 'ramda'
 
 import { DownloadingObject, DownloadingRawObject, ElementsPerPage, GalleryPagination, UpdatedObject } from '../types'
 import { AppThunk } from '../store/store'
-import api from '../../api/api'
+import { mainApi } from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
 import { convertDownloadingRawObjectArr } from '../../app/common/utils'
 import { setFolderTree, setPathsArr } from './foldersSlice-reducer'
@@ -142,7 +142,7 @@ export const fetchPhotos =
     const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
     const curFolderPath = currentFolderInfo.currentFolderPath || undefined
     dispatch(setDGalleryLoading(true))
-    api
+    mainApi
       .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags, curFolderPath)
       .then(({ data }) => {
         const rawFiles: DownloadingRawObject[] = data?.files || []
@@ -165,7 +165,7 @@ export const updatePhotos =
     }
 
     dispatch(setDGalleryLoading(true))
-    api
+    mainApi
       .updatePhotos(updatedObjArr)
       .then(response => {
         const { error, files, newFilePath } = response.data
@@ -185,7 +185,7 @@ export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
   const { dSelectedList, downloadingFiles } = getState().mainPageReducer
   const currentPhotoId = downloadingFiles[dSelectedList[0]]._id
   setIsDeleteProcessing(true)
-  api
+  mainApi
     .deletePhoto(currentPhotoId)
     .then(({ data: { success, error } }) => {
       success && successMessage('File deleted successfully')

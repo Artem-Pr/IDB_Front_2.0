@@ -10,12 +10,13 @@ import {
   UpdatePhotosRequest,
   UploadingObject,
 } from '../redux/types'
+import { TestType } from '../redux/types/testPageTypes'
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
 })
 
-const mainApi = {
+export const mainApi = {
   sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<string>> {
     return instance.post(`/upload?path=${path}`, files)
   },
@@ -76,4 +77,8 @@ const mainApi = {
   },
 }
 
-export default mainApi
+export const testApi = {
+  matchNumberOfFiles(pid: number): Promise<AxiosResponse<TestType>> {
+    return instance.post(`/test/matching-files`, { pid })
+  },
+}

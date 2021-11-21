@@ -17,6 +17,7 @@ export const downloadingFiles = (state: RootState) => state.mainPageReducer.down
 export const dSelectedList = (state: RootState) => state.mainPageReducer.dSelectedList
 export const pagination = (state: RootState) => state.mainPageReducer.galleryPagination
 export const isDeleteProcessing = (state: RootState) => state.mainPageReducer.isDeleteProcessing
+export const numberOfFilesChecking = (state: RootState) => state.testsReducer.firstTest
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
 

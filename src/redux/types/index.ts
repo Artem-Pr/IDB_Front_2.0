@@ -6,6 +6,12 @@ export type Checkboxes = Record<CheckboxType, boolean>
 export type ElementsPerPage = 10 | 20 | 50 | 100
 export type DeleteConfirmationType = 'file' | 'directory'
 
+export enum Pages {
+  MAIN = 'mainPage',
+  UPLOAD = 'uploadPage',
+  TEST_DB = 'testDBPage',
+}
+
 export interface NameParts {
   shortName: string
   ext: string

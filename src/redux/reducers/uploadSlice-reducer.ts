@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { compose, curry, keys, reduce } from 'ramda'
 
 import { AppThunk } from '../store/store'
-import api from '../../api/api'
+import { mainApi } from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
 import { ExifFilesList, FullExifObj, LoadingStatus, UploadingObject } from '../types'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../app/common/utils'
@@ -107,7 +107,7 @@ export default uploadSlice.reducer
 export const uploadFiles =
   (filesArr: UploadingObject[], folderPath: string): AppThunk =>
   dispatch => {
-    api
+    mainApi
       .sendPhotos(filesArr, folderPath)
       .then(({ data }) => {
         data === 'Files uploaded successfully' && dispatch(setUploadingStatus('success'))
@@ -123,7 +123,7 @@ export const fetchPhotosPreview =
   (file: any): AppThunk =>
   dispatch => {
     const { lastModified: changeDate, name, size, type } = file
-    api
+    mainApi
       .sendPhoto(file)
       .then(({ data }) => {
         const { preview, tempPath } = data
@@ -146,7 +146,7 @@ export const fetchPhotosPreview =
 export const fetchFullExif =
   (tempPathArr: string[]): AppThunk =>
   async (dispatch, getState) => {
-    await api
+    await mainApi
       .getKeywordsFromPhoto(tempPathArr)
       .then(({ data }) => {
         dispatch(updateFullExifFile(data))

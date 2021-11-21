@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { CheckedDirectoryRequest, DirectoryInfo, FolderTreeItem, QueryResponse } from '../types'
 import { AppThunk } from '../store/store'
-import api from '../../api/api'
+import { mainApi } from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
 import { createFolderTree } from '../../app/common/folderTree'
 import { fetchPhotos } from './mainPageSlice-reducer'
@@ -68,7 +68,7 @@ export const {
 export default folderSlice.reducer
 
 export const fetchPathsList = (): AppThunk => dispatch => {
-  api
+  mainApi
     .getPathsList()
     .then(({ data }) => {
       data.length && dispatch(setPathsArr(data))
@@ -78,7 +78,7 @@ export const fetchPathsList = (): AppThunk => dispatch => {
 }
 
 export const fetchKeywordsList = (): AppThunk => dispatch => {
-  api
+  mainApi
     .getKeywordsList()
     .then(({ data }) => data.length && dispatch(setKeywordsList(data)))
     .catch(error => errorMessage(error, 'Error when getting Keywords List: '))
@@ -92,7 +92,7 @@ export const checkDirectory = (): AppThunk => (dispatch, getState) => {
   }
 
   const { currentFolderPath } = getState().folderReducer.currentFolderInfo
-  api
+  mainApi
     .checkDirectory(currentFolderPath)
     .then(({ data }) => {
       data.error && errorMessage(new Error(data.error), 'Directory checking ERROR: ', 0)
@@ -109,7 +109,7 @@ export const removeDirectory = (): AppThunk => (dispatch, getState) => {
     dispatch(fetchPhotos())
     successMessage('Folder was deleted successfully!')
   }
-  api
+  mainApi
     .deleteDirectory(currentFolderPath)
     .then(({ data }) => {
       data.error && errorMessage(new Error(data.error), 'Directory deleting ERROR: ', 0)

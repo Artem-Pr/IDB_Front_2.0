@@ -13,6 +13,7 @@ import {
 } from '../../../redux/reducers/foldersSlice-reducer'
 import { curFolderInfo, pathsArr } from '../../../redux/selectors'
 import { checkFolderConfirmation, deleteMessageConst } from '../../../assets/config/moduleConfig'
+import { Pages } from '../../../redux/types'
 
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
@@ -60,11 +61,14 @@ const Header = () => {
     <HeaderLayout className="d-flex justify-content-between align-items-center">
       <Title>IDBase</Title>
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[currentPageNumber]}>
-        <Menu.Item key="1">
+        <Menu.Item key={Pages.MAIN}>
           <NavLink to="/">Main page</NavLink>
         </Menu.Item>
-        <Menu.Item key="2">
+        <Menu.Item key={Pages.UPLOAD}>
           <NavLink to="/upload">Upload</NavLink>
+        </Menu.Item>
+        <Menu.Item key={Pages.TEST_DB}>
+          <NavLink to="/test-db">Database tests</NavLink>
         </Menu.Item>
       </Menu>
       {contextHolder}
