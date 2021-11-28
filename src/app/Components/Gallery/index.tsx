@@ -124,9 +124,9 @@ const Gallery = ({
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
       <div className={cn(styles.wrapper, 'd-grid')}>
-        {imageArr.map(({ preview, name, tempPath }, i) => (
+        {imageArr.map(({ preview, name, tempPath, _id }, i) => (
           <div
-            key={preview}
+            key={preview + _id}
             className={cn(
               styles.item,
               {

@@ -21,6 +21,8 @@
 
               & img {
                 height: 100%;
+                width: 100%;
+                object-fit: contain;
               }
             }
           }
@@ -28,4 +30,16 @@
       }
     }
   }
+}
+
+.image-gallery-slides {
+  height: 100%;
+  width: 100%;
+}
+
+.image-gallery-slide {
+  height: 100%;
+}
+.image-gallery-slide .image-gallery-image {
+  height: 100%;
 }
