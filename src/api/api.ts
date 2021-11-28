@@ -10,7 +10,7 @@ import {
   UpdatePhotosRequest,
   UploadingObject,
 } from '../redux/types'
-import { TestType } from '../redux/types/testPageTypes'
+import { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
@@ -78,7 +78,10 @@ export const mainApi = {
 }
 
 export const testApi = {
-  matchNumberOfFiles(pid: number): Promise<AxiosResponse<TestType>> {
+  matchNumberOfFiles(pid: number): Promise<AxiosResponse<MatchingNumberOfFilesTest>> {
     return instance.post(`/test/matching-files`, { pid })
+  },
+  matchVideoFiles(pid: number): Promise<AxiosResponse<MatchingVideoFilesTest>> {
+    return instance.post(`/test/matching-videos`, { pid })
   },
 }
