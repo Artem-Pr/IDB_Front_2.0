@@ -51,7 +51,7 @@ export const getFolderPathFromTreeKey = (tree: FolderTreeItem[], key: string): s
   const getFoundElementPath = (targetKey: string, { children, title }: FolderTreeItem): string =>
     !children ? title : `${title}/${getFolderPathFromTreeKey(children, targetKey)}`
 
-  const foundItem = tree.find(item => key.startsWith(item.key))
+  const foundItem = tree.find(item => key === item.key || key.startsWith(`${item.key}-`))
   const result = foundItem ? getFoundElementPath(key, foundItem) : ''
   return removeExtraSlash(result)
 }

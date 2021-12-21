@@ -5,17 +5,23 @@ import { Content } from 'antd/es/layout/layout'
 import styles from './index.module.scss'
 import MatchingNumberOfFiles from './tests/MatchingNumberOfFiles'
 import MatchingVideoFiles from './tests/MatchingVideoFiles'
+import RebuildPathsConfig from './tests/RebuildPathsConfig'
 
 const TestDB = () => {
   return (
     <Layout>
       <Content className={styles.container}>
         <Row gutter={[16, 16]}>
-          <Col span={12}>
+          <Col className={styles.col} span={12}>
             <MatchingNumberOfFiles />
           </Col>
-          <Col span={12}>
+          <Col className={styles.col} span={12}>
             <MatchingVideoFiles />
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col className={styles.col} span={12}>
+            <RebuildPathsConfig />
           </Col>
         </Row>
       </Content>

@@ -2,7 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { omit } from 'ramda'
 
-import { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../types/testPageTypes'
+import { MatchingNumberOfFilesTest, MatchingVideoFilesTest, RebuildPathsConfigTest } from '../types/testPageTypes'
 import { AppThunk } from '../store/store'
 import { testApi } from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
@@ -11,6 +11,7 @@ import { QueryResponse } from '../types'
 interface State {
   firstTest: MatchingNumberOfFilesTest
   secondTest: MatchingVideoFilesTest
+  thirdTest: RebuildPathsConfigTest
 }
 
 const initialState: State = {
@@ -47,6 +48,9 @@ const initialState: State = {
     progress: 0,
     pid: 0,
   },
+  thirdTest: {
+    progress: 0,
+  },
 }
 
 const testsSlice = createSlice({
@@ -59,6 +63,9 @@ const testsSlice = createSlice({
     setVideoFiles(state, action: PayloadAction<MatchingVideoFilesTest>) {
       state.secondTest = action.payload
     },
+    setThirdTestProgress(state, action: PayloadAction<number>) {
+      state.thirdTest.progress = action.payload
+    },
     refreshFirstTestPid(state) {
       state.firstTest.pid = 0
     },
@@ -68,7 +75,8 @@ const testsSlice = createSlice({
   },
 })
 
-export const { setNumberOfFiles, refreshFirstTestPid, refreshSecondTestPid, setVideoFiles } = testsSlice.actions
+export const { setNumberOfFiles, refreshFirstTestPid, refreshSecondTestPid, setVideoFiles, setThirdTestProgress } =
+  testsSlice.actions
 
 export default testsSlice.reducer
 
@@ -78,7 +86,6 @@ export const fetchFileTests =
     testApi
       .matchNumberOfFiles(Number(pid) || 0)
       .then(({ data }) => {
-        console.log('data.pid', data.pid)
         data.success &&
           dispatch(setNumberOfFiles(omit<MatchingNumberOfFilesTest, keyof QueryResponse>(['error', 'success'], data)))
         data.error
@@ -94,7 +101,6 @@ export const fetchVideoFileTests =
     testApi
       .matchVideoFiles(Number(pid) || 0)
       .then(({ data }) => {
-        console.log('data.pid', data.pid)
         data.success &&
           dispatch(setVideoFiles(omit<MatchingVideoFilesTest, keyof QueryResponse>(['error', 'success'], data)))
         data.error
@@ -103,3 +109,13 @@ export const fetchVideoFileTests =
       })
       .catch(error => errorMessage(error, 'Error when getting video files: '))
   }
+
+export const rebuildPathsConfig = (): AppThunk => dispatch => {
+  testApi
+    .rebuildFoldersConfig()
+    .then(({ data }) => {
+      data.success && dispatch(setThirdTestProgress(100))
+      data.error && errorMessage(new Error(data.error), 'Rebuild paths config: Failure', 0)
+    })
+    .catch(error => errorMessage(error, 'Error when rebuild paths config: '))
+}

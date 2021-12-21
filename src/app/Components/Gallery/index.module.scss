@@ -16,7 +16,8 @@
   border-radius: 5px;
 
   &:hover > .imgInfo {
-    opacity: 0.6;
+    visibility: visible;
+    z-index: 1;
   }
 
   &:global.active {
@@ -25,23 +26,24 @@
 }
 
 .imgInfo {
-  height: 30%;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: -40px;
+  left: -50px;
+  right: -50px;
   padding: 5px;
-  background: black;
-  opacity: 0;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  transition: opacity 0.3s ease;
+  background: $mainTitle;
+  box-shadow: 0 0 21px 8px rgba(34, 60, 80, 0.26);
+  border-radius: 10px;
+  visibility: hidden;
+}
+
+.imgInfoText {
+  padding: 5px;
 }
 
 .imgName {
   margin: 0;
-  color: white;
   font-weight: 700;
-  text-overflow: ellipsis;
+  overflow-wrap: break-word;
   overflow: hidden;
 }
 
@@ -50,6 +52,11 @@
   height: 100%;
   object-fit: cover;
   border-radius: 5px;
+
+  &.imgDesc {
+    object-fit: contain;
+    height: auto;
+  }
 }
 
 .iframeStyles {

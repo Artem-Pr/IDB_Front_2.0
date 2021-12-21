@@ -84,4 +84,7 @@ export const testApi = {
   matchVideoFiles(pid: number): Promise<AxiosResponse<MatchingVideoFilesTest>> {
     return instance.post(`/test/matching-videos`, { pid })
   },
+  rebuildFoldersConfig(): Promise<AxiosResponse<QueryResponse>> {
+    return instance.get('/rebuild-paths-config')
+  },
 }

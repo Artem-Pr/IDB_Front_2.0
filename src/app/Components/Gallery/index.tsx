@@ -141,23 +141,27 @@ const Gallery = ({
               className={cn(
                 styles.imgInfo,
                 `${isEditMenu || isTemplateMenu ? 'd-none' : 'd-flex'} `,
-                'position-absolute align-items-center'
+                'position-absolute align-items-center flex-column'
               )}
             >
-              <h3 style={{ width: '70%' }} className={styles.imgName}>
-                {name}
-              </h3>
-              <h3
-                style={{ marginLeft: 'auto' }}
-                className={cn(styles.imgName, 'pointer')}
-                onClick={e => getExif(e, tempPath)}
-              >
-                Exif
-              </h3>
+              <img className={cn(styles.img, styles.imgDesc)} src={preview} alt="image-preview" />
+              <div className={cn(styles.imgInfoText, 'd-flex w-100')}>
+                <h3 style={{ width: '70%' }} className={styles.imgName}>
+                  {name}
+                </h3>
+                <h3
+                  style={{ marginLeft: 'auto' }}
+                  className={cn(styles.imgName, 'pointer')}
+                  onClick={e => getExif(e, tempPath)}
+                >
+                  Exif
+                </h3>
+              </div>
             </div>
             <img className={styles.img} src={preview} alt="image-preview" />
           </div>
         ))}
+
         <Modal title="Exif list" footer={null} visible={showModal} onCancel={() => setShowModal(false)}>
           {compose(
             map((item: string) => (
@@ -169,6 +173,7 @@ const Gallery = ({
             keys
           )(exif)}
         </Modal>
+
         {isMainPage ? (
           <Modal
             visible={showImageModal}
