@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { MouseEvent, useEffect, useMemo, useState } from 'react'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
 import { Modal, Spin } from 'antd'
@@ -7,6 +7,11 @@ import ImageGallery from 'react-image-gallery'
 
 import styles from './index.module.scss'
 import { ExifFilesList, ExtraDownloadingFields, IGallery, UploadingObject } from '../../../redux/types'
+
+interface VideoItemProps {
+  originalPath: string
+  preview: string
+}
 
 export interface GalleryProps {
   openMenus: string[]
@@ -36,40 +41,42 @@ const Gallery = ({
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
-  const [showVideo, setShowVideo] = useState(false)
   const [showPlayButton, setShowPlayButton] = useState(true)
   const [showFullscreenButton, setShowFullscreenButton] = useState(true)
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [galleryArr, setGalleryArr] = useState<IGallery[]>([])
   const isEditMenu = useMemo(() => openMenus.includes('edit'), [openMenus])
   const isTemplateMenu = useMemo(() => openMenus.includes('template'), [openMenus])
+  const isPropertiesMenu = useMemo(() => openMenus.includes('properties'), [openMenus])
   const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
 
-  const handlePlay = () => {
-    setShowVideo(true)
-    setShowPlayButton(false)
-    setShowFullscreenButton(false)
+  const VideoItem = ({ originalPath, preview }: VideoItemProps) => {
+    const [showVideo, setShowVideo] = useState(false)
+
+    const handlePlay = () => {
+      setShowVideo(true)
+      setShowPlayButton(false)
+      setShowFullscreenButton(false)
+    }
+
+    return (
+      <>
+        {showVideo ? (
+          <Iframe url={originalPath} width="80vm" id="myId" className={styles.iframeStyles} position="relative" />
+        ) : (
+          <div>
+            <div className={styles.playButton} onClick={handlePlay} />
+            <img src={preview} alt="video-preview" />
+          </div>
+        )}
+      </>
+    )
   }
 
-  const videoItem = useCallback(
-    (originalPath: string, preview: string) => {
-      return (
-        <>
-          {showVideo ? (
-            <Iframe url={originalPath} width="80vm" id="myId" className={styles.iframeStyles} position="relative" />
-          ) : (
-            <div>
-              <div className={styles.playButton} onClick={handlePlay} />
-              <img src={preview} alt="video-preview" />
-            </div>
-          )}
-        </>
-      )
-    },
-    [showVideo]
-  )
-
   useEffect(() => {
+    const showVideoItem = (originalPath: string, preview: string) => () =>
+      <VideoItem originalPath={originalPath} preview={preview} />
+
     isMainPage &&
       setGalleryArr(
         imageArr.map(item => {
@@ -77,13 +84,13 @@ const Gallery = ({
             thumbnail: item.preview,
             original: item.originalPath || '',
             ...(item.type.startsWith('video') && {
-              renderItem: () => videoItem(item.originalPath || '', item.preview),
+              renderItem: showVideoItem(item.originalPath || '', item.preview),
             }),
           }
           return galleryItem
         })
       )
-  }, [imageArr, isMainPage, showVideo, videoItem])
+  }, [imageArr, isMainPage])
 
   const getExif = (e: MouseEvent, tempPath: string) => {
     e.stopPropagation()
@@ -109,16 +116,16 @@ const Gallery = ({
       setCurrentImage(i)
     }
 
+    isPropertiesMenu && selectOnlyOne()
     isEditMenu && selectOnlyOne()
     isTemplateMenu && selectAnyQuantity()
-    !isEditMenu && !isTemplateMenu && showImageModal()
+    !(isEditMenu || isTemplateMenu || isPropertiesMenu) && showImageModal()
   }
 
   const handleSlide = (currentIndex: number) => {
     setCurrentImage(currentIndex)
     setShowPlayButton(true)
     setShowFullscreenButton(true)
-    setShowVideo(false)
   }
 
   return (
@@ -131,7 +138,7 @@ const Gallery = ({
               styles.item,
               {
                 active: selectedList.includes(i),
-                pointer: isEditMenu || isTemplateMenu,
+                pointer: isEditMenu || isTemplateMenu || isPropertiesMenu,
               },
               'position-relative'
             )}
@@ -140,7 +147,7 @@ const Gallery = ({
             <div
               className={cn(
                 styles.imgInfo,
-                `${isEditMenu || isTemplateMenu ? 'd-none' : 'd-flex'} `,
+                `${isEditMenu || isTemplateMenu || isPropertiesMenu ? 'd-none' : 'd-flex'} `,
                 'position-absolute align-items-center flex-column'
               )}
             >

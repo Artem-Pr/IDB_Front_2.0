@@ -32,7 +32,7 @@ const initialState: State = {
   excludeTags: [],
   galleryPagination: {
     currentPage: 1,
-    nPerPage: 10,
+    nPerPage: 50,
     resultsCount: 0,
     totalPages: 1,
   },

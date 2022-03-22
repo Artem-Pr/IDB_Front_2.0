@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Empty, Layout, Menu, Spin } from 'antd'
-import { UserOutlined, EditFilled, CreditCardFilled, ProfileOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+  UserOutlined,
+  EditFilled,
+  CreditCardFilled,
+  ProfileOutlined,
+  SearchOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons'
 import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { EditMenu, Folders, SearchMenu } from '../index'
 import { ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
+import PropertyMenu from '../PropertyMenu'
 import { folderElement } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
@@ -98,6 +106,9 @@ const MainMenu = ({
         </SubMenu>
         <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
           <Folders isMainPage={isMainPage} />
+        </SubMenu>
+        <SubMenu key="properties" icon={<InfoCircleOutlined />} title="Properties" onTitleClick={handleTitleClick}>
+          <PropertyMenu filesArr={filesArr} selectedList={selectedList} />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
           <EditMenu
