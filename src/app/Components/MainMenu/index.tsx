@@ -38,6 +38,7 @@ interface Props {
   updateKeywords: () => Promise<any>
   removeKeyword: (keyword: string) => void
   removeFiles: () => void
+  isComparisonPage?: boolean
 }
 
 const MainMenu = ({
@@ -48,6 +49,7 @@ const MainMenu = ({
   updateKeywords,
   removeKeyword,
   currentFolderPath,
+  isComparisonPage,
   clearSelectedList,
   selectAll,
   isExifLoading,
@@ -104,9 +106,11 @@ const MainMenu = ({
         <SubMenu key="search" icon={<SearchOutlined />} title="Search" onTitleClick={handleTitleClick}>
           <SearchMenu />
         </SubMenu>
-        <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
-          <Folders isMainPage={isMainPage} />
-        </SubMenu>
+        {!isComparisonPage && (
+          <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
+            <Folders isMainPage={isMainPage} />
+          </SubMenu>
+        )}
         <SubMenu key="properties" icon={<InfoCircleOutlined />} title="Properties" onTitleClick={handleTitleClick}>
           <PropertyMenu filesArr={filesArr} selectedList={selectedList} />
         </SubMenu>

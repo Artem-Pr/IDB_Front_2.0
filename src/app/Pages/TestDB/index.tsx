@@ -6,6 +6,7 @@ import styles from './index.module.scss'
 import MatchingNumberOfFiles from './tests/MatchingNumberOfFiles'
 import MatchingVideoFiles from './tests/MatchingVideoFiles'
 import RebuildPathsConfig from './tests/RebuildPathsConfig'
+import CheckFilesWithSameNames from './tests/CheckFilesWithSameNames'
 
 const TestDB = () => {
   return (
@@ -22,6 +23,9 @@ const TestDB = () => {
         <Row gutter={[16, 16]}>
           <Col className={styles.col} span={12}>
             <RebuildPathsConfig />
+          </Col>
+          <Col className={styles.col} span={12}>
+            <CheckFilesWithSameNames />
           </Col>
         </Row>
       </Content>

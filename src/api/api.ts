@@ -60,9 +60,11 @@ export const mainApi = {
     perPage: number,
     searchTags: string[] | undefined,
     excludeTags: string[] | undefined,
-    folderPath: string | undefined
+    folderPath: string | undefined,
+    isNameComparison?: boolean,
+    comparisonFolder?: string
   ): Promise<AxiosResponse<FetchingGalleryContent>> {
-    const params = { page, perPage, searchTags, excludeTags, folderPath }
+    const params = { page, perPage, searchTags, excludeTags, folderPath, isNameComparison, comparisonFolder }
     return instance.post('/filtered-photos', params)
   },
 

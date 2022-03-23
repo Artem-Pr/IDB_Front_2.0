@@ -3,6 +3,8 @@ import { Layout } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
 
+import { useLocation } from 'react-router-dom'
+
 import { CustomAlert, Gallery, MainMenu } from '../../Components'
 import {
   allDownloadingKeywordsSelector,
@@ -30,6 +32,7 @@ const { Content } = Layout
 
 const MainPage = () => {
   const dispatch = useDispatch()
+  const location = useLocation()
   const [isFilesLoaded, setIsFilesLoaded] = useState(false)
   const { isExifLoading, isGalleryLoading } = useSelector(main)
   const { currentFolderPath } = useSelector(curFolderInfo)
@@ -39,10 +42,14 @@ const MainPage = () => {
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { updateUploadingFiles } = useUpdateFields(imageArr)
 
+  const query = new URLSearchParams(location.search)
+  const isComparisonPage = Boolean(query.get('comparison'))
+  const folderParam = query.get('folder') || undefined
+
   useEffect(() => {
-    isEmpty(imageArr) && !isFilesLoaded && dispatch(fetchPhotos())
+    isEmpty(imageArr) && !isFilesLoaded && dispatch(fetchPhotos(isComparisonPage, folderParam))
     setIsFilesLoaded(true)
-  }, [dispatch, imageArr, isFilesLoaded])
+  }, [dispatch, folderParam, imageArr, isComparisonPage, isFilesLoaded])
 
   const galleryProps: GalleryProps = useMemo(
     () => ({
@@ -66,6 +73,7 @@ const MainPage = () => {
       sameKeywords,
       openKeys: openMenus,
       currentFolderPath,
+      isComparisonPage,
       clearSelectedList: () => dispatch(clearDSelectedList()),
       selectAll: () => {
         dispatch(selectAllD())
@@ -83,6 +91,7 @@ const MainPage = () => {
       currentFolderPath,
       dispatch,
       imageArr,
+      isComparisonPage,
       isExifLoading,
       openMenus,
       sameKeywords,
@@ -99,9 +108,9 @@ const MainPage = () => {
         <Content>
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
-          <PaginationMenu />
+          {!isComparisonPage && <PaginationMenu />}
           <Gallery {...galleryProps} />
-          <PaginationMenu />
+          {!isComparisonPage && <PaginationMenu />}
         </Content>
       </Layout>
     </Layout>

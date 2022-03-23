@@ -130,7 +130,7 @@ export const {
 export default uploadSlice.reducer
 
 export const fetchPhotos =
-  (page?: number): AppThunk =>
+  (isNameComparison?: boolean, comparisonFolder?: string): AppThunk =>
   (dispatch, getState) => {
     const {
       mainPageReducer,
@@ -143,7 +143,15 @@ export const fetchPhotos =
     const curFolderPath = currentFolderInfo.currentFolderPath || undefined
     dispatch(setDGalleryLoading(true))
     mainApi
-      .getPhotosByTags(page || currentPage, nPerPage, curSearchTags, curExcludeTags, curFolderPath)
+      .getPhotosByTags(
+        currentPage,
+        nPerPage,
+        curSearchTags,
+        curExcludeTags,
+        curFolderPath,
+        isNameComparison,
+        comparisonFolder
+      )
       .then(({ data }) => {
         const rawFiles: DownloadingRawObject[] = data?.files || []
         const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
