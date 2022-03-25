@@ -11,6 +11,7 @@ import {
   UploadingObject,
 } from '../redux/types'
 import { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
+import { MimeTypes } from '../redux/types/MimeTypes'
 
 const instance = axios.create({
   baseURL: 'http://localhost:5000',
@@ -60,11 +61,12 @@ export const mainApi = {
     perPage: number,
     searchTags: string[] | undefined,
     excludeTags: string[] | undefined,
+    mimeTypes: MimeTypes[] | undefined,
     folderPath: string | undefined,
     isNameComparison?: boolean,
     comparisonFolder?: string
   ): Promise<AxiosResponse<FetchingGalleryContent>> {
-    const params = { page, perPage, searchTags, excludeTags, folderPath, isNameComparison, comparisonFolder }
+    const params = { page, perPage, searchTags, excludeTags, mimeTypes, folderPath, isNameComparison, comparisonFolder }
     return instance.post('/filtered-photos', params)
   },
 

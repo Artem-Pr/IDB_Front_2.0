@@ -13,6 +13,7 @@ export const openMenus = (state: RootState) => state.uploadReducer.openMenus
 export const uploadingFiles = (state: RootState) => state.uploadReducer.uploadingFiles
 export const selectedList = (state: RootState) => state.uploadReducer.selectedList
 export const main = (state: RootState) => state.mainPageReducer
+export const searchMenu = (state: RootState) => state.mainPageReducer.searchMenu
 export const downloadingFiles = (state: RootState) => state.mainPageReducer.downloadingFiles
 export const dSelectedList = (state: RootState) => state.mainPageReducer.dSelectedList
 export const pagination = (state: RootState) => state.mainPageReducer.galleryPagination

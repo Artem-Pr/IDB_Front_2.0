@@ -9,14 +9,18 @@ import { errorMessage, successMessage } from '../../app/common/notifications'
 import { convertDownloadingRawObjectArr } from '../../app/common/utils'
 import { setFolderTree, setPathsArr } from './foldersSlice-reducer'
 import { createFolderTree } from '../../app/common/folderTree'
+import { MimeTypes } from '../types/MimeTypes'
 
 interface State {
   rawFiles: DownloadingRawObject[]
   downloadingFiles: DownloadingObject[]
   dSelectedList: number[]
   dOpenMenus: string[]
-  searchTags: string[]
-  excludeTags: string[]
+  searchMenu: {
+    searchTags: string[]
+    excludeTags: string[]
+    mimetypes: MimeTypes[]
+  }
   galleryPagination: GalleryPagination
   isExifLoading: boolean
   isGalleryLoading: boolean
@@ -28,8 +32,11 @@ const initialState: State = {
   downloadingFiles: [],
   dSelectedList: [],
   dOpenMenus: [],
-  searchTags: [],
-  excludeTags: [],
+  searchMenu: {
+    searchTags: [],
+    excludeTags: [],
+    mimetypes: [],
+  },
   galleryPagination: {
     currentPage: 1,
     nPerPage: 50,
@@ -74,10 +81,13 @@ const uploadSlice = createSlice({
       state.dSelectedList = state.downloadingFiles.map((_, i) => i)
     },
     setSearchTags(state, action: PayloadAction<string[]>) {
-      state.searchTags = action.payload
+      state.searchMenu.searchTags = action.payload
     },
     setExcludeTags(state, action: PayloadAction<string[]>) {
-      state.excludeTags = action.payload
+      state.searchMenu.excludeTags = action.payload
+    },
+    setMimeTypes(state, action: PayloadAction<MimeTypes[]>) {
+      state.searchMenu.mimetypes = action.payload
     },
     setGalleryPagination(
       state,
@@ -120,6 +130,7 @@ export const {
   selectAllD,
   setSearchTags,
   setExcludeTags,
+  setMimeTypes,
   clearDownloadingState,
   setGalleryPagination,
   setDLoading,
@@ -136,10 +147,14 @@ export const fetchPhotos =
       mainPageReducer,
       folderReducer: { currentFolderInfo },
     } = getState()
-    const { searchTags, excludeTags, galleryPagination } = mainPageReducer
+    const {
+      searchMenu: { searchTags, excludeTags, mimetypes },
+      galleryPagination,
+    } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
     const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
     const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
+    const curMimeTypes = isEmpty(mimetypes) ? undefined : mimetypes
     const curFolderPath = currentFolderInfo.currentFolderPath || undefined
     dispatch(setDGalleryLoading(true))
     mainApi
@@ -148,6 +163,7 @@ export const fetchPhotos =
         nPerPage,
         curSearchTags,
         curExcludeTags,
+        curMimeTypes,
         curFolderPath,
         isNameComparison,
         comparisonFolder

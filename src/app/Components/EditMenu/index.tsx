@@ -14,7 +14,7 @@ import {
   getNameParts,
   removeExtraFirstSlash,
 } from '../../common/utils'
-import { isDeleteProcessing, pathsArrOptionsSelector } from '../../../redux/selectors'
+import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useFinishEdit } from '../../common/hooks/useFinishEdit'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
@@ -68,6 +68,7 @@ const EditMenu = ({
   const [modal, contextHolder] = Modal.useModal()
   const pathsListOptions = useSelector(pathsArrOptionsSelector)
   const isDeleting = useSelector(isDeleteProcessing)
+  const { isGalleryLoading } = useSelector(main)
   const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
@@ -211,6 +212,7 @@ const EditMenu = ({
                 style={{ marginRight: 10 }}
                 type="primary"
                 htmlType="submit"
+                loading={isGalleryLoading || isExifLoading}
                 disabled={disabledInputs}
               >
                 Edit
@@ -220,7 +222,12 @@ const EditMenu = ({
           {isEditMany && (
             <Col span={7}>
               <Form.Item>
-                <Button className="w-100" onClick={handleSelectAll} type="primary" loading={isExifLoading}>
+                <Button
+                  className="w-100"
+                  onClick={handleSelectAll}
+                  type="primary"
+                  loading={isGalleryLoading || isExifLoading}
+                >
                   {isSelectAllBtn ? 'Select all' : 'Unselect all'}
                 </Button>
               </Form.Item>
