@@ -112,7 +112,7 @@ const MainMenu = ({
           </SubMenu>
         )}
         <SubMenu key="properties" icon={<InfoCircleOutlined />} title="Properties" onTitleClick={handleTitleClick}>
-          <PropertyMenu filesArr={filesArr} selectedList={selectedList} />
+          <PropertyMenu filesArr={filesArr} selectedList={selectedList} isUploadingPage={isUploadingPage} />
         </SubMenu>
         <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
           <EditMenu

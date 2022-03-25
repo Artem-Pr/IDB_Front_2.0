@@ -92,17 +92,16 @@ const Gallery = ({
       )
   }, [imageArr, isMainPage])
 
-  const getExif = (e: MouseEvent, tempPath: string) => {
+  const getExif = (tempPath: string) => (e: MouseEvent) => {
     e.stopPropagation()
     !fullExifFilesList[tempPath] && updateFiles(tempPath)
     setCurrentTempPath(tempPath)
     setShowModal(true)
   }
 
-  const handleImageClick = (i: number, tempPath: string) => {
+  const handleImageClick = (i: number) => () => {
     const updateFilesArr = () => {
       addToSelectedList(i)
-      updateFiles(tempPath)
     }
     const selectOnlyOne = () => {
       clearSelectedList()
@@ -128,6 +127,14 @@ const Gallery = ({
     setShowFullscreenButton(true)
   }
 
+  const handleShowModalClose = () => {
+    setShowModal(false)
+  }
+
+  const handleImageModalClose = () => {
+    setShowImageModal(false)
+  }
+
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
       <div className={cn(styles.wrapper, 'd-grid')}>
@@ -142,7 +149,7 @@ const Gallery = ({
               },
               'position-relative'
             )}
-            onClick={() => handleImageClick(i, tempPath)}
+            onClick={handleImageClick(i)}
           >
             <div
               className={cn(
@@ -159,7 +166,7 @@ const Gallery = ({
                 <h3
                   style={{ marginLeft: 'auto' }}
                   className={cn(styles.imgName, 'pointer')}
-                  onClick={e => getExif(e, tempPath)}
+                  onClick={getExif(tempPath)}
                 >
                   Exif
                 </h3>
@@ -169,7 +176,7 @@ const Gallery = ({
           </div>
         ))}
 
-        <Modal title="Exif list" footer={null} visible={showModal} onCancel={() => setShowModal(false)}>
+        <Modal title="Exif list" footer={null} visible={showModal} onCancel={handleShowModalClose}>
           {compose(
             map((item: string) => (
               <div key={item}>
@@ -189,7 +196,7 @@ const Gallery = ({
             centered
             width="90%"
             footer={null}
-            onCancel={() => setShowImageModal(false)}
+            onCancel={handleImageModalClose}
           >
             <ImageGallery
               items={galleryArr}

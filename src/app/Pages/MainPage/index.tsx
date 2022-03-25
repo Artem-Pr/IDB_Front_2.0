@@ -75,10 +75,7 @@ const MainPage = () => {
       currentFolderPath,
       isComparisonPage,
       clearSelectedList: () => dispatch(clearDSelectedList()),
-      selectAll: () => {
-        dispatch(selectAllD())
-        updateUploadingFiles('_', true)
-      },
+      selectAll: () => dispatch(selectAllD()),
       updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
       updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
       removeKeyword: (keyword: string) => {

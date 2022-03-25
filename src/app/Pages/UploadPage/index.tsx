@@ -61,10 +61,7 @@ const UploadPage = () => {
     openKeys: openMenus,
     currentFolderPath,
     clearSelectedList: () => dispatch(clearSelectedList()),
-    selectAll: () => {
-      dispatch(selectAll())
-      updateUploadingFiles('_', true)
-    },
+    selectAll: () => dispatch(selectAll()),
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
     updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
     removeKeyword: (keyword: string) => {

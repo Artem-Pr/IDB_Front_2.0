@@ -1,7 +1,7 @@
 .wrapper {
   padding: 10px;
 
-  div {
+  div:not(:last-child) {
     display: grid;
     grid-template-columns: 2fr 5fr;
     line-height: 25px;
