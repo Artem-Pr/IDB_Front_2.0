@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Layout, Menu, Modal, Typography } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useCurrentPage } from '../../common/hooks/hooks'
+import { useCurrentPage } from '../../common/hooks'
 import {
   fetchPathsList,
   removeDirectory,

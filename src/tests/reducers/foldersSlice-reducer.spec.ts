@@ -12,7 +12,7 @@ describe('foldersSlice-reducer: ', () => {
   it('should set currentFolderPath', async function () {
     await store.dispatch(setCurrentFolderPath('home/path'))
     const state = store.getState()
-    expect(state.folderReducer.currentFolderPath).toBe('home/path')
+    expect(state.folderReducer.currentFolderInfo.currentFolderPath).toBe('home/path')
   })
   it('should set pathsArr', async function () {
     const folderPath = ['/', '/folder1/Bom-bom', '/folder2/Bom/sdf', '/home']

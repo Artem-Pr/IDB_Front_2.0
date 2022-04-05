@@ -115,7 +115,7 @@ const Gallery = ({
       setCurrentImage(i)
     }
 
-    isPropertiesMenu && selectOnlyOne()
+    isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
     isEditMenu && selectOnlyOne()
     isTemplateMenu && selectAnyQuantity()
     !(isEditMenu || isTemplateMenu || isPropertiesMenu) && showImageModal()

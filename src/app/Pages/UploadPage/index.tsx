@@ -19,7 +19,7 @@ import {
   updateUploadingFilesArr,
   clearUploadingState,
 } from '../../../redux/reducers/uploadSlice-reducer'
-import { useUpdateFields } from '../../common/hooks/hooks'
+import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import { LoadingStatus } from '../../../redux/types'
@@ -63,7 +63,6 @@ const UploadPage = () => {
     clearSelectedList: () => dispatch(clearSelectedList()),
     selectAll: () => dispatch(selectAll()),
     updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
-    updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
     removeKeyword: (keyword: string) => {
       const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
       dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))

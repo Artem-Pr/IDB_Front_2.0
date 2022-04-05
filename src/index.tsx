@@ -12,6 +12,9 @@ import 'antd/dist/antd.css'
 import 'react-image-gallery/styles/scss/image-gallery.scss'
 import './styles/index.scss'
 
+// eslint-disable-next-line functional/immutable-data
+Object.typedKeys = Object.keys
+
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>

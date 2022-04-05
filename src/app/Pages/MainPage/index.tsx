@@ -13,7 +13,7 @@ import {
   dPageGalleryPropsSelector,
   main,
 } from '../../../redux/selectors'
-import { useUpdateFields } from '../../common/hooks/hooks'
+import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { removeIntersectingKeywords } from '../../common/utils'
 import {
@@ -77,7 +77,6 @@ const MainPage = () => {
       clearSelectedList: () => dispatch(clearDSelectedList()),
       selectAll: () => dispatch(selectAllD()),
       updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
-      updateKeywords: (): Promise<any> => updateUploadingFiles('_', true),
       removeKeyword: (keyword: string) => {
         const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
         dispatch(setDownloadingFiles(filesArrWithoutKeyword))
@@ -94,7 +93,6 @@ const MainPage = () => {
       sameKeywords,
       selectedList,
       uniqKeywords,
-      updateUploadingFiles,
     ]
   )
 

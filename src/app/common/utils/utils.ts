@@ -1,4 +1,3 @@
-import moment from 'moment'
 import {
   addIndex,
   compose,
@@ -26,9 +25,8 @@ import {
   NameParts,
   UpdatingFieldsWithPath,
   UploadingObject,
-} from '../../redux/types'
-
-export const dateFormat = 'YYYY.MM.DD'
+} from '../../../redux/types'
+import { dateTimeFormat, formatDate } from './date'
 
 export const invokableCompose = <any>compose
 export const copyByJSON = (obj: any) => JSON.parse(JSON.stringify(obj))
@@ -37,8 +35,6 @@ export const removeExtraFirstSlash = (value: string): string => (value.startsWit
 // Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
-export const formatDateTimeOriginal = (DateTimeOriginal: string) =>
-  moment(DateTimeOriginal, 'YYYY:MM:DD hh:mm:ss').format(dateFormat)
 
 export const getNameParts = (fullName: string): NameParts => {
   const getNameObj = (fullName: string) => {
@@ -56,7 +52,7 @@ export const isExifExist = (exifList: ExifFilesList, tempPath: string): boolean 
 
 export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: string): UpdatingFieldsWithPath => {
   const exifObj = exifList[tempPath]
-  const originalDate = exifObj?.DateTimeOriginal ? formatDateTimeOriginal(exifObj?.DateTimeOriginal as string) : '-'
+  const originalDate = exifObj?.DateTimeOriginal ? formatDate(exifObj?.DateTimeOriginal as string, dateTimeFormat) : '-'
   return {
     keywords: exifObj?.Keywords || null,
     megapixels: exifObj?.Megapixels || '',

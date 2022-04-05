@@ -19,7 +19,7 @@ import PropertyMenu from '../PropertyMenu'
 import { folderElement } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
-import { useCurrentPage } from '../../common/hooks/hooks'
+import { useCurrentPage } from '../../common/hooks'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -35,7 +35,6 @@ interface Props {
   updateOpenMenus: (value: string[]) => void
   clearSelectedList: () => void
   selectAll: () => void
-  updateKeywords: () => Promise<any>
   removeKeyword: (keyword: string) => void
   removeFiles: () => void
   isComparisonPage?: boolean
@@ -46,7 +45,6 @@ const MainMenu = ({
   selectedList,
   openKeys,
   updateOpenMenus,
-  updateKeywords,
   removeKeyword,
   currentFolderPath,
   isComparisonPage,
@@ -59,26 +57,18 @@ const MainMenu = ({
 }: Props) => {
   const dispatch = useDispatch()
   const { keywordsList: allKeywords } = useSelector(folderElement)
-  const [isKeywordsMenuLoading, setIsKeywordsMenuLoading] = useState(false)
+  const [isKeywordsMenuLoading] = useState(false)
   const { isUploadingPage, isMainPage } = useCurrentPage()
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())
   }, [allKeywords.length, dispatch])
 
-  const loadKeywords = () => {
-    setIsKeywordsMenuLoading(true)
-    isUploadingPage && filesArr.length
-      ? updateKeywords().then(() => setIsKeywordsMenuLoading(false))
-      : setIsKeywordsMenuLoading(false)
-  }
-
   const handleTitleClick = ({ key }: { key: string }) => {
     clearSelectedList()
     const openKeysSet = new Set(openKeys)
     key === 'edit' && openKeysSet.delete('template')
     key === 'template' && openKeysSet.delete('edit')
-    key === 'keywords' && !isKeywordsMenuLoading && loadKeywords()
     openKeysSet.has(key) ? openKeysSet.delete(key) : openKeysSet.add(key)
     updateOpenMenus(Array.from(openKeysSet))
   }

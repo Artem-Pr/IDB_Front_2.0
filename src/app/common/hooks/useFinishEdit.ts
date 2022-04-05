@@ -2,10 +2,8 @@ import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { compose, curry, identity, isEmpty, sortBy } from 'ramda'
 import { ModalStaticFunctions } from 'antd/lib/modal/confirm'
-import moment from 'moment'
 
 import {
-  dateFormat,
   getFilesWithUpdatedKeywords,
   getRenamedObjects,
   removeEmptyFields,
@@ -17,6 +15,7 @@ import { Checkboxes, ExtraDownloadingFields, UpdatedObject, UploadingObject } fr
 import { updatePhotos } from '../../../redux/reducers/mainPageSlice-reducer'
 import { useEditFilesArr } from './hooks'
 import { duplicateConfig, emptyCheckboxesConfig } from '../../../assets/config/moduleConfig'
+import { formatDate } from '../utils/date'
 
 const getNewFilePath = (isName: boolean, newName: string, originalName: string, filePath: string) => {
   const preparedFilePath = compose(removeExtraSlash, removeExtraFirstSlash)(filePath)
@@ -99,7 +98,7 @@ export const useFinishEdit = ({
       isFilePath,
     }: any) => {
       const currentName = newName ? newName + ext : ''
-      const currentOriginalDate = newOriginalDate ? moment(newOriginalDate).format(dateFormat) : null
+      const currentOriginalDate = newOriginalDate ? formatDate(newOriginalDate) : null
       const isDuplicateName = curry((filesArr: UploadingObject[], currentName: string) => {
         const fileArrNames = filesArr.map(({ name }) => name)
         return fileArrNames.includes(currentName)

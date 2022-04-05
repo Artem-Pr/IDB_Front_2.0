@@ -7,18 +7,13 @@ import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { Checkboxes, ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
-import {
-  dateFormat,
-  getFilePathWithoutName,
-  getLastItem,
-  getNameParts,
-  removeExtraFirstSlash,
-} from '../../common/utils'
+import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash } from '../../common/utils'
 import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
-import { useFinishEdit } from '../../common/hooks/useFinishEdit'
+import { useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
 import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice-reducer'
+import { dateFormat } from '../../common/utils/date'
 
 const { Option } = Select
 
