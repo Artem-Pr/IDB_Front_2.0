@@ -49,6 +49,7 @@ const Gallery = ({
   const isTemplateMenu = useMemo(() => openMenus.includes('template'), [openMenus])
   const isPropertiesMenu = useMemo(() => openMenus.includes('properties'), [openMenus])
   const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
+  const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
 
   const VideoItem = ({ originalPath, preview }: VideoItemProps) => {
     const [showVideo, setShowVideo] = useState(false)
@@ -118,7 +119,7 @@ const Gallery = ({
     isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
     isEditMenu && selectOnlyOne()
     isTemplateMenu && selectAnyQuantity()
-    !(isEditMenu || isTemplateMenu || isPropertiesMenu) && showImageModal()
+    !isEditMode && showImageModal()
   }
 
   const handleSlide = (currentIndex: number) => {
@@ -145,7 +146,7 @@ const Gallery = ({
               styles.item,
               {
                 active: selectedList.includes(i),
-                pointer: isEditMenu || isTemplateMenu || isPropertiesMenu,
+                pointer: isEditMode,
               },
               'position-relative'
             )}
@@ -154,7 +155,7 @@ const Gallery = ({
             <div
               className={cn(
                 styles.imgInfo,
-                `${isEditMenu || isTemplateMenu || isPropertiesMenu ? 'd-none' : 'd-flex'} `,
+                `${isEditMode ? 'd-none' : 'd-flex'} `,
                 'position-absolute align-items-center flex-column'
               )}
             >

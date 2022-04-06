@@ -10,7 +10,10 @@ import {
   map,
   mapAccumRight,
   omit,
+  prop,
   reject,
+  sortBy,
+  toLower,
   union,
   without,
 } from 'ramda'
@@ -35,6 +38,8 @@ export const removeExtraFirstSlash = (value: string): string => (value.startsWit
 // Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
+export const sortByField = <K extends Record<keyof K, any>>(fieldName: string) =>
+  sortBy<K>(compose(toLower, prop(fieldName)))
 
 export const getNameParts = (fullName: string): NameParts => {
   const getNameObj = (fullName: string) => {

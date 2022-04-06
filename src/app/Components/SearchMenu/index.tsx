@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Col, Row, Select } from 'antd'
-import { difference } from 'ramda'
+import { difference, keys } from 'ramda'
 import cn from 'classnames'
 
 import { folderElement, main, searchMenu } from '../../../redux/selectors'
@@ -10,7 +10,7 @@ import { fetchPhotos, setExcludeTags, setMimeTypes, setSearchTags } from '../../
 import { MimeTypes } from '../../../redux/types/MimeTypes'
 
 const { Option } = Select
-const fileTypes = Object.keys(MimeTypes) as (keyof typeof MimeTypes)[]
+const fileTypes = keys(MimeTypes)
 
 const SearchMenu = () => {
   const dispatch = useDispatch<any>()

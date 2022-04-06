@@ -7,6 +7,7 @@ import { mainApi } from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
 import { ExifFilesList, FullExifObj, LoadingStatus, UploadingObject } from '../types'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../app/common/utils'
+import { sortByField } from '../../app/common/utils/utils'
 
 interface FullExifPayload {
   tempPath: string
@@ -35,9 +36,6 @@ const uploadSlice = createSlice({
   name: 'upload',
   initialState,
   reducers: {
-    addUploadingFile(state, action: PayloadAction<UploadingObject>) {
-      state.uploadingFiles.push(action.payload)
-    },
     updateUploadingFilesArr(state, action: PayloadAction<UploadingObject[]>) {
       state.uploadingFiles = action.payload
     },
@@ -87,7 +85,6 @@ const uploadSlice = createSlice({
 })
 
 export const {
-  addUploadingFile,
   updateUploadingFilesArr,
   addFullExifFile,
   updateFullExifFile,
@@ -103,6 +100,14 @@ export const {
 } = uploadSlice.actions
 
 export default uploadSlice.reducer
+
+const addUploadingFile =
+  (uploadingFile: UploadingObject): AppThunk =>
+  (dispatch, getState) => {
+    const { uploadingFiles } = getState().uploadReducer
+    const updatedUploadingFiles = sortByField<UploadingObject>('name')([...uploadingFiles, uploadingFile])
+    dispatch(updateUploadingFilesArr(updatedUploadingFiles))
+  }
 
 export const uploadFiles =
   (filesArr: UploadingObject[], folderPath: string): AppThunk =>
