@@ -1,9 +1,11 @@
-import React, { MouseEvent, useEffect, useMemo, useState } from 'react'
+import React, { MouseEvent, SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
 import { Modal, Spin } from 'antd'
 import Iframe from 'react-iframe'
 import ImageGallery from 'react-image-gallery'
+
+import imagePlaceholder from '../../../assets/svg-icons-html/image-placeholder.svg'
 
 import styles from './index.module.scss'
 import { ExifFilesList, ExtraDownloadingFields, IGallery, UploadingObject } from '../../../redux/types'
@@ -24,6 +26,10 @@ export interface GalleryProps {
   updateFiles: (tempPath: string) => void
   isLoading?: boolean
   isMainPage?: boolean
+}
+
+const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
+  event.currentTarget.classList.remove('d-none')
 }
 
 const Gallery = ({
@@ -173,7 +179,8 @@ const Gallery = ({
                 </h3>
               </div>
             </div>
-            <img className={styles.img} src={preview} alt="image-preview" />
+            <img className={cn(styles.img, 'd-none')} src={preview} alt="image-preview" onLoad={handleImageOnLoad} />
+            <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
           </div>
         ))}
 
