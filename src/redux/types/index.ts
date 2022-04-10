@@ -98,6 +98,7 @@ export interface GalleryPagination {
 
 export interface FetchingGalleryContent {
   files: DownloadingRawObject[]
+  filesSizeSum: number
   searchPagination: GalleryPagination
 }
 

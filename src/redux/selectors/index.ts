@@ -17,6 +17,7 @@ export const searchMenu = (state: RootState) => state.mainPageReducer.searchMenu
 export const downloadingFiles = (state: RootState) => state.mainPageReducer.downloadingFiles
 export const dSelectedList = (state: RootState) => state.mainPageReducer.dSelectedList
 export const pagination = (state: RootState) => state.mainPageReducer.galleryPagination
+export const filesSizeSum = (state: RootState) => state.mainPageReducer.filesSizeSum
 export const isDeleteProcessing = (state: RootState) => state.mainPageReducer.isDeleteProcessing
 export const numberOfFilesChecking = (state: RootState) => state.testsReducer.firstTest
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest

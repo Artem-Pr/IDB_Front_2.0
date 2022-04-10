@@ -22,6 +22,7 @@ interface State {
     mimetypes: MimeTypes[]
   }
   galleryPagination: GalleryPagination
+  filesSizeSum: number
   isExifLoading: boolean
   isGalleryLoading: boolean
   isDeleteProcessing: boolean
@@ -43,6 +44,7 @@ const initialState: State = {
     resultsCount: 0,
     totalPages: 1,
   },
+  filesSizeSum: 0,
   isExifLoading: false,
   isGalleryLoading: false,
   isDeleteProcessing: false,
@@ -57,9 +59,6 @@ const uploadSlice = createSlice({
     },
     setDownloadingFiles(state, action: PayloadAction<DownloadingObject[]>) {
       state.downloadingFiles = action.payload
-    },
-    removeDownloadingFilesItem(state, action: PayloadAction<string>) {
-      state.downloadingFiles = current(state).downloadingFiles.filter(({ _id }) => _id !== action.payload)
     },
     addToDSelectedList(state, action: PayloadAction<number>) {
       const set = new Set(current(state).dSelectedList)
@@ -116,6 +115,9 @@ const uploadSlice = createSlice({
     setIsDeleteProcessing(state, action: PayloadAction<boolean>) {
       state.isDeleteProcessing = action.payload
     },
+    setFilesSizeSum(state, action: PayloadAction<number>) {
+      state.filesSizeSum = action.payload
+    },
   },
 })
 
@@ -124,7 +126,6 @@ export const {
   removeFromDSelectedList,
   setRawFiles,
   setDownloadingFiles,
-  removeDownloadingFilesItem,
   updateDOpenMenus,
   clearDSelectedList,
   selectAllD,
@@ -136,6 +137,7 @@ export const {
   setDLoading,
   setDGalleryLoading,
   setIsDeleteProcessing,
+  setFilesSizeSum,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer
@@ -175,6 +177,7 @@ export const fetchPhotos =
         dispatch(setRawFiles(rawFiles))
         dispatch(setDownloadingFiles(files))
         dispatch(setGalleryPagination(data.searchPagination))
+        dispatch(setFilesSizeSum(data.filesSizeSum))
       })
       .catch(error => errorMessage(error, 'downloading files error: '))
       .finally(() => dispatch(setDGalleryLoading(false)))

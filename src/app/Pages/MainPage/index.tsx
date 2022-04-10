@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Layout } from 'antd'
+import { Col, Layout, Popover, Row } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
 
@@ -11,11 +11,12 @@ import {
   curFolderInfo,
   dAllSameKeywordsSelector,
   dPageGalleryPropsSelector,
+  filesSizeSum,
   main,
 } from '../../../redux/selectors'
 import { useUpdateFields } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
-import { removeIntersectingKeywords } from '../../common/utils'
+import { formatSize, removeIntersectingKeywords } from '../../common/utils'
 import {
   addToDSelectedList,
   clearDownloadingState,
@@ -39,6 +40,7 @@ const MainPage = () => {
   const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
   const sameKeywords = useSelector(dAllSameKeywordsSelector)
   const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
+  const filesSizeTotal = useSelector(filesSizeSum)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { updateUploadingFiles } = useUpdateFields(imageArr)
 
@@ -103,7 +105,14 @@ const MainPage = () => {
         <Content>
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
-          {!isComparisonPage && <PaginationMenu />}
+          <Row className="d-flex align-items-baseline">
+            <Col>{!isComparisonPage && <PaginationMenu />}</Col>
+            {Boolean(filesSizeTotal) && (
+              <Col offset={1}>
+                <Popover content="Size of all requested files">{formatSize(filesSizeTotal)}</Popover>
+              </Col>
+            )}
+          </Row>
           <Gallery {...galleryProps} />
           {!isComparisonPage && <PaginationMenu />}
         </Content>
