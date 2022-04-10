@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Tag } from 'antd'
 
-import { formatSize } from './formatSize'
+import { formatSize } from '../../../common/utils'
 import { FieldsLabels } from '../types'
 
 export const getLabelValue = (fieldName: keyof FieldsLabels, fieldsObj: Partial<FieldsLabels>): ReactNode => {

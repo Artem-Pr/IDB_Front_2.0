@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import styles from './index.module.scss'
 import { dPageGalleryPropsSelector, upload, uploadPageGalleryPropsSelector } from '../../../redux/selectors'
 import { useUpdateFields } from '../../common/hooks'
-import { FieldsObj } from './types'
+import { FieldsObj } from '../../../redux/types'
 import { PropertyFields } from './components'
 
 interface Props {

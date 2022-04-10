@@ -4,7 +4,7 @@ import { MinusOutlined } from '@ant-design/icons'
 
 import { getLabelValue } from '../../helpers/getLabelValue'
 import { usePropertyFields } from '../../hooks'
-import { FieldsObj } from '../../types'
+import { FieldsObj } from '../../../../../redux/types'
 
 import styles from './PropertyFields.module.scss'
 

@@ -1,29 +1,23 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { compose, curry, identity, isEmpty, sortBy } from 'ramda'
+import { curry, identity, isEmpty, sortBy } from 'ramda'
 import { ModalStaticFunctions } from 'antd/lib/modal/confirm'
 
 import {
   getFilesWithUpdatedKeywords,
   getRenamedObjects,
   removeEmptyFields,
-  removeExtraFirstSlash,
-  removeExtraSlash,
   removeIntersectingKeywords,
-} from '../utils'
-import { Checkboxes, ExtraDownloadingFields, UpdatedObject, UploadingObject } from '../../../redux/types'
-import { updatePhotos } from '../../../redux/reducers/mainPageSlice-reducer'
-import { useEditFilesArr } from './hooks'
-import { duplicateConfig, emptyCheckboxesConfig } from '../../../assets/config/moduleConfig'
-import { formatDate } from '../utils/date'
-
-const getNewFilePath = (isName: boolean, newName: string, originalName: string, filePath: string) => {
-  const preparedFilePath = compose(removeExtraSlash, removeExtraFirstSlash)(filePath)
-  return `${preparedFilePath}/${isName ? newName : originalName}`
-}
+} from '../../utils'
+import { Checkboxes, FieldsObj, UpdatedObject, UploadingObject } from '../../../../redux/types'
+import { updatePhotos } from '../../../../redux/reducers/mainPageSlice-reducer'
+import { useEditFilesArr } from '../hooks'
+import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
+import { formatDate } from '../../utils/date'
+import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
 
 interface Props {
-  filesArr: Array<UploadingObject & ExtraDownloadingFields>
+  filesArr: FieldsObj[]
   sameKeywords: string[]
   selectedList: number[]
   ext: string
@@ -122,12 +116,27 @@ export const useFinishEdit = ({
 
       const needModalIsDuplicate = !isEditMany && isName && isDuplicateName(currentName)
       const isEmptyCheckboxes = !isName && !isOriginalDate && !isKeywords && !isFilePath
+      const filesSizeIfLongProcess =
+        !needModalIsDuplicate && !isEmptyCheckboxes && getFilesSizeIfLongProcess(filesArr, selectedList)
 
       needModalIsDuplicate && modal.warning(duplicateConfig)
       isEmptyCheckboxes && modal.warning(emptyCheckboxesConfig)
-      !needModalIsDuplicate && !isEmptyCheckboxes && updateValues()
+      filesSizeIfLongProcess &&
+        modal.confirm(longProcessConfirmation({ onOk: updateValues, fileSize: filesSizeIfLongProcess }))
+      !(needModalIsDuplicate || isEmptyCheckboxes || filesSizeIfLongProcess) && updateValues()
     },
-    [editUploadingFiles, ext, fetchUpdatedFiles, filesArr, isEditMany, isMainPage, modal, name, sameKeywords]
+    [
+      editUploadingFiles,
+      ext,
+      fetchUpdatedFiles,
+      filesArr,
+      isEditMany,
+      isMainPage,
+      modal,
+      name,
+      sameKeywords,
+      selectedList,
+    ]
   )
 
   return { onFinish }

@@ -32,6 +32,7 @@ import {
 import { dateTimeFormat, formatDate } from './date'
 
 export const invokableCompose = <any>compose
+export const filterIndexed = addIndex(filter)
 export const copyByJSON = (obj: any) => JSON.parse(JSON.stringify(obj))
 export const removeExtraSlash = (value: string): string => (value.endsWith('/') ? value.slice(0, -1) : value)
 export const removeExtraFirstSlash = (value: string): string => (value.startsWith('/') ? value.slice(1) : value)
@@ -146,7 +147,6 @@ export const getSameKeywords = (
   filesArr: UploadingObject[] | DownloadingObject[],
   selectedList: number[]
 ): string[] => {
-  const filterIndexed = addIndex(filter)
   const getIntersectionArr = (keywordsArrays: string[][]) => {
     return keywordsArrays.length
       ? keywordsArrays.reduce((previousValue, currentValue): string[] => intersection(previousValue, currentValue))

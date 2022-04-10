@@ -8,7 +8,7 @@ import ImageGallery from 'react-image-gallery'
 import imagePlaceholder from '../../../assets/svg-icons-html/image-placeholder.svg'
 
 import styles from './index.module.scss'
-import { ExifFilesList, ExtraDownloadingFields, IGallery, UploadingObject } from '../../../redux/types'
+import { ExifFilesList, FieldsObj, IGallery } from '../../../redux/types'
 
 interface VideoItemProps {
   originalPath: string
@@ -17,7 +17,7 @@ interface VideoItemProps {
 
 export interface GalleryProps {
   openMenus: string[]
-  imageArr: Array<UploadingObject & ExtraDownloadingFields>
+  imageArr: FieldsObj[]
   fullExifFilesList: ExifFilesList
   selectedList: number[]
   removeFromSelectedList: (index: number) => void

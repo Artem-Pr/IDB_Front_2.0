@@ -1,4 +1,11 @@
-import { CheckFolderConfirmation, DeleteConfirmation, DeleteConfirmationType } from '../../redux/types'
+import { ReactNode } from 'react'
+
+import { DeleteConfirmationType } from '../../redux/types'
+
+export interface Confirmation {
+  onOk: () => void
+  onCancel?: () => void
+}
 
 export const deleteMessageConst: Record<DeleteConfirmationType, string> = {
   file: 'Are you sure you want to delete selected files?',
@@ -15,7 +22,16 @@ export const emptyCheckboxesConfig = {
   content: 'Please check one of the checkboxes',
 }
 
-export const deleteConfirmation = ({ onOk, onCancel, type }: DeleteConfirmation) => ({
+export const longProcessConfirmation = ({ onOk, onCancel, fileSize }: Confirmation & { fileSize: string }) => ({
+  title: 'The procedure can take a long time',
+  content: `Files for editing have a total size of ${fileSize}, the procedure may take a long time. Are you sure you want to start?`,
+  okText: 'Yes',
+  cancelText: 'No',
+  onOk,
+  onCancel,
+})
+
+export const deleteConfirmation = ({ onOk, onCancel, type }: Confirmation & { type: DeleteConfirmationType }) => ({
   title: 'Delete confirmation',
   content: deleteMessageConst[type],
   okText: 'Yes',
@@ -24,7 +40,7 @@ export const deleteConfirmation = ({ onOk, onCancel, type }: DeleteConfirmation)
   onCancel,
 })
 
-export const checkFolderConfirmation = ({ onOk, onCancel, content }: CheckFolderConfirmation) => ({
+export const checkFolderConfirmation = ({ onOk, onCancel, content }: Confirmation & { content: ReactNode }) => ({
   title: 'This folder contains files or subdirectories:',
   content,
   okText: 'Yes',

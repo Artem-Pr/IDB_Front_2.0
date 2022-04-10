@@ -6,7 +6,7 @@ import moment from 'moment'
 import cn from 'classnames'
 
 import styles from './index.module.scss'
-import { Checkboxes, ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
+import { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
 import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash } from '../../common/utils'
 import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useFinishEdit } from '../../common/hooks'
@@ -18,7 +18,7 @@ import { dateFormat } from '../../common/utils/date'
 const { Option } = Select
 
 interface Props {
-  filesArr: Array<UploadingObject & ExtraDownloadingFields>
+  filesArr: FieldsObj[]
   selectedList: number[]
   isExifLoading: boolean
   sameKeywords: string[]

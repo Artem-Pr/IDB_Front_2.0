@@ -3,7 +3,8 @@ import React, { useMemo } from 'react'
 import PropertyMenu from '../index'
 import { createKeywordsList, createUniqKeywords } from '../helpers'
 import { formatDate } from '../../../common/utils/date'
-import { FieldNames, FieldsLabels, FieldsObj } from '../types'
+import { FieldNames, FieldsLabels } from '../types'
+import { FieldsObj } from '../../../../redux/types'
 
 const fieldLabels: Partial<FieldNames> = {
   name: 'Name',

@@ -1,4 +1,6 @@
 export {
+  invokableCompose,
+  filterIndexed,
   updateFilesArrayItems,
   getLastItem,
   removeExtraFirstSlash,
@@ -17,10 +19,10 @@ export {
   getNameParts,
   getUpdatedExifFieldsObj,
   isExifExist,
-  invokableCompose,
   isValidResultStatus,
   renameEqualStrings,
   renameShortNames,
   updateFilesArrItemByField,
 } from './utils'
 export { getUniqArr } from './getUniqArr'
+export { formatSize } from './formatSize'

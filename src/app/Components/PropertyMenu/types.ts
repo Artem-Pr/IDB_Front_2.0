@@ -1,8 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
-
-export type FieldsObj = UploadingObject & ExtraDownloadingFields
+import { FieldsObj } from '../../../redux/types'
 
 export type FieldsLabels = {
   [key in keyof FieldsObj]: ReactNode

@@ -13,7 +13,7 @@ import cn from 'classnames'
 
 import styles from './index.module.scss'
 import { EditMenu, Folders, SearchMenu } from '../index'
-import { ExtraDownloadingFields, UploadingObject } from '../../../redux/types'
+import { FieldsObj } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
 import PropertyMenu from '../PropertyMenu'
 import { folderElement } from '../../../redux/selectors'
@@ -25,7 +25,7 @@ const { Sider } = Layout
 const { SubMenu } = Menu
 
 interface Props {
-  filesArr: Array<UploadingObject & ExtraDownloadingFields>
+  filesArr: FieldsObj[]
   selectedList: number[]
   openKeys: string[]
   isExifLoading: boolean
