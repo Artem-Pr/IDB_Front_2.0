@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 
 import {
   AxiosPreviews,
@@ -13,9 +13,7 @@ import {
 import { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
 import { MimeTypes } from '../redux/types/MimeTypes'
 
-const instance = axios.create({
-  baseURL: 'http://localhost:5000',
-})
+import { instance } from './api-client'
 
 export const mainApi = {
   sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<string>> {

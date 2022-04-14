@@ -178,9 +178,15 @@ export const fetchPhotos =
         dispatch(setDownloadingFiles(files))
         dispatch(setGalleryPagination(data.searchPagination))
         dispatch(setFilesSizeSum(data.filesSizeSum))
+        dispatch(setDGalleryLoading(false))
       })
-      .catch(error => errorMessage(error, 'downloading files error: '))
-      .finally(() => dispatch(setDGalleryLoading(false)))
+      .catch(error => {
+        const showError = () => {
+          errorMessage(error, 'downloading files error: ')
+          dispatch(setDGalleryLoading(false))
+        }
+        error.message !== 'canceled' && showError()
+      })
   }
 
 export const updatePhotos =
