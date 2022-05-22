@@ -16,7 +16,7 @@ import { MimeTypes } from '../redux/types/MimeTypes'
 import { instance } from './api-client'
 
 export const mainApi = {
-  sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<string>> {
+  sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<QueryResponse>> {
     return instance.post(`/upload?path=${path}`, files)
   },
 
