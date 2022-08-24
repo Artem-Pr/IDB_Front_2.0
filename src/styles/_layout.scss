@@ -1,20 +1,20 @@
 @import 'vars';
 
-//.ant-layout {
-//  height: calc(100vh - 64px);
-//}
-//.ant-layout-content {
-//  height: 100%;
-//  display: grid;
-//  grid-template-rows: auto auto auto 1fr auto;
-//}
+.ant-layout {
+  height: calc(100vh - 64px);
+}
+.ant-layout-content {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+}
 .ant-layout-sider-light {
   background: $mainBackground;
 }
-//.ant-spin-nested-loading {
-//  height: 100%;
-//  overflow-y: auto;
-//}
+.ant-spin-nested-loading {
+  height: 100%;
+  overflow-y: auto;
+}
 .ant-layout-sider-light .ant-layout-sider-trigger {
   background: $mainBackground;
 }

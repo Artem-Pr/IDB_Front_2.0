@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Iframe from 'react-iframe'
 import { Button, Empty, Layout, Menu, Spin } from 'antd'
 import {
   UserOutlined,
@@ -8,7 +9,9 @@ import {
   ProfileOutlined,
   SearchOutlined,
   InfoCircleOutlined,
+  PictureOutlined,
 } from '@ant-design/icons'
+
 import cn from 'classnames'
 
 import styles from './index.module.scss'
@@ -16,7 +19,7 @@ import { EditMenu, Folders, SearchMenu } from '../index'
 import { FieldsObj } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
 import PropertyMenu from '../PropertyMenu'
-import { folderElement } from '../../../redux/selectors'
+import { folderElement, imagePreview } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
 import { useCurrentPage } from '../../common/hooks'
@@ -57,6 +60,7 @@ const MainMenu = ({
 }: Props) => {
   const dispatch = useDispatch()
   const { keywordsList: allKeywords } = useSelector(folderElement)
+  const { video, originalPath, originalName } = useSelector(imagePreview)
   const [isKeywordsMenuLoading] = useState(false)
   const { isUploadingPage, isMainPage } = useCurrentPage()
 
@@ -133,6 +137,29 @@ const MainMenu = ({
         </SubMenu>
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
           <KeywordsMenuWrapper />
+        </SubMenu>
+        <SubMenu
+          key="preview"
+          className={cn(styles.previewMenu, 'position-relative')}
+          icon={<PictureOutlined />}
+          title="Preview"
+          onTitleClick={handleTitleClick}
+        >
+          <Menu.Item key="image-preview" className={cn(styles.preview)}>
+            {video ? (
+              <Iframe
+                url={originalPath || ''}
+                width="80vm"
+                id="myId"
+                className={styles.previewImg}
+                position="relative"
+                allowFullScreen
+              />
+            ) : (
+              <img className={styles.previewImg} src={originalPath} alt={originalName} />
+            )}
+            <h3>{originalName}</h3>
+          </Menu.Item>
         </SubMenu>
         {isUploadingPage ? (
           <Menu.Item key="buttons-menu">

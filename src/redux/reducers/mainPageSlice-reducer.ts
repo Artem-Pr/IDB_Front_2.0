@@ -2,7 +2,14 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { identity, isEmpty, sortBy } from 'ramda'
 
-import { DownloadingObject, DownloadingRawObject, ElementsPerPage, GalleryPagination, UpdatedObject } from '../types'
+import {
+  DownloadingObject,
+  DownloadingRawObject,
+  ElementsPerPage,
+  GalleryPagination,
+  Preview,
+  UpdatedObject,
+} from '../types'
 import { AppThunk } from '../store/store'
 import { mainApi } from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
@@ -26,6 +33,7 @@ interface State {
   isExifLoading: boolean
   isGalleryLoading: boolean
   isDeleteProcessing: boolean
+  preview: Preview
 }
 
 const initialState: State = {
@@ -48,6 +56,11 @@ const initialState: State = {
   isExifLoading: false,
   isGalleryLoading: false,
   isDeleteProcessing: false,
+  preview: {
+    video: false,
+    originalName: '',
+    originalPath: '',
+  },
 }
 
 const uploadSlice = createSlice({
@@ -118,6 +131,9 @@ const uploadSlice = createSlice({
     setFilesSizeSum(state, action: PayloadAction<number>) {
       state.filesSizeSum = action.payload
     },
+    setPreview(state, action: PayloadAction<Preview>) {
+      state.preview = action.payload
+    },
   },
 })
 
@@ -138,6 +154,7 @@ export const {
   setDGalleryLoading,
   setIsDeleteProcessing,
   setFilesSizeSum,
+  setPreview,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer

@@ -1,7 +1,9 @@
 import React, { MouseEvent, SyntheticEvent, useEffect, useMemo, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
 import { Modal, Spin } from 'antd'
+import { FullscreenOutlined } from '@ant-design/icons'
 import Iframe from 'react-iframe'
 import ImageGallery from 'react-image-gallery'
 
@@ -9,10 +11,18 @@ import imagePlaceholder from '../../../assets/svg-icons-html/image-placeholder.s
 
 import styles from './index.module.scss'
 import { ExifFilesList, FieldsObj, IGallery } from '../../../redux/types'
+import { setPreview } from '../../../redux/reducers/mainPageSlice-reducer'
+import { isVideo } from '../../common/utils/utils'
 
 interface VideoItemProps {
   originalPath: string
   preview: string
+}
+
+interface RawPreview {
+  name: string
+  type: string
+  originalPath: string | undefined
 }
 
 export interface GalleryProps {
@@ -44,6 +54,7 @@ const Gallery = ({
   isLoading,
   isMainPage,
 }: GalleryProps) => {
+  const dispatch = useDispatch()
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
@@ -90,7 +101,7 @@ const Gallery = ({
           const galleryItem: IGallery = {
             thumbnail: item.preview,
             original: item.originalPath || '',
-            ...(item.type.startsWith('video') && {
+            ...(isVideo(item.type) && {
               renderItem: showVideoItem(item.originalPath || '', item.preview),
             }),
           }
@@ -106,7 +117,7 @@ const Gallery = ({
     setShowModal(true)
   }
 
-  const handleImageClick = (i: number) => () => {
+  const handleImageClick = (i: number, preview?: RawPreview) => () => {
     const updateFilesArr = () => {
       addToSelectedList(i)
     }
@@ -117,15 +128,18 @@ const Gallery = ({
     const selectAnyQuantity = () => {
       selectedList.includes(i) ? removeFromSelectedList(i) : updateFilesArr()
     }
-    const showImageModal = () => {
-      setShowImageModal(true)
-      setCurrentImage(i)
-    }
 
     isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
     isEditMenu && selectOnlyOne()
     isTemplateMenu && selectAnyQuantity()
-    !isEditMode && showImageModal()
+    preview &&
+      dispatch(
+        setPreview({
+          video: isVideo(preview.type),
+          originalName: preview.name,
+          originalPath: preview.originalPath,
+        })
+      )
   }
 
   const handleSlide = (currentIndex: number) => {
@@ -142,10 +156,15 @@ const Gallery = ({
     setShowImageModal(false)
   }
 
+  const handleFullScreenClick = (i: number) => () => {
+    setShowImageModal(true)
+    setCurrentImage(i)
+  }
+
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
       <div className={cn(styles.wrapper, 'd-grid')}>
-        {imageArr.map(({ preview, name, tempPath, _id }, i) => (
+        {imageArr.map(({ preview, name, tempPath, originalPath, type, _id }, i) => (
           <div
             key={preview + _id}
             className={cn(
@@ -154,30 +173,25 @@ const Gallery = ({
                 active: selectedList.includes(i),
                 pointer: isEditMode,
               },
-              'position-relative'
+              'position-relative',
+              'pointer'
             )}
-            onClick={handleImageClick(i)}
+            onClick={handleImageClick(i, { originalPath, name, type })}
           >
             <div
               className={cn(
-                styles.imgInfo,
-                `${isEditMode ? 'd-none' : 'd-flex'} `,
-                'position-absolute align-items-center flex-column'
+                styles.itemMenu,
+                `${isEditMode ? 'd-none' : 'd-flex'}`,
+                'position-absolute',
+                'h-100',
+                'flex-column',
+                'justify-content-between'
               )}
             >
-              <img className={cn(styles.img, styles.imgDesc)} src={preview} alt="image-preview" />
-              <div className={cn(styles.imgInfoText, 'd-flex w-100')}>
-                <h3 style={{ width: '70%' }} className={styles.imgName}>
-                  {name}
-                </h3>
-                <h3
-                  style={{ marginLeft: 'auto' }}
-                  className={cn(styles.imgName, 'pointer')}
-                  onClick={getExif(tempPath)}
-                >
-                  Exif
-                </h3>
-              </div>
+              <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
+                Exif
+              </h4>
+              <FullscreenOutlined className={cn(styles.itemMenuIcon, 'pointer')} onClick={handleFullScreenClick(i)} />
             </div>
             <img className={cn(styles.img, 'd-none')} src={preview} alt="image-preview" onLoad={handleImageOnLoad} />
             <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />

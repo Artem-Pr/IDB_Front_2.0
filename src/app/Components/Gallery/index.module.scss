@@ -16,10 +16,10 @@
   //height: 250px;
   height: 150px;
   border-radius: 5px;
+  overflow: hidden;
 
-  &:hover > .imgInfo {
-    visibility: visible;
-    z-index: 1;
+  &:hover > .itemMenu {
+    left: 0;
   }
 
   &:global.active {
@@ -27,26 +27,26 @@
   }
 }
 
-.imgInfo {
-  top: -40px;
-  left: -50px;
-  right: -50px;
-  padding: 5px;
-  background: $mainTitle;
-  box-shadow: 0 0 21px 8px rgba(34, 60, 80, 0.26);
-  border-radius: 10px;
-  visibility: hidden;
+.itemMenu {
+  width: 30px;
+  left: -30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  opacity: 0.6;
+  background: $galleryItemMenu;
+  color: $galleryItemMenuText;
+  transition: left 0.3s ease;
+  cursor: default;
 }
 
-.imgInfoText {
-  padding: 5px;
+.itemMenuExif {
+  color: $galleryItemMenuText;
+  text-align: center;
 }
 
-.imgName {
-  margin: 0;
-  font-weight: 700;
-  overflow-wrap: break-word;
-  overflow: hidden;
+.itemMenuIcon {
+  height: 22px;
+  font-size: 22px;
 }
 
 .imgPlaceholder {
@@ -59,11 +59,6 @@
   object-fit: cover;
   //object-fit: contain;
   border-radius: 5px;
-
-  &.imgDesc {
-    object-fit: contain;
-    height: auto;
-  }
 
   &:global.d-none + :local.imgPlaceholder {
     display: block;

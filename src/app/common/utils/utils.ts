@@ -41,6 +41,7 @@ export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
 export const sortByField = <K extends Record<keyof K, any>>(fieldName: string) =>
   sortBy<K>(compose(toLower, prop(fieldName)))
+export const isVideo = (contentType: string) => contentType.startsWith('video')
 
 export const getNameParts = (fullName: string): NameParts => {
   const getNameObj = (fullName: string) => {

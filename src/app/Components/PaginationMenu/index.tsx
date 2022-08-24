@@ -23,7 +23,7 @@ const PaginationMenu = () => {
 
   return (
     <Pagination
-      style={{ margin: '10px 0 0 20px' }}
+      style={{ margin: '10px 0 5px 20px' }}
       total={resultsCount}
       showTotal={total => `Total ${total} items`}
       pageSize={nPerPage}

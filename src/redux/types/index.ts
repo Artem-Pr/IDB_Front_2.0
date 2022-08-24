@@ -127,3 +127,9 @@ export interface DirectoryInfo extends CheckedDirectoryRequest {
   currentFolderPath: string
   showInfoModal: boolean
 }
+
+export interface Preview {
+  video: boolean
+  originalPath: string | undefined
+  originalName: string
+}
