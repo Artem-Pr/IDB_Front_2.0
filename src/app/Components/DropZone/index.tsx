@@ -6,11 +6,22 @@ import { UploadChangeParam } from 'antd/lib/upload/interface'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 
+import { RcFile } from 'antd/lib/upload'
+
+import { compose } from 'ramda'
+
 import styles from './index.module.scss'
 import { curFolderInfo } from '../../../redux/selectors'
-import { fetchPhotosPreview, setUploadingStatus } from '../../../redux/reducers/uploadSlice-reducer'
+import { fetchPhotosPreview, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice-reducer'
 
 const { Dragger } = Upload
+
+const isFile = (file: string | Blob | RcFile): file is RcFile => Boolean((file as RcFile)?.name)
+
+const getDispatchObjFromBlob = (file: RcFile) => ({
+  name: file.name,
+  originalPath: URL.createObjectURL(file),
+})
 
 interface Props {
   openMenus: string[]
@@ -33,6 +44,7 @@ const DropZone = ({ openMenus }: Props) => {
       'Content-Type': 'application/json',
     },
     customRequest(info) {
+      isFile(info.file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(info.file)
       dispatch(fetchPhotosPreview(info.file))
       dispatch(setUploadingStatus('empty'))
     },

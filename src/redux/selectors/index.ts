@@ -11,6 +11,7 @@ export const pathsArr = (state: RootState) => state.folderReducer.pathsArr
 export const upload = (state: RootState) => state.uploadReducer
 export const openMenus = (state: RootState) => state.uploadReducer.openMenus
 export const uploadingFiles = (state: RootState) => state.uploadReducer.uploadingFiles
+export const uploadingBlobs = (state: RootState) => state.uploadReducer.uploadingBlobs
 export const selectedList = (state: RootState) => state.uploadReducer.selectedList
 export const main = (state: RootState) => state.mainPageReducer
 export const searchMenu = (state: RootState) => state.mainPageReducer.searchMenu

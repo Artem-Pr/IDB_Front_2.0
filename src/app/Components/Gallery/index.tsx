@@ -1,5 +1,5 @@
 import React, { MouseEvent, SyntheticEvent, useEffect, useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
 import { Modal, Spin } from 'antd'
@@ -13,6 +13,7 @@ import styles from './index.module.scss'
 import { ExifFilesList, FieldsObj, IGallery } from '../../../redux/types'
 import { setPreview } from '../../../redux/reducers/mainPageSlice-reducer'
 import { isVideo } from '../../common/utils/utils'
+import { uploadingBlobs } from '../../../redux/selectors'
 
 interface VideoItemProps {
   originalPath: string
@@ -55,6 +56,7 @@ const Gallery = ({
   isMainPage,
 }: GalleryProps) => {
   const dispatch = useDispatch()
+  const blobFiles = useSelector(uploadingBlobs)
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
@@ -135,9 +137,9 @@ const Gallery = ({
     preview &&
       dispatch(
         setPreview({
-          video: isVideo(preview.type),
+          previewType: isVideo(preview.type) ? 'video' : 'image',
           originalName: preview.name,
-          originalPath: preview.originalPath,
+          originalPath: isMainPage ? preview.originalPath : blobFiles[preview.name],
         })
       )
   }

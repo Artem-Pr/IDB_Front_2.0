@@ -57,7 +57,7 @@ const initialState: State = {
   isGalleryLoading: false,
   isDeleteProcessing: false,
   preview: {
-    video: false,
+    previewType: undefined,
     originalName: '',
     originalPath: '',
   },

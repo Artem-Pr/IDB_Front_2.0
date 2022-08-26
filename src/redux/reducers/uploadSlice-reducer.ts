@@ -5,7 +5,7 @@ import { compose, curry, keys, reduce } from 'ramda'
 import { AppThunk } from '../store/store'
 import { mainApi } from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
-import { ExifFilesList, FullExifObj, LoadingStatus, UploadingObject } from '../types'
+import { BlobDispatchPayload, ExifFilesList, FullExifObj, LoadingStatus, UploadingObject } from '../types'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../app/common/utils'
 import { sortByField } from '../../app/common/utils/utils'
 
@@ -16,6 +16,7 @@ interface FullExifPayload {
 
 interface State {
   uploadingFiles: UploadingObject[]
+  uploadingBlobs: Record<string, string>
   fullExifFilesList: ExifFilesList
   selectedList: number[]
   openMenus: string[]
@@ -25,6 +26,7 @@ interface State {
 
 const initialState: State = {
   uploadingFiles: [],
+  uploadingBlobs: {},
   fullExifFilesList: {},
   selectedList: [],
   openMenus: ['folders'],
@@ -81,6 +83,9 @@ const uploadSlice = createSlice({
     setUploadingStatus(state, action: PayloadAction<LoadingStatus>) {
       state.uploadingStatus = action.payload
     },
+    setBlob(state, action: PayloadAction<BlobDispatchPayload>) {
+      state.uploadingBlobs[action.payload.name] = action.payload.originalPath
+    },
   },
 })
 
@@ -97,6 +102,7 @@ export const {
   clearUploadingState,
   setLoading,
   setUploadingStatus,
+  setBlob,
 } = uploadSlice.actions
 
 export default uploadSlice.reducer

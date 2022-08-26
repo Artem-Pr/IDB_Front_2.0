@@ -5,6 +5,7 @@ export type Checkboxes = Record<CheckboxType, boolean>
 export type ElementsPerPage = 10 | 20 | 50 | 100
 export type DeleteConfirmationType = 'file' | 'directory'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
+export type PreviewType = 'video' | 'image' | undefined
 
 export enum Pages {
   MAIN = 'mainPage',
@@ -129,7 +130,12 @@ export interface DirectoryInfo extends CheckedDirectoryRequest {
 }
 
 export interface Preview {
-  video: boolean
+  previewType: PreviewType
   originalPath: string | undefined
   originalName: string
+}
+
+export interface BlobDispatchPayload {
+  name: string
+  originalPath: string
 }

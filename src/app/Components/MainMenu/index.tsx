@@ -60,7 +60,7 @@ const MainMenu = ({
 }: Props) => {
   const dispatch = useDispatch()
   const { keywordsList: allKeywords } = useSelector(folderElement)
-  const { video, originalPath, originalName } = useSelector(imagePreview)
+  const { previewType, originalPath, originalName } = useSelector(imagePreview)
   const [isKeywordsMenuLoading] = useState(false)
   const { isUploadingPage, isMainPage } = useCurrentPage()
 
@@ -144,9 +144,10 @@ const MainMenu = ({
           icon={<PictureOutlined />}
           title="Preview"
           onTitleClick={handleTitleClick}
+          disabled={!originalPath}
         >
           <Menu.Item key="image-preview" className={cn(styles.preview)}>
-            {video ? (
+            {previewType === 'video' ? (
               <Iframe
                 url={originalPath || ''}
                 width="80vm"
