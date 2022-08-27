@@ -24,6 +24,7 @@ export const imagePreview = (state: RootState) => state.mainPageReducer.preview
 export const numberOfFilesChecking = (state: RootState) => state.testsReducer.firstTest
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest
 export const pathsConfigRebuildProgress = (state: RootState) => state.testsReducer.thirdTest.progress
+export const asideMenuWidth = (state: RootState) => state.sessionSlice.asideMenuWidth
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
 

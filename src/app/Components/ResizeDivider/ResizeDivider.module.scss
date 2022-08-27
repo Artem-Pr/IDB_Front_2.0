@@ -1,0 +1,17 @@
+@import "src/styles/_vars";
+
+.divider {
+  height: 100%;
+  cursor: col-resize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $sizeDivider;
+  user-select: none;
+
+  .resizeIcon {
+    font-size: 25px;
+    width: 10px;
+    transform: translateX(-7px);
+  }
+}

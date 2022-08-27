@@ -14,7 +14,7 @@ import {
   filesSizeSum,
   main,
 } from '../../../redux/selectors'
-import { useUpdateFields } from '../../common/hooks'
+import { useUpdateFields, useMenuResize } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { formatSize, removeIntersectingKeywords } from '../../common/utils'
 import {
@@ -28,10 +28,12 @@ import {
   updateDOpenMenus,
 } from '../../../redux/reducers/mainPageSlice-reducer'
 import PaginationMenu from '../../Components/PaginationMenu'
+import { ResizeDivider } from '../../Components/ResizeDivider'
 
 const { Content } = Layout
 
 const MainPage = () => {
+  const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
   const dispatch = useDispatch()
   const location = useLocation()
   const [isFilesLoaded, setIsFilesLoaded] = useState(false)
@@ -100,7 +102,10 @@ const MainPage = () => {
 
   return (
     <Layout>
-      <MainMenu {...mainMenuProps} />
+      <MainMenu {...mainMenuProps} menuRef={menuRef} />
+      <div style={{ height: 'calc(100vh - 64px)' }}>
+        <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
+      </div>
       <Layout>
         <Content>
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />

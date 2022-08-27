@@ -19,10 +19,11 @@ import {
   updateUploadingFilesArr,
   clearUploadingState,
 } from '../../../redux/reducers/uploadSlice-reducer'
-import { useUpdateFields } from '../../common/hooks'
+import { useUpdateFields, useMenuResize } from '../../common/hooks'
 import { GalleryProps } from '../../Components/Gallery'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import { LoadingStatus } from '../../../redux/types'
+import { ResizeDivider } from '../../Components/ResizeDivider'
 
 const { Content } = Layout
 
@@ -34,6 +35,7 @@ const statusMessage: Record<LoadingStatus, string> = {
 }
 
 const UploadPage = () => {
+  const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
   const dispatch = useDispatch()
   const { isExifLoading, uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywordsSelector)
@@ -77,7 +79,10 @@ const UploadPage = () => {
 
   return (
     <Layout>
-      <MainMenu {...mainMenuProps} />
+      <MainMenu {...mainMenuProps} menuRef={menuRef} />
+      <div style={{ height: 'calc(100vh - 64px)' }}>
+        <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
+      </div>
       <Layout>
         <Content>
           <DropZone openMenus={openMenus} />

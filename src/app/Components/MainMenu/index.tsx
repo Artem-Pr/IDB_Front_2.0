@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { MutableRefObject, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Iframe from 'react-iframe'
 import { Button, Empty, Layout, Menu, Spin } from 'antd'
@@ -19,7 +19,7 @@ import { EditMenu, Folders, SearchMenu } from '../index'
 import { FieldsObj } from '../../../redux/types'
 import KeywordsMenu from '../KeywordsMenu'
 import PropertyMenu from '../PropertyMenu'
-import { folderElement, imagePreview } from '../../../redux/selectors'
+import { asideMenuWidth, folderElement, imagePreview } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
 import { useCurrentPage } from '../../common/hooks'
@@ -41,6 +41,7 @@ interface Props {
   removeKeyword: (keyword: string) => void
   removeFiles: () => void
   isComparisonPage?: boolean
+  menuRef: MutableRefObject<HTMLDivElement | null>
 }
 
 const MainMenu = ({
@@ -57,8 +58,10 @@ const MainMenu = ({
   uniqKeywords,
   sameKeywords,
   removeFiles,
+  menuRef,
 }: Props) => {
   const dispatch = useDispatch()
+  const defaultMenuWidth = useSelector(asideMenuWidth)
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const { previewType, originalPath, originalName } = useSelector(imagePreview)
   const [isKeywordsMenuLoading] = useState(false)
@@ -95,7 +98,7 @@ const MainMenu = ({
   )
 
   return (
-    <Sider theme="light" className={styles.sider} width="400">
+    <Sider theme="light" className={styles.sider} ref={menuRef} width={defaultMenuWidth}>
       <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
         <SubMenu key="search" icon={<SearchOutlined />} title="Search" onTitleClick={handleTitleClick}>
           <SearchMenu />
