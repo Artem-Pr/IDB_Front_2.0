@@ -1,4 +1,4 @@
-import React, { MouseEvent, SyntheticEvent, useEffect, useMemo, useState } from 'react'
+import React, { MouseEvent, MutableRefObject, RefObject, SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
@@ -37,6 +37,8 @@ export interface GalleryProps {
   updateFiles: (tempPath: string) => void
   isLoading?: boolean
   isMainPage?: boolean
+  gridRef: MutableRefObject<HTMLDivElement | null>
+  imgRef: RefObject<(HTMLDivElement | null)[]>
 }
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
@@ -54,10 +56,12 @@ const Gallery = ({
   updateFiles,
   isLoading,
   isMainPage,
+  gridRef,
+  imgRef,
 }: GalleryProps) => {
   const dispatch = useDispatch()
   const blobFiles = useSelector(uploadingBlobs)
-  const { fitContain } = useSelector(session)
+  const { fitContain, previewSize } = useSelector(session)
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
@@ -164,12 +168,23 @@ const Gallery = ({
     setCurrentImage(i)
   }
 
+  const handleImgRefAdd = (ref: HTMLDivElement | null) => {
+    // eslint-disable-next-line functional/immutable-data
+    imgRef.current?.push(ref)
+  }
+
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
-      <div className={cn(styles.wrapper, 'd-grid')}>
+      <div
+        ref={gridRef}
+        style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
+        className={cn(styles.wrapper, 'd-grid')}
+      >
         {imageArr.map(({ preview, name, tempPath, originalPath, type, _id }, i) => (
           <div
             key={preview + _id}
+            ref={handleImgRefAdd}
+            style={{ height: `${previewSize}px` }}
             className={cn(
               styles.item,
               {

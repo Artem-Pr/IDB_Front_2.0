@@ -19,8 +19,7 @@ import {
   updateUploadingFilesArr,
   clearUploadingState,
 } from '../../../redux/reducers/uploadSlice-reducer'
-import { useUpdateFields, useMenuResize } from '../../common/hooks'
-import { GalleryProps } from '../../Components/Gallery'
+import { useUpdateFields, useMenuResize, usePreviewResize } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import { LoadingStatus } from '../../../redux/types'
 import { ResizeDivider } from '../../Components/ResizeDivider'
@@ -36,6 +35,7 @@ const statusMessage: Record<LoadingStatus, string> = {
 
 const UploadPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
+  const { imgRef, gridRef, onSliderMove, finishPreviewResize } = usePreviewResize()
   const dispatch = useDispatch()
   const { isExifLoading, uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywordsSelector)
@@ -45,7 +45,7 @@ const UploadPage = () => {
   const { currentFolderPath } = useSelector(curFolderInfo)
   const { updateUploadingFiles } = useUpdateFields(imageArr)
 
-  const galleryProps: GalleryProps = {
+  const galleryProps = {
     ...mainGalleryProps,
     removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
     addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
@@ -89,8 +89,8 @@ const UploadPage = () => {
           {ResultComponent}
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
-          <GalleryTopMenu />
-          <Gallery {...galleryProps} />
+          <GalleryTopMenu onSliderMove={onSliderMove} finishPreviewResize={finishPreviewResize} />
+          <Gallery {...galleryProps} imgRef={imgRef} gridRef={gridRef} />
         </Content>
       </Layout>
     </Layout>

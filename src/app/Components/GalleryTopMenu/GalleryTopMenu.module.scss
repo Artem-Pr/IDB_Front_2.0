@@ -3,3 +3,11 @@
   min-height: 30px;
   padding: 0 20px;
 }
+
+.slider {
+  width: 250px;
+
+  :global .ant-slider-rail {
+    box-shadow: 0 5px 10px 2px rgb(34 60 80 / 31%);
+  }
+}
