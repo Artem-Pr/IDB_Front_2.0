@@ -18,7 +18,7 @@ import styles from './index.module.scss'
 import { EditMenu, Folders, SearchMenu } from '../index'
 import { FieldsObj } from '../../../redux/types'
 import PropertyMenu from '../PropertyMenu'
-import { asideMenuWidth, folderElement, imagePreview } from '../../../redux/selectors'
+import { session, folderElement, imagePreview } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
 import { useCurrentPage } from '../../common/hooks'
@@ -61,7 +61,7 @@ const MainMenu = ({
   menuRef,
 }: Props) => {
   const dispatch = useDispatch()
-  const defaultMenuWidth = useSelector(asideMenuWidth)
+  const { asideMenuWidth: defaultMenuWidth } = useSelector(session)
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const { previewType, originalPath, originalName } = useSelector(imagePreview)
   const { isUploadingPage, isMainPage } = useCurrentPage()

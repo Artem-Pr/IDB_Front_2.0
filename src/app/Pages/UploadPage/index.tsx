@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Layout, Result } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { CustomAlert, DropZone, Gallery, MainMenu } from '../../Components'
+import { CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu } from '../../Components'
 import {
   allSameKeywordsSelector,
   allUploadKeywordsSelector,
@@ -84,11 +84,12 @@ const UploadPage = () => {
         <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       </div>
       <Layout>
-        <Content>
+        <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>
           <DropZone openMenus={openMenus} />
           {ResultComponent}
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
+          <GalleryTopMenu />
           <Gallery {...galleryProps} />
         </Content>
       </Layout>

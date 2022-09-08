@@ -13,7 +13,7 @@ import styles from './index.module.scss'
 import { ExifFilesList, FieldsObj, IGallery } from '../../../redux/types'
 import { setPreview } from '../../../redux/reducers/mainPageSlice-reducer'
 import { isVideo } from '../../common/utils/utils'
-import { uploadingBlobs } from '../../../redux/selectors'
+import { session, uploadingBlobs } from '../../../redux/selectors'
 
 interface VideoItemProps {
   originalPath: string
@@ -57,6 +57,7 @@ const Gallery = ({
 }: GalleryProps) => {
   const dispatch = useDispatch()
   const blobFiles = useSelector(uploadingBlobs)
+  const { fitContain } = useSelector(session)
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
@@ -195,7 +196,13 @@ const Gallery = ({
               </h4>
               <FullscreenOutlined className={cn(styles.itemMenuIcon, 'pointer')} onClick={handleFullScreenClick(i)} />
             </div>
-            <img className={cn(styles.img, 'd-none')} src={preview} alt="image-preview" onLoad={handleImageOnLoad} />
+            <img
+              style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
+              className={cn(styles.img, 'd-none')}
+              src={preview}
+              alt="image-preview"
+              onLoad={handleImageOnLoad}
+            />
             <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
           </div>
         ))}
