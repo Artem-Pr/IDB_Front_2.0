@@ -1,7 +1,7 @@
-import React, { MutableRefObject, useEffect, useState } from 'react'
+import React, { MutableRefObject, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Iframe from 'react-iframe'
-import { Button, Empty, Layout, Menu, Spin } from 'antd'
+import { Button, Layout, Menu } from 'antd'
 import {
   UserOutlined,
   EditFilled,
@@ -17,12 +17,12 @@ import cn from 'classnames'
 import styles from './index.module.scss'
 import { EditMenu, Folders, SearchMenu } from '../index'
 import { FieldsObj } from '../../../redux/types'
-import KeywordsMenu from '../KeywordsMenu'
 import PropertyMenu from '../PropertyMenu'
 import { asideMenuWidth, folderElement, imagePreview } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
 import { useCurrentPage } from '../../common/hooks'
+import { KeywordsMenuWrapper } from './components'
 
 const { Sider } = Layout
 const { SubMenu } = Menu
@@ -64,7 +64,6 @@ const MainMenu = ({
   const defaultMenuWidth = useSelector(asideMenuWidth)
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const { previewType, originalPath, originalName } = useSelector(imagePreview)
-  const [isKeywordsMenuLoading] = useState(false)
   const { isUploadingPage, isMainPage } = useCurrentPage()
 
   useEffect(() => {
@@ -85,17 +84,6 @@ const MainMenu = ({
     removeFiles()
     updateOpenMenus(['folders'])
   }
-
-  const KeywordsMenuWrapper = () => (
-    <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
-      {isKeywordsMenuLoading ? (
-        <Spin tip="Loading..." />
-      ) : (
-        <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} isUploadingPage={isUploadingPage} />
-      )}
-      {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
-    </div>
-  )
 
   return (
     <Sider theme="light" className={styles.sider} ref={menuRef} width={defaultMenuWidth}>
@@ -139,7 +127,7 @@ const MainMenu = ({
           />
         </SubMenu>
         <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
-          <KeywordsMenuWrapper />
+          <KeywordsMenuWrapper {...{ isUploadingPage, removeKeyword, uniqKeywords }} />
         </SubMenu>
         <SubMenu
           key="preview"

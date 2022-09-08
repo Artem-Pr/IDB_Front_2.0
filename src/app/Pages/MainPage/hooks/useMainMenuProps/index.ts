@@ -1,0 +1,1 @@
+export { useMainMenuProps } from './useMainMenuProps'

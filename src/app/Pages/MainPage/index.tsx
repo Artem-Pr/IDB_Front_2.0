@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import cn from 'classnames'
 import { Col, Layout, Popover, Row } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
@@ -6,45 +7,28 @@ import { isEmpty } from 'ramda'
 import { useLocation } from 'react-router-dom'
 
 import { CustomAlert, Gallery, MainMenu } from '../../Components'
-import {
-  allDownloadingKeywordsSelector,
-  curFolderInfo,
-  dAllSameKeywordsSelector,
-  dPageGalleryPropsSelector,
-  filesSizeSum,
-  main,
-} from '../../../redux/selectors'
-import { useUpdateFields, useMenuResize } from '../../common/hooks'
-import { GalleryProps } from '../../Components/Gallery'
-import { formatSize, removeIntersectingKeywords } from '../../common/utils'
-import {
-  addToDSelectedList,
-  clearDownloadingState,
-  clearDSelectedList,
-  fetchPhotos,
-  removeFromDSelectedList,
-  selectAllD,
-  setDownloadingFiles,
-  updateDOpenMenus,
-} from '../../../redux/reducers/mainPageSlice-reducer'
+import { dPageGalleryPropsSelector, filesSizeSum } from '../../../redux/selectors'
+import { useMenuResize } from '../../common/hooks'
+import { formatSize } from '../../common/utils'
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice-reducer'
 import PaginationMenu from '../../Components/PaginationMenu'
 import { ResizeDivider } from '../../Components/ResizeDivider'
+
+import styles from './index.module.scss'
+import { useGalleryProps, useMainMenuProps } from './hooks'
 
 const { Content } = Layout
 
 const MainPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
   const dispatch = useDispatch()
+  const mainMenuProps = useMainMenuProps()
+  const galleryProps = useGalleryProps()
   const location = useLocation()
   const [isFilesLoaded, setIsFilesLoaded] = useState(false)
-  const { isExifLoading, isGalleryLoading } = useSelector(main)
-  const { currentFolderPath } = useSelector(curFolderInfo)
-  const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
-  const sameKeywords = useSelector(dAllSameKeywordsSelector)
   const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
   const filesSizeTotal = useSelector(filesSizeSum)
-  const { openMenus, selectedList, imageArr } = mainGalleryProps
-  const { updateUploadingFiles } = useUpdateFields(imageArr)
+  const { openMenus, imageArr } = mainGalleryProps
 
   const query = new URLSearchParams(location.search)
   const isComparisonPage = Boolean(query.get('comparison'))
@@ -54,51 +38,6 @@ const MainPage = () => {
     isEmpty(imageArr) && !isFilesLoaded && dispatch(fetchPhotos(isComparisonPage, folderParam))
     setIsFilesLoaded(true)
   }, [dispatch, folderParam, imageArr, isComparisonPage, isFilesLoaded])
-
-  const galleryProps: GalleryProps = useMemo(
-    () => ({
-      ...mainGalleryProps,
-      removeFromSelectedList: (index: number) => dispatch(removeFromDSelectedList(index)),
-      addToSelectedList: (index: number) => dispatch(addToDSelectedList(index)),
-      clearSelectedList: () => dispatch(clearDSelectedList()),
-      updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
-      isLoading: isGalleryLoading,
-      isMainPage: true,
-    }),
-    [dispatch, isGalleryLoading, mainGalleryProps, updateUploadingFiles]
-  )
-
-  const mainMenuProps = useMemo(
-    () => ({
-      filesArr: imageArr,
-      selectedList: selectedList,
-      isExifLoading,
-      uniqKeywords,
-      sameKeywords,
-      openKeys: openMenus,
-      currentFolderPath,
-      isComparisonPage,
-      clearSelectedList: () => dispatch(clearDSelectedList()),
-      selectAll: () => dispatch(selectAllD()),
-      updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
-      removeKeyword: (keyword: string) => {
-        const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
-        dispatch(setDownloadingFiles(filesArrWithoutKeyword))
-      },
-      removeFiles: () => dispatch(clearDownloadingState()),
-    }),
-    [
-      currentFolderPath,
-      dispatch,
-      imageArr,
-      isComparisonPage,
-      isExifLoading,
-      openMenus,
-      sameKeywords,
-      selectedList,
-      uniqKeywords,
-    ]
-  )
 
   return (
     <Layout>
@@ -110,8 +49,7 @@ const MainPage = () => {
         <Content>
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
-          <Row className="d-flex align-items-baseline">
-            <Col>{!isComparisonPage && <PaginationMenu />}</Col>
+          <Row className={cn(styles.row, 'd-flex align-items-baseline')}>
             {Boolean(filesSizeTotal) && (
               <Col offset={1}>
                 <Popover content="Size of all requested files">{formatSize(filesSizeTotal)}</Popover>

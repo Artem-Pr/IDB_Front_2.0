@@ -1,0 +1,1 @@
+export { useGalleryProps } from './useGalleryProps'
