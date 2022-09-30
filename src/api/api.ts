@@ -61,10 +61,21 @@ export const mainApi = {
     excludeTags: string[] | undefined,
     mimeTypes: MimeTypes[] | undefined,
     folderPath: string | undefined,
+    showSubfolders: boolean,
     isNameComparison?: boolean,
     comparisonFolder?: string
   ): Promise<AxiosResponse<FetchingGalleryContent>> {
-    const params = { page, perPage, searchTags, excludeTags, mimeTypes, folderPath, isNameComparison, comparisonFolder }
+    const params = {
+      page,
+      perPage,
+      searchTags,
+      excludeTags,
+      mimeTypes,
+      folderPath,
+      showSubfolders,
+      isNameComparison,
+      comparisonFolder,
+    }
     return instance.post('/filtered-photos', params)
   },
 

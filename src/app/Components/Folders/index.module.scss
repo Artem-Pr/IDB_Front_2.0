@@ -11,3 +11,10 @@
   font-size: 20px;
   margin-left: 6px;
 }
+
+.showSubfolders {
+  &:global.ant-checkbox-wrapper {
+    margin-bottom: 10px;
+    margin-top: 5px;
+  }
+}

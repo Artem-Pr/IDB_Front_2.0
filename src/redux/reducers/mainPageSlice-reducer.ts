@@ -175,6 +175,7 @@ export const fetchPhotos =
     const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
     const curMimeTypes = isEmpty(mimetypes) ? undefined : mimetypes
     const curFolderPath = currentFolderInfo.currentFolderPath || undefined
+    const showSubfolders = currentFolderInfo.showSubfolders
     dispatch(setDGalleryLoading(true))
     mainApi
       .getPhotosByTags(
@@ -184,6 +185,7 @@ export const fetchPhotos =
         curExcludeTags,
         curMimeTypes,
         curFolderPath,
+        showSubfolders,
         isNameComparison,
         comparisonFolder
       )

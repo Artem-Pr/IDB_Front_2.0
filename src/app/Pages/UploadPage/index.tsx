@@ -44,6 +44,7 @@ const UploadPage = () => {
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(curFolderInfo)
   const { updateUploadingFiles } = useUpdateFields(imageArr)
+  const showTopGalleryMenu = mainGalleryProps.imageArr.length !== 0
 
   const galleryProps = {
     ...mainGalleryProps,
@@ -89,7 +90,9 @@ const UploadPage = () => {
           {ResultComponent}
           <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
           <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
-          <GalleryTopMenu onSliderMove={onSliderMove} finishPreviewResize={finishPreviewResize} />
+          {showTopGalleryMenu && (
+            <GalleryTopMenu onSliderMove={onSliderMove} finishPreviewResize={finishPreviewResize} />
+          )}
           <Gallery {...galleryProps} imgRef={imgRef} gridRef={gridRef} />
         </Content>
       </Layout>

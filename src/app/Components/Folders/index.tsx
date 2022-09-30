@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react'
 
-import { AutoComplete, Button, Modal, Tooltip } from 'antd'
+import { AutoComplete, Button, Modal, Tooltip, Checkbox } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 
 import { useDispatch, useSelector } from 'react-redux'
+
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { FolderTree } from '../index'
 import styles from './index.module.scss'
@@ -14,6 +16,7 @@ import {
   setCurrentFolderPath,
   setFolderTree,
   setPathsArr,
+  setShowSubfolders,
 } from '../../../redux/reducers/foldersSlice-reducer'
 import { addFolderToFolderTree } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
@@ -27,7 +30,7 @@ const Folders = ({ isMainPage }: Props) => {
   const dispatch = useDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const { folderTree } = useSelector(folderElement)
-  const { currentFolderPath } = useSelector(curFolderInfo)
+  const { currentFolderPath, showSubfolders } = useSelector(curFolderInfo)
   const directoriesArr = useSelector(pathsArr)
   const options = useSelector(pathsArrOptionsSelector)
 
@@ -55,6 +58,10 @@ const Folders = ({ isMainPage }: Props) => {
       dispatch(checkDirectory())
     }
     modal.confirm(deleteConfirmation({ onOk, type: 'directory' }))
+  }
+
+  const handleShowSubfoldersChange = (e: CheckboxChangeEvent) => {
+    dispatch(setShowSubfolders(e.target.checked))
   }
 
   return (
@@ -89,6 +96,9 @@ const Folders = ({ isMainPage }: Props) => {
           />
         </Tooltip>
       </div>
+      <Checkbox className={styles.showSubfolders} checked={showSubfolders} onChange={handleShowSubfoldersChange}>
+        Show subfolders
+      </Checkbox>
       {contextHolder}
     </div>
   )
