@@ -1,29 +1,29 @@
-import React, { MouseEvent, MutableRefObject, RefObject, SyntheticEvent, useEffect, useMemo, useState } from 'react'
+import React, {
+  MouseEvent,
+  MutableRefObject,
+  RefObject,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 import { compose, keys, map } from 'ramda'
 import { Modal, Spin } from 'antd'
-import { FullscreenOutlined } from '@ant-design/icons'
-import Iframe from 'react-iframe'
 import ImageGallery from 'react-image-gallery'
-
-import imagePlaceholder from '../../../assets/svg-icons-html/image-placeholder.svg'
 
 import styles from './index.module.scss'
 import { ExifFilesList, FieldsObj, IGallery } from '../../../redux/types'
 import { setPreview } from '../../../redux/reducers/mainPageSlice-reducer'
 import { isVideo } from '../../common/utils/utils'
 import { session, uploadingBlobs } from '../../../redux/selectors'
+import { RawPreview } from './type'
+import { GalleryTile, VideoGalleryPreview } from './components'
 
-interface VideoItemProps {
-  originalPath: string
-  preview: string
-}
-
-interface RawPreview {
-  name: string
-  type: string
-  originalPath: string | undefined
+const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
+  event.currentTarget.classList.remove('d-none')
 }
 
 export interface GalleryProps {
@@ -39,10 +39,6 @@ export interface GalleryProps {
   isMainPage?: boolean
   gridRef: MutableRefObject<HTMLDivElement | null>
   imgRef: RefObject<(HTMLDivElement | null)[]>
-}
-
-const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
-  event.currentTarget.classList.remove('d-none')
 }
 
 const Gallery = ({
@@ -75,32 +71,16 @@ const Gallery = ({
   const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
   const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
 
-  const VideoItem = ({ originalPath, preview }: VideoItemProps) => {
-    const [showVideo, setShowVideo] = useState(false)
-
-    const handlePlay = () => {
-      setShowVideo(true)
-      setShowPlayButton(false)
-      setShowFullscreenButton(false)
-    }
-
-    return (
-      <>
-        {showVideo ? (
-          <Iframe url={originalPath} width="80vm" id="myId" className={styles.iframeStyles} position="relative" />
-        ) : (
-          <div>
-            <div className={styles.playButton} onClick={handlePlay} />
-            <img src={preview} alt="video-preview" />
-          </div>
-        )}
-      </>
-    )
-  }
-
   useEffect(() => {
     const showVideoItem = (originalPath: string, preview: string) => () =>
-      <VideoItem originalPath={originalPath} preview={preview} />
+      (
+        <VideoGalleryPreview
+          originalPath={originalPath}
+          preview={preview}
+          setShowFullscreenButton={setShowFullscreenButton}
+          setShowPlayButton={setShowPlayButton}
+        />
+      )
 
     isMainPage &&
       setGalleryArr(
@@ -117,37 +97,54 @@ const Gallery = ({
       )
   }, [imageArr, isMainPage])
 
-  const getExif = (tempPath: string) => (e: MouseEvent) => {
-    e.stopPropagation()
-    !fullExifFilesList[tempPath] && updateFiles(tempPath)
-    setCurrentTempPath(tempPath)
-    setShowModal(true)
-  }
+  const getExif = useCallback(
+    (tempPath: string) => (e: MouseEvent) => {
+      e.stopPropagation()
+      !fullExifFilesList[tempPath] && updateFiles(tempPath)
+      setCurrentTempPath(tempPath)
+      setShowModal(true)
+    },
+    [fullExifFilesList, updateFiles]
+  )
 
-  const handleImageClick = (i: number, preview?: RawPreview) => () => {
-    const updateFilesArr = () => {
-      addToSelectedList(i)
-    }
-    const selectOnlyOne = () => {
-      clearSelectedList()
-      updateFilesArr()
-    }
-    const selectAnyQuantity = () => {
-      selectedList.includes(i) ? removeFromSelectedList(i) : updateFilesArr()
-    }
+  const handleImageClick = useCallback(
+    (i: number, preview?: RawPreview) => () => {
+      const updateFilesArr = () => {
+        addToSelectedList(i)
+      }
+      const selectOnlyOne = () => {
+        clearSelectedList()
+        updateFilesArr()
+      }
+      const selectAnyQuantity = () => {
+        selectedList.includes(i) ? removeFromSelectedList(i) : updateFilesArr()
+      }
 
-    isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
-    isEditMenu && selectOnlyOne()
-    isTemplateMenu && selectAnyQuantity()
-    preview &&
-      dispatch(
-        setPreview({
-          previewType: isVideo(preview.type) ? 'video' : 'image',
-          originalName: preview.name,
-          originalPath: isMainPage ? preview.originalPath : blobFiles[preview.name],
-        })
-      )
-  }
+      isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
+      isEditMenu && selectOnlyOne()
+      isTemplateMenu && selectAnyQuantity()
+      preview &&
+        dispatch(
+          setPreview({
+            previewType: isVideo(preview.type) ? 'video' : 'image',
+            originalName: preview.name,
+            originalPath: isMainPage ? preview.originalPath : blobFiles[preview.name],
+          })
+        )
+    },
+    [
+      addToSelectedList,
+      blobFiles,
+      clearSelectedList,
+      dispatch,
+      isEditMenu,
+      isMainPage,
+      isPropertiesMenu,
+      isTemplateMenu,
+      removeFromSelectedList,
+      selectedList,
+    ]
+  )
 
   const handleSlide = (currentIndex: number) => {
     setCurrentImage(currentIndex)
@@ -163,15 +160,21 @@ const Gallery = ({
     setShowImageModal(false)
   }
 
-  const handleFullScreenClick = (i: number) => () => {
-    setShowImageModal(true)
-    setCurrentImage(i)
-  }
+  const handleFullScreenClick = useCallback(
+    (i: number) => () => {
+      setShowImageModal(true)
+      setCurrentImage(i)
+    },
+    []
+  )
 
-  const handleImgRefAdd = (ref: HTMLDivElement | null) => {
-    // eslint-disable-next-line functional/immutable-data
-    imgRef.current?.push(ref)
-  }
+  const handleImgRefAdd = useCallback(
+    (ref: HTMLDivElement | null) => {
+      // eslint-disable-next-line functional/immutable-data
+      imgRef.current?.push(ref)
+    },
+    [imgRef]
+  )
 
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
@@ -181,45 +184,24 @@ const Gallery = ({
         className={cn(styles.wrapper, 'd-grid')}
       >
         {imageArr.map(({ preview, name, tempPath, originalPath, type, _id }, i) => (
-          <div
+          <GalleryTile
             key={preview + _id}
-            ref={handleImgRefAdd}
-            style={{ height: `${previewSize}px` }}
-            className={cn(
-              styles.item,
-              {
-                active: selectedList.includes(i),
-                pointer: isEditMode,
-              },
-              'position-relative',
-              'pointer'
-            )}
-            onClick={handleImageClick(i, { originalPath, name, type })}
-          >
-            <div
-              className={cn(
-                styles.itemMenu,
-                `${isEditMode ? 'd-none' : 'd-flex'}`,
-                'position-absolute',
-                'h-100',
-                'flex-column',
-                'justify-content-between'
-              )}
-            >
-              <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
-                Exif
-              </h4>
-              <FullscreenOutlined className={cn(styles.itemMenuIcon, 'pointer')} onClick={handleFullScreenClick(i)} />
-            </div>
-            <img
-              style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
-              className={cn(styles.img, 'd-none')}
-              src={preview}
-              alt="image-preview"
-              onLoad={handleImageOnLoad}
-            />
-            <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
-          </div>
+            index={i}
+            preview={preview}
+            name={name}
+            tempPath={tempPath}
+            originalPath={originalPath}
+            type={type}
+            previewSize={previewSize}
+            selectedList={selectedList}
+            isEditMode={isEditMode}
+            fitContain={fitContain}
+            handleImgRefAdd={handleImgRefAdd}
+            handleImageClick={handleImageClick}
+            getExif={getExif}
+            handleFullScreenClick={handleFullScreenClick}
+            handleImageOnLoad={handleImageOnLoad}
+          />
         ))}
 
         <Modal title="Exif list" footer={null} visible={showModal} onCancel={handleShowModalClose}>

@@ -1,0 +1,1 @@
+export { GalleryTile } from './GalleryTile'
