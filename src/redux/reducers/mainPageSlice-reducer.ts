@@ -73,14 +73,14 @@ const uploadSlice = createSlice({
     setDownloadingFiles(state, action: PayloadAction<DownloadingObject[]>) {
       state.downloadingFiles = action.payload
     },
-    addToDSelectedList(state, action: PayloadAction<number>) {
-      const set = new Set(current(state).dSelectedList)
-      set.add(action.payload)
+    addToDSelectedList(state, action: PayloadAction<number[]>) {
+      const updatedSelectedList = [...current(state).dSelectedList, ...action.payload]
+      const set = new Set(updatedSelectedList)
       state.dSelectedList = Array.from(set)
     },
-    removeFromDSelectedList(state, action: PayloadAction<number>) {
+    removeFromDSelectedList(state, action: PayloadAction<number[]>) {
       const set = new Set(state.dSelectedList)
-      set.delete(action.payload)
+      action.payload.forEach(index => set.delete(index))
       state.dSelectedList = Array.from(set)
     },
     updateDOpenMenus(state, action: PayloadAction<string[]>) {

@@ -20,8 +20,8 @@ export const useGalleryProps = () => {
   return useMemo(
     () => ({
       ...mainGalleryProps,
-      removeFromSelectedList: (index: number) => dispatch(removeFromDSelectedList(index)),
-      addToSelectedList: (index: number) => dispatch(addToDSelectedList(index)),
+      removeFromSelectedList: (indexArr: number[]) => dispatch(removeFromDSelectedList(indexArr)),
+      addToSelectedList: (indexArr: number[]) => dispatch(addToDSelectedList(indexArr)),
       clearSelectedList: () => dispatch(clearDSelectedList()),
       updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
       isLoading: isGalleryLoading,

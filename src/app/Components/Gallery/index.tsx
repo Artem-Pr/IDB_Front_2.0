@@ -1,26 +1,18 @@
-import React, {
-  MouseEvent,
-  MutableRefObject,
-  RefObject,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { MouseEvent, MutableRefObject, RefObject, SyntheticEvent, useCallback, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
-import { compose, keys, map } from 'ramda'
+import { compose, difference, keys, map, range, sort } from 'ramda'
 import { Modal, Spin } from 'antd'
 import ImageGallery from 'react-image-gallery'
 
 import styles from './index.module.scss'
-import { ExifFilesList, FieldsObj, IGallery } from '../../../redux/types'
+import type { ExifFilesList, FieldsObj } from '../../../redux/types'
 import { setPreview } from '../../../redux/reducers/mainPageSlice-reducer'
-import { isVideo } from '../../common/utils/utils'
+import { getLastItem, isVideo } from '../../common/utils/utils'
 import { session, uploadingBlobs } from '../../../redux/selectors'
-import { RawPreview } from './type'
-import { GalleryTile, VideoGalleryPreview } from './components'
+import type { RawPreview } from './type'
+import { GalleryTile } from './components'
+import { useImageGalleryData, useSelectWithShift } from './hooks'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
   event.currentTarget.classList.remove('d-none')
@@ -31,8 +23,8 @@ export interface GalleryProps {
   imageArr: FieldsObj[]
   fullExifFilesList: ExifFilesList
   selectedList: number[]
-  removeFromSelectedList: (index: number) => void
-  addToSelectedList: (index: number) => void
+  removeFromSelectedList: (index: number[]) => void
+  addToSelectedList: (indexArr: number[]) => void
   clearSelectedList: () => void
   updateFiles: (tempPath: string) => void
   isLoading?: boolean
@@ -61,41 +53,19 @@ const Gallery = ({
   const [currentTempPath, setCurrentTempPath] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
-  const [showPlayButton, setShowPlayButton] = useState(true)
-  const [showFullscreenButton, setShowFullscreenButton] = useState(true)
   const [currentImage, setCurrentImage] = useState<number>(0)
-  const [galleryArr, setGalleryArr] = useState<IGallery[]>([])
   const isEditMenu = useMemo(() => openMenus.includes('edit'), [openMenus])
   const isTemplateMenu = useMemo(() => openMenus.includes('template'), [openMenus])
   const isPropertiesMenu = useMemo(() => openMenus.includes('properties'), [openMenus])
   const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
+  const { hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover } = useSelectWithShift(
+    selectedList,
+    isTemplateMenu
+  )
+  const { galleryArr, setShowPlayButton, showPlayButton, showFullscreenButton, setShowFullscreenButton } =
+    useImageGalleryData(imageArr, isMainPage)
+
   const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
-
-  useEffect(() => {
-    const showVideoItem = (originalPath: string, preview: string) => () =>
-      (
-        <VideoGalleryPreview
-          originalPath={originalPath}
-          preview={preview}
-          setShowFullscreenButton={setShowFullscreenButton}
-          setShowPlayButton={setShowPlayButton}
-        />
-      )
-
-    isMainPage &&
-      setGalleryArr(
-        imageArr.map(item => {
-          const galleryItem: IGallery = {
-            thumbnail: item.preview,
-            original: item.originalPath || '',
-            ...(isVideo(item.type) && {
-              renderItem: showVideoItem(item.originalPath || '', item.preview),
-            }),
-          }
-          return galleryItem
-        })
-      )
-  }, [imageArr, isMainPage])
 
   const getExif = useCallback(
     (tempPath: string) => (e: MouseEvent) => {
@@ -110,19 +80,29 @@ const Gallery = ({
   const handleImageClick = useCallback(
     (i: number, preview?: RawPreview) => () => {
       const updateFilesArr = () => {
-        addToSelectedList(i)
+        addToSelectedList([i])
       }
       const selectOnlyOne = () => {
         clearSelectedList()
         updateFilesArr()
       }
       const selectAnyQuantity = () => {
-        selectedList.includes(i) ? removeFromSelectedList(i) : updateFilesArr()
+        selectedList.includes(i) ? removeFromSelectedList([i]) : updateFilesArr()
       }
 
-      isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
-      isEditMenu && selectOnlyOne()
-      isTemplateMenu && selectAnyQuantity()
+      const selectWithShift = () => {
+        const lastSelectedElemIndex = getLastItem(selectedList)
+        const sortedTouple = sort((a, b) => a - b, [hoveredIndex as number, lastSelectedElemIndex])
+        const hoverList = range(sortedTouple[0], sortedTouple[1] + 1)
+        const alreadySelectedItems = difference(hoverList, selectedList)
+        alreadySelectedItems.length ? addToSelectedList(hoverList) : removeFromSelectedList(hoverList)
+        setHoveredIndex(null)
+      }
+
+      isShiftPressed && !isEditMenu && selectWithShift()
+      !isShiftPressed && isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
+      !isShiftPressed && isEditMenu && selectOnlyOne()
+      !isShiftPressed && isTemplateMenu && selectAnyQuantity()
       preview &&
         dispatch(
           setPreview({
@@ -137,12 +117,15 @@ const Gallery = ({
       blobFiles,
       clearSelectedList,
       dispatch,
+      hoveredIndex,
       isEditMenu,
       isMainPage,
       isPropertiesMenu,
+      isShiftPressed,
       isTemplateMenu,
       removeFromSelectedList,
       selectedList,
+      setHoveredIndex,
     ]
   )
 
@@ -187,6 +170,7 @@ const Gallery = ({
           <GalleryTile
             key={preview + _id}
             index={i}
+            isShiftHover={isShiftHover(i)}
             preview={preview}
             name={name}
             tempPath={tempPath}
@@ -201,6 +185,7 @@ const Gallery = ({
             getExif={getExif}
             handleFullScreenClick={handleFullScreenClick}
             handleImageOnLoad={handleImageOnLoad}
+            onMouseEnter={setHoveredIndex}
           />
         ))}
 

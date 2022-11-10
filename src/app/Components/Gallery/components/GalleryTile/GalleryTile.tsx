@@ -7,8 +7,12 @@ import styles from './GalleryTile.module.scss'
 import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
 import { RawPreview } from '../../type'
 
+// eslint-disable-next-line functional/no-let
+let timeout: NodeJS.Timeout
+
 interface Props {
   index: number
+  isShiftHover: boolean
   preview: string
   name: string
   tempPath: string
@@ -23,10 +27,12 @@ interface Props {
   getExif: (tempPath: string) => (e: MouseEvent) => void
   handleFullScreenClick: (index: number) => () => void
   handleImageOnLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => void
+  onMouseEnter: (index: number | null) => void
 }
 
 export const GalleryTile = ({
   index,
+  isShiftHover,
   preview,
   name,
   tempPath,
@@ -41,11 +47,22 @@ export const GalleryTile = ({
   getExif,
   handleFullScreenClick,
   handleImageOnLoad,
+  onMouseEnter,
 }: Props) => {
   const extensionTypeTouple = type.split('/')
   const extensionType = extensionTypeTouple[0]
   const extension = extensionTypeTouple[1]
   const isJPG = extension === 'jpeg' || extension === 'jpg'
+
+  const handleMouseEnter = () => {
+    clearTimeout(timeout)
+    onMouseEnter(index)
+  }
+  const handleMouseLeave = () => {
+    timeout = setTimeout(() => {
+      onMouseEnter(null)
+    }, 300)
+  }
 
   return (
     <div
@@ -56,11 +73,14 @@ export const GalleryTile = ({
         {
           active: selectedList.includes(index),
           pointer: isEditMode,
+          [styles.shiftHover]: isShiftHover,
         },
         'position-relative',
         'pointer'
       )}
       onClick={handleImageClick(index, { originalPath, name, type })}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div
         className={cn(

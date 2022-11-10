@@ -48,8 +48,8 @@ const UploadPage = () => {
 
   const galleryProps = {
     ...mainGalleryProps,
-    removeFromSelectedList: (index: number) => dispatch(removeFromSelectedList(index)),
-    addToSelectedList: (index: number) => dispatch(addToSelectedList(index)),
+    removeFromSelectedList: (indexArr: number[]) => dispatch(removeFromSelectedList(indexArr)),
+    addToSelectedList: (indexArr: number[]) => dispatch(addToSelectedList(indexArr)),
     clearSelectedList: () => dispatch(clearSelectedList()),
     updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
     isLoading: false,

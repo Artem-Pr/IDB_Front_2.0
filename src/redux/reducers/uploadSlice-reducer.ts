@@ -1,5 +1,5 @@
 /* eslint functional/immutable-data: 0 */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { compose, curry, keys, reduce } from 'ramda'
 
 import { AppThunk } from '../store/store'
@@ -48,14 +48,14 @@ const uploadSlice = createSlice({
     updateFullExifFile(state, action: PayloadAction<ExifFilesList>) {
       state.fullExifFilesList = { ...state.fullExifFilesList, ...action.payload }
     },
-    addToSelectedList(state, action: PayloadAction<number>) {
-      const set = new Set(state.selectedList)
-      set.add(action.payload)
+    addToSelectedList(state, action: PayloadAction<number[]>) {
+      const updatedSelectedList = [...current(state).selectedList, ...action.payload]
+      const set = new Set(updatedSelectedList)
       state.selectedList = Array.from(set)
     },
-    removeFromSelectedList(state, action: PayloadAction<number>) {
+    removeFromSelectedList(state, action: PayloadAction<number[]>) {
       const set = new Set(state.selectedList)
-      set.delete(action.payload)
+      action.payload.forEach(index => set.delete(index))
       state.selectedList = Array.from(set)
     },
     clearSelectedList(state) {
