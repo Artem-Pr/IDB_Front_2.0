@@ -67,6 +67,9 @@ const Header = () => {
         <Menu.Item key={Pages.UPLOAD}>
           <NavLink to="/upload">Upload</NavLink>
         </Menu.Item>
+        <Menu.Item key={Pages.SETTINGS}>
+          <NavLink to="/settings">Settings</NavLink>
+        </Menu.Item>
         <Menu.Item key={Pages.TEST_DB}>
           <NavLink to="/test-db">Database tests</NavLink>
         </Menu.Item>

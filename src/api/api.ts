@@ -11,9 +11,9 @@ import {
   UploadingObject,
 } from '../redux/types'
 import { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
-import { MimeTypes } from '../redux/types/MimeTypes'
 
 import { instance } from './api-client'
+import { GetPhotosByTagsRequest } from './types'
 
 export const mainApi = {
   sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<QueryResponse>> {
@@ -54,29 +54,8 @@ export const mainApi = {
     return instance.post('/image-exif', tempPath)
   },
 
-  getPhotosByTags(
-    page: number,
-    perPage: number,
-    searchTags: string[] | undefined,
-    excludeTags: string[] | undefined,
-    mimeTypes: MimeTypes[] | undefined,
-    folderPath: string | undefined,
-    showSubfolders: boolean,
-    isNameComparison?: boolean,
-    comparisonFolder?: string
-  ): Promise<AxiosResponse<FetchingGalleryContent>> {
-    const params = {
-      page,
-      perPage,
-      searchTags,
-      excludeTags,
-      mimeTypes,
-      folderPath,
-      showSubfolders,
-      isNameComparison,
-      comparisonFolder,
-    }
-    return instance.post('/filtered-photos', params)
+  getPhotosByTags(params: GetPhotosByTagsRequest) {
+    return instance.post<FetchingGalleryContent>('/filtered-photos', params)
   },
 
   deletePhoto(_id: string): Promise<AxiosResponse<QueryResponse>> {

@@ -1,11 +1,17 @@
-import { configureStore, Action } from '@reduxjs/toolkit'
-import { ThunkAction } from 'redux-thunk'
+import { configureStore } from '@reduxjs/toolkit'
+import type { Action } from '@reduxjs/toolkit'
+import type { ThunkAction } from 'redux-thunk'
 
 import rootReducer, { RootState } from './rootReducer'
+import { setDefaultStore } from './setDefaultStore'
+import { settingsMiddleware } from './middlewares/setSettingsToLocalStorage'
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(settingsMiddleware),
 })
+
+setDefaultStore(store.dispatch)
 
 export type AppDispatch = typeof store.dispatch
 

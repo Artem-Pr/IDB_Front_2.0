@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { formatSize } from '../../common/utils'
-import { filesSizeSum, session } from '../../../redux/selectors'
+import { filesSizeSum, session, settings } from '../../../redux/selectors'
 
 import styles from './GalleryTopMenu.module.scss'
 import { useCurrentPage } from '../../common/hooks'
@@ -20,6 +20,7 @@ interface Props {
 export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize }: Props) => {
   const dispatch = useDispatch()
   const { previewSize } = useSelector(session)
+  const { imagePreviewSlideLimits } = useSelector(settings)
   const [showSlider, setShowSlider] = useState<boolean>(true)
   const filesSizeTotal = useSelector(filesSizeSum)
   const { isMainPage } = useCurrentPage()
@@ -54,8 +55,8 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize }: Props) => 
           <Slider
             className={styles.slider}
             defaultValue={previewSize}
-            min={20}
-            max={600}
+            min={imagePreviewSlideLimits.min || 20}
+            max={imagePreviewSlideLimits.max || 60}
             onChange={onSliderMove}
             onAfterChange={finishPreviewResize}
           />

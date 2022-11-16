@@ -165,30 +165,29 @@ export const fetchPhotos =
     const {
       mainPageReducer,
       folderReducer: { currentFolderInfo },
+      settingSlice: { isFullSizePreview },
     } = getState()
     const {
       searchMenu: { searchTags, excludeTags, mimetypes },
       galleryPagination,
     } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
-    const curSearchTags = isEmpty(searchTags) ? undefined : searchTags
-    const curExcludeTags = isEmpty(excludeTags) ? undefined : excludeTags
-    const curMimeTypes = isEmpty(mimetypes) ? undefined : mimetypes
-    const curFolderPath = currentFolderInfo.currentFolderPath || undefined
+    const folderPath = currentFolderInfo.currentFolderPath
     const showSubfolders = currentFolderInfo.showSubfolders
     dispatch(setDGalleryLoading(true))
     mainApi
-      .getPhotosByTags(
-        currentPage,
-        nPerPage,
-        curSearchTags,
-        curExcludeTags,
-        curMimeTypes,
-        curFolderPath,
-        showSubfolders,
-        isNameComparison,
-        comparisonFolder
-      )
+      .getPhotosByTags({
+        page: currentPage,
+        perPage: nPerPage,
+        ...(!isEmpty(searchTags) && { searchTags }),
+        ...(!isEmpty(excludeTags) && { excludeTags }),
+        ...(!isEmpty(mimetypes) && { mimetypes }),
+        ...(folderPath && { folderPath }),
+        ...(comparisonFolder && { comparisonFolder }),
+        ...(isNameComparison && { isNameComparison }),
+        ...(showSubfolders && { showSubfolders }),
+        ...(isFullSizePreview && { isFullSizePreview }),
+      })
       .then(({ data }) => {
         const rawFiles: DownloadingRawObject[] = data?.files || []
         const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)

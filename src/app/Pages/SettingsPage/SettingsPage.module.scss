@@ -1,0 +1,21 @@
+.wrapper {
+  height: calc(100vh - 64px);
+  padding: 20px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul li {
+    margin-bottom: 7px;
+  }
+
+  .inputFieldLabel {
+    margin-left: 10px;
+  }
+
+  .inputField {
+    max-width: 90px;
+  }
+}

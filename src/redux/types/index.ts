@@ -10,6 +10,7 @@ export type PreviewType = 'video' | 'image' | undefined
 export enum Pages {
   MAIN = 'mainPage',
   UPLOAD = 'uploadPage',
+  SETTINGS = 'settingsPage',
   TEST_DB = 'testDBPage',
 }
 

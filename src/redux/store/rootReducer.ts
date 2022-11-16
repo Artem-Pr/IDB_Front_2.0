@@ -5,6 +5,7 @@ import uploadSliceReducer from '../reducers/uploadSlice-reducer'
 import mainPageSliceReducer from '../reducers/mainPageSlice-reducer'
 import testsSliceReducer from '../reducers/testsSlice-reducer'
 import sessionSliceReducer from '../reducers/sessionSlice-reducer'
+import settingsSliceReducer from '../reducers/settingsSlice-reducer'
 
 const rootReducer = combineReducers({
   folderReducer: foldersSliceReducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   mainPageReducer: mainPageSliceReducer,
   testsReducer: testsSliceReducer,
   sessionSlice: sessionSliceReducer,
+  settingSlice: settingsSliceReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

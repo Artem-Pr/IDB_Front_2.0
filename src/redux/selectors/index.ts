@@ -25,6 +25,7 @@ export const numberOfFilesChecking = (state: RootState) => state.testsReducer.fi
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest
 export const pathsConfigRebuildProgress = (state: RootState) => state.testsReducer.thirdTest.progress
 export const session = (state: RootState) => state.sessionSlice
+export const settings = (state: RootState) => state.settingSlice
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
 

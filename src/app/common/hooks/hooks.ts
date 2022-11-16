@@ -20,6 +20,8 @@ export const useCurrentPage = () => {
         return Pages.UPLOAD
       case '/test-db':
         return Pages.TEST_DB
+      case '/settings':
+        return Pages.SETTINGS
       default:
         return Pages.MAIN
     }
@@ -76,7 +78,7 @@ export const useEditFilesArr = (
   return useMemo(() => {
     const addEditedFieldsToFileArr = (
       filesArr: UploadingObject[],
-      editedFields: Record<string, any>
+      editedFields: Partial<UploadingObject>
     ): UploadingObject[] => {
       const keywords: string[] = editedFields?.keywords || []
       const updatedFileArr = isEmpty(keywords) ? filesArr : addKeywordsToAllFiles(keywords, filesArr)
@@ -85,12 +87,14 @@ export const useEditFilesArr = (
 
     const selectedFilesArr = filesArr.filter((_, idx) => selectedList.includes(idx))
     const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFilesArr)
-    const AddEditedFieldsToFilteredFileArr = curry(addEditedFieldsToFileArr)(selectedFilesWithoutSameKeywords)
+    const AddEditedFieldsToFilteredFileArr: (editedFields: Partial<UploadingObject>) => UploadingObject[] = curry(
+      addEditedFieldsToFileArr
+    )(selectedFilesWithoutSameKeywords)
     const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)(isMainPage ? '_id' : 'tempPath', filesArr)
 
     return compose(
       dispatch,
-      updatingAction,
+      <any>updatingAction,
       mixUpdatedFilesItemsWithOriginalOnes,
       getRenamedObjects,
       AddEditedFieldsToFilteredFileArr
