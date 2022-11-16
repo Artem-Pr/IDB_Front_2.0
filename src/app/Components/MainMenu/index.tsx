@@ -88,9 +88,11 @@ const MainMenu = ({
   return (
     <Sider theme="light" className={styles.sider} ref={menuRef} width={defaultMenuWidth}>
       <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
-        <SubMenu key="search" icon={<SearchOutlined />} title="Search" onTitleClick={handleTitleClick}>
-          <SearchMenu />
-        </SubMenu>
+        {isMainPage && (
+          <SubMenu key="search" icon={<SearchOutlined />} title="Search" onTitleClick={handleTitleClick}>
+            <SearchMenu />
+          </SubMenu>
+        )}
         {!isComparisonPage && (
           <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
             <Folders isMainPage={isMainPage} />

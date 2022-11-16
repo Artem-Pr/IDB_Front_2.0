@@ -15,7 +15,7 @@ const fileTypes = keys(MimeTypes)
 const SearchMenu = () => {
   const dispatch = useDispatch<any>()
   const { keywordsList } = useSelector(folderElement)
-  const { searchTags, excludeTags } = useSelector(searchMenu)
+  const { searchTags, excludeTags, mimetypes } = useSelector(searchMenu)
   const { isGalleryLoading } = useSelector(main)
   const searchKeywordsList = useMemo(() => difference(keywordsList, excludeTags), [excludeTags, keywordsList])
   const excludeKeywordsList = useMemo(() => difference(keywordsList, searchTags), [searchTags, keywordsList])
@@ -44,6 +44,7 @@ const SearchMenu = () => {
         mode="tags"
         placeholder="select Keywords"
         onChange={handleSearchChange}
+        value={searchTags}
       >
         {searchKeywordsList.map(keyword => (
           <Option key={keyword} value={keyword}>
@@ -57,6 +58,7 @@ const SearchMenu = () => {
         mode="tags"
         placeholder="select Keywords"
         onChange={handleExcludeChange}
+        value={excludeTags}
       >
         {excludeKeywordsList.map(keyword => (
           <Option key={keyword} value={keyword}>
@@ -70,6 +72,7 @@ const SearchMenu = () => {
         mode="tags"
         placeholder="select files type"
         onChange={handleFileTypesChange}
+        value={mimetypes}
       >
         {fileTypes.map(type => (
           <Option key={type} value={MimeTypes[type]}>

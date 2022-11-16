@@ -21,6 +21,7 @@ const initialState: State = {
     numberOfFiles: 0,
     numberOfSubdirectories: 0,
     currentFolderPath: '',
+    currentFolderKey: '',
     showInfoModal: false,
     showSubfolders: true,
   },
@@ -37,6 +38,9 @@ const folderSlice = createSlice({
     },
     setCurrentFolderPath(state, action: PayloadAction<string>) {
       state.currentFolderInfo.currentFolderPath = action.payload
+    },
+    setCurrentFolderKey(state, action: PayloadAction<string>) {
+      state.currentFolderInfo.currentFolderKey = action.payload
     },
     setPathsArr(state, action: PayloadAction<string[]>) {
       state.pathsArr = action.payload
@@ -68,6 +72,7 @@ export const {
   setNumberOfSubdirectories,
   setShowInfoModal,
   setShowSubfolders,
+  setCurrentFolderKey,
 } = folderSlice.actions
 
 export default folderSlice.reducer

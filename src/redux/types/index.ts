@@ -127,6 +127,7 @@ export interface CheckedDirectoryRequest extends QueryResponse {
 
 export interface DirectoryInfo extends CheckedDirectoryRequest {
   currentFolderPath: string
+  currentFolderKey: string
   showInfoModal: boolean
   showSubfolders: boolean
 }
