@@ -21,7 +21,7 @@ import {
 } from '../../../redux/reducers/uploadSlice-reducer'
 import { useUpdateFields, useMenuResize, usePreviewResize } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
-import { LoadingStatus } from '../../../redux/types'
+import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
 import { ResizeDivider } from '../../Components/ResizeDivider'
 
 const { Content } = Layout
@@ -65,7 +65,7 @@ const UploadPage = () => {
     currentFolderPath,
     clearSelectedList: () => dispatch(clearSelectedList()),
     selectAll: () => dispatch(selectAll()),
-    updateOpenMenus: (value: string[]) => dispatch(updateOpenMenus(value)),
+    updateOpenMenus: (value: MainMenuKeys[]) => dispatch(updateOpenMenus(value)),
     removeKeyword: (keyword: string) => {
       const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
       dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))
@@ -88,8 +88,8 @@ const UploadPage = () => {
         <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>
           <DropZone openMenus={openMenus} />
           {ResultComponent}
-          <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
-          <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
+          <CustomAlert message="Edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT)} type="info" />
+          <CustomAlert message="Bulk edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT_BULK)} type="success" />
           {showTopGalleryMenu && (
             <GalleryTopMenu onSliderMove={onSliderMove} finishPreviewResize={finishPreviewResize} />
           )}

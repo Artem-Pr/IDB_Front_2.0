@@ -17,6 +17,7 @@ import {
   dPageGalleryPropsSelector,
   main,
 } from '../../../../../redux/selectors'
+import { MainMenuKeys } from '../../../../../redux/types'
 
 export const useMainMenuProps = () => {
   const dispatch = useDispatch()
@@ -42,7 +43,7 @@ export const useMainMenuProps = () => {
       isComparisonPage,
       clearSelectedList: () => dispatch(clearDSelectedList()),
       selectAll: () => dispatch(selectAllD()),
-      updateOpenMenus: (value: string[]) => dispatch(updateDOpenMenus(value)),
+      updateOpenMenus: (value: MainMenuKeys[]) => dispatch(updateDOpenMenus(value)),
       removeKeyword: (keyword: string) => {
         const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
         dispatch(setDownloadingFiles(filesArrWithoutKeyword))

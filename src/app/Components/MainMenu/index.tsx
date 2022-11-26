@@ -1,41 +1,39 @@
 import React, { MutableRefObject, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Iframe from 'react-iframe'
-import { Button, Layout, Menu } from 'antd'
-import {
-  UserOutlined,
-  EditFilled,
-  CreditCardFilled,
-  ProfileOutlined,
-  SearchOutlined,
-  InfoCircleOutlined,
-  PictureOutlined,
-} from '@ant-design/icons'
+import { Collapse, Layout } from 'antd'
 
-import cn from 'classnames'
+import { difference } from 'ramda'
 
 import styles from './index.module.scss'
-import { EditMenu, Folders, SearchMenu } from '../index'
-import { FieldsObj } from '../../../redux/types'
-import PropertyMenu from '../PropertyMenu'
-import { session, folderElement, imagePreview } from '../../../redux/selectors'
+import { FieldsObj, MainMenuKeys } from '../../../redux/types'
+import { folderElement, imagePreview, session } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
-import { uploadFiles } from '../../../redux/reducers/uploadSlice-reducer'
-import { useCurrentPage } from '../../common/hooks'
-import { KeywordsMenuWrapper } from './components'
+import { useMainMenuItems } from './hooks'
 
 const { Sider } = Layout
-const { SubMenu } = Menu
+const { Panel } = Collapse
+
+interface PanelHeaderProps {
+  title: string
+  icon: React.ReactNode
+}
+
+const PanelHeader = ({ title, icon }: PanelHeaderProps) => (
+  <div className={styles.panelHeader}>
+    {icon}
+    <span>{title}</span>
+  </div>
+)
 
 interface Props {
   filesArr: FieldsObj[]
   selectedList: number[]
-  openKeys: string[]
+  openKeys: MainMenuKeys[]
   isExifLoading: boolean
   uniqKeywords: string[]
   sameKeywords: string[]
   currentFolderPath: string
-  updateOpenMenus: (value: string[]) => void
+  updateOpenMenus: (value: MainMenuKeys[]) => void
   clearSelectedList: () => void
   selectAll: () => void
   removeKeyword: (keyword: string) => void
@@ -63,113 +61,66 @@ const MainMenu = ({
   const dispatch = useDispatch()
   const { asideMenuWidth: defaultMenuWidth } = useSelector(session)
   const { keywordsList: allKeywords } = useSelector(folderElement)
-  const { previewType, originalPath, originalName } = useSelector(imagePreview)
-  const { isUploadingPage, isMainPage } = useCurrentPage()
+  const { originalPath } = useSelector(imagePreview)
+  const { collapseMenu, extraMenu } = useMainMenuItems({
+    filesArr,
+    selectedList,
+    clearSelectedList,
+    selectAll,
+    isExifLoading,
+    allKeywords,
+    removeFiles,
+    sameKeywords,
+    uniqKeywords,
+    removeKeyword,
+    isComparisonPage,
+    updateOpenMenus,
+    currentFolderPath,
+  })
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())
   }, [allKeywords.length, dispatch])
 
-  const handleTitleClick = ({ key }: { key: string }) => {
-    clearSelectedList()
-    const openKeysSet = new Set(openKeys)
-    key === 'edit' && openKeysSet.delete('template')
-    key === 'template' && openKeysSet.delete('edit')
-    openKeysSet.has(key) ? openKeysSet.delete(key) : openKeysSet.add(key)
-    updateOpenMenus(Array.from(openKeysSet))
-  }
+  const handleTitleClick = (keys: string | string[]) => {
+    const keysArr = Array.isArray(keys) ? (keys as MainMenuKeys[]) : ([keys] as MainMenuKeys[])
 
-  const handleUploadClick = () => {
-    dispatch(uploadFiles(filesArr, currentFolderPath))
-    removeFiles()
-    updateOpenMenus(['folders'])
+    const clearSelectedListWhenCloseEditors = () => {
+      const closingKey = difference(openKeys, keysArr)[0]
+      ;(closingKey === MainMenuKeys.EDIT || closingKey === MainMenuKeys.EDIT_BULK) && clearSelectedList()
+    }
+
+    const openingKey = difference(keysArr, openKeys)[0]
+    const openKeysSet = new Set(keysArr)
+    openingKey === MainMenuKeys.EDIT && openKeysSet.delete(MainMenuKeys.EDIT_BULK) && clearSelectedList()
+    openingKey === MainMenuKeys.EDIT_BULK && openKeysSet.delete(MainMenuKeys.EDIT) && clearSelectedList()
+    clearSelectedListWhenCloseEditors()
+    updateOpenMenus(Array.from(openKeysSet))
   }
 
   return (
     <Sider theme="light" className={styles.sider} ref={menuRef} width={defaultMenuWidth}>
-      <Menu mode="inline" className={styles.menu} defaultOpenKeys={openKeys} openKeys={openKeys}>
-        {isMainPage && (
-          <SubMenu key="search" icon={<SearchOutlined />} title="Search" onTitleClick={handleTitleClick}>
-            <SearchMenu />
-          </SubMenu>
-        )}
-        {!isComparisonPage && (
-          <SubMenu key="folders" icon={<UserOutlined />} title="Folders" onTitleClick={handleTitleClick}>
-            <Folders isMainPage={isMainPage} />
-          </SubMenu>
-        )}
-        <SubMenu key="properties" icon={<InfoCircleOutlined />} title="Properties" onTitleClick={handleTitleClick}>
-          <PropertyMenu filesArr={filesArr} selectedList={selectedList} isUploadingPage={isUploadingPage} />
-        </SubMenu>
-        <SubMenu key="edit" icon={<EditFilled />} title="Edit" onTitleClick={handleTitleClick}>
-          <EditMenu
-            {...{
-              filesArr,
-              selectedList,
-              sameKeywords,
-              isExifLoading,
-              allKeywords,
-              isMainPage,
-            }}
-          />
-        </SubMenu>
-        <SubMenu key="template" icon={<CreditCardFilled />} title="Template" onTitleClick={handleTitleClick}>
-          <EditMenu
-            {...{
-              filesArr,
-              selectedList,
-              sameKeywords,
-              selectAll,
-              isExifLoading,
-              allKeywords,
-              clearAll: clearSelectedList,
-              isEditMany: true,
-              isMainPage,
-            }}
-          />
-        </SubMenu>
-        <SubMenu key="keywords" icon={<ProfileOutlined />} title="Keywords" onTitleClick={handleTitleClick}>
-          <KeywordsMenuWrapper {...{ isUploadingPage, removeKeyword, uniqKeywords }} />
-        </SubMenu>
-        <SubMenu
-          key="preview"
-          className={cn(styles.previewMenu, 'position-relative')}
-          icon={<PictureOutlined />}
-          title="Preview"
-          onTitleClick={handleTitleClick}
-          disabled={!originalPath}
-        >
-          <Menu.Item key="image-preview" className={cn(styles.preview)}>
-            {previewType === 'video' ? (
-              <Iframe
-                url={originalPath || ''}
-                width="80vm"
-                id="myId"
-                className={styles.previewImg}
-                position="relative"
-                allowFullScreen
-              />
-            ) : (
-              <img className={styles.previewImg} src={originalPath} alt={originalName} />
-            )}
-            <h3>{originalName}</h3>
-          </Menu.Item>
-        </SubMenu>
-        {isUploadingPage ? (
-          <Menu.Item key="buttons-menu">
-            <div className="d-flex justify-content-around">
-              <Button disabled={!filesArr.length} type="primary" onClick={removeFiles} danger>
-                Delete all files
-              </Button>
-              <Button disabled={!currentFolderPath || !filesArr.length} type="primary" onClick={handleUploadClick}>
-                Upload files
-              </Button>
-            </div>
-          </Menu.Item>
-        ) : (
-          ''
-        )}
-      </Menu>
+      <Collapse defaultActiveKey={openKeys} activeKey={openKeys} onChange={handleTitleClick} expandIconPosition="end">
+        {collapseMenu.map(({ key, label, icon, Children }) => {
+          const hidePreview = key === MainMenuKeys.PREVIEW && !originalPath
+          const hideChildren = key === MainMenuKeys.PREVIEW && !openKeys.includes(key)
+
+          return (
+            <Panel
+              key={key}
+              header={<PanelHeader title={label} icon={icon} />}
+              collapsible={hidePreview ? 'disabled' : undefined}
+            >
+              {!hideChildren && <Children />}
+            </Panel>
+          )
+        })}
+      </Collapse>
+      {extraMenu.map(({ key, Children }) => (
+        <div key={key} className={styles.extraMenu}>
+          <Children />
+        </div>
+      ))}
     </Sider>
   )
 }

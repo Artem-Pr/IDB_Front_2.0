@@ -6,15 +6,16 @@ import { Empty, Spin } from 'antd'
 import KeywordsMenu from '../../../KeywordsMenu'
 
 import styles from '../../index.module.scss'
+import { useCurrentPage } from '../../../../common/hooks'
 
 interface Props {
-  isUploadingPage: boolean
   removeKeyword: (keyword: string) => void
   uniqKeywords: string[]
 }
 
-export const KeywordsMenuWrapper = ({ isUploadingPage, uniqKeywords, removeKeyword }: Props) => {
+export const KeywordsMenuWrapper = ({ uniqKeywords, removeKeyword }: Props) => {
   const [isKeywordsMenuLoading] = useState(false)
+  const { isUploadingPage } = useCurrentPage()
 
   return (
     <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>

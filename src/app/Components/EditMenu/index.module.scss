@@ -1,11 +1,25 @@
-.item {
-  margin-top: 15px;
+.checkbox {
+  min-width: 116px;
 }
 
-.itemWidth {
-  width: 80% !important;
+.inputField {
+  flex: 1;
 }
 
 .extension {
+  margin-left: 5px;
   margin-top: 5px;
+}
+
+.buttonsWrapper {
+  gap: 10px;
+}
+
+.button {
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.deleteButton {
+  margin-bottom: 0;
 }

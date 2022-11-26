@@ -13,6 +13,7 @@ import PaginationMenu from '../../Components/PaginationMenu'
 import { ResizeDivider } from '../../Components/ResizeDivider'
 
 import { useGalleryProps, useMainMenuProps } from './hooks'
+import { MainMenuKeys } from '../../../redux/types'
 
 const { Content } = Layout
 
@@ -44,8 +45,8 @@ const MainPage = () => {
       </div>
       <Layout>
         <Content style={{ gridTemplateRows: 'auto auto auto 1fr auto' }}>
-          <CustomAlert message="Edit mode" hide={!openMenus.includes('edit')} type="info" />
-          <CustomAlert message="Template mode" hide={!openMenus.includes('template')} type="success" />
+          <CustomAlert message="Edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT)} type="info" />
+          <CustomAlert message="Bulk edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT_BULK)} type="success" />
           <GalleryTopMenu finishPreviewResize={finishPreviewResize} onSliderMove={onSliderMove} />
           <Gallery {...galleryProps} gridRef={gridRef} imgRef={imgRef} />
           {!isComparisonPage && <PaginationMenu />}

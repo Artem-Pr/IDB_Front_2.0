@@ -12,7 +12,7 @@ import { MimeTypes } from '../../../redux/types/MimeTypes'
 const { Option } = Select
 const fileTypes = keys(MimeTypes)
 
-const SearchMenu = () => {
+export const SearchMenu = () => {
   const dispatch = useDispatch<any>()
   const { keywordsList } = useSelector(folderElement)
   const { searchTags, excludeTags, mimetypes } = useSelector(searchMenu)
@@ -90,5 +90,3 @@ const SearchMenu = () => {
     </div>
   )
 }
-
-export default SearchMenu

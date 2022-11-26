@@ -2,17 +2,17 @@ import React, { useMemo } from 'react'
 
 import { Upload, message, UploadProps } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
-import { UploadChangeParam } from 'antd/lib/upload/interface'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 
-import { RcFile } from 'antd/lib/upload'
-
 import { compose } from 'ramda'
+
+import type { RcFile, UploadChangeParam } from 'antd/es/upload'
 
 import styles from './index.module.scss'
 import { curFolderInfo } from '../../../redux/selectors'
 import { fetchPhotosPreview, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice-reducer'
+import { MainMenuKeys } from '../../../redux/types'
 
 const { Dragger } = Upload
 
@@ -30,8 +30,8 @@ interface Props {
 const DropZone = ({ openMenus }: Props) => {
   const { currentFolderPath } = useSelector(curFolderInfo)
   const dispatch = useDispatch()
-  const isEditOne = useMemo(() => openMenus.includes('edit'), [openMenus])
-  const isEditMany = useMemo(() => openMenus.includes('template'), [openMenus])
+  const isEditOne = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
+  const isEditMany = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
 
   const props: UploadProps = {
     accept: 'image/*, video/*',

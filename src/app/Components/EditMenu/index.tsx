@@ -1,21 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { AutoComplete, Button, Checkbox, Col, DatePicker, Form, Input, Modal, Row, Select } from 'antd'
+import { AutoComplete, Button, Checkbox, Form, Input, Modal, Select } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { compose, identity, sortBy } from 'ramda'
 import moment from 'moment'
+import type { Moment } from 'moment'
 import cn from 'classnames'
 
-import styles from './index.module.scss'
-import { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
+import momentGenerateConfig from 'rc-picker/lib/generate/moment'
+import generatePicker from 'antd/es/date-picker/generatePicker'
+
 import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash } from '../../common/utils'
 import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
-import { useFinishEdit } from '../../common/hooks'
+import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
 import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice-reducer'
 import { dateFormat } from '../../common/utils/date'
+import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
+
+import styles from './index.module.scss'
 
 const { Option } = Select
+
+const DatePicker = generatePicker<Moment>(momentGenerateConfig)
 
 interface Props {
   filesArr: FieldsObj[]
@@ -26,7 +33,6 @@ interface Props {
   isEditMany?: boolean
   selectAll?: () => void
   clearAll?: () => void
-  isMainPage: boolean
 }
 
 interface InitialFileObject extends Checkboxes {
@@ -56,7 +62,6 @@ const EditMenu = ({
   clearAll,
   isExifLoading,
   allKeywords,
-  isMainPage,
 }: Props) => {
   const dispatch = useDispatch()
   const [form] = Form.useForm()
@@ -66,6 +71,7 @@ const EditMenu = ({
   const { isGalleryLoading } = useSelector(main)
   const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
+  const { isMainPage } = useCurrentPage()
   const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
     () => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]),
     [filesArr, selectedList]
@@ -127,124 +133,100 @@ const EditMenu = ({
   return (
     <div>
       <Form form={form} name="editForm" onFinish={onFinish}>
-        <Row className={styles.item} gutter={10}>
-          <Col span={8} offset={1} style={{ textAlign: 'left' }}>
-            <Form.Item name="isName" valuePropName="checked">
-              <Checkbox>Name:</Checkbox>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="name">
-              <Input placeholder="Edit name" disabled={disabledInputs} allowClear />
-            </Form.Item>
-          </Col>
-          <Col span={3}>
-            <span className={cn(styles.extension, 'd-block')}>{ext}</span>
-          </Col>
-        </Row>
+        <div className="d-flex">
+          <Form.Item className={styles.checkbox} name="isName" valuePropName="checked">
+            <Checkbox>Name:</Checkbox>
+          </Form.Item>
+          <Form.Item className={styles.inputField} name="name">
+            <Input placeholder="Edit name" disabled={disabledInputs} allowClear />
+          </Form.Item>
+          <span className={cn({ [styles.extension]: ext }, 'd-block')}>{ext}</span>
+        </div>
 
-        <Row gutter={10}>
-          <Col span={8} offset={1} style={{ textAlign: 'left' }}>
-            <Form.Item name="isOriginalDate" valuePropName="checked">
-              <Checkbox>OriginalDate:</Checkbox>
-            </Form.Item>
-          </Col>
-          <Col span={14}>
-            <Form.Item name="originalDate">
-              <DatePicker format={dateFormat} placeholder="Edit date" disabled={disabledInputs} className="w-100" />
-            </Form.Item>
-          </Col>
-        </Row>
+        <div className="d-flex">
+          <Form.Item className={styles.checkbox} name="isOriginalDate" valuePropName="checked">
+            <Checkbox>OriginalDate:</Checkbox>
+          </Form.Item>
+          <Form.Item className={styles.inputField} name="originalDate">
+            <DatePicker format={dateFormat} placeholder="Edit date" disabled={disabledInputs} className="w-100" />
+          </Form.Item>
+        </div>
 
         {isMainPage && (
-          <Row gutter={10}>
-            <Col span={8} offset={1} style={{ textAlign: 'left' }}>
-              <Form.Item name="isFilePath" valuePropName="checked">
-                <Checkbox>File path:</Checkbox>
-              </Form.Item>
-            </Col>
-            <Col span={14}>
-              <Form.Item name="filePath">
-                <AutoComplete
-                  disabled={disabledInputs}
-                  placeholder="Edit file path"
-                  options={pathsListOptions}
-                  onChange={(value: string) => setCurrentFilePath(value)}
-                  filterOption={(inputValue, option) =>
-                    option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                  }
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+          <div className="d-flex">
+            <Form.Item className={styles.checkbox} name="isFilePath" valuePropName="checked">
+              <Checkbox>File path:</Checkbox>
+            </Form.Item>
+            <Form.Item className={styles.inputField} name="filePath">
+              <AutoComplete
+                disabled={disabledInputs}
+                placeholder="Edit file path"
+                options={pathsListOptions}
+                onChange={(value: string) => setCurrentFilePath(value)}
+                filterOption={(inputValue, option) =>
+                  option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                }
+              />
+            </Form.Item>
+          </div>
         )}
 
-        <Row gutter={10}>
-          <Col span={8} offset={1} style={{ textAlign: 'left' }}>
-            <Form.Item name="isKeywords" valuePropName="checked">
-              <Checkbox>Keywords:</Checkbox>
-            </Form.Item>
-          </Col>
-          <Col span={14}>
-            <Form.Item name="keywords">
-              <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
-                {allKeywords &&
-                  allKeywords.map(keyword => (
-                    <Option key={keyword} value={keyword}>
-                      {keyword}
-                    </Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
+        <div className="d-flex">
+          <Form.Item className={styles.checkbox} name="isKeywords" valuePropName="checked">
+            <Checkbox>Keywords:</Checkbox>
+          </Form.Item>
+          <Form.Item className={styles.inputField} name="keywords">
+            <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
+              {allKeywords &&
+                allKeywords.map(keyword => (
+                  <Option key={keyword} value={keyword}>
+                    {keyword}
+                  </Option>
+                ))}
+            </Select>
+          </Form.Item>
+        </div>
 
-        <Row gutter={10}>
-          <Col span={7} offset={isDeleteBtn && isEditMany ? 2 : 9}>
-            <Form.Item>
+        <div className={cn(styles.buttonsWrapper, 'd-flex')}>
+          <Form.Item className={styles.button}>
+            <Button
+              className="w-100"
+              type="primary"
+              htmlType="submit"
+              loading={isGalleryLoading || isExifLoading}
+              disabled={disabledInputs}
+            >
+              Edit
+            </Button>
+          </Form.Item>
+          {isEditMany && (
+            <Form.Item className={styles.button}>
               <Button
                 className="w-100"
-                style={{ marginRight: 10 }}
+                onClick={handleSelectAll}
                 type="primary"
-                htmlType="submit"
                 loading={isGalleryLoading || isExifLoading}
-                disabled={disabledInputs}
               >
-                Edit
+                {isSelectAllBtn ? 'Select all' : 'Unselect all'}
               </Button>
             </Form.Item>
-          </Col>
-          {isEditMany && (
-            <Col span={7}>
-              <Form.Item>
-                <Button
-                  className="w-100"
-                  onClick={handleSelectAll}
-                  type="primary"
-                  loading={isGalleryLoading || isExifLoading}
-                >
-                  {isSelectAllBtn ? 'Select all' : 'Unselect all'}
-                </Button>
-              </Form.Item>
-            </Col>
           )}
-          {isDeleteBtn && (
-            <Col span={7}>
-              <Form.Item>
-                <Button
-                  className="w-100"
-                  type="primary"
-                  disabled={disabledInputs}
-                  loading={isDeleting}
-                  onClick={handleDelete}
-                  danger
-                >
-                  Delete
-                </Button>
-              </Form.Item>
-            </Col>
-          )}
-        </Row>
+        </div>
+
+        {isDeleteBtn && (
+          <Form.Item className={styles.deleteButton}>
+            <Button
+              className="w-100"
+              type="primary"
+              disabled={disabledInputs}
+              loading={isDeleting}
+              onClick={handleDelete}
+              danger
+            >
+              Delete
+            </Button>
+          </Form.Item>
+        )}
       </Form>
       {contextHolder}
     </div>

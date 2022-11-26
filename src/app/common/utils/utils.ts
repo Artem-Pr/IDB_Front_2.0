@@ -17,7 +17,8 @@ import {
   union,
   without,
 } from 'ramda'
-import { ResultStatusType } from 'antd/lib/result'
+
+import { ResultStatusType } from 'antd/es/result'
 
 import {
   DownloadingObject,
@@ -39,8 +40,8 @@ export const removeExtraFirstSlash = (value: string): string => (value.startsWit
 // Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
-export const sortByField = <K extends Record<keyof K, any>>(fieldName: string) =>
-  sortBy<K>(compose(toLower, prop(fieldName)))
+export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) =>
+  sortBy<K>(compose(toLower, prop(String(fieldName))))
 export const isVideo = (contentType: string) => contentType.startsWith('video')
 
 export const getNameParts = (fullName: string): NameParts => {
@@ -154,7 +155,7 @@ export const getSameKeywords = (
       : []
   }
 
-  return compose<UploadingObject[], UploadingObject[], string[][], string[]>(
+  return compose(
     getIntersectionArr,
     map((item: UploadingObject) => item.keywords || []),
     filterIndexed((bom, index) => includes(index, selectedList))

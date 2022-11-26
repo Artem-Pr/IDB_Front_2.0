@@ -6,33 +6,16 @@ import { useLocation } from 'react-router-dom'
 import { upload } from '../../../redux/selectors'
 import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from '../utils'
 import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice-reducer'
-import { DownloadingObject, Pages, UploadingObject } from '../../../redux/types'
+import { DownloadingObject, PagePaths, UploadingObject } from '../../../redux/types'
 import { setDownloadingFiles } from '../../../redux/reducers/mainPageSlice-reducer'
 
 export const useCurrentPage = () => {
   const { pathname } = useLocation()
 
-  const getPageNumber = (pathname: string): Pages => {
-    switch (pathname) {
-      case '/':
-        return Pages.MAIN
-      case '/upload':
-        return Pages.UPLOAD
-      case '/test-db':
-        return Pages.TEST_DB
-      case '/settings':
-        return Pages.SETTINGS
-      default:
-        return Pages.MAIN
-    }
-  }
-
-  const currentPage = getPageNumber(pathname)
-
   return {
-    isUploadingPage: currentPage === Pages.UPLOAD,
-    isMainPage: currentPage === Pages.MAIN,
-    currentPageNumber: currentPage,
+    isUploadingPage: pathname === PagePaths.UPLOAD,
+    isMainPage: pathname === PagePaths.MAIN,
+    currentPageNumber: pathname,
   }
 }
 

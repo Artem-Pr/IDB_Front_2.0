@@ -4,7 +4,7 @@ import { FieldsObj } from '../../../../../redux/types'
 import { filterIndexed } from '../../../utils'
 
 export const getFileSizesSum = (filesArr: FieldsObj[], selectedList: number[]) =>
-  pipe<FieldsObj[], FieldsObj[], number[], number>(
+  pipe(
     filterIndexed((__: any, idx: number) => includes(idx, selectedList)),
     map(prop('size')),
     sum

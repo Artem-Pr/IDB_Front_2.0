@@ -22,18 +22,15 @@
 .ant-layout-sider-light .ant-layout-sider-zero-width-trigger {
   background: $mainBackground;
 }
-.ant-menu {
-  background: $mainBackground;
-}
 .ant-menu-sub.ant-menu-inline {
   background: inherit;
 }
 .ant-tree {
   background: inherit;
 }
-.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
-  background: inherit;
-}
 .ant-menu-submenu-title {
   background: #cacaca;
+}
+.ant-collapse .ant-collapse-content {
+  background: #f7f7f7;
 }

@@ -12,7 +12,7 @@ interface Props {
 
 const TableRow = ({ title, value, action }: Props) => {
   return (
-    <>
+    <div className="d-flex">
       <Card.Grid hoverable={false} className={styles.contentCardGrid}>
         {title}
         {action && (
@@ -24,7 +24,7 @@ const TableRow = ({ title, value, action }: Props) => {
       <Card.Grid hoverable={false} className={styles.resultCardGrid}>
         {value}
       </Card.Grid>
-    </>
+    </div>
   )
 }
 

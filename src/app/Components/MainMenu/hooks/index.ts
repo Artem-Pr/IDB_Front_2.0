@@ -1,0 +1,1 @@
+export { useMainMenuItems } from './useMenuItems'

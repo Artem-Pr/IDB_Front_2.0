@@ -13,6 +13,7 @@ import { session, uploadingBlobs } from '../../../redux/selectors'
 import type { RawPreview } from './type'
 import { GalleryTile } from './components'
 import { useImageGalleryData, useSelectWithShift } from './hooks'
+import { MainMenuKeys } from '../../../redux/types'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
   event.currentTarget.classList.remove('d-none')
@@ -54,9 +55,9 @@ const Gallery = ({
   const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
-  const isEditMenu = useMemo(() => openMenus.includes('edit'), [openMenus])
-  const isTemplateMenu = useMemo(() => openMenus.includes('template'), [openMenus])
-  const isPropertiesMenu = useMemo(() => openMenus.includes('properties'), [openMenus])
+  const isEditMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
+  const isTemplateMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
+  const isPropertiesMenu = useMemo(() => openMenus.includes(MainMenuKeys.PROPERTIES), [openMenus])
   const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
   const { hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover } = useSelectWithShift(
     selectedList,
@@ -189,7 +190,7 @@ const Gallery = ({
           />
         ))}
 
-        <Modal title="Exif list" footer={null} visible={showModal} onCancel={handleShowModalClose}>
+        <Modal title="Exif list" footer={null} open={showModal} onCancel={handleShowModalClose}>
           {compose(
             map((item: string) => (
               <div key={item}>
@@ -203,7 +204,7 @@ const Gallery = ({
 
         {isMainPage ? (
           <Modal
-            visible={showImageModal}
+            open={showImageModal}
             wrapClassName="image-modal"
             closable={false}
             centered

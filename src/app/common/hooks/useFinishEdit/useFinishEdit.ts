@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { curry, identity, isEmpty, sortBy } from 'ramda'
-import { ModalStaticFunctions } from 'antd/lib/modal/confirm'
+
+import { ModalStaticFunctions } from 'antd/es/modal/confirm'
 
 import {
   getFilesWithUpdatedKeywords,

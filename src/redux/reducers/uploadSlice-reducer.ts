@@ -5,7 +5,7 @@ import { compose, curry, keys, reduce } from 'ramda'
 import { AppThunk } from '../store/store'
 import { mainApi } from '../../api/api'
 import { errorMessage } from '../../app/common/notifications'
-import { BlobDispatchPayload, ExifFilesList, FullExifObj, LoadingStatus, UploadingObject } from '../types'
+import { BlobDispatchPayload, ExifFilesList, FullExifObj, LoadingStatus, MainMenuKeys, UploadingObject } from '../types'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../app/common/utils'
 import { sortByField } from '../../app/common/utils/utils'
 
@@ -19,7 +19,7 @@ interface State {
   uploadingBlobs: Record<string, string>
   fullExifFilesList: ExifFilesList
   selectedList: number[]
-  openMenus: string[]
+  openMenus: MainMenuKeys[]
   isExifLoading: boolean
   uploadingStatus: LoadingStatus
 }
@@ -29,7 +29,7 @@ const initialState: State = {
   uploadingBlobs: {},
   fullExifFilesList: {},
   selectedList: [],
-  openMenus: ['folders'],
+  openMenus: [MainMenuKeys.FOLDERS],
   isExifLoading: false,
   uploadingStatus: 'empty',
 }
@@ -64,10 +64,10 @@ const uploadSlice = createSlice({
     selectAll(state) {
       state.selectedList = state.uploadingFiles.map((_, i) => i)
     },
-    updateOpenMenus(state, action: PayloadAction<string[]>) {
+    updateOpenMenus(state, action: PayloadAction<MainMenuKeys[]>) {
       state.openMenus = action.payload
     },
-    removeFromOpenMenus(state, action: PayloadAction<string>) {
+    removeFromOpenMenus(state, action: PayloadAction<MainMenuKeys>) {
       const set = new Set(state.openMenus)
       set.delete(action.payload)
       state.openMenus = Array.from(set)

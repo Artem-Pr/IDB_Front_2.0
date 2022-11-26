@@ -21,15 +21,13 @@ import {
 import { addFolderToFolderTree } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
+import { useCurrentPage } from '../../common/hooks'
 
-interface Props {
-  isMainPage: boolean
-}
-
-const Folders = ({ isMainPage }: Props) => {
+const Folders = () => {
   const dispatch = useDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const { folderTree } = useSelector(folderElement)
+  const { isMainPage } = useCurrentPage()
   const { currentFolderPath, showSubfolders } = useSelector(curFolderInfo)
   const directoriesArr = useSelector(pathsArr)
   const options = useSelector(pathsArrOptionsSelector)

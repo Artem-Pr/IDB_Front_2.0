@@ -2,7 +2,7 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import { identity, isEmpty, sortBy } from 'ramda'
 
-import {
+import type {
   DownloadingObject,
   DownloadingRawObject,
   ElementsPerPage,
@@ -17,12 +17,13 @@ import { convertDownloadingRawObjectArr } from '../../app/common/utils'
 import { setFolderTree, setPathsArr } from './foldersSlice-reducer'
 import { createFolderTree } from '../../app/common/folderTree'
 import { MimeTypes } from '../types/MimeTypes'
+import { MainMenuKeys } from '../types'
 
 interface State {
   rawFiles: DownloadingRawObject[]
   downloadingFiles: DownloadingObject[]
   dSelectedList: number[]
-  dOpenMenus: string[]
+  dOpenMenus: MainMenuKeys[]
   searchMenu: {
     searchTags: string[]
     excludeTags: string[]
@@ -83,7 +84,7 @@ const uploadSlice = createSlice({
       action.payload.forEach(index => set.delete(index))
       state.dSelectedList = Array.from(set)
     },
-    updateDOpenMenus(state, action: PayloadAction<string[]>) {
+    updateDOpenMenus(state, action: PayloadAction<MainMenuKeys[]>) {
       state.dOpenMenus = action.payload
     },
     clearDSelectedList(state) {

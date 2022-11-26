@@ -7,11 +7,22 @@ export type DeleteConfirmationType = 'file' | 'directory'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
 export type PreviewType = 'video' | 'image' | undefined
 
-export enum Pages {
-  MAIN = 'mainPage',
-  UPLOAD = 'uploadPage',
-  SETTINGS = 'settingsPage',
-  TEST_DB = 'testDBPage',
+export enum PagePaths {
+  MAIN = '/',
+  UPLOAD = '/upload',
+  SETTINGS = '/settings',
+  TEST_DB = '/test-db',
+}
+
+export enum MainMenuKeys {
+  FILTER = 'filter',
+  FOLDERS = 'folders',
+  PROPERTIES = 'properties',
+  EDIT = 'edit',
+  EDIT_BULK = 'edit-bulk',
+  KEYWORDS = 'keywords',
+  PREVIEW = 'preview',
+  BUTTONS_MENU = 'buttons-menu',
 }
 
 export interface NameParts {
