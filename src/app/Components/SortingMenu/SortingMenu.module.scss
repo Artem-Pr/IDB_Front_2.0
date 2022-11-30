@@ -1,0 +1,18 @@
+.disabled {
+  opacity: 0.3;
+}
+
+.segmentedWrapper {
+  font-size: 11px;
+  margin-left: auto;
+  margin-right: 10px;
+
+  :global {
+    .ant-segmented-item-label {
+      padding: 0 5px !important;
+    }
+    .ant-segmented-item-label .ant-segmented-item-icon+* {
+      margin-inline-end: 0;
+    }
+  }
+}

@@ -7,7 +7,7 @@ import ImageGallery from 'react-image-gallery'
 
 import styles from './index.module.scss'
 import type { ExifFilesList, FieldsObj } from '../../../redux/types'
-import { setPreview } from '../../../redux/reducers/mainPageSlice-reducer'
+import { setPreview } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { getLastItem, isVideo } from '../../common/utils/utils'
 import { session, uploadingBlobs } from '../../../redux/selectors'
 import type { RawPreview } from './type'

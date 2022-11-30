@@ -6,7 +6,7 @@ import { AppThunk } from '../store/store'
 import { mainApi } from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
 import { createFolderTree } from '../../app/common/folderTree'
-import { fetchPhotos } from './mainPageSlice-reducer'
+import { fetchPhotos } from './mainPageSlice/thunks'
 
 interface State {
   folderTree: FolderTreeItem[]

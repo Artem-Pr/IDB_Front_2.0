@@ -1,0 +1,1 @@
+export { mainPageReducer } from './mainPageSlice'

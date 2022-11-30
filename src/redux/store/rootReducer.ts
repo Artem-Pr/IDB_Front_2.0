@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 
 import foldersSliceReducer from '../reducers/foldersSlice-reducer'
 import uploadSliceReducer from '../reducers/uploadSlice-reducer'
-import mainPageSliceReducer from '../reducers/mainPageSlice-reducer'
+import { mainPageReducer } from '../reducers/mainPageSlice'
 import testsSliceReducer from '../reducers/testsSlice-reducer'
 import sessionSliceReducer from '../reducers/sessionSlice-reducer'
 import settingsSliceReducer from '../reducers/settingsSlice-reducer'
@@ -10,7 +10,7 @@ import settingsSliceReducer from '../reducers/settingsSlice-reducer'
 const rootReducer = combineReducers({
   folderReducer: foldersSliceReducer,
   uploadReducer: uploadSliceReducer,
-  mainPageReducer: mainPageSliceReducer,
+  mainPageReducer,
   testsReducer: testsSliceReducer,
   sessionSlice: sessionSliceReducer,
   settingSlice: settingsSliceReducer,

@@ -6,7 +6,7 @@ import { compose, curry } from 'ramda'
 import { setCurrentFolderKey, setCurrentFolderPath } from '../../../redux/reducers/foldersSlice-reducer'
 import { getFolderPathFromTreeKey } from '../../common/folderTree'
 import { curFolderInfo, folderElement } from '../../../redux/selectors'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice-reducer'
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 
 const { DirectoryTree } = Tree
 

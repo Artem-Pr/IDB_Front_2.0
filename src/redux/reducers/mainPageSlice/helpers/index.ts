@@ -1,0 +1,1 @@
+export { defaultGallerySortingList } from './defaultGallerySortingList'

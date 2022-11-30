@@ -6,8 +6,9 @@ import cn from 'classnames'
 
 import { folderElement, main, searchMenu } from '../../../redux/selectors'
 import styles from './index.module.scss'
-import { fetchPhotos, setExcludeTags, setMimeTypes, setSearchTags } from '../../../redux/reducers/mainPageSlice-reducer'
+import { setExcludeTags, setMimeTypes, setSearchTags } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 
 const { Option } = Select
 const fileTypes = keys(MimeTypes)

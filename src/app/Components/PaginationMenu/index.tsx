@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Pagination } from 'antd'
 
 import { pagination } from '../../../redux/selectors'
-import { fetchPhotos, setGalleryPagination } from '../../../redux/reducers/mainPageSlice-reducer'
+import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { ElementsPerPage } from '../../../redux/types'
 
 const option: ElementsPerPage[] = [10, 20, 50, 100]

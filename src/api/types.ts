@@ -1,4 +1,5 @@
 import { MimeTypes } from '../redux/types/MimeTypes'
+import { Sort, SortedFields } from '../redux/types'
 
 export interface GetPhotosByTagsRequest {
   page: number
@@ -11,4 +12,5 @@ export interface GetPhotosByTagsRequest {
   isNameComparison?: boolean
   showSubfolders?: boolean
   isFullSizePreview?: boolean
+  sorting: Partial<Record<SortedFields, Sort>>
 }

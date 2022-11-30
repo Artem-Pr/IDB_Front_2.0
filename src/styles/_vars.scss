@@ -3,9 +3,18 @@ $primary: #1890ff;
 $mainTitle: white;
 $darkBorder: black;
 $mainBackground: #e6e6e6;
+
 $galleryItemMenu: black;
 $galleryItemMenuText: white;
+
 $sizeDivider: #cacaca;
+
 $tileExtensionColor: #ffff00;
 $tileExtensionBackground: rgba(64, 64, 64, 25%);
 $tileVideoColor: red;
+
+:root {
+  --sortable-item-background: white;
+  --sortable-item-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(34, 33, 81, 0.15);
+  --sortable-item-button-color: #b7b7b7;
+}

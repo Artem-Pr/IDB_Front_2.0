@@ -11,11 +11,11 @@ import {
   removeIntersectingKeywords,
 } from '../../utils'
 import { Checkboxes, FieldsObj, UpdatedObject, UploadingObject } from '../../../../redux/types'
-import { updatePhotos } from '../../../../redux/reducers/mainPageSlice-reducer'
 import { useEditFilesArr } from '../hooks'
 import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
 import { formatDate } from '../../utils/date'
 import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
+import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
 
 interface Props {
   filesArr: FieldsObj[]

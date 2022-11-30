@@ -15,6 +15,7 @@ export enum PagePaths {
 }
 
 export enum MainMenuKeys {
+  SORT = 'sort',
   FILTER = 'filter',
   FOLDERS = 'folders',
   PROPERTIES = 'properties',
@@ -23,6 +24,27 @@ export enum MainMenuKeys {
   KEYWORDS = 'keywords',
   PREVIEW = 'preview',
   BUTTONS_MENU = 'buttons-menu',
+}
+
+export enum SortedFields {
+  ID = '_id',
+  MEGAPIXELS = 'megapixels',
+  MIMETYPE = 'mimetype',
+  ORIGINAL_DATE = 'originalDate',
+  ORIGINAL_NAME = 'originalName',
+  FILE_PATH = 'filePath',
+  SIZE = 'size',
+}
+
+export enum Sort {
+  ASC = 1,
+  DESC = -1,
+}
+
+export interface GallerySortingItem {
+  id: SortedFields
+  label: string
+  sort: Sort | null
 }
 
 export interface NameParts {

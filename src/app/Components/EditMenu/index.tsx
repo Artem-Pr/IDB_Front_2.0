@@ -13,9 +13,9 @@ import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlas
 import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
-import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice-reducer'
 import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice-reducer'
 import { dateFormat } from '../../common/utils/date'
+import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice/thunks'
 import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
 
 import styles from './index.module.scss'

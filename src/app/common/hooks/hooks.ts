@@ -7,7 +7,7 @@ import { upload } from '../../../redux/selectors'
 import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from '../utils'
 import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice-reducer'
 import { DownloadingObject, PagePaths, UploadingObject } from '../../../redux/types'
-import { setDownloadingFiles } from '../../../redux/reducers/mainPageSlice-reducer'
+import { setDownloadingFiles } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 
 export const useCurrentPage = () => {
   const { pathname } = useLocation()

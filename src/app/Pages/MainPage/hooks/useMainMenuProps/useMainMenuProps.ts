@@ -8,7 +8,7 @@ import {
   selectAllD,
   setDownloadingFiles,
   updateDOpenMenus,
-} from '../../../../../redux/reducers/mainPageSlice-reducer'
+} from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { removeIntersectingKeywords } from '../../../../common/utils'
 import {
   allDownloadingKeywordsSelector,

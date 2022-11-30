@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import { FieldsObj, MainMenuKeys } from '../../../../redux/types'
 
 import {
+  sortMenu,
   buttonsMenu,
   editBulkMenu,
   editMenu,
@@ -104,7 +105,8 @@ export const useMainMenuItems = (menuItemProps: MenuItemProps): MenuItemReturnin
       (isUploadingPage && !excludedUploadingPageMenuItems.includes(key)) ||
       (isComparisonPage && !excludedComparisonPageMenuItems.includes(key))
 
-    const defaultMenu = [
+    const collapseMenu = [
+      sortMenu,
       filtersMenu,
       foldersMenu,
       memoizedPropertiesMenu,
@@ -116,7 +118,7 @@ export const useMainMenuItems = (menuItemProps: MenuItemProps): MenuItemReturnin
 
     return {
       extraMenu: [memoizedButtonsMenu].filter(menuItemsFilter),
-      collapseMenu: defaultMenu.filter(menuItemsFilter),
+      collapseMenu: collapseMenu.filter(menuItemsFilter),
     }
   }, [
     isComparisonPage,

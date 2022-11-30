@@ -87,7 +87,13 @@ const MainMenu = ({
 
     const clearSelectedListWhenCloseEditors = () => {
       const closingKey = difference(openKeys, keysArr)[0]
-      ;(closingKey === MainMenuKeys.EDIT || closingKey === MainMenuKeys.EDIT_BULK) && clearSelectedList()
+      const isClosingPropertyAfterEdit =
+        closingKey === MainMenuKeys.PROPERTIES &&
+        !keysArr.includes(MainMenuKeys.EDIT) &&
+        !keysArr.includes(MainMenuKeys.EDIT_BULK)
+      const needClearing =
+        isClosingPropertyAfterEdit || closingKey === MainMenuKeys.EDIT || closingKey === MainMenuKeys.EDIT_BULK
+      needClearing && clearSelectedList()
     }
 
     const openingKey = difference(keysArr, openKeys)[0]
@@ -108,6 +114,7 @@ const MainMenu = ({
           return (
             <Panel
               key={key}
+              className={`collapse-panel-${key}`}
               header={<PanelHeader title={label} icon={icon} />}
               collapsible={hidePreview ? 'disabled' : undefined}
             >

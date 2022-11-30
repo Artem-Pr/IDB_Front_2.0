@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+  SortDescendingOutlined,
   CreditCardFilled,
   EditFilled,
   InfoCircleOutlined,
@@ -10,11 +11,18 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 
-import { EditMenu, Folders, SearchMenu } from '../../index'
+import { EditMenu, Folders, SearchMenu, SortingMenu } from '../../index'
 
 import { FieldsObj, MainMenuKeys } from '../../../../redux/types'
 import PropertyMenu from '../../PropertyMenu'
 import { ButtonsMenu, KeywordsMenuWrapper, PreviewMenu } from '../components'
+
+export const sortMenu = {
+  key: MainMenuKeys.SORT,
+  label: 'Sort',
+  icon: <SortDescendingOutlined />,
+  Children: () => <SortingMenu />,
+}
 
 export const filtersMenu = {
   key: MainMenuKeys.FILTER,

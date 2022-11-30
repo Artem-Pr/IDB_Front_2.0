@@ -8,12 +8,12 @@ import { useLocation } from 'react-router-dom'
 import { CustomAlert, Gallery, GalleryTopMenu, MainMenu } from '../../Components'
 import { dPageGalleryPropsSelector } from '../../../redux/selectors'
 import { useMenuResize, usePreviewResize } from '../../common/hooks'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice-reducer'
 import PaginationMenu from '../../Components/PaginationMenu'
 import { ResizeDivider } from '../../Components/ResizeDivider'
 
 import { useGalleryProps, useMainMenuProps } from './hooks'
 import { MainMenuKeys } from '../../../redux/types'
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 
 const { Content } = Layout
 

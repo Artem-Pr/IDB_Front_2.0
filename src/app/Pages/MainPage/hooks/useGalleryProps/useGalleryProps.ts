@@ -6,7 +6,7 @@ import {
   addToDSelectedList,
   clearDSelectedList,
   removeFromDSelectedList,
-} from '../../../../../redux/reducers/mainPageSlice-reducer'
+} from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { dPageGalleryPropsSelector, main } from '../../../../../redux/selectors'
 import { useUpdateFields } from '../../../../common/hooks'
 
