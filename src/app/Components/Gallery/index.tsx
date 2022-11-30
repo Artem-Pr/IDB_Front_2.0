@@ -91,16 +91,19 @@ const Gallery = ({
         selectedList.includes(i) ? removeFromSelectedList([i]) : updateFilesArr()
       }
 
-      const selectWithShift = () => {
-        const lastSelectedElemIndex = getLastItem(selectedList)
-        const sortedTouple = sort((a, b) => a - b, [hoveredIndex as number, lastSelectedElemIndex])
+      const selectWithShift = (lastSelectedElemIndex: number) => {
+        const currentHoveredIndex = hoveredIndex || lastSelectedElemIndex
+        const currentLastSelectedElemIndex = lastSelectedElemIndex || (hoveredIndex as number)
+        const sortedTouple = sort((a, b) => a - b, [currentHoveredIndex, currentLastSelectedElemIndex])
         const hoverList = range(sortedTouple[0], sortedTouple[1] + 1)
         const alreadySelectedItems = difference(hoverList, selectedList)
         alreadySelectedItems.length ? addToSelectedList(hoverList) : removeFromSelectedList(hoverList)
         setHoveredIndex(null)
       }
 
-      isShiftPressed && !isEditMenu && selectWithShift()
+      const lastSelectedElemIndex = getLastItem(selectedList)
+
+      isShiftPressed && !isEditMenu && (lastSelectedElemIndex || hoveredIndex) && selectWithShift(lastSelectedElemIndex)
       !isShiftPressed && isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
       !isShiftPressed && isEditMenu && selectOnlyOne()
       !isShiftPressed && isTemplateMenu && selectAnyQuantity()

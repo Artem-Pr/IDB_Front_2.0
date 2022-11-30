@@ -32,8 +32,6 @@ export const fetchPhotos =
     const folderPath = currentFolderInfo.currentFolderPath
     const showSubfolders = currentFolderInfo.showSubfolders
     dispatch(setDGalleryLoading(true))
-    console.log('gallerySortingList', gallerySortingList)
-    console.log('prepareSortingList(gallerySortingList)', prepareSortingList(gallerySortingList))
     mainApi
       .getPhotosByTags({
         page: currentPage,
