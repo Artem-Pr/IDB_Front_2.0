@@ -92,8 +92,9 @@ const Gallery = ({
       }
 
       const selectWithShift = (lastSelectedElemIndex: number) => {
-        const currentHoveredIndex = hoveredIndex || lastSelectedElemIndex
-        const currentLastSelectedElemIndex = lastSelectedElemIndex || (hoveredIndex as number)
+        const currentHoveredIndex = hoveredIndex === null ? lastSelectedElemIndex : hoveredIndex
+        const currentLastSelectedElemIndex =
+          lastSelectedElemIndex === undefined ? (hoveredIndex as number) : lastSelectedElemIndex
         const sortedTouple = sort((a, b) => a - b, [currentHoveredIndex, currentLastSelectedElemIndex])
         const hoverList = range(sortedTouple[0], sortedTouple[1] + 1)
         const alreadySelectedItems = difference(hoverList, selectedList)

@@ -21,6 +21,7 @@ export interface State {
   }
   galleryPagination: GalleryPagination
   gallerySortingList: GallerySortingItem[]
+  randomSort: boolean
   filesSizeSum: number
   isExifLoading: boolean
   isGalleryLoading: boolean
@@ -45,6 +46,7 @@ export const initialState: State = {
     totalPages: 1,
   },
   gallerySortingList: defaultGallerySortingList,
+  randomSort: false,
   filesSizeSum: 0,
   isExifLoading: false,
   isGalleryLoading: false,

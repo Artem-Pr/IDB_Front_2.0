@@ -10,6 +10,9 @@ const mainPageSlice = createSlice({
   name: 'upload',
   initialState,
   reducers: {
+    setRandomSort(state, action: PayloadAction<boolean>) {
+      state.randomSort = action.payload
+    },
     setGallerySortingList(state, action: PayloadAction<GallerySortingItem[]>) {
       state.gallerySortingList = action.payload
     },
@@ -102,6 +105,7 @@ export const {
   setIsDeleteProcessing,
   setFilesSizeSum,
   setPreview,
+  setRandomSort,
 } = mainPageSlice.actions
 
 export const mainPageReducer = mainPageSlice.reducer

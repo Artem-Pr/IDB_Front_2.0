@@ -15,9 +15,16 @@ import {
 } from '../mainPageSlice'
 import { prepareSortingList } from '../../../../api/helpers'
 
+interface FetchPhotos {
+  isNameComparison?: boolean
+  comparisonFolder?: string
+}
+
 export const fetchPhotos =
-  (isNameComparison?: boolean, comparisonFolder?: string): AppThunk =>
+  (settings?: FetchPhotos): AppThunk =>
   (dispatch, getState) => {
+    const isNameComparison = settings?.isNameComparison || false
+    const comparisonFolder = settings?.comparisonFolder
     const {
       mainPageReducer,
       folderReducer: { currentFolderInfo },
@@ -27,6 +34,7 @@ export const fetchPhotos =
       searchMenu: { searchTags, excludeTags, mimetypes },
       galleryPagination,
       gallerySortingList,
+      randomSort,
     } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
     const folderPath = currentFolderInfo.currentFolderPath
@@ -45,6 +53,7 @@ export const fetchPhotos =
         ...(isNameComparison && { isNameComparison }),
         ...(showSubfolders && { showSubfolders }),
         ...(isFullSizePreview && { isFullSizePreview }),
+        ...(randomSort && { randomSort }),
       })
       .then(({ data }) => {
         const rawFiles: DownloadingRawObject[] = data?.files || []

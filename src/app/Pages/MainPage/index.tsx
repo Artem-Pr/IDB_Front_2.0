@@ -33,7 +33,14 @@ const MainPage = () => {
   const folderParam = query.get('folder') || undefined
 
   useEffect(() => {
-    isEmpty(imageArr) && !isFilesLoaded && dispatch(fetchPhotos(isComparisonPage, folderParam))
+    isEmpty(imageArr) &&
+      !isFilesLoaded &&
+      dispatch(
+        fetchPhotos({
+          isNameComparison: isComparisonPage,
+          comparisonFolder: folderParam,
+        })
+      )
     setIsFilesLoaded(true)
   }, [dispatch, folderParam, imageArr, isComparisonPage, isFilesLoaded])
 

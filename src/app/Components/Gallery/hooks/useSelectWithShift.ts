@@ -27,7 +27,7 @@ export const useSelectWithShift = (selectedList: number[], isTemplateMenu: boole
   const isShiftHover = (i: number) => {
     const isHover = () => {
       const lastSelectedElemIndex = getLastItem(selectedList)
-      const currentHoveredIndex = hoveredIndex || lastSelectedElemIndex
+      const currentHoveredIndex = hoveredIndex === null ? lastSelectedElemIndex : hoveredIndex
       const sortedTouple = sort((a, b) => a - b, [currentHoveredIndex, lastSelectedElemIndex])
       const hoverList = range(sortedTouple[0], sortedTouple[1] + 1)
       return hoverList.includes(i)
