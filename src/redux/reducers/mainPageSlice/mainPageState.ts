@@ -6,19 +6,15 @@ import {
   MainMenuKeys,
   Preview,
 } from '../../types'
-import { MimeTypes } from '../../types/MimeTypes'
 import { defaultGallerySortingList } from './helpers'
+import { SearchMenu } from './types'
 
 export interface State {
   rawFiles: DownloadingRawObject[]
   downloadingFiles: DownloadingObject[]
   dSelectedList: number[]
   dOpenMenus: MainMenuKeys[]
-  searchMenu: {
-    searchTags: string[]
-    excludeTags: string[]
-    mimetypes: MimeTypes[]
-  }
+  searchMenu: SearchMenu
   galleryPagination: GalleryPagination
   gallerySortingList: GallerySortingItem[]
   randomSort: boolean

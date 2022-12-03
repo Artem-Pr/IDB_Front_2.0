@@ -13,7 +13,7 @@ import { SortableList } from './components'
 import { main } from '../../../redux/selectors'
 import type { GallerySortingItem } from '../../../redux/types'
 import { Sort, SortedFields } from '../../../redux/types'
-import { setGallerySortingList, setRandomSort } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { resetSort, setGallerySortingList, setRandomSort } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { DragHandle, SortableItem } from './components/SortableList/components'
 
 import styles from './SortingMenu.module.scss'
@@ -57,6 +57,10 @@ export const SortingMenu = () => {
     dispatch(fetchPhotos())
   }
 
+  const handleReset = () => {
+    dispatch(resetSort())
+  }
+
   const handleRandomSortChange = (e: CheckboxChangeEvent) => {
     dispatch(setRandomSort(e.target.checked))
   }
@@ -81,8 +85,14 @@ export const SortingMenu = () => {
         )}
       />
 
-      <div className="d-flex gap-10 justify-content-between align-items-center">
-        <Checkbox onChange={handleRandomSortChange}>Random sort</Checkbox>
+      <div className="d-flex justify-content-between align-items-center gap-10">
+        <Checkbox checked={randomSort} onChange={handleRandomSortChange}>
+          Random sort
+        </Checkbox>
+
+        <Button className="margin-left-auto" onClick={handleReset}>
+          Reset
+        </Button>
 
         <Button type="primary" onClick={handleDataReload}>
           Reload data

@@ -1,12 +1,17 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Col, Row, Select } from 'antd'
+import { Button, Select } from 'antd'
 import { difference, keys } from 'ramda'
 import cn from 'classnames'
 
 import { folderElement, main, searchMenu } from '../../../redux/selectors'
 import styles from './index.module.scss'
-import { setExcludeTags, setMimeTypes, setSearchTags } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import {
+  resetSearchMenu,
+  setExcludeTags,
+  setMimeTypes,
+  setSearchTags,
+} from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 
@@ -33,8 +38,12 @@ export const SearchMenu = () => {
     dispatch(setMimeTypes(value))
   }
 
-  const fetchGallery = () => {
+  const handleFetchGallery = () => {
     dispatch(fetchPhotos())
+  }
+
+  const handleResetFilters = () => {
+    dispatch(resetSearchMenu())
   }
 
   return (
@@ -81,13 +90,13 @@ export const SearchMenu = () => {
           </Option>
         ))}
       </Select>
-      <Row>
-        <Col offset={17} span={7}>
-          <Button className="w-100" type="primary" loading={isGalleryLoading} onClick={fetchGallery}>
-            Search
-          </Button>
-        </Col>
-      </Row>
+      <div className="d-flex justify-content-end gap-10">
+        <Button onClick={handleResetFilters}>Reset</Button>
+
+        <Button type="primary" loading={isGalleryLoading} onClick={handleFetchGallery}>
+          Search
+        </Button>
+      </div>
     </div>
   )
 }

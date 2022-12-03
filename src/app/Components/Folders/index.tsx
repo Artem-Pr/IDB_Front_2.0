@@ -13,6 +13,7 @@ import styles from './index.module.scss'
 import { curFolderInfo, folderElement, pathsArr, pathsArrOptionsSelector } from '../../../redux/selectors'
 import {
   checkDirectory,
+  setCurrentFolderKey,
   setCurrentFolderPath,
   setFolderTree,
   setPathsArr,
@@ -22,6 +23,7 @@ import { addFolderToFolderTree } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { useCurrentPage } from '../../common/hooks'
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 
 const Folders = () => {
   const dispatch = useDispatch()
@@ -62,10 +64,16 @@ const Folders = () => {
     dispatch(setShowSubfolders(e.target.checked))
   }
 
+  const handleReset = () => {
+    dispatch(setCurrentFolderPath(''))
+    dispatch(setCurrentFolderKey(''))
+    dispatch(fetchPhotos())
+  }
+
   return (
     <div className={styles.folderWrapper}>
       <FolderTree isMainPage={isMainPage} />
-      <div className="d-flex align-items-center">
+      <div className="d-flex align-items-center margin-top-10">
         <span className={styles.label}>Directory:</span>
         <AutoComplete
           className="flex-1"
@@ -94,9 +102,14 @@ const Folders = () => {
           />
         </Tooltip>
       </div>
-      <Checkbox className={styles.showSubfolders} checked={showSubfolders} onChange={handleShowSubfoldersChange}>
-        Show subfolders
-      </Checkbox>
+
+      <div className="d-flex justify-content-between margin-top-10">
+        <Checkbox className={styles.showSubfolders} checked={showSubfolders} onChange={handleShowSubfoldersChange}>
+          Show subfolders
+        </Checkbox>
+
+        <Button onClick={handleReset}>Reset</Button>
+      </div>
       {contextHolder}
     </div>
   )

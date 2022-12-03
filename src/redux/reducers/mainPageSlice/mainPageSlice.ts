@@ -1,15 +1,19 @@
 /* eslint functional/immutable-data: 0 */
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
-import type { DownloadingObject, DownloadingRawObject, ElementsPerPage, GallerySortingItem, Preview } from '../../types'
+import type { DownloadingObject, DownloadingRawObject, GallerySortingItem, Preview } from '../../types'
 import { MimeTypes } from '../../types/MimeTypes'
-import { MainMenuKeys } from '../../types'
+import { GalleryPagination, MainMenuKeys } from '../../types'
 import { initialState } from './mainPageState'
+import { defaultGallerySortingList } from './helpers'
 
 const mainPageSlice = createSlice({
   name: 'upload',
   initialState,
   reducers: {
+    resetSort(state) {
+      state.gallerySortingList = defaultGallerySortingList
+    },
     setRandomSort(state, action: PayloadAction<boolean>) {
       state.randomSort = action.payload
     },
@@ -50,15 +54,10 @@ const mainPageSlice = createSlice({
     setMimeTypes(state, action: PayloadAction<MimeTypes[]>) {
       state.searchMenu.mimetypes = action.payload
     },
-    setGalleryPagination(
-      state,
-      action: PayloadAction<{
-        currentPage?: number
-        nPerPage?: ElementsPerPage
-        resultsCount?: number
-        totalPages?: number
-      }>
-    ) {
+    resetSearchMenu(state) {
+      state.searchMenu = initialState.searchMenu
+    },
+    setGalleryPagination(state, action: PayloadAction<Partial<GalleryPagination>>) {
       state.galleryPagination = {
         ...current(state).galleryPagination,
         ...action.payload,
@@ -106,6 +105,8 @@ export const {
   setFilesSizeSum,
   setPreview,
   setRandomSort,
+  resetSort,
+  resetSearchMenu,
 } = mainPageSlice.actions
 
 export const mainPageReducer = mainPageSlice.reducer
