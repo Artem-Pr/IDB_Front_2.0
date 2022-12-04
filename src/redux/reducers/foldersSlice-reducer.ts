@@ -22,6 +22,7 @@ const initialState: State = {
     numberOfSubdirectories: 0,
     currentFolderPath: '',
     currentFolderKey: '',
+    expandedKeys: [],
     showInfoModal: false,
     showSubfolders: true,
   },
@@ -33,6 +34,9 @@ const folderSlice = createSlice({
   name: 'folder',
   initialState,
   reducers: {
+    setExpandedKeys(state, action: PayloadAction<React.Key[]>) {
+      state.currentFolderInfo.expandedKeys = action.payload
+    },
     setFolderTree(state, action: PayloadAction<FolderTreeItem[]>) {
       state.folderTree = action.payload
     },
@@ -73,6 +77,7 @@ export const {
   setShowInfoModal,
   setShowSubfolders,
   setCurrentFolderKey,
+  setExpandedKeys,
 } = folderSlice.actions
 
 export default folderSlice.reducer

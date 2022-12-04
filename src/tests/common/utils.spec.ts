@@ -7,6 +7,9 @@ import {
   addSiblingToTree,
   createChildrenIfNeeded,
   createKeyForFolderTree,
+  expandedSearchingTreeKeysParents,
+  expandedTreeKeyFromPath,
+  getExpandedTreeKeys,
   getFolderPathFromTreeKey,
 } from '../../app/common/folderTree'
 import {
@@ -26,6 +29,7 @@ import {
 } from '../../app/common/utils'
 import {
   foldersSliceFolderTree,
+  folderTreeForFilteredTreeKeysTest,
   folderTreeForTest1,
   folderTreeForTest2,
   folderTreeForTest3,
@@ -37,6 +41,42 @@ import {
 import { NameParts, UploadingObject } from '../../redux/types'
 
 describe('utils: ', () => {
+  describe('getExpandedTree', () => {
+    it('should return flattened tree keys, if searching is just folder name', () => {
+      const resultArray = getExpandedTreeKeys(folderTreeForFilteredTreeKeysTest, 'bom')
+      expect(resultArray.parentKeys).toEqual(['0-0-1', '0-0'])
+      expect(resultArray.elementKey).toBe('')
+    })
+    it('should return one expanded key, if there is a searching folder path', () => {
+      const resultArray = getExpandedTreeKeys(folderTreeForFilteredTreeKeysTest, 'main parent/leaf 0-1/child bom')
+      expect(resultArray.parentKeys).toEqual(['0-0-1'])
+      expect(resultArray.elementKey).toBe('0-0-1-0')
+    })
+  })
+  describe('expandedTreeKeyFromPath', () => {
+    it('should return expanded keys', () => {
+      const resultKey = expandedTreeKeyFromPath(folderTreeForFilteredTreeKeysTest, 'main parent/leaf 0-1/child bom')
+      expect(resultKey.parentKeys).toEqual(['0-0-1'])
+      expect(resultKey.elementKey).toBe('0-0-1-0')
+      const resultKey2 = expandedTreeKeyFromPath(folderTreeForFilteredTreeKeysTest, 'parent 1 bom/leaf 1-1')
+      expect(resultKey2.parentKeys).toEqual(['0-1'])
+      expect(resultKey2.elementKey).toBe('0-1-1')
+      const resultKey3 = expandedTreeKeyFromPath(folderTreeForFilteredTreeKeysTest, 'main parent/leaf 0-0')
+      expect(resultKey3.parentKeys).toEqual(['0-0'])
+      expect(resultKey3.elementKey).toBe('0-0-0')
+    })
+    it('should return an empty values if folder is wrong', () => {
+      const resultKey = expandedTreeKeyFromPath(folderTreeForFilteredTreeKeysTest, 'parent 1 bom/leaf 0-')
+      expect(resultKey.elementKey).toBe('')
+      expect(resultKey.parentKeys).toEqual(['0-1'])
+    })
+  })
+  describe('expandedSearchingTreeKeysParents', () => {
+    it('should return flattened tree', () => {
+      const resultArray = expandedSearchingTreeKeysParents(folderTreeForFilteredTreeKeysTest, 'bom')
+      expect(resultArray).toEqual(['0-0-1', '0-0'])
+    })
+  })
   it('removeExtraSlash should remove slash at the end of string', () => {
     const value1 = removeExtraSlash('string/')
     const value2 = removeExtraSlash('string/folder/')

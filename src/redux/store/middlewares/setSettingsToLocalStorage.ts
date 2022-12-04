@@ -19,7 +19,7 @@ import {
   updateDOpenMenus,
 } from '../../reducers/mainPageSlice/mainPageSlice'
 import { defaultGallerySortingList } from '../../reducers/mainPageSlice/helpers'
-import { setCurrentFolderKey, setCurrentFolderPath } from '../../reducers/foldersSlice-reducer'
+import { setCurrentFolderKey, setCurrentFolderPath, setExpandedKeys } from '../../reducers/foldersSlice-reducer'
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 
 export const listenerMiddleware = createListenerMiddleware()
@@ -122,6 +122,13 @@ listenerMiddleware.startListening({
   actionCreator: setCurrentFolderKey,
   effect: action => {
     localStorageAPI.currentFolderKey = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setExpandedKeys,
+  effect: action => {
+    localStorageAPI.expandedKeys = action.payload
   },
 })
 

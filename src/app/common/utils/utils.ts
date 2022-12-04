@@ -182,3 +182,7 @@ export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
 export const getFilePathWithoutName = (fullPath: string): string => {
   return fullPath.split('/').slice(0, -1).join('/')
 }
+
+export const getFolderNameWithoutPath = (fullPath: string): string => {
+  return fullPath.split('/').slice(-1).join('/')
+}

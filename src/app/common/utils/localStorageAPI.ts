@@ -87,4 +87,13 @@ export const localStorageAPI = {
   get currentFolderKey() {
     return localStorage.getItem('currentFolderKey') || ''
   },
+
+  // folder expandedKeys
+  set expandedKeys(expandedKeys: React.Key[]) {
+    localStorage.setItem('expandedKeys', JSON.stringify(expandedKeys))
+  },
+  get expandedKeys() {
+    const expandedKeysJSON = localStorage.getItem('expandedKeys')
+    return expandedKeysJSON ? JSON.parse(expandedKeysJSON) : []
+  },
 }

@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Tree } from 'antd'
 import { compose, curry } from 'ramda'
 
-import { setCurrentFolderKey, setCurrentFolderPath } from '../../../redux/reducers/foldersSlice-reducer'
+import {
+  setCurrentFolderKey,
+  setCurrentFolderPath,
+  setExpandedKeys,
+} from '../../../redux/reducers/foldersSlice-reducer'
 import { getFolderPathFromTreeKey } from '../../common/folderTree'
 import { curFolderInfo, folderElement } from '../../../redux/selectors'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
@@ -12,32 +16,48 @@ const { DirectoryTree } = Tree
 
 interface Props {
   isMainPage: boolean
+  autoExpandParent: boolean
+  setAutoExpandParent: (autoExpandParent: boolean) => void
 }
 
-const FolderTree = ({ isMainPage }: Props) => {
-  const { folderTree } = useSelector(folderElement)
-  const { currentFolderKey } = useSelector(curFolderInfo)
+const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props) => {
   const dispatch = useDispatch()
+  const { folderTree } = useSelector(folderElement)
+  const { currentFolderKey, expandedKeys } = useSelector(curFolderInfo)
 
   const mainPageTreeProps = useMemo(
     () =>
       isMainPage
         ? {
             selectedKeys: [currentFolderKey],
-            defaultExpandedKeys: [currentFolderKey],
+            expandedKeys: expandedKeys,
+            defaultExpandedKeys: expandedKeys,
           }
         : undefined,
-    [currentFolderKey, isMainPage]
+    [currentFolderKey, expandedKeys, isMainPage]
   )
 
-  const onSelect = ([key]: Key[]) => {
+  const handleSelect = ([key]: Key[]) => {
     const getFolderPathFromTree = curry(getFolderPathFromTreeKey)(folderTree)
     compose(dispatch, setCurrentFolderPath, getFolderPathFromTree)(String(key))
     isMainPage && compose(dispatch, setCurrentFolderKey)(String(key))
     isMainPage && dispatch(fetchPhotos())
   }
 
-  return <DirectoryTree {...mainPageTreeProps} onSelect={onSelect} treeData={folderTree} />
+  const handleExpend = (expandedKeysValue: Key[]) => {
+    dispatch(setExpandedKeys(expandedKeysValue))
+    setAutoExpandParent(false)
+  }
+
+  return (
+    <DirectoryTree
+      {...mainPageTreeProps}
+      onSelect={handleSelect}
+      onExpand={handleExpend}
+      treeData={folderTree}
+      autoExpandParent={autoExpandParent}
+    />
+  )
 }
 
 export default FolderTree

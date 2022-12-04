@@ -14,7 +14,7 @@ import {
   setSearchTags,
   updateDOpenMenus,
 } from '../reducers/mainPageSlice/mainPageSlice'
-import { setCurrentFolderKey, setCurrentFolderPath } from '../reducers/foldersSlice-reducer'
+import { setCurrentFolderKey, setCurrentFolderPath, setExpandedKeys } from '../reducers/foldersSlice-reducer'
 
 export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setIsFullSizePreview(localStorageAPI.fullSizePreview))
@@ -31,4 +31,5 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
 
   dispatch(setCurrentFolderPath(localStorageAPI.currentFolderPath))
   dispatch(setCurrentFolderKey(localStorageAPI.currentFolderKey))
+  dispatch(setExpandedKeys(localStorageAPI.expandedKeys))
 }

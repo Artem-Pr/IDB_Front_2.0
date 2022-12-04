@@ -161,6 +161,7 @@ export interface CheckedDirectoryRequest extends QueryResponse {
 export interface DirectoryInfo extends CheckedDirectoryRequest {
   currentFolderPath: string
   currentFolderKey: string
+  expandedKeys: React.Key[]
   showInfoModal: boolean
   showSubfolders: boolean
 }

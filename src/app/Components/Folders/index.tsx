@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 
-import { AutoComplete, Button, Modal, Tooltip, Checkbox } from 'antd'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { AutoComplete, Button, Modal, Checkbox } from 'antd'
+import { PlusOutlined, DeleteOutlined, FolderOpenOutlined } from '@ant-design/icons'
 
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -15,11 +15,12 @@ import {
   checkDirectory,
   setCurrentFolderKey,
   setCurrentFolderPath,
+  setExpandedKeys,
   setFolderTree,
   setPathsArr,
   setShowSubfolders,
 } from '../../../redux/reducers/foldersSlice-reducer'
-import { addFolderToFolderTree } from '../../common/folderTree'
+import { addFolderToFolderTree, getExpandedTreeKeys } from '../../common/folderTree'
 import { removeExtraSlash } from '../../common/utils'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { useCurrentPage } from '../../common/hooks'
@@ -33,12 +34,13 @@ const Folders = () => {
   const { currentFolderPath, showSubfolders } = useSelector(curFolderInfo)
   const directoriesArr = useSelector(pathsArr)
   const options = useSelector(pathsArrOptionsSelector)
+  const [autoExpandParent, setAutoExpandParent] = useState(true)
 
   const cleanFolderPath = useMemo(() => removeExtraSlash(currentFolderPath), [currentFolderPath])
   const isButtonAddDisabled = useMemo(() => directoriesArr.includes(cleanFolderPath), [cleanFolderPath, directoriesArr])
 
-  const onChange = (data: string) => {
-    dispatch(setCurrentFolderPath(data))
+  const onChange = (currentFolderPath: string) => {
+    dispatch(setCurrentFolderPath(currentFolderPath))
   }
 
   const setNewFolder = () => {
@@ -70,11 +72,25 @@ const Folders = () => {
     dispatch(fetchPhotos())
   }
 
+  const handleFolderExpand = () => {
+    const { parentKeys, elementKey } = getExpandedTreeKeys(folderTree, currentFolderPath)
+    parentKeys &&
+      dispatch(setExpandedKeys(parentKeys)) &&
+      dispatch(setCurrentFolderPath(currentFolderPath)) &&
+      setAutoExpandParent(true)
+
+    dispatch(setCurrentFolderKey(elementKey))
+  }
+
   return (
     <div className={styles.folderWrapper}>
-      <FolderTree isMainPage={isMainPage} />
-      <div className="d-flex align-items-center margin-top-10">
-        <span className={styles.label}>Directory:</span>
+      <FolderTree
+        isMainPage={isMainPage}
+        autoExpandParent={autoExpandParent}
+        setAutoExpandParent={setAutoExpandParent}
+      />
+      <div className="d-flex align-items-center margin-top-10 gap-10">
+        <span>Directory:</span>
         <AutoComplete
           className="flex-1"
           options={options}
@@ -83,24 +99,28 @@ const Folders = () => {
           onChange={onChange}
           filterOption={handleFilterOption}
         />
-        <Tooltip title="add Directory" className={styles.plusIcon}>
-          <Button
-            onClick={handleAddClick}
-            disabled={isButtonAddDisabled}
-            type="primary"
-            shape="circle"
-            icon={<PlusOutlined />}
-          />
-        </Tooltip>
-        <Tooltip title="remove Directory" className={styles.plusIcon}>
-          <Button
-            onClick={handleDeleteClick}
-            disabled={!isButtonAddDisabled}
-            type="primary"
-            shape="circle"
-            icon={<DeleteOutlined />}
-          />
-        </Tooltip>
+      </div>
+
+      <div className="d-flex margin-top-10 gap-10 justify-content-end">
+        <Button
+          onClick={handleDeleteClick}
+          disabled={!isButtonAddDisabled}
+          type="primary"
+          icon={<DeleteOutlined />}
+          danger
+        >
+          Delete
+        </Button>
+
+        <Button onClick={handleAddClick} disabled={isButtonAddDisabled} type="primary" icon={<PlusOutlined />}>
+          Add
+        </Button>
+
+        {isMainPage && (
+          <Button onClick={handleFolderExpand} type="primary" icon={<FolderOpenOutlined />}>
+            Expand
+          </Button>
+        )}
       </div>
 
       <div className="d-flex justify-content-between margin-top-10">

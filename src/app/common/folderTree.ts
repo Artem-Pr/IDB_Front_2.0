@@ -1,4 +1,4 @@
-import { reduce } from 'ramda'
+import { flatten, reduce } from 'ramda'
 
 import { FolderTreeItem } from '../../redux/types'
 import { copyByJSON, removeExtraSlash } from './utils'
@@ -63,4 +63,57 @@ const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
 
 export const createFolderTree = (paths: string[]) => {
   return reduce(updateFolderTree, [], paths)
+}
+
+export const expandedSearchingTreeKeysParents = (
+  tree: FolderTreeItem[],
+  searchedTitle: string,
+  parentElem?: FolderTreeItem
+): string[] => {
+  return flatten(
+    tree.map(treeItem => {
+      const childrenKeys: string[] =
+        (treeItem.children && expandedSearchingTreeKeysParents(treeItem.children, searchedTitle, treeItem)) || []
+      const isTitleMatched = treeItem.title.includes(searchedTitle)
+      const parentKey = isTitleMatched ? [parentElem?.key || ''] : []
+
+      return [...parentKey, ...childrenKeys]
+    })
+  ).filter(Boolean)
+}
+
+interface ExpandedTreeKeyFromPath {
+  parentKeys: string[]
+  elementKey: string
+}
+
+export const expandedTreeKeyFromPath = (
+  tree: FolderTreeItem[],
+  treePath: string,
+  parentElem?: FolderTreeItem
+): ExpandedTreeKeyFromPath => {
+  const folderNamesArr = treePath.split('/')
+  const currentTreeNode = tree.find(({ title }) => title === folderNamesArr[0])
+  const childrenTreePath = folderNamesArr.slice(1).join('/')
+  const childrenTree = currentTreeNode?.children
+
+  return childrenTree && childrenTreePath
+    ? expandedTreeKeyFromPath(childrenTree, childrenTreePath, currentTreeNode)
+    : {
+        parentKeys: [parentElem?.key || ''],
+        elementKey: currentTreeNode?.key || '',
+      }
+}
+
+export const getExpandedTreeKeys = (tree: FolderTreeItem[], treePath: string): ExpandedTreeKeyFromPath => {
+  const folderNamesArrLength = treePath.split('/').length
+  const needToOpenDifferentParents = folderNamesArrLength === 1
+  const result = needToOpenDifferentParents
+    ? {
+        parentKeys: expandedSearchingTreeKeysParents(tree, treePath),
+        elementKey: '',
+      }
+    : expandedTreeKeyFromPath(tree, treePath)
+
+  return { ...result, parentKeys: result.parentKeys.filter(Boolean) }
 }
