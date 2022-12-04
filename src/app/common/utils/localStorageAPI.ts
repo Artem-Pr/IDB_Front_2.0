@@ -1,6 +1,7 @@
 import { GalleryPagination, GallerySortingItem, MainMenuKeys } from '../../../redux/types'
 import { SearchMenu } from '../../../redux/reducers/mainPageSlice/types'
 import { initialState as mainPageInitialState } from '../../../redux/reducers/mainPageSlice/mainPageState'
+import { initialState as settingsInitialState } from '../../../redux/reducers/settingsSlice-reducer'
 import { defaultGallerySortingList } from '../../../redux/reducers/mainPageSlice/helpers'
 
 export const localStorageAPI = {
@@ -17,7 +18,8 @@ export const localStorageAPI = {
     localStorage.setItem('maxImagePreviewLimit', String(maxLimit))
   },
   get maxImagePreviewLimit() {
-    return Number(localStorage.getItem('maxImagePreviewLimit'))
+    const maxImagePreviewLimit = localStorage.getItem('maxImagePreviewLimit')
+    return maxImagePreviewLimit ? Number(maxImagePreviewLimit) : settingsInitialState.imagePreviewSlideLimits.max
   },
 
   // minImagePreviewLimit
@@ -25,7 +27,8 @@ export const localStorageAPI = {
     localStorage.setItem('minImagePreviewLimit', String(minLimit))
   },
   get minImagePreviewLimit() {
-    return Number(localStorage.getItem('minImagePreviewLimit'))
+    const minImagePreviewLimit = localStorage.getItem('minImagePreviewLimit')
+    return minImagePreviewLimit ? Number(minImagePreviewLimit) : settingsInitialState.imagePreviewSlideLimits.min
   },
 
   // DOpenMenus

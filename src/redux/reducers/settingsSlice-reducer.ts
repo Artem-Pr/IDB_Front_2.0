@@ -9,11 +9,11 @@ interface State {
   }
 }
 
-const initialState: State = {
+export const initialState: State = {
   isFullSizePreview: false,
   imagePreviewSlideLimits: {
     min: 20,
-    max: 1000,
+    max: 300,
   },
 }
 

@@ -55,8 +55,8 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize }: Props) => 
           <Slider
             className={styles.slider}
             defaultValue={previewSize}
-            min={imagePreviewSlideLimits.min || 20}
-            max={imagePreviewSlideLimits.max || 60}
+            min={imagePreviewSlideLimits.min}
+            max={imagePreviewSlideLimits.max}
             onChange={onSliderMove}
             onAfterChange={finishPreviewResize}
           />
