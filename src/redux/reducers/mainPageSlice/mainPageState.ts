@@ -34,6 +34,7 @@ export const initialState: State = {
     searchTags: [],
     excludeTags: [],
     mimetypes: [],
+    dateRange: null,
   },
   galleryPagination: {
     currentPage: 1,

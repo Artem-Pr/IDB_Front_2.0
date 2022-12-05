@@ -6,6 +6,7 @@ import {
 } from '../reducers/settingsSlice-reducer'
 import { localStorageAPI } from '../../app/common/utils/localStorageAPI'
 import {
+  setDateRange,
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
@@ -22,9 +23,13 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setMinImagePreviewSlideLimit(localStorageAPI.minImagePreviewLimit))
 
   dispatch(updateDOpenMenus(localStorageAPI.DOpenMenus))
-  dispatch(setSearchTags(localStorageAPI.searchMenu.searchTags))
-  dispatch(setExcludeTags(localStorageAPI.searchMenu.excludeTags))
-  dispatch(setMimeTypes(localStorageAPI.searchMenu.mimetypes))
+
+  const { searchTags, excludeTags, mimetypes, dateRange } = localStorageAPI.searchMenu
+  dispatch(setSearchTags(searchTags))
+  dispatch(setExcludeTags(excludeTags))
+  dispatch(setMimeTypes(mimetypes))
+  dispatch(setDateRange(dateRange))
+
   dispatch(setGalleryPagination(localStorageAPI.galleryPagination))
   dispatch(setGallerySortingList(localStorageAPI.gallerySortingList))
   dispatch(setRandomSort(localStorageAPI.randomSort))

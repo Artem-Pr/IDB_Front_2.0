@@ -10,6 +10,7 @@ import { localStorageAPI } from '../../../app/common/utils/localStorageAPI'
 import {
   resetSearchMenu,
   resetSort,
+  setDateRange,
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
@@ -73,6 +74,14 @@ listenerMiddleware.startListening({
   effect: action => {
     const searchMenu = localStorageAPI.searchMenu
     localStorageAPI.searchMenu = { ...searchMenu, mimetypes: action.payload }
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setDateRange,
+  effect: action => {
+    const searchMenu = localStorageAPI.searchMenu
+    localStorageAPI.searchMenu = { ...searchMenu, dateRange: action.payload }
   },
 })
 

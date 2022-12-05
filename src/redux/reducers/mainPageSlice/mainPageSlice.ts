@@ -54,6 +54,9 @@ const mainPageSlice = createSlice({
     setMimeTypes(state, action: PayloadAction<MimeTypes[]>) {
       state.searchMenu.mimetypes = action.payload
     },
+    setDateRange(state, action: PayloadAction<[string, string] | null>) {
+      state.searchMenu.dateRange = action.payload
+    },
     resetSearchMenu(state) {
       state.searchMenu = initialState.searchMenu
     },
@@ -97,6 +100,7 @@ export const {
   setSearchTags,
   setExcludeTags,
   setMimeTypes,
+  setDateRange,
   clearDownloadingState,
   setGalleryPagination,
   setDLoading,
