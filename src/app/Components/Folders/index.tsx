@@ -93,6 +93,7 @@ const Folders = () => {
         <span>Directory:</span>
         <AutoComplete
           className="flex-1"
+          placeholder="write folder name"
           options={options}
           defaultValue={currentFolderPath}
           value={currentFolderPath}

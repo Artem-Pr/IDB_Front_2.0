@@ -45,6 +45,9 @@ const mainPageSlice = createSlice({
     selectAllD(state) {
       state.dSelectedList = state.downloadingFiles.map((_, i) => i)
     },
+    setSearchFileName(state, action: PayloadAction<string>) {
+      state.searchMenu.fileName = action.payload
+    },
     setSearchTags(state, action: PayloadAction<string[]>) {
       state.searchMenu.searchTags = action.payload
     },
@@ -97,6 +100,7 @@ export const {
   updateDOpenMenus,
   clearDSelectedList,
   selectAllD,
+  setSearchFileName,
   setSearchTags,
   setExcludeTags,
   setMimeTypes,

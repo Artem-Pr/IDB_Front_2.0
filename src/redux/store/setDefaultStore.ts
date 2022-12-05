@@ -12,6 +12,7 @@ import {
   setGallerySortingList,
   setMimeTypes,
   setRandomSort,
+  setSearchFileName,
   setSearchTags,
   updateDOpenMenus,
 } from '../reducers/mainPageSlice/mainPageSlice'
@@ -24,7 +25,8 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
 
   dispatch(updateDOpenMenus(localStorageAPI.DOpenMenus))
 
-  const { searchTags, excludeTags, mimetypes, dateRange } = localStorageAPI.searchMenu
+  const { searchTags, excludeTags, mimetypes, dateRange, fileName } = localStorageAPI.searchMenu
+  dispatch(setSearchFileName(fileName))
   dispatch(setSearchTags(searchTags))
   dispatch(setExcludeTags(excludeTags))
   dispatch(setMimeTypes(mimetypes))

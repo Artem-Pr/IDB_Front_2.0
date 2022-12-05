@@ -31,13 +31,13 @@ export const fetchPhotos =
       settingSlice: { isFullSizePreview },
     } = getState()
     const {
-      searchMenu: { searchTags, excludeTags, mimetypes, dateRange },
+      searchMenu: { fileName, searchTags, excludeTags, mimetypes, dateRange },
       galleryPagination,
       gallerySortingList,
       randomSort,
     } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
-    const folderPath = currentFolderInfo.currentFolderPath
+    const folderPath = isNameComparison ? '' : currentFolderInfo.currentFolderPath
     const showSubfolders = currentFolderInfo.showSubfolders
     dispatch(setDGalleryLoading(true))
     mainApi
@@ -45,6 +45,7 @@ export const fetchPhotos =
         page: currentPage,
         sorting: prepareSortingList(gallerySortingList),
         perPage: nPerPage,
+        ...(fileName && { fileName }),
         ...(!isEmpty(searchTags) && { searchTags }),
         ...(!isEmpty(excludeTags) && { excludeTags }),
         ...(!isEmpty(mimetypes) && { mimetypes }),

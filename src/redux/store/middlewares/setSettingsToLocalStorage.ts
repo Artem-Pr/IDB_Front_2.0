@@ -16,6 +16,7 @@ import {
   setGallerySortingList,
   setMimeTypes,
   setRandomSort,
+  setSearchFileName,
   setSearchTags,
   updateDOpenMenus,
 } from '../../reducers/mainPageSlice/mainPageSlice'
@@ -50,6 +51,14 @@ listenerMiddleware.startListening({
   actionCreator: updateDOpenMenus,
   effect: action => {
     localStorageAPI.DOpenMenus = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setSearchFileName,
+  effect: action => {
+    const searchMenu = localStorageAPI.searchMenu
+    localStorageAPI.searchMenu = { ...searchMenu, fileName: action.payload }
   },
 })
 

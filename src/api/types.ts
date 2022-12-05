@@ -5,6 +5,7 @@ export interface GetPhotosByTagsRequest {
   page: number
   perPage: number
   sorting: Partial<Record<SortedFields, Sort>>
+  fileName?: string
   searchTags?: string[]
   excludeTags?: string[]
   mimeTypes?: MimeTypes[]

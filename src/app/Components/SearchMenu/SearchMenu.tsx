@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, DatePicker } from 'antd'
+import { Button, Select, DatePicker, Input } from 'antd'
 import { difference, keys } from 'ramda'
 import cn from 'classnames'
 
@@ -15,6 +15,7 @@ import {
   setDateRange,
   setExcludeTags,
   setMimeTypes,
+  setSearchFileName,
   setSearchTags,
 } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
@@ -28,7 +29,7 @@ const fileTypes = keys(MimeTypes)
 export const SearchMenu = () => {
   const dispatch = useDispatch()
   const { keywordsList } = useSelector(folderElement)
-  const { searchTags, excludeTags, mimetypes, dateRange } = useSelector(searchMenu)
+  const { searchTags, excludeTags, mimetypes, dateRange, fileName } = useSelector(searchMenu)
   const { isGalleryLoading } = useSelector(main)
   const searchKeywordsList = useMemo(() => difference(keywordsList, excludeTags), [excludeTags, keywordsList])
   const excludeKeywordsList = useMemo(() => difference(keywordsList, searchTags), [searchTags, keywordsList])
@@ -64,8 +65,20 @@ export const SearchMenu = () => {
     dispatch(setDateRange(dateRange))
   }
 
+  const handleSearchingFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchFileName(event.target.value.trim()))
+  }
+
   return (
     <div className={styles.wrapper}>
+      <span className={styles.title}>File name:</span>
+      <Input
+        className="margin-bottom-10"
+        placeholder="write to search"
+        value={fileName}
+        onChange={handleSearchingFileNameChange}
+      />
+
       <span className={styles.title}>Search tags:</span>
       <Select
         className={cn(styles.select, 'w-100')}

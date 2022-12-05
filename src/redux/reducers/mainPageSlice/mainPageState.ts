@@ -31,6 +31,7 @@ export const initialState: State = {
   dSelectedList: [],
   dOpenMenus: [],
   searchMenu: {
+    fileName: '',
     searchTags: [],
     excludeTags: [],
     mimetypes: [],
