@@ -48,6 +48,9 @@ const mainPageSlice = createSlice({
     setSearchFileName(state, action: PayloadAction<string>) {
       state.searchMenu.fileName = action.payload
     },
+    setIncludeAllSearchTags(state, action: PayloadAction<boolean>) {
+      state.searchMenu.includeAllSearchTags = action.payload
+    },
     setSearchTags(state, action: PayloadAction<string[]>) {
       state.searchMenu.searchTags = action.payload
     },
@@ -101,6 +104,7 @@ export const {
   clearDSelectedList,
   selectAllD,
   setSearchFileName,
+  setIncludeAllSearchTags,
   setSearchTags,
   setExcludeTags,
   setMimeTypes,

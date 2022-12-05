@@ -14,6 +14,7 @@ import {
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
+  setIncludeAllSearchTags,
   setMimeTypes,
   setRandomSort,
   setSearchFileName,
@@ -59,6 +60,14 @@ listenerMiddleware.startListening({
   effect: action => {
     const searchMenu = localStorageAPI.searchMenu
     localStorageAPI.searchMenu = { ...searchMenu, fileName: action.payload }
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setIncludeAllSearchTags,
+  effect: action => {
+    const searchMenu = localStorageAPI.searchMenu
+    localStorageAPI.searchMenu = { ...searchMenu, includeAllSearchTags: action.payload }
   },
 })
 

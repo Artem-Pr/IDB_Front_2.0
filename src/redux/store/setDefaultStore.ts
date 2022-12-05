@@ -10,6 +10,7 @@ import {
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
+  setIncludeAllSearchTags,
   setMimeTypes,
   setRandomSort,
   setSearchFileName,
@@ -25,8 +26,9 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
 
   dispatch(updateDOpenMenus(localStorageAPI.DOpenMenus))
 
-  const { searchTags, excludeTags, mimetypes, dateRange, fileName } = localStorageAPI.searchMenu
+  const { searchTags, excludeTags, mimetypes, dateRange, fileName, includeAllSearchTags } = localStorageAPI.searchMenu
   dispatch(setSearchFileName(fileName))
+  dispatch(setIncludeAllSearchTags(includeAllSearchTags))
   dispatch(setSearchTags(searchTags))
   dispatch(setExcludeTags(excludeTags))
   dispatch(setMimeTypes(mimetypes))

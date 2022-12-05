@@ -32,6 +32,7 @@ export const initialState: State = {
   dOpenMenus: [],
   searchMenu: {
     fileName: '',
+    includeAllSearchTags: true,
     searchTags: [],
     excludeTags: [],
     mimetypes: [],

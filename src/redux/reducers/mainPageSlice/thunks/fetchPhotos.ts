@@ -31,7 +31,7 @@ export const fetchPhotos =
       settingSlice: { isFullSizePreview },
     } = getState()
     const {
-      searchMenu: { fileName, searchTags, excludeTags, mimetypes, dateRange },
+      searchMenu: { fileName, searchTags, excludeTags, mimetypes, dateRange, includeAllSearchTags },
       galleryPagination,
       gallerySortingList,
       randomSort,
@@ -46,6 +46,7 @@ export const fetchPhotos =
         sorting: prepareSortingList(gallerySortingList),
         perPage: nPerPage,
         ...(fileName && { fileName }),
+        ...(includeAllSearchTags && { includeAllSearchTags }),
         ...(!isEmpty(searchTags) && { searchTags }),
         ...(!isEmpty(excludeTags) && { excludeTags }),
         ...(!isEmpty(mimetypes) && { mimetypes }),

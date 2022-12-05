@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, DatePicker, Input } from 'antd'
+import { Button, Select, DatePicker, Input, Checkbox } from 'antd'
 import { difference, keys } from 'ramda'
 import cn from 'classnames'
 
@@ -8,12 +8,15 @@ import type { RangePickerProps } from 'antd/es/date-picker'
 
 import dayjs from 'dayjs'
 
+import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+
 import { folderElement, main, searchMenu } from '../../../redux/selectors'
 import styles from './index.module.scss'
 import {
   resetSearchMenu,
   setDateRange,
   setExcludeTags,
+  setIncludeAllSearchTags,
   setMimeTypes,
   setSearchFileName,
   setSearchTags,
@@ -29,7 +32,7 @@ const fileTypes = keys(MimeTypes)
 export const SearchMenu = () => {
   const dispatch = useDispatch()
   const { keywordsList } = useSelector(folderElement)
-  const { searchTags, excludeTags, mimetypes, dateRange, fileName } = useSelector(searchMenu)
+  const { searchTags, excludeTags, mimetypes, dateRange, fileName, includeAllSearchTags } = useSelector(searchMenu)
   const { isGalleryLoading } = useSelector(main)
   const searchKeywordsList = useMemo(() => difference(keywordsList, excludeTags), [excludeTags, keywordsList])
   const excludeKeywordsList = useMemo(() => difference(keywordsList, searchTags), [searchTags, keywordsList])
@@ -69,6 +72,10 @@ export const SearchMenu = () => {
     dispatch(setSearchFileName(event.target.value.trim()))
   }
 
+  const handleIncludeAllTagsChange = (e: CheckboxChangeEvent) => {
+    dispatch(setIncludeAllSearchTags(e.target.checked))
+  }
+
   return (
     <div className={styles.wrapper}>
       <span className={styles.title}>File name:</span>
@@ -79,7 +86,12 @@ export const SearchMenu = () => {
         onChange={handleSearchingFileNameChange}
       />
 
-      <span className={styles.title}>Search tags:</span>
+      <div className={cn(styles.title, 'd-flex justify-content-between align-items-center')}>
+        <span>Search tags:</span>
+        <Checkbox className="margin-left-auto" checked={includeAllSearchTags} onChange={handleIncludeAllTagsChange}>
+          Include all tags
+        </Checkbox>
+      </div>
       <Select
         className={cn(styles.select, 'w-100')}
         mode="tags"
