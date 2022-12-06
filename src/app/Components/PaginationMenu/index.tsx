@@ -5,18 +5,15 @@ import { Pagination } from 'antd'
 import { pagination } from '../../../redux/selectors'
 import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { ElementsPerPage } from '../../../redux/types'
-
-const option: ElementsPerPage[] = [10, 20, 50, 100]
 
 const PaginationMenu = () => {
   const dispatch = useDispatch()
-  const { currentPage, resultsCount, nPerPage } = useSelector(pagination)
+  const { currentPage, resultsCount, nPerPage, pageSizeOptions } = useSelector(pagination)
 
   const handleChange = (page: number, pageSize?: number) => {
     const paginationObj = {
       currentPage: pageSize === nPerPage ? page : 1,
-      ...(pageSize && { nPerPage: pageSize as ElementsPerPage }),
+      ...(pageSize && { nPerPage: pageSize }),
     }
     dispatch(setGalleryPagination(paginationObj))
     dispatch(fetchPhotos())
@@ -30,7 +27,7 @@ const PaginationMenu = () => {
       pageSize={nPerPage}
       current={currentPage}
       showSizeChanger
-      pageSizeOptions={option.map(String)}
+      pageSizeOptions={pageSizeOptions}
       onChange={handleChange}
     />
   )

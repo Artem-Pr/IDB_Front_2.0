@@ -43,6 +43,7 @@ export const initialState: State = {
     nPerPage: 50,
     resultsCount: 0,
     totalPages: 1,
+    pageSizeOptions: [10, 20, 50, 100],
   },
   gallerySortingList: defaultGallerySortingList,
   randomSort: false,

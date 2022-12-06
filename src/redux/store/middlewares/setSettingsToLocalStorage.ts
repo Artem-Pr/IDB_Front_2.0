@@ -24,8 +24,9 @@ import {
 import { defaultGallerySortingList } from '../../reducers/mainPageSlice/helpers'
 import { setCurrentFolderKey, setCurrentFolderPath, setExpandedKeys } from '../../reducers/foldersSlice-reducer'
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
+import { RootState } from '../rootReducer'
 
-export const listenerMiddleware = createListenerMiddleware()
+export const listenerMiddleware = createListenerMiddleware<RootState>()
 
 listenerMiddleware.startListening({
   actionCreator: setIsFullSizePreview,
@@ -112,8 +113,9 @@ listenerMiddleware.startListening({
 
 listenerMiddleware.startListening({
   actionCreator: setGalleryPagination,
-  effect: action => {
-    localStorageAPI.galleryPagination = action.payload
+  effect: (action, state) => {
+    const { galleryPagination } = state.getState().mainPageReducer
+    localStorageAPI.galleryPagination = { ...galleryPagination, ...action.payload }
   },
 })
 

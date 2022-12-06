@@ -2,7 +2,6 @@ export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath'
 export type Checkboxes = Record<CheckboxType, boolean>
-export type ElementsPerPage = 10 | 20 | 50 | 100
 export type DeleteConfirmationType = 'file' | 'directory'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
 export type PreviewType = 'video' | 'image' | undefined
@@ -126,9 +125,10 @@ export interface UpdatedObject {
 
 export interface GalleryPagination {
   currentPage: number
-  nPerPage: ElementsPerPage
+  nPerPage: number
   resultsCount: number
   totalPages: number
+  pageSizeOptions: number[]
 }
 
 export interface FetchingGalleryContent {

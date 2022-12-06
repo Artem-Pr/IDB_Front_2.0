@@ -2,17 +2,11 @@
   height: calc(100vh - 64px);
   padding: 20px;
 
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  ul li {
-    margin-bottom: 7px;
-  }
-
-  .inputFieldLabel {
-    margin-left: 10px;
+  .gridWrapper {
+    grid-template-columns: 200px 300px;
+    grid-template-rows: 40px 40px 40px minmax(40px, auto);
+    gap: 10px;
+    align-items: center;
   }
 
   .inputField {
