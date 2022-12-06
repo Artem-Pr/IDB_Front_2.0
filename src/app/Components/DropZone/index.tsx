@@ -10,9 +10,10 @@ import { compose } from 'ramda'
 import type { RcFile, UploadChangeParam } from 'antd/es/upload'
 
 import styles from './index.module.scss'
-import { curFolderInfo } from '../../../redux/selectors'
+import { curFolderInfo, uploadingBlobs } from '../../../redux/selectors'
 import { fetchPhotosPreview, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice-reducer'
 import { MainMenuKeys } from '../../../redux/types'
+import { errorMessage } from '../../common/notifications'
 
 const { Dragger } = Upload
 
@@ -23,12 +24,17 @@ const getDispatchObjFromBlob = (file: RcFile) => ({
   originalPath: URL.createObjectURL(file),
 })
 
+const isFileNameAlreadyExist = (file: RcFile, uploadingFilesList: Record<string, string>) => {
+  return Object.keys(uploadingFilesList).includes(file.name)
+}
+
 interface Props {
   openMenus: string[]
 }
 
 const DropZone = ({ openMenus }: Props) => {
   const { currentFolderPath } = useSelector(curFolderInfo)
+  const uploadingFiles = useSelector(uploadingBlobs)
   const dispatch = useDispatch()
   const isEditOne = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
   const isEditMany = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
@@ -43,10 +49,15 @@ const DropZone = ({ openMenus }: Props) => {
       path: currentFolderPath,
       'Content-Type': 'application/json',
     },
-    customRequest(info) {
-      isFile(info.file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(info.file)
-      dispatch(fetchPhotosPreview(info.file))
-      dispatch(setUploadingStatus('empty'))
+    customRequest({ file }) {
+      const uploadFile = () => {
+        isFile(file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(file)
+        dispatch(fetchPhotosPreview(file))
+        dispatch(setUploadingStatus('empty'))
+      }
+      const fileAlreadyExist = isFile(file) && isFileNameAlreadyExist(file, uploadingFiles)
+
+      fileAlreadyExist ? errorMessage(new Error(`${file.name} is already exist`), 'File is not uploaded') : uploadFile()
     },
     onChange(info: UploadChangeParam) {
       const { status } = info.file
