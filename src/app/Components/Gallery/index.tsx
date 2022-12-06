@@ -1,4 +1,13 @@
-import React, { MouseEvent, MutableRefObject, RefObject, SyntheticEvent, useCallback, useMemo, useState } from 'react'
+import React, {
+  MouseEvent,
+  MutableRefObject,
+  RefObject,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
 import { compose, difference, keys, map, range, sort } from 'ramda'
@@ -67,6 +76,10 @@ const Gallery = ({
     useImageGalleryData(imageArr, isMainPage)
 
   const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
+
+  useEffect(() => {
+    !isLoading && gridRef.current?.scrollIntoView()
+  }, [gridRef, isLoading])
 
   const getExif = useCallback(
     (tempPath: string) => (e: MouseEvent) => {
