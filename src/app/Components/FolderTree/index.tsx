@@ -11,6 +11,7 @@ import {
 import { getFolderPathFromTreeKey } from '../../common/folderTree'
 import { curFolderInfo, folderElement } from '../../../redux/selectors'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 
 const { DirectoryTree } = Tree
 
@@ -38,10 +39,17 @@ const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props
   )
 
   const handleSelect = ([key]: Key[]) => {
+    const strKey = String(key)
+
+    const updateMainPage = () => {
+      compose(dispatch, setCurrentFolderKey)(strKey)
+      compose(dispatch, setGalleryPagination)({ currentPage: 1 })
+      compose(dispatch, fetchPhotos)()
+    }
+
     const getFolderPathFromTree = curry(getFolderPathFromTreeKey)(folderTree)
-    compose(dispatch, setCurrentFolderPath, getFolderPathFromTree)(String(key))
-    isMainPage && compose(dispatch, setCurrentFolderKey)(String(key))
-    isMainPage && dispatch(fetchPhotos())
+    compose(dispatch, setCurrentFolderPath, getFolderPathFromTree)(strKey)
+    isMainPage && updateMainPage()
   }
 
   const handleExpend = (expandedKeysValue: Key[]) => {
