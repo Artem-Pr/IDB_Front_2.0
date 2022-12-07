@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { Layout, Result } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu } from '../../Components'
@@ -29,7 +30,7 @@ const { Content } = Layout
 const statusMessage: Record<LoadingStatus, string> = {
   success: 'Files uploaded successfully',
   error: 'Submission Failed',
-  loading: '',
+  loading: 'Loading...',
   empty: '',
 }
 
@@ -75,7 +76,13 @@ const UploadPage = () => {
 
   const ResultComponent = useMemo(() => {
     const validStatus = isValidResultStatus(uploadingStatus)
-    return validStatus ? <Result status={validStatus || 'info'} title={statusMessage[uploadingStatus]} /> : ''
+    return validStatus ? (
+      <Result status={validStatus || 'info'} title={statusMessage[uploadingStatus]} />
+    ) : uploadingStatus === 'loading' ? (
+      <Result icon={<LoadingOutlined />} title={statusMessage[uploadingStatus]} />
+    ) : (
+      ''
+    )
   }, [uploadingStatus])
 
   return (

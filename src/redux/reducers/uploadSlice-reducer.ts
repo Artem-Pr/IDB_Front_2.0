@@ -118,6 +118,7 @@ const addUploadingFile =
 export const uploadFiles =
   (filesArr: UploadingObject[], folderPath: string): AppThunk =>
   dispatch => {
+    dispatch(setUploadingStatus('loading'))
     mainApi
       .sendPhotos(filesArr, folderPath)
       .then(({ data: { success, error } }) => {

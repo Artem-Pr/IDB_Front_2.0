@@ -20,8 +20,6 @@ import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/type
 
 import styles from './index.module.scss'
 
-const { Option } = Select
-
 const DatePicker = generatePicker<Moment>(momentGenerateConfig)
 
 interface Props {
@@ -78,6 +76,7 @@ const EditMenu = ({
   )
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
   const { shortName, ext } = useMemo(() => getNameParts(name), [name])
+  const keywordsOptions = useMemo(() => allKeywords.map(keyword => ({ value: keyword, label: keyword })), [allKeywords])
   const { onFinish } = useFinishEdit({
     filesArr,
     sameKeywords,
@@ -176,14 +175,13 @@ const EditMenu = ({
             <Checkbox>Keywords:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="keywords">
-            <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" disabled={disabledInputs}>
-              {allKeywords &&
-                allKeywords.map(keyword => (
-                  <Option key={keyword} value={keyword}>
-                    {keyword}
-                  </Option>
-                ))}
-            </Select>
+            <Select
+              className={styles.keywords}
+              mode="tags"
+              placeholder="Edit keywords"
+              disabled={disabledInputs}
+              options={keywordsOptions}
+            />
           </Form.Item>
         </div>
 

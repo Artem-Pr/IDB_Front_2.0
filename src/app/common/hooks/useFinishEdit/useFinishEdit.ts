@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
-import { curry, identity, isEmpty, sortBy } from 'ramda'
+import { useDispatch, useSelector } from 'react-redux'
+import { compose, curry, flatten, identity, isEmpty, sortBy, uniq } from 'ramda'
 
 import { ModalStaticFunctions } from 'antd/es/modal/confirm'
 
@@ -16,6 +16,8 @@ import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from 
 import { formatDate } from '../../utils/date'
 import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
 import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
+import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
+import { folderElement } from '../../../../redux/selectors'
 
 interface Props {
   filesArr: FieldsObj[]
@@ -39,6 +41,7 @@ export const useFinishEdit = ({
   modal,
 }: Props) => {
   const dispatch = useDispatch()
+  const { keywordsList } = useSelector(folderElement)
   const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords, isMainPage)
 
   const fetchUpdatedFiles = useCallback(
@@ -76,7 +79,7 @@ export const useFinishEdit = ({
         updatedFields: getUpdatedFields(i),
       }))
 
-      updatedFiles.length && dispatch(updatePhotos(updatedFiles))
+      updatedFiles.length && compose(dispatch, updatePhotos)(updatedFiles)
     },
     [dispatch, filesArr, sameKeywords, selectedList]
   )
@@ -108,8 +111,10 @@ export const useFinishEdit = ({
           filePath: isFilePath && filePath ? getFilePath(filePath) : undefined,
         }
 
-        const checkboxes: Checkboxes = { isName, isOriginalDate, isKeywords, isFilePath }
+        const updatedKeywordsList = uniq([...keywordsList, ...flatten(keywords)])
+        compose(dispatch, setKeywordsList)(updatedKeywordsList)
 
+        const checkboxes: Checkboxes = { isName, isOriginalDate, isKeywords, isFilePath }
         isMainPage && fetchUpdatedFiles(currentName, currentOriginalDate, `/${filePath}`, keywords, checkboxes)
         const editedFields = removeEmptyFields(preparedValue)
         !isEmpty(editedFields) && editUploadingFiles(editedFields)
@@ -127,12 +132,14 @@ export const useFinishEdit = ({
       !(needModalIsDuplicate || isEmptyCheckboxes || filesSizeIfLongProcess) && updateValues()
     },
     [
+      dispatch,
       editUploadingFiles,
       ext,
       fetchUpdatedFiles,
       filesArr,
       isEditMany,
       isMainPage,
+      keywordsList,
       modal,
       name,
       sameKeywords,
