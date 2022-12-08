@@ -64,6 +64,8 @@ export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: strin
   return {
     keywords: exifObj?.Keywords || null,
     megapixels: exifObj?.Megapixels || '',
+    rating: exifObj?.Rating || 0,
+    description: exifObj?.Description || '',
     originalDate,
     tempPath,
   }

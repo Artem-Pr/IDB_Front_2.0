@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { AutoComplete, Button, Checkbox, Form, Input, Modal, Select } from 'antd'
+import { AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { compose, identity, sortBy } from 'ramda'
 import moment from 'moment'
@@ -20,6 +20,7 @@ import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/type
 
 import styles from './index.module.scss'
 
+const { TextArea } = Input
 const DatePicker = generatePicker<Moment>(momentGenerateConfig)
 
 interface Props {
@@ -33,22 +34,28 @@ interface Props {
   clearAll?: () => void
 }
 
-interface InitialFileObject extends Checkboxes {
+export interface InitialFileObject extends Checkboxes {
+  rating: number
   name: string
-  originalDate: string
+  originalDate: string | Moment
   filePath: string
   keywords: string[]
+  description: string
 }
 
 const initialFileObject: InitialFileObject = {
+  rating: 0,
   name: '-',
   originalDate: '',
   filePath: '',
   keywords: [],
+  description: '',
   isName: false,
   isOriginalDate: false,
   isFilePath: false,
   isKeywords: false,
+  isDescription: false,
+  isRating: false,
 }
 
 const EditMenu = ({
@@ -62,7 +69,7 @@ const EditMenu = ({
   allKeywords,
 }: Props) => {
   const dispatch = useDispatch()
-  const [form] = Form.useForm()
+  const [form] = Form.useForm<InitialFileObject>()
   const [modal, contextHolder] = Modal.useModal()
   const pathsListOptions = useSelector(pathsArrOptionsSelector)
   const isDeleting = useSelector(isDeleteProcessing)
@@ -70,7 +77,7 @@ const EditMenu = ({
   const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { isMainPage } = useCurrentPage()
-  const { name, originalDate } = useMemo<UploadingObject | InitialFileObject>(
+  const { name, originalDate, rating, description } = useMemo<UploadingObject | InitialFileObject>(
     () => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]),
     [filesArr, selectedList]
   )
@@ -103,6 +110,8 @@ const EditMenu = ({
 
   useEffect(() => {
     form.setFieldsValue({
+      rating,
+      description,
       name: shortName,
       originalDate: originalDate === '-' ? '' : moment(originalDate, dateFormat),
       keywords: sortBy(identity, sameKeywords || []),
@@ -112,7 +121,7 @@ const EditMenu = ({
       isKeywords: false,
       isFilePath: false,
     })
-  }, [form, shortName, originalDate, sameKeywords, currentFilePath])
+  }, [form, shortName, originalDate, sameKeywords, currentFilePath, rating, description])
 
   const handleSelectAll = useCallback(() => {
     isSelectAllBtn && selectAll && selectAll()
@@ -132,6 +141,15 @@ const EditMenu = ({
   return (
     <div>
       <Form form={form} name="editForm" onFinish={onFinish}>
+        <div className="d-flex">
+          <Form.Item className={styles.checkbox} name="isRating" valuePropName="checked">
+            <Checkbox>Rating:</Checkbox>
+          </Form.Item>
+          <Form.Item className={styles.inputField} name="rating">
+            <Rate disabled={disabledInputs} />
+          </Form.Item>
+        </div>
+
         <div className="d-flex">
           <Form.Item className={styles.checkbox} name="isName" valuePropName="checked">
             <Checkbox>Name:</Checkbox>
@@ -181,6 +199,21 @@ const EditMenu = ({
               placeholder="Edit keywords"
               disabled={disabledInputs}
               options={keywordsOptions}
+            />
+          </Form.Item>
+        </div>
+
+        <div className="d-flex">
+          <Form.Item className={styles.checkbox} name="isDescription" valuePropName="checked">
+            <Checkbox>Description:</Checkbox>
+          </Form.Item>
+          <Form.Item className={styles.inputField} name="description">
+            <TextArea
+              className={styles.textArea}
+              placeholder="maxLength is 2000"
+              maxLength={2000}
+              disabled={disabledInputs}
+              showCount
             />
           </Form.Item>
         </div>

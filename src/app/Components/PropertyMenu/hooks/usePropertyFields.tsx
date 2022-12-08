@@ -7,6 +7,7 @@ import { FieldNames, FieldsLabels } from '../types'
 import { FieldsObj } from '../../../../redux/types'
 
 const fieldLabels: Partial<FieldNames> = {
+  rating: 'Rating',
   name: 'Name',
   originalDate: 'OriginalDate',
   changeDate: 'ChangeDate',
@@ -16,6 +17,7 @@ const fieldLabels: Partial<FieldNames> = {
   megapixels: 'Megapixels',
   type: 'Type',
   keywords: 'Keywords',
+  description: 'Description',
 }
 
 export const usePropertyFields = (
@@ -26,9 +28,11 @@ export const usePropertyFields = (
     const getSumFieldsObjData = (): Partial<FieldsLabels> => {
       const selectedFiles: Partial<FieldsLabels>[] = filesArr.filter((_, i) => selectedList.includes(i))
       return selectedFiles.reduce(
-        (accum, { originalDate, changeDate, size, imageSize, megapixels, type, keywords }) => ({
+        (accum, { rating, description, originalDate, changeDate, size, imageSize, megapixels, type, keywords }) => ({
+          rating: accum.rating === rating ? rating : '...',
           name: '...',
           filePath: '...',
+          description: accum.description === description ? description : '...',
           keywords: createUniqKeywords(accum.keywords, keywords),
           originalDate: accum.originalDate === originalDate ? originalDate : '...',
           changeDate:

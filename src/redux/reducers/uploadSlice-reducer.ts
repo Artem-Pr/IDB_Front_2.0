@@ -149,6 +149,8 @@ export const fetchPhotosPreview =
           originalDate: '-',
           keywords: null,
           megapixels: '',
+          rating: 0,
+          description: '',
         }
         dispatch(addUploadingFile(uploadingFile))
       })

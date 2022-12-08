@@ -103,6 +103,8 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2805824,
     tempPath: 'temp/47e5ff7410eeeee9506ca446b9498ad8',
     type: 'image/jpeg',
+    rating: 0,
+    description: '',
   },
   {
     changeDate: 1601655242277,
@@ -114,6 +116,8 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2191001,
     tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
     type: 'image/jpeg',
+    rating: 0,
+    description: '',
   },
   {
     changeDate: 1601655242277,
@@ -125,6 +129,8 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2812368,
     tempPath: 'temp/33237a85357bbb9c4d7c8da122ef3c0a',
     type: 'image/jpeg',
+    rating: 0,
+    description: '',
   },
 ]
 
@@ -133,6 +139,8 @@ export const fullExifObjArr: FullExifObj[] = [
     Megapixels: 8,
     DateTimeOriginal: '2019:06:24 11:02:25',
     Keywords: ['Озеро', 'Эстония', 'Оля'],
+    Rating: 0,
+    Description: '',
     ISO: 100,
     ImageHeight: 2448,
     ImageSize: '3264x2448',
@@ -148,6 +156,8 @@ export const fullExifObjArr: FullExifObj[] = [
     Megapixels: 8,
     DateTimeOriginal: '2019:06:24 11:02:25',
     Keywords: ['Эстония', 'Карта'],
+    Rating: 0,
+    Description: '',
     ISO: 100,
     ImageHeight: 2448,
     ImageSize: '3264x2448',
@@ -163,6 +173,8 @@ export const fullExifObjArr: FullExifObj[] = [
     Megapixels: 8,
     DateTimeOriginal: '2019:06:24 11:02:25',
     Keywords: ['Эстония', 'Озеро', 'Велосипед', 'Оля'],
+    Rating: 0,
+    Description: '',
     ISO: 100,
     ImageHeight: 2448,
     ImageSize: '3264x2448',

@@ -1,6 +1,6 @@
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
-export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath'
+export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath' | 'isDescription' | 'isRating'
 export type Checkboxes = Record<CheckboxType, boolean>
 export type DeleteConfirmationType = 'file' | 'directory'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
@@ -54,6 +54,8 @@ export interface NameParts {
 export interface FullExifObj {
   [key: string]: string | number | Keywords
 
+  Rating: number
+  Description: string
   Keywords: Keywords
   Megapixels: number | ''
   DateTimeOriginal: string
@@ -67,6 +69,8 @@ export interface AxiosPreviews {
 }
 
 export interface UpdatingFields {
+  rating: number
+  description: string
   originalDate: string
   keywords: Keywords
   megapixels: number | ''
@@ -120,6 +124,8 @@ export interface UpdatedObject {
     filePath?: string
     originalDate?: string
     keywords?: string[]
+    rating?: number
+    description?: string
   }
 }
 
