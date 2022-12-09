@@ -33,6 +33,8 @@ export enum SortedFields {
   ORIGINAL_NAME = 'originalName',
   FILE_PATH = 'filePath',
   SIZE = 'size',
+  RATING = 'rating',
+  DESCRIPTION = 'description',
 }
 
 export enum Sort {

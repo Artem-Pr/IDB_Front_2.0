@@ -36,4 +36,14 @@ export const defaultGallerySortingList = [
     label: 'Size',
     sort: null,
   },
+  {
+    id: SortedFields.RATING,
+    label: 'Rating',
+    sort: null,
+  },
+  {
+    id: SortedFields.DESCRIPTION,
+    label: 'Description',
+    sort: null,
+  },
 ]
