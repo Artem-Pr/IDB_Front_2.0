@@ -31,12 +31,15 @@ export const initialState: State = {
   dSelectedList: [],
   dOpenMenus: [],
   searchMenu: {
+    rating: 0,
     fileName: '',
     includeAllSearchTags: true,
     searchTags: [],
     excludeTags: [],
     mimetypes: [],
     dateRange: null,
+    anyDescription: false,
+    description: '',
   },
   galleryPagination: {
     currentPage: 1,

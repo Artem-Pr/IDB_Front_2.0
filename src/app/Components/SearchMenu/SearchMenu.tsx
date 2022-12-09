@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Select, DatePicker, Input, Checkbox } from 'antd'
+import { Button, Select, DatePicker, Input, Checkbox, Rate } from 'antd'
 import { difference, keys } from 'ramda'
 import cn from 'classnames'
 
@@ -15,9 +15,12 @@ import styles from './index.module.scss'
 import {
   resetSearchMenu,
   setDateRange,
+  setDescriptionFilter,
   setExcludeTags,
   setIncludeAllSearchTags,
+  setIsAnyDescriptionFilter,
   setMimeTypes,
+  setRatingFilter,
   setSearchFileName,
   setSearchTags,
 } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
@@ -27,12 +30,23 @@ import { dateFormat } from '../../common/utils/date'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
+const { TextArea } = Input
 const fileTypes = keys(MimeTypes)
 
 export const SearchMenu = () => {
   const dispatch = useDispatch()
   const { keywordsList } = useSelector(folderElement)
-  const { searchTags, excludeTags, mimetypes, dateRange, fileName, includeAllSearchTags } = useSelector(searchMenu)
+  const {
+    searchTags,
+    excludeTags,
+    mimetypes,
+    dateRange,
+    fileName,
+    includeAllSearchTags,
+    rating,
+    anyDescription,
+    description,
+  } = useSelector(searchMenu)
   const { isGalleryLoading } = useSelector(main)
   const searchKeywordsList = useMemo(() => difference(keywordsList, excludeTags), [excludeTags, keywordsList])
   const excludeKeywordsList = useMemo(() => difference(keywordsList, searchTags), [searchTags, keywordsList])
@@ -76,8 +90,25 @@ export const SearchMenu = () => {
     dispatch(setIncludeAllSearchTags(e.target.checked))
   }
 
+  const handleRatingChange = (value: number) => {
+    dispatch(setRatingFilter(value))
+  }
+
+  const handleAnyDescriptionSwitch = (e: CheckboxChangeEvent) => {
+    dispatch(setIsAnyDescriptionFilter(e.target.checked))
+  }
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch(setDescriptionFilter(e.target.value.trim()))
+  }
+
   return (
     <div className={styles.wrapper}>
+      <div className="d-flex gap-10 align-items-center margin-bottom-10">
+        <span>Rating:</span>
+        <Rate value={rating} onChange={handleRatingChange} />
+      </div>
+
       <span className={styles.title}>File name:</span>
       <Input
         className="margin-bottom-10"
@@ -138,6 +169,21 @@ export const SearchMenu = () => {
 
       <span className={styles.title}>Date range:</span>
       <RangePicker className="w-100" format={dateFormat} value={dayJsRange} onChange={handleRangePickerChange} />
+
+      <div className={cn(styles.title, 'd-flex justify-content-between align-items-center margin-top-10')}>
+        <span>Description:</span>
+        <Checkbox className="margin-left-auto" checked={anyDescription} onChange={handleAnyDescriptionSwitch}>
+          Any description
+        </Checkbox>
+      </div>
+      <TextArea
+        style={{ resize: 'vertical' }}
+        placeholder="write the description"
+        value={description}
+        onChange={handleDescriptionChange}
+        maxLength={2000}
+        disabled={anyDescription}
+      />
 
       <div className="d-flex justify-content-end gap-10 margin-top-10">
         <Button onClick={handleResetFilters}>Reset</Button>

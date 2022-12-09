@@ -11,12 +11,15 @@ import {
   resetSearchMenu,
   resetSort,
   setDateRange,
+  setDescriptionFilter,
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
   setIncludeAllSearchTags,
+  setIsAnyDescriptionFilter,
   setMimeTypes,
   setRandomSort,
+  setRatingFilter,
   setSearchFileName,
   setSearchTags,
   updateDOpenMenus,
@@ -53,6 +56,14 @@ listenerMiddleware.startListening({
   actionCreator: updateDOpenMenus,
   effect: action => {
     localStorageAPI.DOpenMenus = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setRatingFilter,
+  effect: action => {
+    const searchMenu = localStorageAPI.searchMenu
+    localStorageAPI.searchMenu = { ...searchMenu, rating: action.payload }
   },
 })
 
@@ -101,6 +112,22 @@ listenerMiddleware.startListening({
   effect: action => {
     const searchMenu = localStorageAPI.searchMenu
     localStorageAPI.searchMenu = { ...searchMenu, dateRange: action.payload }
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setIsAnyDescriptionFilter,
+  effect: action => {
+    const searchMenu = localStorageAPI.searchMenu
+    localStorageAPI.searchMenu = { ...searchMenu, anyDescription: action.payload }
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setDescriptionFilter,
+  effect: action => {
+    const searchMenu = localStorageAPI.searchMenu
+    localStorageAPI.searchMenu = { ...searchMenu, description: action.payload }
   },
 })
 

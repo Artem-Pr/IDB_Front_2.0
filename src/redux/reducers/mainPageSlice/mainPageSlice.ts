@@ -45,6 +45,9 @@ const mainPageSlice = createSlice({
     selectAllD(state) {
       state.dSelectedList = state.downloadingFiles.map((_, i) => i)
     },
+    setRatingFilter(state, action: PayloadAction<number>) {
+      state.searchMenu.rating = action.payload
+    },
     setSearchFileName(state, action: PayloadAction<string>) {
       state.searchMenu.fileName = action.payload
     },
@@ -62,6 +65,12 @@ const mainPageSlice = createSlice({
     },
     setDateRange(state, action: PayloadAction<[string, string] | null>) {
       state.searchMenu.dateRange = action.payload
+    },
+    setIsAnyDescriptionFilter(state, action: PayloadAction<boolean>) {
+      state.searchMenu.anyDescription = action.payload
+    },
+    setDescriptionFilter(state, action: PayloadAction<string>) {
+      state.searchMenu.description = action.payload
     },
     resetSearchMenu(state) {
       state.searchMenu = initialState.searchMenu
@@ -103,12 +112,15 @@ export const {
   updateDOpenMenus,
   clearDSelectedList,
   selectAllD,
+  setRatingFilter,
   setSearchFileName,
   setIncludeAllSearchTags,
   setSearchTags,
   setExcludeTags,
   setMimeTypes,
   setDateRange,
+  setIsAnyDescriptionFilter,
+  setDescriptionFilter,
   clearDownloadingState,
   setGalleryPagination,
   setDLoading,

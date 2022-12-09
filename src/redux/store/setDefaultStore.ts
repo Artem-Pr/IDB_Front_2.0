@@ -7,12 +7,15 @@ import {
 import { localStorageAPI } from '../../app/common/utils/localStorageAPI'
 import {
   setDateRange,
+  setDescriptionFilter,
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
   setIncludeAllSearchTags,
+  setIsAnyDescriptionFilter,
   setMimeTypes,
   setRandomSort,
+  setRatingFilter,
   setSearchFileName,
   setSearchTags,
   updateDOpenMenus,
@@ -26,13 +29,26 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
 
   dispatch(updateDOpenMenus(localStorageAPI.DOpenMenus))
 
-  const { searchTags, excludeTags, mimetypes, dateRange, fileName, includeAllSearchTags } = localStorageAPI.searchMenu
+  const {
+    searchTags,
+    excludeTags,
+    mimetypes,
+    dateRange,
+    fileName,
+    includeAllSearchTags,
+    rating,
+    description,
+    anyDescription,
+  } = localStorageAPI.searchMenu
   dispatch(setSearchFileName(fileName))
+  dispatch(setRatingFilter(rating))
   dispatch(setIncludeAllSearchTags(includeAllSearchTags))
   dispatch(setSearchTags(searchTags))
   dispatch(setExcludeTags(excludeTags))
   dispatch(setMimeTypes(mimetypes))
   dispatch(setDateRange(dateRange))
+  dispatch(setDescriptionFilter(description))
+  dispatch(setIsAnyDescriptionFilter(anyDescription))
 
   dispatch(setGalleryPagination(localStorageAPI.galleryPagination))
   dispatch(setGallerySortingList(localStorageAPI.gallerySortingList))
