@@ -39,6 +39,14 @@ export const mainApi = {
     return instance.get('/keywords')
   },
 
+  getUnusedKeywordsList() {
+    return instance.get<string[]>('/unused-keywords')
+  },
+
+  removeKeyword(keyword: string) {
+    return instance.delete(`/keyword/${keyword}`)
+  },
+
   getPathsList(): Promise<AxiosResponse<string[]>> {
     return instance.get('/paths')
   },

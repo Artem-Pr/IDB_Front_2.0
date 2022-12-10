@@ -2,7 +2,7 @@ export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath' | 'isDescription' | 'isRating'
 export type Checkboxes = Record<CheckboxType, boolean>
-export type DeleteConfirmationType = 'file' | 'directory'
+export type DeleteConfirmationType = 'file' | 'directory' | 'keyword'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
 export type PreviewType = 'video' | 'image' | undefined
 
