@@ -10,7 +10,7 @@ export interface Confirmation {
 export const deleteMessageConst: Record<DeleteConfirmationType, string> = {
   file: 'Are you sure you want to delete selected files?',
   directory: 'Are you sure you want to delete this Directory?',
-  keyword: 'Are you sure you want to delete this keyword?',
+  keyword: 'Are you sure you want to delete this keyword from keywords list?',
 }
 
 export const duplicateConfig = {

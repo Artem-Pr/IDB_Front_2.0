@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 import type { AppThunk } from '../store/store'
 import { mainApi } from '../../api/api'
-import { errorMessage } from '../../app/common/notifications'
+import { errorMessage, successMessage } from '../../app/common/notifications'
 
 interface State {
   isFullSizePreview: boolean
@@ -60,7 +60,7 @@ export const fetchUnusedKeywordsList = (): AppThunk => async dispatch => {
   mainApi
     .getUnusedKeywordsList()
     .then(({ data }) => {
-      data.length && dispatch(setUnusedKeywords(data))
+      dispatch(setUnusedKeywords(data))
     })
     .catch(error => errorMessage(error, 'Error when getting unused keywords list: '))
 }
@@ -72,6 +72,7 @@ export const deleteUnusedKeyword =
       .removeKeyword(keyword)
       .then(() => {
         dispatch(deleteUnusedKeywordFromState(keyword))
+        successMessage('The unused keyword has been deleted')
       })
       .catch(error => errorMessage(error, 'Error when removing unused keyword: '))
   }
