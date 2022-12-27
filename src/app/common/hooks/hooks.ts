@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
 
 import { upload } from '../../../redux/selectors'
 import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from '../utils'
-import { fetchFullExif, setLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice-reducer'
+import { fetchFullExif, setIsExifLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice-reducer'
 import { DownloadingObject, PagePaths, UploadingObject } from '../../../redux/types'
 import { setDownloadingFiles } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 
@@ -35,8 +35,8 @@ export const useUpdateFields = (filesArr: Array<UploadingObject | DownloadingObj
   }
 
   const load = (response: Promise<boolean>): Promise<boolean> => {
-    dispatch(setLoading(true))
-    return response.then(() => dispatch(setLoading(false)))
+    dispatch(setIsExifLoading(true))
+    return response.then(() => dispatch(setIsExifLoading(false)))
   }
 
   const updateUploadingFiles = (tempPath: string, all = false): Promise<boolean> => {

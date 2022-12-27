@@ -21,6 +21,7 @@ interface State {
   selectedList: number[]
   openMenus: MainMenuKeys[]
   isExifLoading: boolean
+  previewLoadingCount: number
   uploadingStatus: LoadingStatus
 }
 
@@ -31,6 +32,7 @@ const initialState: State = {
   selectedList: [],
   openMenus: [MainMenuKeys.FOLDERS],
   isExifLoading: false,
+  previewLoadingCount: 0,
   uploadingStatus: 'empty',
 }
 
@@ -77,8 +79,14 @@ const uploadSlice = createSlice({
       state.selectedList = []
       state.fullExifFilesList = {}
     },
-    setLoading(state, action: PayloadAction<boolean>) {
+    setIsExifLoading(state, action: PayloadAction<boolean>) {
       state.isExifLoading = action.payload
+    },
+    increaseCountOfPreviewLoading(state) {
+      ++state.previewLoadingCount
+    },
+    decreaseCountOfPreviewLoading(state) {
+      --state.previewLoadingCount
     },
     setUploadingStatus(state, action: PayloadAction<LoadingStatus>) {
       state.uploadingStatus = action.payload
@@ -100,7 +108,9 @@ export const {
   updateOpenMenus,
   removeFromOpenMenus,
   clearUploadingState,
-  setLoading,
+  setIsExifLoading,
+  increaseCountOfPreviewLoading,
+  decreaseCountOfPreviewLoading,
   setUploadingStatus,
   setBlob,
 } = uploadSlice.actions
@@ -133,9 +143,9 @@ export const uploadFiles =
 
 export const fetchPhotosPreview =
   (file: any): AppThunk =>
-  dispatch => {
+  async dispatch => {
     const { lastModified: changeDate, name, size, type } = file
-    mainApi
+    await mainApi
       .sendPhoto(file)
       .then(({ data }) => {
         const { preview, tempPath } = data
@@ -155,6 +165,7 @@ export const fetchPhotosPreview =
         dispatch(addUploadingFile(uploadingFile))
       })
       .catch(error => errorMessage(error, 'Error when getting Preview: '))
+      .finally(() => dispatch(decreaseCountOfPreviewLoading()))
   }
 
 export const fetchFullExif =

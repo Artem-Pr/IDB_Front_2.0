@@ -188,3 +188,6 @@ export const getFilePathWithoutName = (fullPath: string): string => {
 export const getFolderNameWithoutPath = (fullPath: string): string => {
   return fullPath.split('/').slice(-1).join('/')
 }
+
+export const changeExtension = (nameWithExtension: string, newExtension: string): string =>
+  nameWithExtension.split('.').slice(0, -1).join('.') + '.' + newExtension
