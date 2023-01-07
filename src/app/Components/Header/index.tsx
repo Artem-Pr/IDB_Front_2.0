@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { Layout, Menu, Modal, Typography } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { useCurrentPage } from '../../common/hooks'
 import {
@@ -13,12 +13,13 @@ import {
 import { curFolderInfo, pathsArr } from '../../../redux/selectors'
 import { checkFolderConfirmation, deleteMessageConst } from '../../../assets/config/moduleConfig'
 import { PageMenuItems } from './PageMenuItems'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
 
 const Header = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const directoriesArr = useSelector(pathsArr)
   const { showInfoModal, numberOfFiles, numberOfSubdirectories } = useSelector(curFolderInfo)
@@ -59,7 +60,13 @@ const Header = () => {
   return (
     <HeaderLayout className="d-flex justify-content-between align-items-center">
       <Title>IDBase</Title>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[currentPageNumber]} items={PageMenuItems} />
+      <Menu
+        style={{ width: 400 }}
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={[currentPageNumber]}
+        items={PageMenuItems}
+      />
       {contextHolder}
     </HeaderLayout>
   )

@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react'
 import { AutoComplete, Button, Modal, Checkbox } from 'antd'
 import { PlusOutlined, DeleteOutlined, FolderOpenOutlined } from '@ant-design/icons'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
@@ -25,9 +25,10 @@ import { removeExtraSlash } from '../../common/utils'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { useCurrentPage } from '../../common/hooks'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const Folders = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const { folderTree } = useSelector(folderElement)
   const { isMainPage } = useCurrentPage()

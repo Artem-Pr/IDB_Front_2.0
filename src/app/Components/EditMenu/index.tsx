@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { compose, identity, sortBy } from 'ramda'
 import moment from 'moment'
 import type { Moment } from 'moment'
@@ -19,6 +19,7 @@ import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice/thunks
 import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
 
 import styles from './index.module.scss'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { TextArea } = Input
 const DatePicker = generatePicker<Moment>(momentGenerateConfig)
@@ -68,7 +69,7 @@ const EditMenu = ({
   isExifLoading,
   allKeywords,
 }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [form] = Form.useForm<InitialFileObject>()
   const [modal, contextHolder] = Modal.useModal()
   const pathsListOptions = useSelector(pathsArrOptionsSelector)

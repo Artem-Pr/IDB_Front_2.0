@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Layout } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { isEmpty } from 'ramda'
 
 import { useLocation } from 'react-router-dom'
@@ -14,13 +14,14 @@ import { ResizeDivider } from '../../Components/ResizeDivider'
 import { useGalleryProps, useMainMenuProps } from './hooks'
 import { MainMenuKeys } from '../../../redux/types'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { Content } = Layout
 
 const MainPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
   const { imgRef, gridRef, onSliderMove, finishPreviewResize } = usePreviewResize()
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const mainMenuProps = useMainMenuProps()
   const galleryProps = useGalleryProps()
   const location = useLocation()

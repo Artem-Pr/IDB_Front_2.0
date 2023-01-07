@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import { message, Progress, Upload, UploadProps } from 'antd'
 import { InboxOutlined, LoadingOutlined } from '@ant-design/icons'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import cn from 'classnames'
 
 import { compose } from 'ramda'
@@ -21,6 +21,7 @@ import { MainMenuKeys } from '../../../redux/types'
 import { errorMessage } from '../../common/notifications'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
 import { getDispatchObjFromBlob, heicToJpegFile, isFile, isFileNameAlreadyExist } from './heplers'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { Dragger } = Upload
 const uploading = {
@@ -36,7 +37,7 @@ const DropZone = ({ openMenus }: Props) => {
   const { currentFolderPath } = useSelector(curFolderInfo)
   const { previewLoadingCount, uploadingBlobs } = useSelector(upload)
   const [finishedNumberOfFiles, setFinishedNumberOfFiles] = useState<number>(0)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const isEditOne = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
   const isEditMany = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
 
@@ -73,7 +74,7 @@ const DropZone = ({ openMenus }: Props) => {
       ++uploading.totalFiles
       const fileAlreadyExist = isFile(file) && isFileNameAlreadyExist(file, uploadingBlobs)
       fileAlreadyExist
-        ? errorMessage(new Error(`${file.name} is already exist`), 'File is not uploaded')
+        ? errorMessage(new Error(`${isFile(file) ? file.name : '?'} is already exist`), 'File is not uploaded')
         : setTimeout(() => uploadFile())
     },
     onChange(info: UploadChangeParam) {

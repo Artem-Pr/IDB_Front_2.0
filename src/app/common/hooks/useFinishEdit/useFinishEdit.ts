@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { compose, curry, flatten, identity, isEmpty, sortBy, uniq } from 'ramda'
 
 import { ModalStaticFunctions } from 'antd/es/modal/confirm'
@@ -19,6 +19,7 @@ import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
 import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
 import { folderElement } from '../../../../redux/selectors'
 import { InitialFileObject } from '../../../Components/EditMenu'
+import { useAppDispatch } from '../../../../redux/store/store'
 
 interface Props {
   filesArr: FieldsObj[]
@@ -51,7 +52,7 @@ export const useFinishEdit = ({
   isEditMany,
   modal,
 }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { keywordsList } = useSelector(folderElement)
   const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords, isMainPage)
 

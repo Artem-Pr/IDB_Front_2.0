@@ -1,14 +1,15 @@
 import React, { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Card, Progress } from 'antd'
 
 import styles from './index.module.scss'
 import TableRow from '../../gridItems/TableRow'
 import { pathsConfigRebuildProgress } from '../../../../../redux/selectors'
 import { rebuildPathsConfig, setThirdTestProgress } from '../../../../../redux/reducers/testsSlice-reducer'
+import { useAppDispatch } from '../../../../../redux/store/store'
 
 const RebuildPathsConfig = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const progress = useSelector(pathsConfigRebuildProgress)
 
   const handleClick = useCallback(() => {

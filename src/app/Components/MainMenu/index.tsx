@@ -1,5 +1,5 @@
 import React, { MutableRefObject, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Collapse, Layout } from 'antd'
 
 import { difference } from 'ramda'
@@ -9,6 +9,7 @@ import { FieldsObj, MainMenuKeys } from '../../../redux/types'
 import { folderElement, imagePreview, session } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { useMainMenuItems } from './hooks'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { Sider } = Layout
 const { Panel } = Collapse
@@ -58,7 +59,7 @@ const MainMenu = ({
   removeFiles,
   menuRef,
 }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { asideMenuWidth: defaultMenuWidth } = useSelector(session)
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const { originalPath } = useSelector(imagePreview)

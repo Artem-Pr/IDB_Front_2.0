@@ -1,5 +1,5 @@
 import React, { Key, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Tree } from 'antd'
 import { compose, curry } from 'ramda'
 
@@ -12,6 +12,7 @@ import { getFolderPathFromTreeKey } from '../../common/folderTree'
 import { curFolderInfo, folderElement } from '../../../redux/selectors'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { DirectoryTree } = Tree
 
@@ -22,7 +23,7 @@ interface Props {
 }
 
 const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { folderTree } = useSelector(folderElement)
   const { currentFolderKey, expandedKeys } = useSelector(curFolderInfo)
 

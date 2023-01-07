@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { Button, Checkbox, Segmented } from 'antd'
 import { DownCircleTwoTone, UpCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
@@ -18,6 +18,7 @@ import { DragHandle, SortableItem } from './components/SortableList/components'
 
 import styles from './SortingMenu.module.scss'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const switcherOptions = [
   {
@@ -38,7 +39,7 @@ const switcherOptions = [
 ]
 
 export const SortingMenu = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { gallerySortingList, randomSort } = useSelector(main)
 
   const handleSortingChange = (updatedList: GallerySortingItem[]) => {

@@ -1,10 +1,9 @@
 import React from 'react'
 import { Button } from 'antd'
 
-import { useDispatch } from 'react-redux'
-
 import { uploadFiles } from '../../../../../redux/reducers/uploadSlice-reducer'
 import { FieldsObj, MainMenuKeys } from '../../../../../redux/types'
+import { useAppDispatch } from '../../../../../redux/store/store'
 
 interface Props {
   filesArr: FieldsObj[]
@@ -14,7 +13,7 @@ interface Props {
 }
 
 export const ButtonsMenu = ({ filesArr, currentFolderPath, updateOpenMenus, removeFiles }: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   const handleUploadClick = () => {
     dispatch(uploadFiles(filesArr, currentFolderPath))

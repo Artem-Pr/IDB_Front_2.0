@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Card, Progress } from 'antd'
 
 import styles from './index.module.scss'
@@ -7,9 +7,10 @@ import TableRow from '../../gridItems/TableRow'
 import TableCollapse from '../../gridItems/TableCollaps'
 import { numberOfFilesChecking } from '../../../../../redux/selectors'
 import { fetchFileTests, refreshFirstTestPid } from '../../../../../redux/reducers/testsSlice-reducer'
+import { useAppDispatch } from '../../../../../redux/store/store'
 
 const MatchingNumberOfFiles = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const {
     progress,
     foldersInConfig,

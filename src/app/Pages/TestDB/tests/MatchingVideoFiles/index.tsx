@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Card, Progress } from 'antd'
 
 import styles from './index.module.scss'
@@ -7,9 +7,10 @@ import TableRow from '../../gridItems/TableRow'
 import { videoFilesChecking } from '../../../../../redux/selectors'
 import { fetchVideoFileTests, refreshSecondTestPid } from '../../../../../redux/reducers/testsSlice-reducer'
 import TableCollapse from '../../gridItems/TableCollaps'
+import { useAppDispatch } from '../../../../../redux/store/store'
 
 const MatchingVideoFiles = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const {
     progress,
     videoInDB,

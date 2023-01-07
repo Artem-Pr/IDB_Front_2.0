@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Select, DatePicker, Input, Checkbox, Rate } from 'antd'
 import { difference, keys } from 'ramda'
 import cn from 'classnames'
@@ -27,6 +27,7 @@ import {
 import { MimeTypes } from '../../../redux/types/MimeTypes'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { dateFormat } from '../../common/utils/date'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -34,7 +35,7 @@ const { TextArea } = Input
 const fileTypes = keys(MimeTypes)
 
 export const SearchMenu = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { keywordsList } = useSelector(folderElement)
   const {
     searchTags,

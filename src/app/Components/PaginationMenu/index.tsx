@@ -1,13 +1,14 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Pagination } from 'antd'
 
 import { pagination } from '../../../redux/selectors'
 import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+import { useAppDispatch } from '../../../redux/store/store'
 
 const PaginationMenu = () => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const { currentPage, resultsCount, nPerPage, pageSizeOptions } = useSelector(pagination)
 
   const handleChange = (page: number, pageSize?: number) => {
