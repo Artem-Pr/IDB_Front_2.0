@@ -40,11 +40,6 @@ jobs:
       - name: Checkout to the repository
         uses: actions/checkout@v3
 
-      #      - name: Set up NodeJS environment
-      #        uses: actions/setup-node@v3
-      #        with:
-      #          node-version: '19.1.0'
-
       # Consider this as an add on to optimize the execution of actions
       - name: Cache node modules
         id: cache-npm
@@ -60,23 +55,15 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: Install package dependencies
-        run: npm ci
-
-      - name: Execute test cases
-        run: npm run test
-
-  coverage:
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Jest coverage report
+        uses: ArtiomTr/jest-coverage-report-action@v2.1.2
         id: coverage
         with:
           output: report-markdown
           test-script: npm test
-      - uses: marocchino/sticky-pull-request-comment@v2
+
+      - name: Sticky Pull Request Comment
+        uses: marocchino/sticky-pull-request-comment@v2.3.1
         with:
           message: ${{ steps.coverage.outputs.report }}
 
