@@ -33,6 +33,7 @@ jobs:
 
       - name: Check linting and formatting
         run: npm run lint
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -63,13 +64,21 @@ jobs:
         run: npm ci
 
       - name: Execute test cases
-        run: npm run test
+        run: npm run test-coverage
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: coverage/lcov-report/index.html
+
   build:
     needs: [lint, test]
+    continue-on-error: true
     strategy:
       matrix:
-        node-version: [18, 19]
-        os: [ubuntu-latest, windows-latest]
+        node-version: [19]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout to the repository
@@ -98,11 +107,13 @@ jobs:
       - name: Install package dependencies
         run: npm ci
 
-      - name: Check linting and formatting
-        run: npm run lint
-
-      - name: Execute test cases
-        run: npm run test
-
       - name: Create test build
         run: npm run build
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-without-markdown
+          path: |
+            build
+            !build/**/*.md

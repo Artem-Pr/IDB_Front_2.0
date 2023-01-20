@@ -33,6 +33,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
+    "test-coverage": "react-scripts test --coverage --watchAll",
     "format": "prettier --write \"**/*.+(ts|tsx|js|jsx|json|css|scss)\"",
     "lint": "eslint src/",
     "lint:write": "eslint src/ --fix --max-warnings=0",
