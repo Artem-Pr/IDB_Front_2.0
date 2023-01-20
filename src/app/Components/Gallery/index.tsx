@@ -24,7 +24,7 @@ import { GalleryTile } from './components'
 import { useImageGalleryData, useSelectWithShift } from './hooks'
 import { MainMenuKeys } from '../../../redux/types'
 
-const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
+const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('d-none')
 }
 

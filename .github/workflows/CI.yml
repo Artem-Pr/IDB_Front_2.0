@@ -1,8 +1,8 @@
 name: CI
 run-name: ${{ github.actor }} is pushed changes
-on: [push]
+on: push
 jobs:
-  build-and-test:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to the repository
@@ -28,8 +28,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
+  install dependencies:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
       - name: Install package dependencies
-        run: npm install
+        run: npm ci
 
       - name: Check linting and formatting
         run: npm run lint
