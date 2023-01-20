@@ -64,13 +64,20 @@ jobs:
         run: npm ci
 
       - name: Execute test cases
-        run: npm run test-coverage
+        run: npm run test
 
-      - name: Archive code coverage results
-        uses: actions/upload-artifact@v3
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        id: coverage
         with:
-          name: code-coverage-report
-          path: coverage/lcov-report/index.html
+          output: report-markdown
+          test-script: npm test
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message: ${{ steps.coverage.outputs.report }}
 
   build:
     needs: [lint, test]
