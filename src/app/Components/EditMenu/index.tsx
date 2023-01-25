@@ -14,7 +14,7 @@ import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redu
 import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice-reducer'
-import { dateFormat } from '../../common/utils/date'
+import { dateTimeFormat } from '../../common/utils/date'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice/thunks'
 import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
 
@@ -114,7 +114,7 @@ const EditMenu = ({
       rating,
       description,
       name: shortName,
-      originalDate: originalDate === '-' ? '' : moment(originalDate, dateFormat),
+      originalDate: originalDate === '-' ? '' : moment(originalDate, dateTimeFormat),
       keywords: sortBy(identity, sameKeywords || []),
       filePath: currentFilePath,
       isName: false,
@@ -166,7 +166,7 @@ const EditMenu = ({
             <Checkbox>OriginalDate:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="originalDate">
-            <DatePicker format={dateFormat} placeholder="Edit date" disabled={disabledInputs} className="w-100" />
+            <DatePicker format={dateTimeFormat} placeholder="Edit date" disabled={disabledInputs} className="w-100" />
           </Form.Item>
         </div>
 
