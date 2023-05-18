@@ -19,7 +19,7 @@ import {
   selectAll,
   updateUploadingFilesArr,
   clearUploadingState,
-} from '../../../redux/reducers/uploadSlice-reducer'
+} from '../../../redux/reducers/uploadSlice'
 import { useUpdateFields, useMenuResize, usePreviewResize } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
@@ -28,8 +28,8 @@ import { ResizeDivider } from '../../Components/ResizeDivider'
 const { Content } = Layout
 
 const statusMessage: Record<LoadingStatus, string> = {
-  success: 'Files uploaded successfully',
-  error: 'Submission Failed',
+  success: 'Files have been successfully uploaded',
+  error: 'Sending failed',
   loading: 'Loading...',
   empty: '',
 }

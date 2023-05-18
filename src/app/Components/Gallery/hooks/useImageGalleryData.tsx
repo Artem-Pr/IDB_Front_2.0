@@ -25,7 +25,7 @@ export const useImageGalleryData = (imageArr: FieldsObj[], isMainPage?: boolean)
         imageArr.map(item => {
           const galleryItem: IGallery = {
             thumbnail: item.preview,
-            original: item.originalPath || '',
+            original: item.fullSizeJpgPath || item.originalPath || '',
             ...(isVideo(item.type) && {
               renderItem: showVideoItem(item.originalPath || '', item.preview),
             }),

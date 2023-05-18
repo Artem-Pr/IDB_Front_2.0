@@ -15,4 +15,5 @@ export interface GetPhotosByTagsRequest {
   showSubfolders?: boolean
   isFullSizePreview?: boolean
   randomSort?: boolean
+  dontSavePreview?: boolean
 }

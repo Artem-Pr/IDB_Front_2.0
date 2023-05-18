@@ -11,16 +11,12 @@ import type { UploadChangeParam } from 'antd/es/upload'
 
 import styles from './index.module.scss'
 import { curFolderInfo, upload } from '../../../redux/selectors'
-import {
-  fetchPhotosPreview,
-  increaseCountOfPreviewLoading,
-  setBlob,
-  setUploadingStatus,
-} from '../../../redux/reducers/uploadSlice-reducer'
+import { fetchPhotosPreview } from '../../../redux/reducers/uploadSlice/thunks'
+import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice'
 import { MainMenuKeys } from '../../../redux/types'
 import { errorMessage } from '../../common/notifications'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
-import { getDispatchObjFromBlob, heicToJpegFile, isFile, isFileNameAlreadyExist } from './heplers'
+import { getDispatchObjFromBlob, isFile, isFileNameAlreadyExist } from './heplers'
 import { useAppDispatch } from '../../../redux/store/store'
 
 const { Dragger } = Upload
@@ -57,10 +53,8 @@ const DropZone = ({ openMenus }: Props) => {
           // eslint-disable-next-line functional/immutable-data
           uploading.isProcessing = true
           dispatch(increaseCountOfPreviewLoading())
-          const fileFromHeic = isFile(file) && file.type === MimeTypes.heic && (await heicToJpegFile(file))
-          const uploadedFile = fileFromHeic || file
-          isFile(uploadedFile) && compose(dispatch, setBlob, getDispatchObjFromBlob)(uploadedFile)
-          dispatch<any>(fetchPhotosPreview(uploadedFile)).then(() => {
+          isFile(file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(file)
+          dispatch<any>(fetchPhotosPreview(file)).then(() => {
             // eslint-disable-next-line functional/immutable-data
             uploading.isProcessing = false
             setFinishedNumberOfFiles(prevState => prevState + 1)

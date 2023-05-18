@@ -5,6 +5,14 @@ import { initialState as settingsInitialState } from '../../../redux/reducers/se
 import { defaultGallerySortingList } from '../../../redux/reducers/mainPageSlice/helpers'
 
 export const localStorageAPI = {
+  // savePreview
+  set savePreview(savePreview: boolean) {
+    localStorage.setItem('savePreview', String(Number(savePreview)))
+  },
+  get savePreview() {
+    return Boolean(Number(localStorage.getItem('savePreview')))
+  },
+
   // fullSizePreview
   set fullSizePreview(fullSizePreview: boolean) {
     localStorage.setItem('fullSizePreview', String(Number(fullSizePreview)))

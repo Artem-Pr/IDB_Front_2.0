@@ -5,8 +5,10 @@ import { useLocation } from 'react-router-dom'
 
 import { upload } from '../../../redux/selectors'
 import { addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems } from '../utils'
-import { fetchFullExif, setIsExifLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice-reducer'
-import { DownloadingObject, PagePaths, UploadingObject } from '../../../redux/types'
+import { setIsExifLoading, updateUploadingFilesArr } from '../../../redux/reducers/uploadSlice'
+import { fetchFullExif } from '../../../redux/reducers/uploadSlice/thunks'
+import type { DownloadingObject, UploadingObject } from '../../../redux/types'
+import { PagePaths } from '../../../redux/types'
 import { setDownloadingFiles } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 
 export const useCurrentPage = () => {

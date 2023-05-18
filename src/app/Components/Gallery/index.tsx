@@ -1,17 +1,7 @@
-import React, {
-  MouseEvent,
-  MutableRefObject,
-  RefObject,
-  SyntheticEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import React, { MutableRefObject, RefObject, SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import cn from 'classnames'
-import { compose, difference, keys, map, range, sort } from 'ramda'
-import { Modal, Spin } from 'antd'
+import { Modal, Spin, Switch } from 'antd'
 import ImageGallery from 'react-image-gallery'
 
 import styles from './index.module.scss'
@@ -23,6 +13,7 @@ import type { RawPreview } from './type'
 import { GalleryTile } from './components'
 import { useImageGalleryData, useSelectWithShift } from './hooks'
 import { MainMenuKeys } from '../../../redux/types'
+import { useGetFullExifList } from './hooks/useGefFullExifList'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('d-none')
@@ -60,18 +51,21 @@ const Gallery = ({
   const dispatch = useDispatch()
   const blobFiles = useSelector(uploadingBlobs)
   const { fitContain, previewSize } = useSelector(session)
-  const [currentTempPath, setCurrentTempPath] = useState('')
-  const [showModal, setShowModal] = useState(false)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
   const isEditMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
   const isTemplateMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
   const isPropertiesMenu = useMemo(() => openMenus.includes(MainMenuKeys.PROPERTIES), [openMenus])
-  const exif = useMemo(() => fullExifFilesList[currentTempPath], [fullExifFilesList, currentTempPath])
-  const { hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover } = useSelectWithShift(
+  const { getExif, showModal, handleShowModalClose, exif, setIsJSONMode, isJSONMode } = useGetFullExifList({
+    fullExifFilesList,
+    updateFiles,
+  })
+  const { hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover, selectWithShift } = useSelectWithShift({
+    isTemplateMenu,
     selectedList,
-    isTemplateMenu
-  )
+    addToSelectedList,
+    removeFromSelectedList,
+  })
   const { galleryArr, setShowPlayButton, showPlayButton, showFullscreenButton, setShowFullscreenButton } =
     useImageGalleryData(imageArr, isMainPage)
 
@@ -80,16 +74,6 @@ const Gallery = ({
   useEffect(() => {
     !isLoading && gridRef.current?.scrollIntoView()
   }, [gridRef, isLoading])
-
-  const getExif = useCallback(
-    (tempPath: string) => (e: MouseEvent) => {
-      e.stopPropagation()
-      !fullExifFilesList[tempPath] && updateFiles(tempPath)
-      setCurrentTempPath(tempPath)
-      setShowModal(true)
-    },
-    [fullExifFilesList, updateFiles]
-  )
 
   const handleImageClick = useCallback(
     (i: number, preview?: RawPreview) => () => {
@@ -104,17 +88,6 @@ const Gallery = ({
         selectedList.includes(i) ? removeFromSelectedList([i]) : updateFilesArr()
       }
 
-      const selectWithShift = (lastSelectedElemIndex: number) => {
-        const currentHoveredIndex = hoveredIndex === null ? lastSelectedElemIndex : hoveredIndex
-        const currentLastSelectedElemIndex =
-          lastSelectedElemIndex === undefined ? (hoveredIndex as number) : lastSelectedElemIndex
-        const sortedTouple = sort((a, b) => a - b, [currentHoveredIndex, currentLastSelectedElemIndex])
-        const hoverList = range(sortedTouple[0], sortedTouple[1] + 1)
-        const alreadySelectedItems = difference(hoverList, selectedList)
-        alreadySelectedItems.length ? addToSelectedList(hoverList) : removeFromSelectedList(hoverList)
-        setHoveredIndex(null)
-      }
-
       const lastSelectedElemIndex = getLastItem(selectedList)
 
       isShiftPressed && !isEditMenu && (lastSelectedElemIndex || hoveredIndex) && selectWithShift(lastSelectedElemIndex)
@@ -126,7 +99,7 @@ const Gallery = ({
           setPreview({
             previewType: isVideo(preview.type) ? 'video' : 'image',
             originalName: preview.name,
-            originalPath: isMainPage ? preview.originalPath : blobFiles[preview.name],
+            originalPath: preview.fullSizeJpgStatic || preview.originalPath || blobFiles[preview.name],
           })
         )
     },
@@ -137,13 +110,12 @@ const Gallery = ({
       dispatch,
       hoveredIndex,
       isEditMenu,
-      isMainPage,
       isPropertiesMenu,
       isShiftPressed,
       isTemplateMenu,
       removeFromSelectedList,
+      selectWithShift,
       selectedList,
-      setHoveredIndex,
     ]
   )
 
@@ -151,10 +123,6 @@ const Gallery = ({
     setCurrentImage(currentIndex)
     setShowPlayButton(true)
     setShowFullscreenButton(true)
-  }
-
-  const handleShowModalClose = () => {
-    setShowModal(false)
   }
 
   const handleImageModalClose = () => {
@@ -177,6 +145,10 @@ const Gallery = ({
     [imgRef]
   )
 
+  const handleJSONModeChange = (checked: boolean) => {
+    setIsJSONMode(checked)
+  }
+
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
       <div
@@ -184,7 +156,7 @@ const Gallery = ({
         style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
         className={cn(styles.wrapper, 'd-grid')}
       >
-        {imageArr.map(({ preview, name, tempPath, originalPath, type, _id }, i) => (
+        {imageArr.map(({ fullSizeJpgPath, preview, name, tempPath, originalPath, type, _id }, i) => (
           <GalleryTile
             key={preview + _id}
             index={i}
@@ -193,6 +165,7 @@ const Gallery = ({
             name={name}
             tempPath={tempPath}
             originalPath={originalPath}
+            fullSizeJpgPath={fullSizeJpgPath}
             type={type}
             previewSize={previewSize}
             selectedList={selectedList}
@@ -207,16 +180,20 @@ const Gallery = ({
           />
         ))}
 
-        <Modal title="Exif list" footer={null} open={showModal} onCancel={handleShowModalClose}>
-          {compose(
-            map((item: string) => (
-              <div key={item}>
-                <span className="bold">{item + ':'}</span>
-                <span style={{ marginLeft: 5 }}>{exif[item]}</span>
-              </div>
-            )),
-            keys
-          )(exif)}
+        <Modal
+          title={
+            <>
+              <span>Exif list</span>
+              <span style={{ marginLeft: 30 }}>JSON mode</span>
+              <Switch className="margin-left-10" onChange={handleJSONModeChange} checked={isJSONMode} />
+            </>
+          }
+          width={'60%'}
+          footer={null}
+          open={showModal}
+          onCancel={handleShowModalClose}
+        >
+          <pre className="overflow-y-scroll">{exif}</pre>
         </Modal>
 
         {isMainPage ? (

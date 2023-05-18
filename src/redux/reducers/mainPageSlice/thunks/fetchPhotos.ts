@@ -28,7 +28,7 @@ export const fetchPhotos =
     const {
       mainPageReducer,
       folderReducer: { currentFolderInfo },
-      settingSlice: { isFullSizePreview },
+      settingSlice: { isFullSizePreview, savePreview },
     } = getState()
     const {
       searchMenu: {
@@ -69,6 +69,7 @@ export const fetchPhotos =
         ...(isNameComparison && { isNameComparison }),
         ...(showSubfolders && { showSubfolders }),
         ...(isFullSizePreview && { isFullSizePreview }),
+        ...(!savePreview && { dontSavePreview: !savePreview }),
         ...(randomSort && { randomSort }),
       })
       .then(({ data }) => {

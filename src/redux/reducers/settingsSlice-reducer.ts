@@ -8,6 +8,7 @@ import { errorMessage, successMessage } from '../../app/common/notifications'
 
 interface State {
   isFullSizePreview: boolean
+  savePreview: boolean
   unusedKeywords: string[]
   imagePreviewSlideLimits: {
     min: number
@@ -17,6 +18,7 @@ interface State {
 
 export const initialState: State = {
   isFullSizePreview: false,
+  savePreview: true,
   unusedKeywords: [],
   imagePreviewSlideLimits: {
     min: 20,
@@ -28,6 +30,9 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setSavePreview(state, action: PayloadAction<boolean>) {
+      state.savePreview = action.payload
+    },
     setIsFullSizePreview(state, action: PayloadAction<boolean>) {
       state.isFullSizePreview = action.payload
     },
@@ -47,6 +52,7 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setSavePreview,
   setIsFullSizePreview,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,

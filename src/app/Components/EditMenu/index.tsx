@@ -13,7 +13,7 @@ import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlas
 import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
-import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice-reducer'
+import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice/thunks'
 import { dateTimeFormat } from '../../common/utils/date'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice/thunks'
 import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'

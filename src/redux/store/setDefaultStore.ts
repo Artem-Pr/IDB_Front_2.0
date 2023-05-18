@@ -3,6 +3,7 @@ import {
   setIsFullSizePreview,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,
+  setSavePreview,
 } from '../reducers/settingsSlice-reducer'
 import { localStorageAPI } from '../../app/common/utils/localStorageAPI'
 import {
@@ -23,6 +24,7 @@ import {
 import { setCurrentFolderKey, setCurrentFolderPath, setExpandedKeys } from '../reducers/foldersSlice-reducer'
 
 export const setDefaultStore = (dispatch: AppDispatch) => {
+  dispatch(setSavePreview(localStorageAPI.savePreview))
   dispatch(setIsFullSizePreview(localStorageAPI.fullSizePreview))
   dispatch(setMaxImagePreviewSlideLimit(localStorageAPI.maxImagePreviewLimit))
   dispatch(setMinImagePreviewSlideLimit(localStorageAPI.minImagePreviewLimit))

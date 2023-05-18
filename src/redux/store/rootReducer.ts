@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
 
 import foldersSliceReducer from '../reducers/foldersSlice-reducer'
-import uploadSliceReducer from '../reducers/uploadSlice-reducer'
+import { uploadSliceReducer } from '../reducers/uploadSlice'
 import { mainPageReducer } from '../reducers/mainPageSlice'
 import testsSliceReducer from '../reducers/testsSlice-reducer'
 import sessionSliceReducer from '../reducers/sessionSlice-reducer'

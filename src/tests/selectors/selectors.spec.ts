@@ -1,6 +1,6 @@
 /* eslint-disable functional/no-let */
 import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice-reducer'
-import { selectAll, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice-reducer'
+import { selectAll, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice'
 import store from '../../redux/store/store'
 import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../common/mock'
 import { RootState } from '../../redux/store/rootReducer'

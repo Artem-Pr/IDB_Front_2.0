@@ -17,6 +17,7 @@ interface Props {
   name: string
   tempPath: string
   originalPath: string | undefined
+  fullSizeJpgPath: string
   type: string
   previewSize: number
   selectedList: number[]
@@ -37,6 +38,7 @@ export const GalleryTile = ({
   name,
   tempPath,
   originalPath,
+  fullSizeJpgPath,
   type,
   previewSize,
   selectedList,
@@ -78,7 +80,7 @@ export const GalleryTile = ({
         'position-relative',
         'pointer'
       )}
-      onClick={handleImageClick(index, { originalPath, name, type })}
+      onClick={handleImageClick(index, { originalPath, name, type, fullSizeJpgStatic: fullSizeJpgPath })}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

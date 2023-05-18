@@ -53,19 +53,44 @@ export interface NameParts {
   ext: string
 }
 
-export interface FullExifObj {
-  [key: string]: string | number | Keywords
-
-  Rating: number
-  Description: string
-  Keywords: Keywords
-  Megapixels: number | ''
-  DateTimeOriginal: string
+export interface ExifDateTime {
+  [key: string]: string | number | undefined
+  year: number
+  month: number
+  day: number
+  hour: number
+  minute: number
+  second: number
+  millisecond: number | undefined
+  tzoffsetMinutes: number | undefined
+  rawValue: string
+  zoneName: string | undefined
 }
 
-export type ExifFilesList = Record<string, FullExifObj>
+export interface FullExifBasic {
+  Rating: number
+  Description: string
+  Keywords: Keywords | string
+  Subject: Keywords
+  Megapixels: number | ''
+  DateTimeOriginal: ExifDateTime
+}
+
+export interface FullExifObj extends FullExifBasic {
+  [key: string]: string | number | Keywords | ExifDateTime
+}
+
+export type RawDataValue = undefined | string | number | Keywords | ExifDateTime | Record<string, string | number>
+
+export interface RawFullExifObj extends FullExifBasic {
+  [key: string]: RawDataValue
+}
+
+export type ExifFilesList = Record<string, RawFullExifObj>
 
 export interface AxiosPreviews {
+  fullSizeJpg: string
+  fullSizeJpgPath: string
   preview: string
   tempPath: string
 }
@@ -88,11 +113,12 @@ export interface FolderTreeItem {
   children?: FolderTreeItem[]
 }
 
-export interface UploadingObject extends AxiosPreviews, UpdatingFields {
+export interface UploadingObject extends Omit<AxiosPreviews, 'fullSizeJpg'>, UpdatingFields {
   changeDate: number
   name: string
   size: number
   type: string
+  originalPath?: string
 }
 
 export interface ExtraDownloadingFields {
@@ -111,12 +137,13 @@ export interface DownloadingObject extends UploadingObject {
 
 export interface DownloadingRawObject
   extends UpdatingFields,
-    AxiosPreviews,
+    Omit<AxiosPreviews, 'fullSizeJpg'>,
     Omit<DownloadingObject, keyof UploadingObject> {
   changeDate: number
   mimetype: string
   originalName: string
   size: number
+  originalPath: string
 }
 
 export interface UpdatedObject {

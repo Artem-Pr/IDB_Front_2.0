@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 
-import { uploadFiles } from '../../../../../redux/reducers/uploadSlice-reducer'
+import { uploadFiles } from '../../../../../redux/reducers/uploadSlice/thunks'
 import { FieldsObj, MainMenuKeys } from '../../../../../redux/types'
 import { useAppDispatch } from '../../../../../redux/store/store'
 

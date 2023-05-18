@@ -20,13 +20,14 @@ import {
 
 import { ResultStatusType } from 'antd/es/result'
 
-import {
+import type {
   DownloadingObject,
   DownloadingRawObject,
   ExifFilesList,
   Keywords,
   LoadingStatus,
   NameParts,
+  RawFullExifObj,
   UpdatingFieldsWithPath,
   UploadingObject,
 } from '../../../redux/types'
@@ -58,11 +59,25 @@ export const getNameParts = (fullName: string): NameParts => {
 export const getTempPath = (filesArr: UploadingObject[], index: number): string => filesArr[index].tempPath
 export const isExifExist = (exifList: ExifFilesList, tempPath: string): boolean => !!exifList[tempPath]
 
+// TODO: add tests
+const getPrepareKeywordsFromRawExif = (exifObj: RawFullExifObj) => {
+  const getPreparedKeywords = (keywords: RawFullExifObj['Keywords']) => {
+    const tryToRestoreKeywords = (keywords: string | null): string[] | null => {
+      const keywordsArray = keywords?.split('.')
+      return keywordsArray?.length ? keywordsArray : null
+    }
+    return Array.isArray(keywords) ? keywords : tryToRestoreKeywords(keywords)
+  }
+  return Array.isArray(exifObj.Subject) ? exifObj.Subject : getPreparedKeywords(exifObj.Keywords)
+}
+
 export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: string): UpdatingFieldsWithPath => {
   const exifObj = exifList[tempPath]
-  const originalDate = exifObj?.DateTimeOriginal ? formatDate(exifObj?.DateTimeOriginal as string, dateTimeFormat) : '-'
+  const originalDate = exifObj?.DateTimeOriginal
+    ? formatDate(exifObj?.DateTimeOriginal?.rawValue as string, dateTimeFormat)
+    : '-'
   return {
-    keywords: exifObj?.Keywords || null,
+    keywords: getPrepareKeywordsFromRawExif(exifObj),
     megapixels: exifObj?.Megapixels || '',
     rating: exifObj?.Rating || 0,
     description: exifObj?.Description || '',
@@ -157,10 +172,10 @@ export const getSameKeywords = (
       : []
   }
 
-  return compose(
+  return compose<any, any, any, any>( //TODO: workaround, because for some reason don't want to work in WebStorm
     getIntersectionArr,
     map((item: UploadingObject) => item.keywords || []),
-    filterIndexed((bom, index) => includes(index, selectedList))
+    filterIndexed((__, index) => includes(index, selectedList))
   )(filesArr)
 }
 

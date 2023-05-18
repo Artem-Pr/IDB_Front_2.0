@@ -5,6 +5,7 @@ import {
   setIsFullSizePreview,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,
+  setSavePreview,
 } from '../../reducers/settingsSlice-reducer'
 import { localStorageAPI } from '../../../app/common/utils/localStorageAPI'
 import {
@@ -30,6 +31,13 @@ import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 import { RootState } from '../rootReducer'
 
 export const listenerMiddleware = createListenerMiddleware<RootState>()
+
+listenerMiddleware.startListening({
+  actionCreator: setSavePreview,
+  effect: action => {
+    localStorageAPI.savePreview = action.payload
+  },
+})
 
 listenerMiddleware.startListening({
   actionCreator: setIsFullSizePreview,

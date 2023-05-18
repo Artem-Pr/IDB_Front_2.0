@@ -102,6 +102,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     preview: 'http://localhost:5000/images/47e5ff7410eeeee9506ca446b9498ad8-preview.jpg',
     size: 2805824,
     tempPath: 'temp/47e5ff7410eeeee9506ca446b9498ad8',
+    fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
     type: 'image/jpeg',
     rating: 0,
     description: '',
@@ -115,6 +116,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     preview: 'http://localhost:5000/images/f3a168e5d6c61fd02b9b227219011462-preview.jpg',
     size: 2191001,
     tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
+    fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
     type: 'image/jpeg',
     rating: 0,
     description: '',
@@ -128,6 +130,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     preview: 'http://localhost:5000/images/33237a85357bbb9c4d7c8da122ef3c0a-preview.jpg',
     size: 2812368,
     tempPath: 'temp/33237a85357bbb9c4d7c8da122ef3c0a',
+    fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
     type: 'image/jpeg',
     rating: 0,
     description: '',
@@ -137,8 +140,20 @@ export const uploadingFilesMock: UploadingObject[] = [
 export const fullExifObjArr: FullExifObj[] = [
   {
     Megapixels: 8,
-    DateTimeOriginal: '2019:06:24 11:02:25',
+    DateTimeOriginal: {
+      year: 2008,
+      month: 1,
+      day: 1,
+      hour: 23,
+      minute: 20,
+      second: 23,
+      millisecond: undefined,
+      tzoffsetMinutes: undefined,
+      rawValue: '2019:06:24 11:02:25',
+      zoneName: undefined,
+    },
     Keywords: ['Озеро', 'Эстония', 'Оля'],
+    Subject: ['Озеро', 'Эстония', 'Оля'],
     Rating: 0,
     Description: '',
     ISO: 100,
@@ -154,8 +169,20 @@ export const fullExifObjArr: FullExifObj[] = [
   },
   {
     Megapixels: 8,
-    DateTimeOriginal: '2019:06:24 11:02:25',
+    DateTimeOriginal: {
+      year: 2008,
+      month: 1,
+      day: 1,
+      hour: 23,
+      minute: 20,
+      second: 23,
+      millisecond: undefined,
+      tzoffsetMinutes: undefined,
+      rawValue: '2019:06:24 11:02:25',
+      zoneName: undefined,
+    },
     Keywords: ['Эстония', 'Карта'],
+    Subject: ['Эстония', 'Карта'],
     Rating: 0,
     Description: '',
     ISO: 100,
@@ -171,8 +198,20 @@ export const fullExifObjArr: FullExifObj[] = [
   },
   {
     Megapixels: 8,
-    DateTimeOriginal: '2019:06:24 11:02:25',
+    DateTimeOriginal: {
+      year: 2008,
+      month: 1,
+      day: 1,
+      hour: 23,
+      minute: 20,
+      second: 23,
+      millisecond: undefined,
+      tzoffsetMinutes: undefined,
+      rawValue: '2019:06:24 11:02:25',
+      zoneName: undefined,
+    },
     Keywords: ['Эстония', 'Озеро', 'Велосипед', 'Оля'],
+    Subject: ['Эстония', 'Озеро', 'Велосипед', 'Оля'],
     Rating: 0,
     Description: '',
     ISO: 100,
@@ -188,10 +227,12 @@ export const fullExifObjArr: FullExifObj[] = [
   },
 ]
 
-export const uploadingFilesWithKeywordsMock: UploadingObject[] = uploadingFilesMock.map((item, i) => ({
-  ...item,
-  keywords: fullExifObjArr[i].Keywords,
-}))
+export const uploadingFilesWithKeywordsMock: Omit<UploadingObject, 'keywords'>[] = uploadingFilesMock.map(
+  (item, i) => ({
+    ...item,
+    keywords: fullExifObjArr[i].Keywords,
+  })
+)
 
 export const namePartsArrMock: NameParts[] = [
   { shortName: 'дорога домой', ext: 'img' },

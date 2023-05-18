@@ -15,6 +15,7 @@ import {
   setIsFullSizePreview,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,
+  setSavePreview,
 } from '../../../redux/reducers/settingsSlice-reducer'
 import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
@@ -29,7 +30,7 @@ export const SettingsPage = () => {
   const dispatch = useDispatch<any>()
   const [modal, contextHolder] = Modal.useModal()
   const { pageSizeOptions: pageSizeSelectedOptions } = useSelector(pagination)
-  const { isFullSizePreview, imagePreviewSlideLimits, unusedKeywords } = useSelector(settings)
+  const { isFullSizePreview, imagePreviewSlideLimits, unusedKeywords, savePreview } = useSelector(settings)
   const [isUnusedKeywordsLoaded, setIsUnusedKeywordsLoaded] = useState(false)
   const [unusedKeywordsLoading, setUnusedKeywordsLoading] = useState(false)
 
@@ -47,6 +48,10 @@ export const SettingsPage = () => {
 
   const handlePageSizeListChange = (values: number[]) => {
     values.length > 0 && dispatch(setGalleryPagination(getFilteredOptions(values)))
+  }
+
+  const handleSavePreview = () => {
+    dispatch(setSavePreview(!savePreview))
   }
 
   const handleUpdateUnusedKeywordsList = async () => {
@@ -73,6 +78,9 @@ export const SettingsPage = () => {
       <div className={cn(styles.gridWrapper, 'd-grid')}>
         <span className={styles.inputFieldLabel}>Full size preview</span>
         <Checkbox checked={isFullSizePreview} onChange={handleToggleIsFullSizePreview} />
+
+        <span className={styles.inputFieldLabel}>Save preview</span>
+        <Checkbox checked={savePreview} onChange={handleSavePreview} />
 
         <span>Min image slide limit</span>
         <Input
