@@ -3,13 +3,15 @@
   padding: 20px;
 
   .gridWrapper {
-    grid-template-columns: 200px 300px;
-    grid-template-rows: 40px 40px 40px minmax(40px, auto) minmax(40px, auto);
+    grid-auto-rows: minmax(40px, auto);
     gap: 10px;
     align-items: center;
   }
 
-  .inputField {
-    max-width: 90px;
+  .gridRow {
+    grid-auto-flow: column;
+    grid-template-columns: minmax(130px, 20%) auto;
+    justify-content: flex-start;
+    align-items: center;
   }
 }
