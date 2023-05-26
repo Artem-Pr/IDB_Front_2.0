@@ -37,7 +37,7 @@ export const UnusedKeywords = memo(() => {
     <>
       {allKeywordsAreUsed && <span>All keywords are used</span>}
       {!isUnusedKeywordsLoaded && (
-        <Button type="link" onClick={handleUpdateUnusedKeywordsList} loading={unusedKeywordsLoading}>
+        <Button onClick={handleUpdateUnusedKeywordsList} loading={unusedKeywordsLoading}>
           Click to update
         </Button>
       )}

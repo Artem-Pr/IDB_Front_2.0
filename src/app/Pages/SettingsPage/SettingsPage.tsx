@@ -8,6 +8,7 @@ import {
   MinImageSlideLimit,
   PaginationOptions,
   SavePreview,
+  SyncPreviews,
   UnusedKeywords,
 } from './components'
 
@@ -15,6 +16,7 @@ interface SettingItem {
   key: Key
   label: string
   component: React.ReactNode
+  className?: string
 }
 
 const settingsList: SettingItem[] = [
@@ -48,13 +50,19 @@ const settingsList: SettingItem[] = [
     label: 'Unused keywords',
     component: <UnusedKeywords />,
   },
+  {
+    key: '6',
+    label: 'Sync previews',
+    component: <SyncPreviews />,
+    className: styles.syncPreviewsRow,
+  },
 ]
 
 export const SettingsPage = () => (
   <div className={styles.wrapper}>
     <div className={cn(styles.gridWrapper, 'd-grid')}>
-      {settingsList.map(({ key, label, component }) => (
-        <div className={cn(styles.gridRow, 'd-grid')} key={key}>
+      {settingsList.map(({ key, label, component, className }) => (
+        <div className={cn('d-grid', styles.gridRow, className)} key={key}>
           <span>{label}</span>
           {component}
         </div>

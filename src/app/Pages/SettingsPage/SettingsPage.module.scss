@@ -14,4 +14,8 @@
     justify-content: flex-start;
     align-items: center;
   }
+
+  .syncPreviewsRow {
+    grid-template-columns: minmax(130px, 20%) 1fr;
+  }
 }

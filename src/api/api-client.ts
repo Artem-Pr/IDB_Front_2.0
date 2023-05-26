@@ -1,5 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
+export enum HOST {
+  HTTP = 'http://localhost:5000',
+  WEB_SOCKET = 'ws://localhost:5001',
+}
+
 interface Aborter {
   [key: string]: AbortController | null
 }
@@ -10,7 +15,7 @@ let cancelController: Aborter = {}
 const exceptionUrlList = ['/uploadItem']
 
 export const instance = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: HOST.HTTP,
 })
 
 const cancelAborterItem = (url: string) => {
