@@ -1,4 +1,5 @@
 /* eslint functional/immutable-data: 0 */
+import { Key } from 'react'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { CheckedDirectoryRequest, DirectoryInfo, FolderTreeItem, QueryResponse } from '../types'
@@ -34,7 +35,7 @@ const folderSlice = createSlice({
   name: 'folder',
   initialState,
   reducers: {
-    setExpandedKeys(state, action: PayloadAction<React.Key[]>) {
+    setExpandedKeys(state, action: PayloadAction<Key[]>) {
       state.currentFolderInfo.expandedKeys = action.payload
     },
     setFolderTree(state, action: PayloadAction<FolderTreeItem[]>) {

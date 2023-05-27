@@ -26,20 +26,29 @@ export enum API_STATUS {
   PENDING_ERROR = 'pending-error',
   DONE = 'done',
   ERROR = 'error',
+  STOPPED = 'stopped',
 }
 
 export enum WEB_SOCKET_ACTIONS {
   SYNC_PREVIEWS = 'SYNC_PREVIEWS',
+  CREATE_PREVIEWS = 'CREATE_PREVIEWS',
+  CREATE_PREVIEWS_STOP = 'CREATE_PREVIEWS_STOP',
 }
 
 export interface WebSocketAPICallback {
   progress: number
   message: string
+  status: API_STATUS
 }
 
 export interface WebSocketAPIRequest {
   action: WEB_SOCKET_ACTIONS
-  data: WebSocketAPICallback & {
-    status: API_STATUS
+  data: WebSocketAPICallback
+}
+
+export interface WebSocketAPIQuery {
+  action: WEB_SOCKET_ACTIONS
+  data?: {
+    folderPath?: string
   }
 }

@@ -11,6 +11,7 @@ import {
   SyncPreviews,
   UnusedKeywords,
 } from './components'
+import { CreatePreviews } from './components/CreatePreviews'
 
 interface SettingItem {
   key: Key
@@ -54,6 +55,12 @@ const settingsList: SettingItem[] = [
     key: '6',
     label: 'Sync previews',
     component: <SyncPreviews />,
+    className: styles.syncPreviewsRow,
+  },
+  {
+    key: '7',
+    label: 'Create previews',
+    component: <CreatePreviews />,
     className: styles.syncPreviewsRow,
   },
 ]
