@@ -1,5 +1,7 @@
-import React, { Key } from 'react'
+import React, { Fragment, Key } from 'react'
 import cn from 'classnames'
+
+import { Divider } from 'antd'
 
 import styles from './SettingsPage.module.scss'
 import {
@@ -69,10 +71,13 @@ export const SettingsPage = () => (
   <div className={styles.wrapper}>
     <div className={cn(styles.gridWrapper, 'd-grid')}>
       {settingsList.map(({ key, label, component, className }) => (
-        <div className={cn('d-grid', styles.gridRow, className)} key={key}>
-          <span>{label}</span>
-          {component}
-        </div>
+        <Fragment key={key}>
+          <div className={cn('d-grid', styles.gridRow, className)}>
+            <span>{label}</span>
+            {component}
+          </div>
+          <Divider className="m-5" />
+        </Fragment>
       ))}
     </div>
   </div>

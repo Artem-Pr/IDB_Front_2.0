@@ -1,13 +1,19 @@
 import React, { memo, useEffect, useState } from 'react'
-import { AutoComplete, Button, List, Progress } from 'antd'
+import { AutoComplete, Button, List, Progress, Select } from 'antd'
 
 import { useSelector } from 'react-redux'
+
+import { keys } from 'ramda'
 
 import { initWebSocket } from '../../../../../api/api-websocket'
 import { API_STATUS, WEB_SOCKET_ACTIONS, WebSocketAPICallback } from '../../../../../api/types'
 
 import styles from './CreatePreviews.module.scss'
 import { pathsArrOptionsSelector } from '../../../../../redux/selectors'
+import { MimeTypes } from '../../../../../redux/types/MimeTypes'
+
+const { Option } = Select
+const fileTypes = keys(MimeTypes)
 
 const MESSAGE_LIST_LIMIT = 1000
 const isProcessing = (status: API_STATUS) => status === API_STATUS.PENDING || status === API_STATUS.INIT
@@ -19,6 +25,7 @@ const isStopped = (status: API_STATUS) =>
 
 export const CreatePreviews = memo(() => {
   const options = useSelector(pathsArrOptionsSelector)
+  const [mimeTypes, setMimeTypes] = useState<MimeTypes[]>([])
   const [folderPath, setFolderPath] = useState('')
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
@@ -38,8 +45,12 @@ export const CreatePreviews = memo(() => {
     isStopped(status) && refreshWebSocketInstance()
   })
 
-  const onChange = (currentFolderPath: string) => {
+  const handleFolderChange = (currentFolderPath: string) => {
     setFolderPath(currentFolderPath)
+  }
+
+  const handleFileTypesChange = (value: MimeTypes[]) => {
+    setMimeTypes(value)
   }
 
   const handleFilterOption = (inputValue: string, option: { value: string } | undefined) =>
@@ -69,7 +80,7 @@ export const CreatePreviews = memo(() => {
       setStatus(status)
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.CREATE_PREVIEWS, { onMessage, data: { folderPath } })
+    const ws = initWebSocket(WEB_SOCKET_ACTIONS.CREATE_PREVIEWS, { onMessage, data: { folderPath, mimeTypes } })
     setWebSocket(ws)
     setStatus(API_STATUS.INIT)
   }
@@ -81,15 +92,32 @@ export const CreatePreviews = memo(() => {
   return (
     <div className="d-flex align-items-center">
       <div>
-        <AutoComplete
-          className="w-100"
-          placeholder="write folder name"
-          options={options}
-          value={folderPath}
-          defaultValue={folderPath}
-          onChange={onChange}
-          filterOption={handleFilterOption}
-        />
+        <div className={styles.selectors}>
+          <div>Folder:</div>
+          <AutoComplete
+            className="w-100"
+            placeholder="write folder name"
+            options={options}
+            value={folderPath}
+            defaultValue={folderPath}
+            onChange={handleFolderChange}
+            filterOption={handleFilterOption}
+          />
+          <div>File type:</div>
+          <Select
+            className="w-100"
+            mode="tags"
+            placeholder="select files type"
+            onChange={handleFileTypesChange}
+            value={mimeTypes}
+          >
+            {fileTypes.map(type => (
+              <Option key={type} value={MimeTypes[type]}>
+                {type}
+              </Option>
+            ))}
+          </Select>
+        </div>
         <Button block onClick={handleProcess}>
           {processing ? 'Stop process' : 'Start process'}
         </Button>

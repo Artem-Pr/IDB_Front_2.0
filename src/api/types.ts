@@ -50,5 +50,6 @@ export interface WebSocketAPIQuery {
   action: WEB_SOCKET_ACTIONS
   data?: {
     folderPath?: string
+    mimeTypes?: MimeTypes[]
   }
 }
