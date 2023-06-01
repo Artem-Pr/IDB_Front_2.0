@@ -106,6 +106,8 @@ export const uploadingFilesMock: UploadingObject[] = [
     type: 'image/jpeg',
     rating: 0,
     description: '',
+    DBFullPathFullSize: '',
+    DBFullPath: '',
   },
   {
     changeDate: 1601655242277,
@@ -120,6 +122,8 @@ export const uploadingFilesMock: UploadingObject[] = [
     type: 'image/jpeg',
     rating: 0,
     description: '',
+    DBFullPathFullSize: '',
+    DBFullPath: '',
   },
   {
     changeDate: 1601655242277,
@@ -134,6 +138,8 @@ export const uploadingFilesMock: UploadingObject[] = [
     type: 'image/jpeg',
     rating: 0,
     description: '',
+    DBFullPathFullSize: '',
+    DBFullPath: '',
   },
 ]
 

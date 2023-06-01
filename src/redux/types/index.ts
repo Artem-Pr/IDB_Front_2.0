@@ -89,10 +89,12 @@ export interface RawFullExifObj extends FullExifBasic {
 export type ExifFilesList = Record<string, RawFullExifObj>
 
 export interface AxiosPreviews {
-  fullSizeJpg: string
-  fullSizeJpgPath: string
-  preview: string
-  tempPath: string
+  DBFullPath: string // "/60dcc5bc4f211eabf8de258d1172a5f8-preview.jpg"
+  DBFullPathFullSize: string // "/60dcc5bc4f211eabf8de258d1172a5f8-fullSize.jpg"
+  fullSizeJpg: string // "http://localhost:5000/upload_images/60dcc5bc4f211eabf8de258d1172a5f8-fullSize.jpg"
+  fullSizeJpgPath: string // "uploadTemp/60dcc5bc4f211eabf8de258d1172a5f8-fullSize.jpg"
+  preview: string // "http://localhost:5000/upload_images/60dcc5bc4f211eabf8de258d1172a5f8-preview.jpg"
+  tempPath: string // "uploadTemp/60dcc5bc4f211eabf8de258d1172a5f8"
 }
 
 export interface UpdatingFields {

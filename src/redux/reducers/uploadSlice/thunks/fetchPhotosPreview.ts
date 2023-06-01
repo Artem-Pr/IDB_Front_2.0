@@ -12,16 +12,18 @@ export const fetchPhotosPreview =
     await mainApi
       .sendPhoto(file)
       .then(({ data }) => {
-        const { preview, tempPath, fullSizeJpg, fullSizeJpgPath } = data
+        const { preview, tempPath, fullSizeJpg, fullSizeJpgPath, DBFullPathFullSize, DBFullPath } = data
         const uploadingFile: UploadingObject = {
           changeDate,
           name,
           size,
           type,
-          fullSizeJpgPath,
+          fullSizeJpgPath: fullSizeJpg,
+          DBFullPathFullSize,
+          DBFullPath,
           preview,
           tempPath,
-          originalPath: fullSizeJpg,
+          originalPath: fullSizeJpgPath,
           originalDate: '-',
           keywords: null,
           megapixels: '',
