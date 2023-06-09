@@ -16,7 +16,7 @@ export const useCurrentPage = () => {
 
   return {
     isUploadingPage: pathname === PagePaths.UPLOAD,
-    isMainPage: pathname === PagePaths.MAIN,
+    isMainPage: pathname === PagePaths.MAIN || pathname === PagePaths.DEFAULT,
     currentPageNumber: pathname,
   }
 }

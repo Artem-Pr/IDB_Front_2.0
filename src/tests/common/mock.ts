@@ -108,6 +108,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     description: '',
     DBFullPathFullSize: '',
     DBFullPath: '',
+    timeStamp: '',
   },
   {
     changeDate: 1601655242277,
@@ -124,6 +125,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     description: '',
     DBFullPathFullSize: '',
     DBFullPath: '',
+    timeStamp: '',
   },
   {
     changeDate: 1601655242277,
@@ -140,6 +142,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     description: '',
     DBFullPathFullSize: '',
     DBFullPath: '',
+    timeStamp: '',
   },
 ]
 

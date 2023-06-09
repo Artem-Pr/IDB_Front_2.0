@@ -32,6 +32,7 @@ import type {
   UploadingObject,
 } from '../../../redux/types'
 import { dateTimeFormat, formatDate } from './date'
+import { MimeTypes } from '../../../redux/types/MimeTypes'
 
 export const invokableCompose = <any>compose
 export const filterIndexed = addIndex(filter)
@@ -44,13 +45,18 @@ export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !
 export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) =>
   sortBy<K>(compose(toLower, prop(String(fieldName))))
 export const isVideo = (contentType: string) => contentType.startsWith('video')
+export const isVideoByExt = (fileExtension: string) => {
+  const lowerCaseExt = fileExtension.toLowerCase()
+  return lowerCaseExt in MimeTypes ? isVideo(MimeTypes[lowerCaseExt as keyof typeof MimeTypes]) : false
+}
 
 export const getNameParts = (fullName: string): NameParts => {
   const getNameObj = (fullName: string) => {
     const separatedNameArr = fullName.split('.')
     const shortName = separatedNameArr.slice(0, -1).join('.')
-    const ext = '.' + separatedNameArr[separatedNameArr.length - 1]
-    return { shortName, ext }
+    const extWithoutDot = separatedNameArr.at(-1)
+    const ext = '.' + extWithoutDot
+    return { shortName, ext, extWithoutDot }
   }
   const isValidName = fullName && fullName !== '-'
   return isValidName ? getNameObj(fullName) : { shortName: '-', ext: '' }

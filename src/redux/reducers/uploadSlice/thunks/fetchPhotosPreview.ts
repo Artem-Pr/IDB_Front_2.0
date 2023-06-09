@@ -4,6 +4,8 @@ import type { UploadingObject } from '../../../types'
 import { errorMessage } from '../../../../app/common/notifications'
 import { decreaseCountOfPreviewLoading } from '../uploadSlice'
 import { addUploadingFile } from './addUploadingFile'
+import { defaultTimeStamp } from '../../../../app/common/utils/date/dateFormats'
+import { isVideo } from '../../../../app/common/utils/utils'
 
 export const fetchPhotosPreview =
   (file: any): AppThunk =>
@@ -29,6 +31,7 @@ export const fetchPhotosPreview =
           megapixels: '',
           rating: 0,
           description: '',
+          ...(isVideo(type) && { timeStamp: defaultTimeStamp }),
         }
         dispatch(addUploadingFile(uploadingFile))
       })

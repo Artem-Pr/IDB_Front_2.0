@@ -1,12 +1,21 @@
+import type { Key } from 'react'
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
-export type CheckboxType = 'isName' | 'isOriginalDate' | 'isKeywords' | 'isFilePath' | 'isDescription' | 'isRating'
+export type CheckboxType =
+  | 'isName'
+  | 'isOriginalDate'
+  | 'isKeywords'
+  | 'isFilePath'
+  | 'isDescription'
+  | 'isRating'
+  | 'isTimeStamp'
 export type Checkboxes = Record<CheckboxType, boolean>
 export type DeleteConfirmationType = 'file' | 'directory' | 'keyword'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
 export type PreviewType = 'video' | 'image' | undefined
 
 export enum PagePaths {
+  DEFAULT = '/IDB_Front_2.0',
   MAIN = '/',
   UPLOAD = '/upload',
   SETTINGS = '/settings',
@@ -51,6 +60,7 @@ export interface GallerySortingItem {
 export interface NameParts {
   shortName: string
   ext: string
+  extWithoutDot?: string
 }
 
 export interface ExifDateTime {
@@ -121,6 +131,7 @@ export interface UploadingObject extends Omit<AxiosPreviews, 'fullSizeJpg'>, Upd
   size: number
   type: string
   originalPath?: string
+  timeStamp?: string
 }
 
 export interface ExtraDownloadingFields {
@@ -146,6 +157,7 @@ export interface DownloadingRawObject
   originalName: string
   size: number
   originalPath: string
+  timeStamp: string
 }
 
 export interface UpdatedObject {
@@ -157,6 +169,7 @@ export interface UpdatedObject {
     keywords?: string[]
     rating?: number
     description?: string
+    timeStamp?: string
   }
 }
 
@@ -198,7 +211,7 @@ export interface CheckedDirectoryRequest extends QueryResponse {
 export interface DirectoryInfo extends CheckedDirectoryRequest {
   currentFolderPath: string
   currentFolderKey: string
-  expandedKeys: React.Key[]
+  expandedKeys: Key[]
   showInfoModal: boolean
   showSubfolders: boolean
 }

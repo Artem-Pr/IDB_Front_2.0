@@ -20,6 +20,8 @@ import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/type
 
 import styles from './index.module.scss'
 import { useAppDispatch } from '../../../redux/store/store'
+import { defaultTimeStamp } from '../../common/utils/date/dateFormats'
+import { isVideoByExt } from '../../common/utils/utils'
 
 const { TextArea } = Input
 const DatePicker = generatePicker<Moment>(momentGenerateConfig)
@@ -42,6 +44,7 @@ export interface InitialFileObject extends Checkboxes {
   filePath: string
   keywords: string[]
   description: string
+  timeStamp?: string
 }
 
 const initialFileObject: InitialFileObject = {
@@ -57,6 +60,7 @@ const initialFileObject: InitialFileObject = {
   isKeywords: false,
   isDescription: false,
   isRating: false,
+  isTimeStamp: false,
 }
 
 const EditMenu = ({
@@ -78,12 +82,12 @@ const EditMenu = ({
   const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { isMainPage } = useCurrentPage()
-  const { name, originalDate, rating, description } = useMemo<UploadingObject | InitialFileObject>(
+  const { name, originalDate, rating, description, timeStamp } = useMemo<UploadingObject | InitialFileObject>(
     () => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]),
     [filesArr, selectedList]
   )
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
-  const { shortName, ext } = useMemo(() => getNameParts(name), [name])
+  const { shortName, ext, extWithoutDot } = useMemo(() => getNameParts(name), [name])
   const keywordsOptions = useMemo(() => allKeywords.map(keyword => ({ value: keyword, label: keyword })), [allKeywords])
   const { onFinish } = useFinishEdit({
     filesArr,
@@ -95,6 +99,7 @@ const EditMenu = ({
     isEditMany,
     modal,
   })
+  const isVideoFile = useMemo(() => isVideoByExt(extWithoutDot || ''), [extWithoutDot])
 
   useEffect(() => {
     const getFilePath = () => {
@@ -115,14 +120,16 @@ const EditMenu = ({
       description,
       name: shortName,
       originalDate: originalDate === '-' ? '' : moment(originalDate, dateTimeFormat),
+      timeStamp: isVideoFile ? timeStamp || defaultTimeStamp : undefined,
       keywords: sortBy(identity, sameKeywords || []),
       filePath: currentFilePath,
       isName: false,
       isOriginalDate: false,
       isKeywords: false,
       isFilePath: false,
+      isTimeStamp: false,
     })
-  }, [form, shortName, originalDate, sameKeywords, currentFilePath, rating, description])
+  }, [form, shortName, originalDate, sameKeywords, currentFilePath, rating, description, timeStamp, isVideoFile])
 
   const handleSelectAll = useCallback(() => {
     isSelectAllBtn && selectAll && selectAll()
@@ -130,7 +137,10 @@ const EditMenu = ({
     setIsSelectAllBtn(!isSelectAllBtn)
   }, [clearAll, isSelectAllBtn, selectAll])
 
-  const isDeleteBtn = useMemo(() => !(isMainPage && isEditMany), [isEditMany, isMainPage])
+  const isDeleteBtn = !(isMainPage && isEditMany)
+  const showTimeStamp = isMainPage && isVideoFile && !isEditMany
+
+  const refreshTimeStamp = () => form.setFieldsValue({ timeStamp: defaultTimeStamp })
 
   const handleDelete = () => {
     const onOk = () => {
@@ -218,6 +228,20 @@ const EditMenu = ({
             />
           </Form.Item>
         </div>
+
+        {showTimeStamp && (
+          <div className="d-flex">
+            <Form.Item className={styles.checkbox} name="isTimeStamp" valuePropName="checked">
+              <Checkbox>TimeStamp:</Checkbox>
+            </Form.Item>
+            <Form.Item className={styles.inputField} name="timeStamp">
+              <Input placeholder="Edit time stamp" disabled={disabledInputs} />
+            </Form.Item>
+            <Button className="margin-left-10" onClick={refreshTimeStamp}>
+              refresh
+            </Button>
+          </div>
+        )}
 
         <div className={cn(styles.buttonsWrapper, 'd-flex')}>
           <Form.Item className={styles.button}>

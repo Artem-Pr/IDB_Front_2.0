@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { compose, curry, flatten, identity, isEmpty, sortBy, uniq } from 'ramda'
 
-import { ModalStaticFunctions } from 'antd/es/modal/confirm'
+import type { ModalStaticFunctions } from 'antd/es/modal/confirm'
 
 import {
   getFilesWithUpdatedKeywords,
@@ -10,7 +10,7 @@ import {
   removeEmptyFields,
   removeIntersectingKeywords,
 } from '../../utils'
-import { Checkboxes, FieldsObj, UpdatedObject, UploadingObject } from '../../../../redux/types'
+import type { Checkboxes, FieldsObj, UpdatedObject, UploadingObject } from '../../../../redux/types'
 import { useEditFilesArr } from '../hooks'
 import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
 import { formatDate } from '../../utils/date'
@@ -18,7 +18,7 @@ import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
 import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
 import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
 import { folderElement } from '../../../../redux/selectors'
-import { InitialFileObject } from '../../../Components/EditMenu'
+import type { InitialFileObject } from '../../../Components/EditMenu'
 import { useAppDispatch } from '../../../../redux/store/store'
 
 interface Props {
@@ -40,6 +40,7 @@ interface SendUpdatedFilesProps {
   rating: number
   description: string
   checkboxes: Checkboxes
+  timeStamp: string | undefined
 }
 
 export const useFinishEdit = ({
@@ -65,6 +66,7 @@ export const useFinishEdit = ({
       keywords,
       description,
       checkboxes,
+      timeStamp,
     }: SendUpdatedFilesProps) => {
       const selectedFiles = filesArr
         .filter((_, idx) => selectedList.includes(idx))
@@ -80,7 +82,7 @@ export const useFinishEdit = ({
       )
 
       const getUpdatedFields = (idx: number): UpdatedObject['updatedFields'] => {
-        const { isName, isOriginalDate, isKeywords, isFilePath, isRating, isDescription } = checkboxes
+        const { isName, isOriginalDate, isKeywords, isFilePath, isRating, isDescription, isTimeStamp } = checkboxes
         return {
           originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] : undefined,
           originalDate: (isOriginalDate && currentOriginalDate) || undefined,
@@ -88,6 +90,7 @@ export const useFinishEdit = ({
           filePath: isFilePath ? currentFilePath : undefined,
           rating: isRating ? rating : undefined,
           description: isDescription ? description : undefined,
+          timeStamp: isTimeStamp ? timeStamp : undefined,
         }
       }
       const updatedFiles: UpdatedObject[] = selectedFiles.map(({ _id }, i) => ({
@@ -106,6 +109,7 @@ export const useFinishEdit = ({
       description,
       name: newName,
       originalDate: newOriginalDate,
+      timeStamp,
       keywords,
       isName,
       filePath,
@@ -114,6 +118,7 @@ export const useFinishEdit = ({
       isFilePath,
       isRating,
       isDescription,
+      isTimeStamp,
     }: InitialFileObject) => {
       const currentName = newName ? newName + ext : ''
       const currentOriginalDate = newOriginalDate ? formatDate(newOriginalDate) : null
@@ -131,12 +136,21 @@ export const useFinishEdit = ({
           originalDate: isOriginalDate ? currentOriginalDate : undefined,
           keywords: isKeywords ? keywords : sortBy(identity, sameKeywords || []),
           filePath: isFilePath && filePath ? getFilePath(filePath) : undefined,
+          timeStamp: isTimeStamp ? timeStamp : undefined,
         }
 
         const updatedKeywordsList = uniq([...keywordsList, ...flatten(keywords)])
         compose(dispatch, setKeywordsList)(updatedKeywordsList)
 
-        const checkboxes: Checkboxes = { isName, isOriginalDate, isKeywords, isFilePath, isRating, isDescription }
+        const checkboxes: Checkboxes = {
+          isName,
+          isOriginalDate,
+          isKeywords,
+          isFilePath,
+          isRating,
+          isDescription,
+          isTimeStamp,
+        }
         isMainPage &&
           sendUpdatedFiles({
             currentName,
@@ -146,13 +160,22 @@ export const useFinishEdit = ({
             rating,
             description,
             checkboxes,
+            timeStamp,
           })
         const editedFields = removeEmptyFields(preparedValue)
         !isEmpty(editedFields) && editUploadingFiles(editedFields)
       }
 
       const needModalIsDuplicate = !isEditMany && isName && isDuplicateName(currentName)
-      const isEmptyCheckboxes = !(isName || isOriginalDate || isKeywords || isFilePath || isRating || isDescription)
+      const isEmptyCheckboxes = !(
+        isName ||
+        isOriginalDate ||
+        isKeywords ||
+        isFilePath ||
+        isRating ||
+        isDescription ||
+        isTimeStamp
+      )
       const filesSizeIfLongProcess =
         !needModalIsDuplicate && !isEmptyCheckboxes && getFilesSizeIfLongProcess(filesArr, selectedList)
 
@@ -160,6 +183,7 @@ export const useFinishEdit = ({
       isEmptyCheckboxes && modal.warning(emptyCheckboxesConfig)
       filesSizeIfLongProcess &&
         modal.confirm(longProcessConfirmation({ onOk: updateValues, fileSize: filesSizeIfLongProcess }))
+
       !(needModalIsDuplicate || isEmptyCheckboxes || filesSizeIfLongProcess) && updateValues()
     },
     [
