@@ -9,6 +9,7 @@ export type CheckboxType =
   | 'isDescription'
   | 'isRating'
   | 'isTimeStamp'
+  | 'needUpdatePreview'
 export type Checkboxes = Record<CheckboxType, boolean>
 export type DeleteConfirmationType = 'file' | 'directory' | 'keyword'
 export type FieldsObj = UploadingObject & ExtraDownloadingFields
@@ -132,6 +133,7 @@ export interface UploadingObject extends Omit<AxiosPreviews, 'fullSizeJpg'>, Upd
   type: string
   originalPath?: string
   timeStamp?: string
+  needUpdatePreview?: boolean
 }
 
 export interface ExtraDownloadingFields {
@@ -158,6 +160,7 @@ export interface DownloadingRawObject
   size: number
   originalPath: string
   timeStamp: string
+  needUpdatePreview: boolean
 }
 
 export interface UpdatedObject {
@@ -170,6 +173,7 @@ export interface UpdatedObject {
     rating?: number
     description?: string
     timeStamp?: string
+    needUpdatePreview?: boolean
   }
 }
 

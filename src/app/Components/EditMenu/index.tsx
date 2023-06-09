@@ -61,6 +61,7 @@ const initialFileObject: InitialFileObject = {
   isDescription: false,
   isRating: false,
   isTimeStamp: false,
+  needUpdatePreview: false,
 }
 
 const EditMenu = ({
@@ -82,10 +83,9 @@ const EditMenu = ({
   const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { isMainPage } = useCurrentPage()
-  const { name, originalDate, rating, description, timeStamp } = useMemo<UploadingObject | InitialFileObject>(
-    () => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]),
-    [filesArr, selectedList]
-  )
+  const { name, originalDate, rating, description, timeStamp, needUpdatePreview } = useMemo<
+    UploadingObject | InitialFileObject
+  >(() => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]), [filesArr, selectedList])
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
   const { shortName, ext, extWithoutDot } = useMemo(() => getNameParts(name), [name])
   const keywordsOptions = useMemo(() => allKeywords.map(keyword => ({ value: keyword, label: keyword })), [allKeywords])
@@ -128,6 +128,7 @@ const EditMenu = ({
       isKeywords: false,
       isFilePath: false,
       isTimeStamp: false,
+      needUpdatePreview: false,
     })
   }, [form, shortName, originalDate, sameKeywords, currentFilePath, rating, description, timeStamp, isVideoFile])
 
@@ -138,7 +139,7 @@ const EditMenu = ({
   }, [clearAll, isSelectAllBtn, selectAll])
 
   const isDeleteBtn = !(isMainPage && isEditMany)
-  const showTimeStamp = isMainPage && isVideoFile && !isEditMany
+  const showTimeStamp = isMainPage && isVideoFile && !isEditMany && !needUpdatePreview
 
   const refreshTimeStamp = () => form.setFieldsValue({ timeStamp: defaultTimeStamp })
 
@@ -229,7 +230,7 @@ const EditMenu = ({
           </Form.Item>
         </div>
 
-        {showTimeStamp && (
+        {showTimeStamp ? (
           <div className="d-flex">
             <Form.Item className={styles.checkbox} name="isTimeStamp" valuePropName="checked">
               <Checkbox>TimeStamp:</Checkbox>
@@ -240,6 +241,12 @@ const EditMenu = ({
             <Button className="margin-left-10" onClick={refreshTimeStamp}>
               refresh
             </Button>
+          </div>
+        ) : (
+          <div className="d-flex">
+            <Form.Item className={styles.checkbox} name="needUpdatePreview" valuePropName="checked">
+              <Checkbox>Update preview</Checkbox>
+            </Form.Item>
           </div>
         )}
 

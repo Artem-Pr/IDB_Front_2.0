@@ -1,6 +1,4 @@
-import { AxiosResponse } from 'axios'
-
-import {
+import type {
   AxiosPreviews,
   CheckedDirectoryRequest,
   ExifFilesList,
@@ -10,33 +8,33 @@ import {
   UpdatePhotosRequest,
   UploadingObject,
 } from '../redux/types'
-import { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
+import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
 
 import { instance } from './api-client'
-import { GetPhotosByTagsRequest } from './types'
+import type { GetPhotosByTagsRequest } from './types'
 
 export const mainApi = {
-  sendPhotos(files: UploadingObject[], path: string): Promise<AxiosResponse<QueryResponse>> {
-    return instance.post(`/upload?path=${path}`, files)
+  sendPhotos(files: UploadingObject[], path: string) {
+    return instance.post<QueryResponse>(`/upload?path=${path}`, files)
   },
 
-  updatePhotos(files: UpdatedObject[]): Promise<AxiosResponse<UpdatePhotosRequest>> {
-    return instance.put('/update', files)
+  updatePhotos(files: UpdatedObject[]) {
+    return instance.put<UpdatePhotosRequest>('/update', files)
   },
 
-  sendPhoto(file: any): Promise<AxiosResponse<AxiosPreviews>> {
+  sendPhoto(file: any) {
     const formData = new FormData()
     formData.append('filedata', file)
 
-    return instance.post('/uploadItem', formData, {
+    return instance.post<AxiosPreviews>('/uploadItem', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
   },
 
-  getKeywordsList(): Promise<AxiosResponse<string[]>> {
-    return instance.get('/keywords')
+  getKeywordsList() {
+    return instance.get<string[]>('/keywords')
   },
 
   getUnusedKeywordsList() {
@@ -47,44 +45,44 @@ export const mainApi = {
     return instance.delete(`/keyword/${keyword}`)
   },
 
-  getPathsList(): Promise<AxiosResponse<string[]>> {
-    return instance.get('/paths')
+  getPathsList() {
+    return instance.get<string[]>('/paths')
   },
 
-  checkDirectory(directory: string): Promise<AxiosResponse<CheckedDirectoryRequest>> {
-    return instance.get('/check-directory', {
+  checkDirectory(directory: string) {
+    return instance.get<CheckedDirectoryRequest>('/check-directory', {
       params: { directory },
     })
   },
 
-  getKeywordsFromPhoto(tempPath: string[]): Promise<AxiosResponse<ExifFilesList>> {
+  getKeywordsFromPhoto(tempPath: string[]) {
     // need to get something even if exif is not exist
-    return instance.post('/image-exif', tempPath)
+    return instance.post<ExifFilesList>('/image-exif', tempPath)
   },
 
   getPhotosByTags(params: GetPhotosByTagsRequest) {
     return instance.post<FetchingGalleryContent>('/filtered-photos', params)
   },
 
-  deletePhoto(_id: string): Promise<AxiosResponse<QueryResponse>> {
-    return instance.delete(`/photo/${_id}`)
+  deletePhoto(_id: string) {
+    return instance.delete<QueryResponse>(`/photo/${_id}`)
   },
 
-  deleteDirectory(directory: string): Promise<AxiosResponse<QueryResponse & { filePaths: string[] }>> {
-    return instance.delete(`/directory`, {
+  deleteDirectory(directory: string) {
+    return instance.delete<QueryResponse & { filePaths: string[] }>(`/directory`, {
       params: { name: directory },
     })
   },
 }
 
 export const testApi = {
-  matchNumberOfFiles(pid: number): Promise<AxiosResponse<MatchingNumberOfFilesTest>> {
-    return instance.post(`/test/matching-files`, { pid })
+  matchNumberOfFiles(pid: number) {
+    return instance.post<MatchingNumberOfFilesTest>(`/test/matching-files`, { pid })
   },
-  matchVideoFiles(pid: number): Promise<AxiosResponse<MatchingVideoFilesTest>> {
-    return instance.post(`/test/matching-videos`, { pid })
+  matchVideoFiles(pid: number) {
+    return instance.post<MatchingVideoFilesTest>(`/test/matching-videos`, { pid })
   },
-  rebuildFoldersConfig(): Promise<AxiosResponse<QueryResponse>> {
-    return instance.get('/rebuild-paths-config')
+  rebuildFoldersConfig() {
+    return instance.get<QueryResponse>('/rebuild-paths-config')
   },
 }

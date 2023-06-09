@@ -82,7 +82,16 @@ export const useFinishEdit = ({
       )
 
       const getUpdatedFields = (idx: number): UpdatedObject['updatedFields'] => {
-        const { isName, isOriginalDate, isKeywords, isFilePath, isRating, isDescription, isTimeStamp } = checkboxes
+        const {
+          isName,
+          isOriginalDate,
+          isKeywords,
+          isFilePath,
+          isRating,
+          isDescription,
+          isTimeStamp,
+          needUpdatePreview,
+        } = checkboxes
         return {
           originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] : undefined,
           originalDate: (isOriginalDate && currentOriginalDate) || undefined,
@@ -91,6 +100,7 @@ export const useFinishEdit = ({
           rating: isRating ? rating : undefined,
           description: isDescription ? description : undefined,
           timeStamp: isTimeStamp ? timeStamp : undefined,
+          needUpdatePreview: needUpdatePreview || undefined,
         }
       }
       const updatedFiles: UpdatedObject[] = selectedFiles.map(({ _id }, i) => ({
@@ -119,6 +129,7 @@ export const useFinishEdit = ({
       isRating,
       isDescription,
       isTimeStamp,
+      needUpdatePreview,
     }: InitialFileObject) => {
       const currentName = newName ? newName + ext : ''
       const currentOriginalDate = newOriginalDate ? formatDate(newOriginalDate) : null
@@ -137,6 +148,7 @@ export const useFinishEdit = ({
           keywords: isKeywords ? keywords : sortBy(identity, sameKeywords || []),
           filePath: isFilePath && filePath ? getFilePath(filePath) : undefined,
           timeStamp: isTimeStamp ? timeStamp : undefined,
+          needUpdatePreview: needUpdatePreview || undefined,
         }
 
         const updatedKeywordsList = uniq([...keywordsList, ...flatten(keywords)])
@@ -150,6 +162,7 @@ export const useFinishEdit = ({
           isRating,
           isDescription,
           isTimeStamp,
+          needUpdatePreview,
         }
         isMainPage &&
           sendUpdatedFiles({
@@ -174,7 +187,8 @@ export const useFinishEdit = ({
         isFilePath ||
         isRating ||
         isDescription ||
-        isTimeStamp
+        isTimeStamp ||
+        needUpdatePreview
       )
       const filesSizeIfLongProcess =
         !needModalIsDuplicate && !isEmptyCheckboxes && getFilesSizeIfLongProcess(filesArr, selectedList)
