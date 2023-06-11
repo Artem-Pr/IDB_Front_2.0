@@ -8,7 +8,7 @@ const { Panel } = Collapse
 
 interface Props {
   title: string
-  value: string[]
+  value?: string[]
 }
 
 const TableCollapse = ({ title, value }: Props) => {

@@ -33,17 +33,19 @@ export enum WEB_SOCKET_ACTIONS {
   SYNC_PREVIEWS = 'SYNC_PREVIEWS',
   CREATE_PREVIEWS = 'CREATE_PREVIEWS',
   CREATE_PREVIEWS_STOP = 'CREATE_PREVIEWS_STOP',
+  FILES_TEST = 'FILES_TEST',
 }
 
-export interface WebSocketAPICallback {
+export interface WebSocketAPICallback<T = undefined> {
   progress: number
   message: string
   status: API_STATUS
+  data: T
 }
 
-export interface WebSocketAPIRequest {
+export interface WebSocketAPIRequest<T = undefined> {
   action: WEB_SOCKET_ACTIONS
-  data: WebSocketAPICallback
+  data: WebSocketAPICallback<T>
 }
 
 export interface WebSocketAPIQuery {

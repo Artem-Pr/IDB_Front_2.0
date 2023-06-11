@@ -5,8 +5,8 @@ import { Content } from 'antd/es/layout/layout'
 import styles from './index.module.scss'
 import MatchingNumberOfFiles from './tests/MatchingNumberOfFiles'
 import MatchingVideoFiles from './tests/MatchingVideoFiles'
-import RebuildPathsConfig from './tests/RebuildPathsConfig'
 import CheckFilesWithSameNames from './tests/CheckFilesWithSameNames'
+import { FilesTest } from './tests/FilesTest'
 
 const TestDB = () => {
   return (
@@ -22,7 +22,7 @@ const TestDB = () => {
         </Row>
         <Row gutter={[16, 16]}>
           <Col className={styles.col} span={12}>
-            <RebuildPathsConfig />
+            <FilesTest />
           </Col>
           <Col className={styles.col} span={12}>
             <CheckFilesWithSameNames />

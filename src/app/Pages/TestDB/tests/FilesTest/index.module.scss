@@ -1,0 +1,19 @@
+.progressBar {
+  padding: 5px 10px !important;
+}
+
+.card {
+  :global {
+    .ant-card-body {
+      padding-top: 0 !important;
+    }
+  }
+}
+
+.progress {
+  height: 300px;
+  width: 100%;
+  overflow-y: scroll;
+  background: white;
+}
+

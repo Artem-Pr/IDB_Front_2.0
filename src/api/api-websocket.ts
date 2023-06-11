@@ -4,16 +4,35 @@ import type { WebSocketAPICallback, WebSocketAPIRequest, WebSocketAPIQuery } fro
 import { WEB_SOCKET_ACTIONS } from './types'
 import { errorMessage } from '../app/common/notifications'
 
-interface InitWebSocketCallback {
-  onMessage: (data: WebSocketAPICallback) => void
+interface InitWebSocketCallback<T = undefined> {
+  onMessage: (data: WebSocketAPICallback<T>) => void
   data?: WebSocketAPIQuery['data']
+}
+
+export interface FilesTestAPIData {
+  configFoldersCount: number
+  DBFoldersCount: number
+  DiscFoldersCount: number
+  filesOnDisc: number
+  filesInDB: number
+  excessiveFolders__Config_Disk: string[]
+  excessiveFolders__Disk_Config: string[]
+  excessiveFolders__DB_Config: string[]
+  excessiveFolders__Config_DB: string[]
+  excessiveFolders__DB_Disc: string[]
+  excessiveFolders__Disc_DB: string[]
+  excessiveFolders__filesInDB: string[]
+  excessiveFolders__filesOnDisc: string[]
 }
 
 // eslint-disable-next-line functional/no-let
 let socket: WebSocket | null = null
 const isSocketReady = () => socket && socket.readyState === WebSocket.OPEN
 
-export const initWebSocket = (action: WEB_SOCKET_ACTIONS, { onMessage, data }: InitWebSocketCallback) => {
+export const initWebSocket = <T = undefined>(
+  action: WEB_SOCKET_ACTIONS,
+  { onMessage, data }: InitWebSocketCallback<T>
+) => {
   const init = () => {
     socket = new WebSocket(HOST.WEB_SOCKET)
 
@@ -26,7 +45,7 @@ export const initWebSocket = (action: WEB_SOCKET_ACTIONS, { onMessage, data }: I
     }
 
     socket.onmessage = (rawResponse: MessageEvent<string>) => {
-      const response: WebSocketAPIRequest = JSON.parse(rawResponse.data)
+      const response: WebSocketAPIRequest<T> = JSON.parse(rawResponse.data)
       onMessage(response.data)
     }
 
