@@ -7,6 +7,7 @@ import { createFolderTree } from '../../../../app/common/folderTree'
 import { mainApi } from '../../../../api/api'
 import { errorMessage, successMessage } from '../../../../app/common/notifications'
 import { setDGalleryLoading } from '../mainPageSlice'
+import { fetchPhotos } from './fetchPhotos'
 
 export const updatePhotos =
   (updatedObjArr: UpdatedObject[]): AppThunk =>
@@ -25,6 +26,7 @@ export const updatePhotos =
         files && newFilePath && successMessage('Files updated successfully')
         newFilePath?.length && addNewPathsArr(newFilePath)
       })
+      .then(() => dispatch(fetchPhotos()))
       .catch(error => {
         console.log('error', error)
         errorMessage(error.message, 'updating files error: ', 0)

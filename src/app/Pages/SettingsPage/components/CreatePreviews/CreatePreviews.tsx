@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { AutoComplete, Button, List, Progress, Select } from 'antd'
 
 import { useSelector } from 'react-redux'
@@ -35,15 +35,15 @@ export const CreatePreviews = memo(() => {
 
   const processing = isProcessing(status)
 
-  useEffect(() => {
-    const refreshWebSocketInstance = () => {
-      webSocket?.close()
-      setWebSocket(null)
-      setStatus(API_STATUS.DEFAULT)
-    }
+  const refreshWebSocketInstance = useCallback(() => {
+    webSocket?.close()
+    setWebSocket(null)
+    setStatus(API_STATUS.DEFAULT)
+  }, [webSocket])
 
+  useEffect(() => {
     isStopped(status) && refreshWebSocketInstance()
-  })
+  }, [refreshWebSocketInstance, status])
 
   const handleFolderChange = (currentFolderPath: string) => {
     setFolderPath(currentFolderPath)
@@ -74,13 +74,22 @@ export const CreatePreviews = memo(() => {
     const onMessage = ({ message, progress, status }: WebSocketAPICallback) => {
       setMessages(prevMessages => [
         message,
-        ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(1) : prevMessages),
+        ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
       setProgress(progress)
       setStatus(status)
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.CREATE_PREVIEWS, { onMessage, data: { folderPath, mimeTypes } })
+    const onError = () => {
+      refreshWebSocketInstance()
+      stopProcess()
+    }
+
+    const ws = initWebSocket(WEB_SOCKET_ACTIONS.CREATE_PREVIEWS, {
+      onMessage,
+      onError,
+      data: { folderPath, mimeTypes },
+    })
     setWebSocket(ws)
     setStatus(API_STATUS.INIT)
   }

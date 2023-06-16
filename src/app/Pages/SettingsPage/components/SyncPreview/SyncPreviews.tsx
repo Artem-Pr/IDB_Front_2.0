@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useState } from 'react'
 import { Button, List, Progress } from 'antd'
 
 import { initWebSocket } from '../../../../../api/api-websocket'
@@ -20,15 +20,15 @@ export const SyncPreviews = memo(() => {
   const [status, setStatus] = useState<API_STATUS>(API_STATUS.DEFAULT)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
 
-  useEffect(() => {
-    const refreshWebSocketInstance = () => {
-      webSocket?.close()
-      setWebSocket(null)
-      setStatus(API_STATUS.DEFAULT)
-    }
+  const refreshWebSocketInstance = useCallback(() => {
+    webSocket?.close()
+    setWebSocket(null)
+    setStatus(API_STATUS.DEFAULT)
+  }, [webSocket])
 
+  useEffect(() => {
     isStopped(status) && refreshWebSocketInstance()
-  })
+  }, [refreshWebSocketInstance, status])
 
   const handleProcessStart = () => {
     setMessages([])
@@ -37,13 +37,13 @@ export const SyncPreviews = memo(() => {
     const onMessage = ({ message, progress, status }: WebSocketAPICallback) => {
       setMessages(prevMessages => [
         message,
-        ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(1) : prevMessages),
+        ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
       setProgress(progress)
       setStatus(status)
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.SYNC_PREVIEWS, { onMessage })
+    const ws = initWebSocket(WEB_SOCKET_ACTIONS.SYNC_PREVIEWS, { onMessage, onError: refreshWebSocketInstance })
     setWebSocket(ws)
     setStatus(API_STATUS.INIT)
   }

@@ -4,6 +4,8 @@ export enum MimeTypes {
   heic = 'image/heic',
   gif = 'image/gif',
   mp4 = 'video/mp4',
+  m4v = 'video/mp4',
   avi = 'video/avi',
   wmv = 'video/wmv',
+  'x-ms-wmv' = 'video/x-ms-wmv',
 }

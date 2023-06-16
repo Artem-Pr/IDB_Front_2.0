@@ -1,11 +1,12 @@
 /* eslint functional/immutable-data: 0 */
 import { HOST } from './api-client'
-import type { WebSocketAPICallback, WebSocketAPIRequest, WebSocketAPIQuery } from './types'
-import { WEB_SOCKET_ACTIONS } from './types'
+import type { WebSocketAPICallback, WebSocketAPIQuery, WebSocketAPIRequest } from './types'
+import { API_STATUS, WEB_SOCKET_ACTIONS } from './types'
 import { errorMessage } from '../app/common/notifications'
 
 interface InitWebSocketCallback<T = undefined> {
   onMessage: (data: WebSocketAPICallback<T>) => void
+  onError: () => void
   data?: WebSocketAPIQuery['data']
 }
 
@@ -33,6 +34,12 @@ export const initWebSocket = <T = undefined>(
   action: WEB_SOCKET_ACTIONS,
   { onMessage, data }: InitWebSocketCallback<T>
 ) => {
+  const errorHandler = (errorTitle: string, error: Error, response?: WebSocketAPIRequest<T>) => {
+    console.error(error)
+    errorMessage(new Error(error.message), errorTitle, 100)
+    response && onMessage(response.data)
+  }
+
   const init = () => {
     socket = new WebSocket(HOST.WEB_SOCKET)
 
@@ -46,12 +53,14 @@ export const initWebSocket = <T = undefined>(
 
     socket.onmessage = (rawResponse: MessageEvent<string>) => {
       const response: WebSocketAPIRequest<T> = JSON.parse(rawResponse.data)
-      onMessage(response.data)
+      response.data.status === API_STATUS.ERROR
+        ? errorHandler(response.data.message, new Error(`${response.action} ERROR`), response)
+        : onMessage(response.data)
     }
 
     socket.onerror = error => {
       console.error(error)
-      errorMessage(new Error('Error'), 'WebSocket')
+      errorHandler('WebSocket', new Error('error'))
     }
   }
 

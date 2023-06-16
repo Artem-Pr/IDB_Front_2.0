@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Card, List, Progress } from 'antd'
 
 import styles from './index.module.scss'
@@ -44,15 +44,15 @@ export const FilesTest = () => {
     }
   }
 
-  useEffect(() => {
-    const refreshWebSocketInstance = () => {
-      webSocket?.close()
-      setWebSocket(null)
-      setStatus(API_STATUS.DEFAULT)
-    }
+  const refreshWebSocketInstance = useCallback(() => {
+    webSocket?.close()
+    setWebSocket(null)
+    setStatus(API_STATUS.DEFAULT)
+  }, [webSocket])
 
+  useEffect(() => {
     isStopped(status) && refreshWebSocketInstance()
-  })
+  }, [refreshWebSocketInstance, status])
 
   const handleProcessStart = () => {
     setMessages([])
@@ -61,14 +61,14 @@ export const FilesTest = () => {
     const onMessage = ({ message, progress, status, data }: WebSocketAPICallback<FilesTestAPIData>) => {
       setMessages(prevMessages => [
         message,
-        ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(1) : prevMessages),
+        ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
       setTestData(data)
       setProgress(progress)
       setStatus(status)
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.FILES_TEST, { onMessage })
+    const ws = initWebSocket(WEB_SOCKET_ACTIONS.FILES_TEST, { onMessage, onError: refreshWebSocketInstance })
     setWebSocket(ws)
     setStatus(API_STATUS.INIT)
   }
