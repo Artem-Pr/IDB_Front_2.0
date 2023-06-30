@@ -90,7 +90,7 @@ const DropZone = ({ openMenus }: Props) => {
       // eslint-disable-next-line functional/immutable-data
       uploading.totalFiles = 0
     }
-    progress === 100 && refreshLoading()
+    ;(progress === 100 || progress === Infinity) && refreshLoading()
   }, [progress])
 
   return (
