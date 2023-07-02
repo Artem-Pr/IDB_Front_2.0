@@ -4,7 +4,7 @@ export const defaultGallerySortingList = [
   {
     id: SortedFields.MIMETYPE,
     label: 'File type',
-    sort: Sort.ASC,
+    sort: null,
   },
   {
     id: SortedFields.ORIGINAL_DATE,
