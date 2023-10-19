@@ -10,8 +10,16 @@
   margin-bottom: 10px;
 }
 
+.margin-bottom-0 {
+  margin-bottom: 0px;
+}
+
 .margin-left-10 {
   margin-left: 10px;
+}
+
+.margin-left-20 {
+  margin-left: 20px;
 }
 
 .m-5 {
@@ -62,6 +70,10 @@
   align-items: center;
 }
 
+.align-items-baseline {
+  align-items: baseline;
+}
+
 .align-items-end {
   align-items: end;
 }
@@ -72,10 +84,6 @@
 
 .gap-10 {
   gap: 10px;
-}
-
-.align-items-baseline {
-  align-items: baseline;
 }
 
 .flex-wrap {

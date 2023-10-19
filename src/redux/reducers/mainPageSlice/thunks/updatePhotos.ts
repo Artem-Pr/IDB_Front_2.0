@@ -8,6 +8,7 @@ import { mainApi } from '../../../../api/api'
 import { errorMessage, successMessage } from '../../../../app/common/notifications'
 import { setDGalleryLoading } from '../mainPageSlice'
 import { fetchPhotos } from './fetchPhotos'
+import { setIsTimeDifferenceApplied } from '../../sessionSlice-reducer'
 
 export const updatePhotos =
   (updatedObjArr: UpdatedObject[]): AppThunk =>
@@ -18,6 +19,7 @@ export const updatePhotos =
     }
 
     dispatch(setDGalleryLoading(true))
+    dispatch(setIsTimeDifferenceApplied(false))
     mainApi
       .updatePhotos(updatedObjArr)
       .then(response => {

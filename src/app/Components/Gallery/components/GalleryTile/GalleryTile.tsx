@@ -97,7 +97,10 @@ export const GalleryTile = ({
         <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
           Exif
         </h4>
-        <FullscreenOutlined className={cn(styles.itemMenuIcon, 'pointer')} onClick={handleFullScreenClick(index)} />
+        <FullscreenOutlined
+          className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center')}
+          onClick={handleFullScreenClick(index)}
+        />
       </div>
       {!isJPG && (
         <div className={cn(styles.extension, { [styles.video]: extensionType === 'video' }, 'position-absolute')}>

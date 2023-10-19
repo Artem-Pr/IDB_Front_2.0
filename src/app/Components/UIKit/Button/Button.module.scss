@@ -1,0 +1,7 @@
+.btnSuccess {
+    background-color: var(--success-btn);
+
+    &:hover {
+        background-color: var(--success-btn-hover) !important;
+    }
+}

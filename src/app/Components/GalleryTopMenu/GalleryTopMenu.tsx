@@ -15,9 +15,10 @@ import { refreshPreviewSize, setFitContain } from '../../../redux/reducers/sessi
 interface Props {
   onSliderMove: (value: number) => void
   finishPreviewResize: (value: number) => void
+  setScrollUpWhenUpdating?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize }: Props) => {
+export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpWhenUpdating }: Props) => {
   const dispatch = useDispatch()
   const { previewSize } = useSelector(session)
   const uploadSelectedList = useSelector(selectedList)
@@ -45,6 +46,10 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize }: Props) => 
     })
   }
 
+  const handleSetScrollUpWhenUpdating = () => {
+    setScrollUpWhenUpdating && setScrollUpWhenUpdating(prev => !prev)
+  }
+
   return (
     <Row gutter={10} className={cn(styles.row, 'd-flex align-items-center')}>
       {Boolean(isMainPage && filesSizeTotal) && (
@@ -57,6 +62,13 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize }: Props) => 
           Fit - contain
         </Checkbox>
       </Col>
+      {isMainPage && (
+        <Col>
+          <Checkbox defaultChecked onChange={handleSetScrollUpWhenUpdating}>
+            Scroll up when updating
+          </Checkbox>
+        </Col>
+      )}
       <Col>
         {showSlider && (
           <Slider

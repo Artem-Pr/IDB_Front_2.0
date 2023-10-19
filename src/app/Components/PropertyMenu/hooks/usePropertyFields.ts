@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 
-import PropertyMenu from '../index'
 import { createKeywordsList, createUniqKeywords } from '../helpers'
 import { formatDate } from '../../../common/utils/date'
 import { FieldNames, FieldsLabels } from '../types'
@@ -20,10 +19,7 @@ const fieldLabels: Partial<FieldNames> = {
   description: 'Description',
 }
 
-export const usePropertyFields = (
-  filesArr: FieldsObj[],
-  selectedList: React.ComponentProps<typeof PropertyMenu>['selectedList']
-) => {
+export const usePropertyFields = (filesArr: FieldsObj[], selectedList: number[]) => {
   const fieldsObjElements = useMemo<Partial<FieldsLabels> | null>(() => {
     const getSumFieldsObjData = (): Partial<FieldsLabels> => {
       const selectedFiles: Partial<FieldsLabels>[] = filesArr.filter((_, i) => selectedList.includes(i))

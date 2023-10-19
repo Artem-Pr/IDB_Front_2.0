@@ -79,15 +79,16 @@ const getPrepareKeywordsFromRawExif = (exifObj: RawFullExifObj) => {
 
 export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: string): UpdatingFieldsWithPath => {
   const exifObj = exifList[tempPath]
-  const originalDate = exifObj?.DateTimeOriginal
-    ? formatDate(exifObj?.DateTimeOriginal?.rawValue as string, dateTimeFormat)
-    : '-'
+
+  const originalDateRaw = exifObj?.DateTimeOriginal || exifObj?.CreationDate || exifObj?.CreateDate
+  const originalDateFormatted = originalDateRaw ? formatDate(originalDateRaw.rawValue, dateTimeFormat) : '-'
+
   return {
     keywords: getPrepareKeywordsFromRawExif(exifObj),
     megapixels: exifObj?.Megapixels || '',
     rating: exifObj?.Rating || 0,
     description: exifObj?.Description || '',
-    originalDate,
+    originalDate: originalDateFormatted,
     tempPath,
   }
 }
@@ -178,7 +179,7 @@ export const getSameKeywords = (
       : []
   }
 
-  return compose<any, any, any, any>( //TODO: workaround, because for some reason don't want to work in WebStorm
+  return compose(
     getIntersectionArr,
     map((item: UploadingObject) => item.keywords || []),
     filterIndexed((__, index) => includes(index, selectedList))

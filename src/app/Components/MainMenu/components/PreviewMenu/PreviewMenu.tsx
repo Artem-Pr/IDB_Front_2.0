@@ -6,11 +6,15 @@ import Iframe from 'react-iframe'
 import { imagePreview } from '../../../../../redux/selectors'
 
 import styles from './PreviewMenu.module.scss'
+import { useOpenMenus } from '../../../../common/hooks/hooks'
+import { MainMenuKeys } from '../../../../../redux/types'
 
 export const PreviewMenu = () => {
   const { previewType, originalPath, originalName } = useSelector(imagePreview)
+  const { openMenuKeys } = useOpenMenus()
+  const showContent = openMenuKeys.includes(MainMenuKeys.PREVIEW)
 
-  return (
+  return showContent ? (
     <div className={cn(styles.preview)}>
       {previewType === 'video' ? (
         <Iframe
@@ -26,5 +30,5 @@ export const PreviewMenu = () => {
       )}
       <h3>{originalName}</h3>
     </div>
-  )
+  ) : null
 }

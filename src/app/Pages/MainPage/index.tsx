@@ -7,7 +7,7 @@ import { useLocation } from 'react-router-dom'
 
 import { CustomAlert, Gallery, GalleryTopMenu, MainMenu } from '../../Components'
 import { dPageGalleryPropsSelector } from '../../../redux/selectors'
-import { useMenuResize, usePreviewResize } from '../../common/hooks'
+import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import PaginationMenu from '../../Components/PaginationMenu'
 import { ResizeDivider } from '../../Components/ResizeDivider'
 
@@ -20,7 +20,7 @@ const { Content } = Layout
 
 const MainPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
-  const { imgRef, gridRef, onSliderMove, finishPreviewResize } = usePreviewResize()
+  const { imgRef, gridRef, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating } = useGridRefControl()
   const dispatch = useAppDispatch()
   const mainMenuProps = useMainMenuProps()
   const galleryProps = useGalleryProps()
@@ -55,7 +55,11 @@ const MainPage = () => {
         <Content style={{ gridTemplateRows: 'auto auto auto 1fr auto' }}>
           <CustomAlert message="Edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT)} type="info" />
           <CustomAlert message="Bulk edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT_BULK)} type="success" />
-          <GalleryTopMenu finishPreviewResize={finishPreviewResize} onSliderMove={onSliderMove} />
+          <GalleryTopMenu
+            finishPreviewResize={finishPreviewResize}
+            onSliderMove={onSliderMove}
+            setScrollUpWhenUpdating={setScrollUpWhenUpdating}
+          />
           <Gallery {...galleryProps} gridRef={gridRef} imgRef={imgRef} />
           {!isComparisonPage && <PaginationMenu />}
         </Content>

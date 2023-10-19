@@ -1,1 +1,1 @@
-export { useMainMenuItems } from './useMenuItems'
+export { useMainMenuItems } from './useMainMenuItems'

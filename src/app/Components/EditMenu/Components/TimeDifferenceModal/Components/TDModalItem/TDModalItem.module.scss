@@ -1,0 +1,15 @@
+.imageContainer {
+    margin: -10px 10px -10px 0px;
+
+    .image {
+        object-fit: contain;
+        max-height: 150px;
+        width: 150px;
+    }
+}
+
+.label {
+    :global .ant-form-item-label {
+        width: 165px;
+    }
+}

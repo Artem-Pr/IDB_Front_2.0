@@ -10,31 +10,33 @@ import momentGenerateConfig from 'rc-picker/lib/generate/moment'
 import generatePicker from 'antd/es/date-picker/generatePicker'
 
 import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash } from '../../common/utils'
-import { isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
+import { folderElement, isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
 import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
 import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice/thunks'
 import { dateTimeFormat } from '../../common/utils/date'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice/thunks'
-import type { Checkboxes, FieldsObj, UploadingObject } from '../../../redux/types'
+import type { Checkboxes, UploadingObject } from '../../../redux/types'
 
 import styles from './index.module.scss'
 import { useAppDispatch } from '../../../redux/store/store'
 import { defaultTimeStamp } from '../../common/utils/date/dateFormats'
 import { isVideoByExt } from '../../common/utils/utils'
+import { TimeDifferenceModal } from './Components'
+import {
+  useClearSelectedList,
+  useFilesList,
+  useIsExifLoading,
+  useSameKeywords,
+  useSelectAll,
+  useSelectedList,
+} from '../../common/hooks/hooks'
 
 const { TextArea } = Input
 const DatePicker = generatePicker<Moment>(momentGenerateConfig)
 
 interface Props {
-  filesArr: FieldsObj[]
-  selectedList: number[]
-  isExifLoading: boolean
-  sameKeywords: string[]
-  allKeywords: string[]
   isEditMany?: boolean
-  selectAll?: () => void
-  clearAll?: () => void
 }
 
 export interface InitialFileObject extends Checkboxes {
@@ -64,28 +66,27 @@ const initialFileObject: InitialFileObject = {
   needUpdatePreview: false,
 }
 
-const EditMenu = ({
-  filesArr,
-  selectedList,
-  sameKeywords,
-  isEditMany,
-  selectAll,
-  clearAll,
-  isExifLoading,
-  allKeywords,
-}: Props) => {
+const EditMenu = ({ isEditMany }: Props) => {
   const dispatch = useAppDispatch()
+  const { selectAll } = useSelectAll()
+  const { clearSelectedList } = useClearSelectedList()
+  const { isExifLoading } = useIsExifLoading()
+  const { sameKeywords } = useSameKeywords()
+  const { keywordsList: allKeywords } = useSelector(folderElement)
   const [form] = Form.useForm<InitialFileObject>()
   const [modal, contextHolder] = Modal.useModal()
+  const { filesArr } = useFilesList()
+  const { selectedList } = useSelectedList()
   const pathsListOptions = useSelector(pathsArrOptionsSelector)
   const isDeleting = useSelector(isDeleteProcessing)
   const { isGalleryLoading } = useSelector(main)
-  const [currentFilePath, setCurrentFilePath] = useState('')
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { isMainPage } = useCurrentPage()
+
   const { name, originalDate, rating, description, timeStamp, needUpdatePreview } = useMemo<
     UploadingObject | InitialFileObject
   >(() => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]), [filesArr, selectedList])
+
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
   const { shortName, ext, extWithoutDot } = useMemo(() => getNameParts(name), [name])
   const keywordsOptions = useMemo(() => allKeywords.map(keyword => ({ value: keyword, label: keyword })), [allKeywords])
@@ -101,13 +102,16 @@ const EditMenu = ({
   })
   const isVideoFile = useMemo(() => isVideoByExt(extWithoutDot || ''), [extWithoutDot])
 
+  const lastSelectedElemFilePath = useMemo(() => {
+    const filePath = filesArr[getLastItem(selectedList)]?.filePath || ''
+    return compose(getFilePathWithoutName, removeExtraFirstSlash)(filePath)
+  }, [filesArr, selectedList])
+
   useEffect(() => {
-    const getFilePath = () => {
-      const filePath = filesArr[getLastItem(selectedList)].filePath || ''
-      return compose(getFilePathWithoutName, removeExtraFirstSlash)(filePath)
-    }
-    isMainPage && selectedList.length && setCurrentFilePath(getFilePath())
-  }, [filesArr, isMainPage, selectedList])
+    const currentFilePath = form.getFieldValue('filePath') as string
+    const isFilePathChanged = lastSelectedElemFilePath !== currentFilePath
+    isFilePathChanged && form.setFieldsValue({ filePath: lastSelectedElemFilePath })
+  }, [form, lastSelectedElemFilePath])
 
   useEffect(() => {
     !selectedList.length && setIsSelectAllBtn(true)
@@ -122,7 +126,6 @@ const EditMenu = ({
       originalDate: originalDate === '-' ? '' : moment(originalDate, dateTimeFormat),
       timeStamp: isVideoFile ? timeStamp || defaultTimeStamp : undefined,
       keywords: sortBy(identity, sameKeywords || []),
-      filePath: currentFilePath,
       isName: false,
       isOriginalDate: false,
       isKeywords: false,
@@ -130,13 +133,25 @@ const EditMenu = ({
       isTimeStamp: false,
       needUpdatePreview: false,
     })
-  }, [form, shortName, originalDate, sameKeywords, currentFilePath, rating, description, timeStamp, isVideoFile])
+  }, [form, shortName, originalDate, sameKeywords, rating, description, timeStamp, isVideoFile])
+
+  const handleFinish = (values: InitialFileObject) => {
+    form.setFieldsValue({
+      isName: false,
+      isOriginalDate: false,
+      isKeywords: false,
+      isFilePath: false,
+      isTimeStamp: false,
+      needUpdatePreview: false,
+    })
+    onFinish(values)
+  }
 
   const handleSelectAll = useCallback(() => {
-    isSelectAllBtn && selectAll && selectAll()
-    !isSelectAllBtn && clearAll && clearAll()
+    isSelectAllBtn && selectAll()
+    !isSelectAllBtn && clearSelectedList()
     setIsSelectAllBtn(!isSelectAllBtn)
-  }, [clearAll, isSelectAllBtn, selectAll])
+  }, [clearSelectedList, isSelectAllBtn, selectAll])
 
   const isDeleteBtn = !(isMainPage && isEditMany)
   const showTimeStamp = isMainPage && isVideoFile && !isEditMany && !needUpdatePreview
@@ -152,13 +167,13 @@ const EditMenu = ({
 
   return (
     <div>
-      <Form form={form} name="editForm" onFinish={onFinish}>
+      <Form form={form} onFinish={handleFinish} disabled={disabledInputs}>
         <div className="d-flex">
           <Form.Item className={styles.checkbox} name="isRating" valuePropName="checked">
             <Checkbox>Rating:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="rating">
-            <Rate disabled={disabledInputs} />
+            <Rate />
           </Form.Item>
         </div>
 
@@ -167,7 +182,7 @@ const EditMenu = ({
             <Checkbox>Name:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="name">
-            <Input placeholder="Edit name" disabled={disabledInputs} allowClear />
+            <Input placeholder="Edit name" allowClear />
           </Form.Item>
           <span className={cn({ [styles.extension]: ext }, 'd-block')}>{ext}</span>
         </div>
@@ -177,8 +192,9 @@ const EditMenu = ({
             <Checkbox>OriginalDate:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="originalDate">
-            <DatePicker format={dateTimeFormat} placeholder="Edit date" disabled={disabledInputs} className="w-100" />
+            <DatePicker format={dateTimeFormat} placeholder="Edit date" className="w-100" showTime />
           </Form.Item>
+          <TimeDifferenceModal />
         </div>
 
         {isMainPage && (
@@ -188,10 +204,9 @@ const EditMenu = ({
             </Form.Item>
             <Form.Item className={styles.inputField} name="filePath">
               <AutoComplete
-                disabled={disabledInputs}
                 placeholder="Edit file path"
                 options={pathsListOptions}
-                onChange={(value: string) => setCurrentFilePath(value)}
+                // onChange={(value: string) => setCurrentFilePath(value)}
                 filterOption={(inputValue, option) =>
                   option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                 }
@@ -205,13 +220,7 @@ const EditMenu = ({
             <Checkbox>Keywords:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="keywords">
-            <Select
-              className={styles.keywords}
-              mode="tags"
-              placeholder="Edit keywords"
-              disabled={disabledInputs}
-              options={keywordsOptions}
-            />
+            <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" options={keywordsOptions} />
           </Form.Item>
         </div>
 
@@ -220,13 +229,7 @@ const EditMenu = ({
             <Checkbox>Description:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="description">
-            <TextArea
-              className={styles.textArea}
-              placeholder="maxLength is 2000"
-              maxLength={2000}
-              disabled={disabledInputs}
-              showCount
-            />
+            <TextArea className={styles.textArea} placeholder="maxLength is 2000" maxLength={2000} showCount />
           </Form.Item>
         </div>
 
@@ -236,7 +239,7 @@ const EditMenu = ({
               <Checkbox>TimeStamp:</Checkbox>
             </Form.Item>
             <Form.Item className={styles.inputField} name="timeStamp">
-              <Input placeholder="Edit time stamp" disabled={disabledInputs} />
+              <Input placeholder="Edit time stamp" />
             </Form.Item>
             <Button className="margin-left-10" onClick={refreshTimeStamp}>
               refresh
@@ -252,13 +255,7 @@ const EditMenu = ({
 
         <div className={cn(styles.buttonsWrapper, 'd-flex')}>
           <Form.Item className={styles.button}>
-            <Button
-              className="w-100"
-              type="primary"
-              htmlType="submit"
-              loading={isGalleryLoading || isExifLoading}
-              disabled={disabledInputs}
-            >
+            <Button className="w-100" type="primary" htmlType="submit" loading={isGalleryLoading || isExifLoading}>
               Edit
             </Button>
           </Form.Item>
@@ -269,6 +266,7 @@ const EditMenu = ({
                 onClick={handleSelectAll}
                 type="primary"
                 loading={isGalleryLoading || isExifLoading}
+                disabled={false}
               >
                 {isSelectAllBtn ? 'Select all' : 'Unselect all'}
               </Button>
@@ -278,14 +276,7 @@ const EditMenu = ({
 
         {isDeleteBtn && (
           <Form.Item className={styles.deleteButton}>
-            <Button
-              className="w-100"
-              type="primary"
-              disabled={disabledInputs}
-              loading={isDeleting}
-              onClick={handleDelete}
-              danger
-            >
+            <Button className="w-100" type="primary" loading={isDeleting} onClick={handleDelete} danger>
               Delete
             </Button>
           </Form.Item>

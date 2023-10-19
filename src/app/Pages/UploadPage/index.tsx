@@ -20,7 +20,7 @@ import {
   updateUploadingFilesArr,
   clearUploadingState,
 } from '../../../redux/reducers/uploadSlice'
-import { useUpdateFields, useMenuResize, usePreviewResize } from '../../common/hooks'
+import { useUpdateFields, useMenuResize, useGridRefControl } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
 import { ResizeDivider } from '../../Components/ResizeDivider'
@@ -36,7 +36,7 @@ const statusMessage: Record<LoadingStatus, string> = {
 
 const UploadPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
-  const { imgRef, gridRef, onSliderMove, finishPreviewResize } = usePreviewResize()
+  const { imgRef, gridRef, onSliderMove, finishPreviewResize } = useGridRefControl()
   const dispatch = useDispatch()
   const { isExifLoading, uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywordsSelector)

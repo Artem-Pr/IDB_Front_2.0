@@ -5,21 +5,17 @@ import { Button, Col, Row } from 'antd'
 import { useSelector } from 'react-redux'
 
 import styles from './index.module.scss'
-import { dPageGalleryPropsSelector, upload, uploadPageGalleryPropsSelector } from '../../../redux/selectors'
+import { upload } from '../../../redux/selectors'
 import { useUpdateFields } from '../../common/hooks'
-import { FieldsObj } from '../../../redux/types'
 import { PropertyFields } from './components'
+import { useCurrentPage, useFilesList, useSelectedList } from '../../common/hooks/hooks'
 
-interface Props {
-  filesArr: FieldsObj[]
-  selectedList: number[]
-  isUploadingPage: boolean
-}
-
-const PropertyMenu = ({ filesArr, selectedList, isUploadingPage }: Props) => {
+const PropertyMenu = () => {
+  const { isUploadingPage } = useCurrentPage()
   const { isExifLoading } = useSelector(upload)
-  const { imageArr } = useSelector(isUploadingPage ? uploadPageGalleryPropsSelector : dPageGalleryPropsSelector)
-  const { updateUploadingFiles } = useUpdateFields(imageArr)
+  const { filesArr } = useFilesList()
+  const { selectedList } = useSelectedList()
+  const { updateUploadingFiles } = useUpdateFields(filesArr)
 
   const handleLoadExifDetails = () => {
     selectedList.length && updateUploadingFiles(filesArr[selectedList[0]].tempPath)

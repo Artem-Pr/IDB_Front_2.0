@@ -7,15 +7,13 @@ import KeywordsMenu from '../../../KeywordsMenu'
 
 import styles from '../../index.module.scss'
 import { useCurrentPage } from '../../../../common/hooks'
+import { useRemoveKeyword, useUniqKeywords } from '../../../../common/hooks/hooks'
 
-interface Props {
-  removeKeyword: (keyword: string) => void
-  uniqKeywords: string[]
-}
-
-export const KeywordsMenuWrapper = ({ uniqKeywords, removeKeyword }: Props) => {
+export const KeywordsMenuWrapper = () => {
   const [isKeywordsMenuLoading] = useState(false)
   const { isUploadingPage } = useCurrentPage()
+  const { removeKeyword } = useRemoveKeyword()
+  const { uniqKeywords } = useUniqKeywords()
 
   return (
     <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>

@@ -7,7 +7,7 @@ import { initialState } from './uploadState'
 import type { FullExifPayload } from './types'
 
 const uploadSlice = createSlice({
-  name: 'upload',
+  name: 'uploadPage',
   initialState,
   reducers: {
     updateUploadingFilesArr(state, action: PayloadAction<UploadingObject[]>) {

@@ -14,6 +14,10 @@ $tileExtensionBackground: rgba(64, 64, 64, 25%);
 $tileVideoColor: red;
 
 :root {
+  --success: limegreen;
+  --success-btn: limegreen;
+  --success-btn-hover: lightgreen;
+
   --sortable-item-background: white;
   --sortable-item-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(34, 33, 81, 0.15);
   --sortable-item-button-color: #b7b7b7;

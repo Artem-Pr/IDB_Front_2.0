@@ -18,6 +18,7 @@ import {
   main,
 } from '../../../../../redux/selectors'
 import { MainMenuKeys } from '../../../../../redux/types'
+import { useCurrentPage } from '../../../../common/hooks'
 
 export const useMainMenuProps = () => {
   const dispatch = useDispatch()
@@ -27,9 +28,7 @@ export const useMainMenuProps = () => {
   const uniqKeywords = useSelector(allDownloadingKeywordsSelector)
   const sameKeywords = useSelector(dAllSameKeywordsSelector)
   const { currentFolderPath } = useSelector(curFolderInfo)
-
-  const query = new URLSearchParams(location.search)
-  const isComparisonPage = Boolean(query.get('comparison'))
+  const { isComparisonPage } = useCurrentPage()
 
   return useMemo(
     () => ({

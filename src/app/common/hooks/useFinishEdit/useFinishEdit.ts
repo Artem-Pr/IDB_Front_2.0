@@ -17,7 +17,7 @@ import { formatDate } from '../../utils/date'
 import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
 import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
 import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
-import { folderElement } from '../../../../redux/selectors'
+import { folderElement, session } from '../../../../redux/selectors'
 import type { InitialFileObject } from '../../../Components/EditMenu'
 import { useAppDispatch } from '../../../../redux/store/store'
 
@@ -55,6 +55,7 @@ export const useFinishEdit = ({
 }: Props) => {
   const dispatch = useAppDispatch()
   const { keywordsList } = useSelector(folderElement)
+  const { isTimesDifferenceApplied } = useSelector(session)
   const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords, isMainPage)
 
   const sendUpdatedFiles = useCallback(
@@ -70,16 +71,19 @@ export const useFinishEdit = ({
     }: SendUpdatedFilesProps) => {
       const selectedFiles = filesArr
         .filter((_, idx) => selectedList.includes(idx))
-        .map(({ _id, keywords }) => ({
+        .map(({ _id, keywords, originalDate }) => ({
           _id,
           keywords,
           name: currentName,
+          originalDate,
         }))
       const newNamesArr: string[] = getRenamedObjects(selectedFiles).map(({ name }) => name)
       const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFiles)
       const newKeywordsArr: string[][] = getFilesWithUpdatedKeywords(selectedFilesWithoutSameKeywords, keywords).map(
         ({ keywords }) => keywords || []
       )
+      const getNewOriginalDate = (idx: number) =>
+        isTimesDifferenceApplied ? selectedFiles[idx].originalDate : currentOriginalDate
 
       const getUpdatedFields = (idx: number): UpdatedObject['updatedFields'] => {
         const {
@@ -94,7 +98,7 @@ export const useFinishEdit = ({
         } = checkboxes
         return {
           originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] : undefined,
-          originalDate: (isOriginalDate && currentOriginalDate) || undefined,
+          originalDate: (isOriginalDate && getNewOriginalDate(idx)) || undefined,
           keywords: isKeywords ? newKeywordsArr[idx] : undefined,
           filePath: isFilePath ? currentFilePath : undefined,
           rating: isRating ? rating : undefined,
@@ -110,7 +114,7 @@ export const useFinishEdit = ({
 
       updatedFiles.length && compose(dispatch, updatePhotos)(updatedFiles)
     },
-    [dispatch, filesArr, sameKeywords, selectedList]
+    [dispatch, filesArr, isTimesDifferenceApplied, sameKeywords, selectedList]
   )
 
   const onFinish = useCallback(

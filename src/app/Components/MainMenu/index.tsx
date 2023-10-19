@@ -5,79 +5,27 @@ import { Collapse, Layout } from 'antd'
 import { difference } from 'ramda'
 
 import styles from './index.module.scss'
-import { FieldsObj, MainMenuKeys } from '../../../redux/types'
-import { folderElement, imagePreview, session } from '../../../redux/selectors'
+import { MainMenuKeys } from '../../../redux/types'
+import { folderElement, session } from '../../../redux/selectors'
 import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { useMainMenuItems } from './hooks'
 import { useAppDispatch } from '../../../redux/store/store'
+import { useClearSelectedList, useOpenMenus, useUpdateOpenMenus } from '../../common/hooks/hooks'
 
 const { Sider } = Layout
-const { Panel } = Collapse
-
-interface PanelHeaderProps {
-  title: string
-  icon: React.ReactNode
-}
-
-const PanelHeader = ({ title, icon }: PanelHeaderProps) => (
-  <div className={styles.panelHeader}>
-    {icon}
-    <span>{title}</span>
-  </div>
-)
 
 interface Props {
-  filesArr: FieldsObj[]
-  selectedList: number[]
-  openKeys: MainMenuKeys[]
-  isExifLoading: boolean
-  uniqKeywords: string[]
-  sameKeywords: string[]
-  currentFolderPath: string
-  updateOpenMenus: (value: MainMenuKeys[]) => void
-  clearSelectedList: () => void
-  selectAll: () => void
-  removeKeyword: (keyword: string) => void
-  removeFiles: () => void
-  isComparisonPage?: boolean
   menuRef: MutableRefObject<HTMLDivElement | null>
 }
 
-const MainMenu = ({
-  filesArr,
-  selectedList,
-  openKeys,
-  updateOpenMenus,
-  removeKeyword,
-  currentFolderPath,
-  isComparisonPage,
-  clearSelectedList,
-  selectAll,
-  isExifLoading,
-  uniqKeywords,
-  sameKeywords,
-  removeFiles,
-  menuRef,
-}: Props) => {
+const MainMenu = ({ menuRef }: Props) => {
   const dispatch = useAppDispatch()
   const { asideMenuWidth: defaultMenuWidth } = useSelector(session)
   const { keywordsList: allKeywords } = useSelector(folderElement)
-  const { originalPath } = useSelector(imagePreview)
-  const { collapseMenu, extraMenu } = useMainMenuItems({
-    filesArr,
-    selectedList,
-    clearSelectedList,
-    selectAll,
-    isExifLoading,
-    allKeywords,
-    removeFiles,
-    sameKeywords,
-    uniqKeywords,
-    removeKeyword,
-    isComparisonPage,
-    updateOpenMenus,
-    currentFolderPath,
-  })
+  const { collapseMenu, extraMenu } = useMainMenuItems()
+  const { setOpenMenus } = useUpdateOpenMenus()
+  const { clearSelectedList } = useClearSelectedList()
+  const { openMenuKeys } = useOpenMenus()
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())
@@ -87,7 +35,7 @@ const MainMenu = ({
     const keysArr = Array.isArray(keys) ? (keys as MainMenuKeys[]) : ([keys] as MainMenuKeys[])
 
     const clearSelectedListWhenCloseEditors = () => {
-      const closingKey = difference(openKeys, keysArr)[0]
+      const closingKey = difference(openMenuKeys, keysArr)[0]
       const isClosingPropertyAfterEdit =
         closingKey === MainMenuKeys.PROPERTIES &&
         !keysArr.includes(MainMenuKeys.EDIT) &&
@@ -97,36 +45,27 @@ const MainMenu = ({
       needClearing && clearSelectedList()
     }
 
-    const openingKey = difference(keysArr, openKeys)[0]
+    const openingKey = difference(keysArr, openMenuKeys)[0]
     const openKeysSet = new Set(keysArr)
     openingKey === MainMenuKeys.EDIT && openKeysSet.delete(MainMenuKeys.EDIT_BULK) && clearSelectedList()
     openingKey === MainMenuKeys.EDIT_BULK && openKeysSet.delete(MainMenuKeys.EDIT) && clearSelectedList()
     clearSelectedListWhenCloseEditors()
-    updateOpenMenus(Array.from(openKeysSet))
+    setOpenMenus(Array.from(openKeysSet))
   }
 
   return (
     <Sider theme="light" className={styles.sider} ref={menuRef} width={defaultMenuWidth}>
-      <Collapse defaultActiveKey={openKeys} activeKey={openKeys} onChange={handleTitleClick} expandIconPosition="end">
-        {collapseMenu.map(({ key, label, icon, Children }) => {
-          const hidePreview = key === MainMenuKeys.PREVIEW && !originalPath
-          const hideChildren = key === MainMenuKeys.PREVIEW && !openKeys.includes(key)
-
-          return (
-            <Panel
-              key={key}
-              className={`collapse-panel-${key}`}
-              header={<PanelHeader title={label} icon={icon} />}
-              collapsible={hidePreview ? 'disabled' : undefined}
-            >
-              {!hideChildren && <Children />}
-            </Panel>
-          )
-        })}
-      </Collapse>
-      {extraMenu.map(({ key, Children }) => (
+      <Collapse
+        className={styles.panelBody}
+        defaultActiveKey={openMenuKeys}
+        activeKey={openMenuKeys}
+        onChange={handleTitleClick}
+        expandIconPosition="end"
+        items={collapseMenu}
+      />
+      {extraMenu.map(({ key, children }) => (
         <div key={key} className={styles.extraMenu}>
-          <Children />
+          {children}
         </div>
       ))}
     </Sider>

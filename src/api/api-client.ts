@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export enum HOST {
-  HTTP = 'http://localhost:5000',
+  HTTP = 'http://localhost:5002',
   WEB_SOCKET = 'ws://localhost:5001',
 }
 

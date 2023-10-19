@@ -72,7 +72,7 @@ const Gallery = ({
   const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
 
   useEffect(() => {
-    !isLoading && gridRef.current?.scrollIntoView()
+    // !isLoading && gridRef.current?.scrollIntoView()
   }, [gridRef, isLoading])
 
   const handleImageClick = useCallback(

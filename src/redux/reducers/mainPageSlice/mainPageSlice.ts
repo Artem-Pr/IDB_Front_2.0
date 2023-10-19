@@ -8,7 +8,7 @@ import { initialState } from './mainPageState'
 import { defaultGallerySortingList } from './helpers'
 
 const mainPageSlice = createSlice({
-  name: 'upload',
+  name: 'mainPage',
   initialState,
   reducers: {
     resetSort(state) {

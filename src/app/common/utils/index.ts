@@ -26,3 +26,4 @@ export {
 } from './utils'
 export { getUniqArr } from './getUniqArr'
 export { formatSize } from './formatSize'
+export { copyToClipboard } from './copyToClipboard'

@@ -4,6 +4,12 @@ import { createRoot } from 'react-dom/client'
 
 import { Provider } from 'react-redux'
 
+import dayjs from 'dayjs'
+
+import duration from 'dayjs/plugin/duration'
+
+dayjs.extend(duration)
+
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import store from './redux/store/store'

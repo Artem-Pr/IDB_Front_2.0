@@ -7,6 +7,7 @@ import { mainApi } from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
 
 interface State {
+  globalLoader: boolean
   isFullSizePreview: boolean
   savePreview: boolean
   unusedKeywords: string[]
@@ -17,6 +18,7 @@ interface State {
 }
 
 export const initialState: State = {
+  globalLoader: false,
   isFullSizePreview: false,
   savePreview: true,
   unusedKeywords: [],
@@ -30,6 +32,9 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
+    setGlobalLoader(state, action: PayloadAction<boolean>) {
+      state.globalLoader = action.payload
+    },
     setSavePreview(state, action: PayloadAction<boolean>) {
       state.savePreview = action.payload
     },
@@ -52,6 +57,7 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  setGlobalLoader,
   setSavePreview,
   setIsFullSizePreview,
   setMaxImagePreviewSlideLimit,

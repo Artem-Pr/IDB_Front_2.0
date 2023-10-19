@@ -1,4 +1,5 @@
 import type { Key } from 'react'
+export type { Duration } from 'dayjs/plugin/duration'
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType =
@@ -85,6 +86,8 @@ export interface FullExifBasic {
   Subject: Keywords
   Megapixels: number | ''
   DateTimeOriginal: ExifDateTime
+  CreateDate: ExifDateTime
+  CreationDate: ExifDateTime // original date for iPhone video
 }
 
 export interface FullExifObj extends FullExifBasic {

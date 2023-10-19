@@ -20,6 +20,10 @@
     padding: 10px;
   }
 
+  .panelBody {
+    min-width: 340px;
+  }
+
   :global {
     .collapse-panel-sort .ant-collapse-content-box {
       padding: 10px;
