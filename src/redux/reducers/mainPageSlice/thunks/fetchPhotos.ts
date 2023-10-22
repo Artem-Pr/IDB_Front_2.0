@@ -43,8 +43,7 @@ export const fetchPhotos =
         anyDescription,
       },
       galleryPagination,
-      gallerySortingList,
-      randomSort,
+      sort: { gallerySortingList, randomSort },
     } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
     const folderPath = isNameComparison ? '' : currentFolderInfo.currentFolderPath

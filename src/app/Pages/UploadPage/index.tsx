@@ -36,7 +36,7 @@ const statusMessage: Record<LoadingStatus, string> = {
 
 const UploadPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
-  const { imgRef, gridRef, onSliderMove, finishPreviewResize } = useGridRefControl()
+  const { refs, onSliderMove, finishPreviewResize } = useGridRefControl()
   const dispatch = useDispatch()
   const { isExifLoading, uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywordsSelector)
@@ -100,7 +100,7 @@ const UploadPage = () => {
           {showTopGalleryMenu && (
             <GalleryTopMenu onSliderMove={onSliderMove} finishPreviewResize={finishPreviewResize} />
           )}
-          <Gallery {...galleryProps} imgRef={imgRef} gridRef={gridRef} />
+          <Gallery {...galleryProps} refs={refs} />
         </Content>
       </Layout>
     </Layout>

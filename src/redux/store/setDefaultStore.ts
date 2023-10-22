@@ -12,6 +12,7 @@ import {
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
+  setGroupedByDate,
   setIncludeAllSearchTags,
   setIsAnyDescriptionFilter,
   setMimeTypes,
@@ -55,6 +56,7 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setGalleryPagination(localStorageAPI.galleryPagination))
   dispatch(setGallerySortingList(localStorageAPI.gallerySortingList))
   dispatch(setRandomSort(localStorageAPI.randomSort))
+  dispatch(setGroupedByDate(localStorageAPI.groupedByDate))
 
   dispatch(setCurrentFolderPath(localStorageAPI.currentFolderPath))
   dispatch(setCurrentFolderKey(localStorageAPI.currentFolderKey))

@@ -16,6 +16,7 @@ import {
   setExcludeTags,
   setGalleryPagination,
   setGallerySortingList,
+  setGroupedByDate,
   setIncludeAllSearchTags,
   setIsAnyDescriptionFilter,
   setMimeTypes,
@@ -172,6 +173,13 @@ listenerMiddleware.startListening({
   actionCreator: setRandomSort,
   effect: action => {
     localStorageAPI.randomSort = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setGroupedByDate,
+  effect: action => {
+    localStorageAPI.groupedByDate = action.payload
   },
 })
 

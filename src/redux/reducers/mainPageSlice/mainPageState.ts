@@ -16,13 +16,16 @@ export interface State {
   dOpenMenus: MainMenuKeys[]
   searchMenu: SearchMenu
   galleryPagination: GalleryPagination
-  gallerySortingList: GallerySortingItem[]
-  randomSort: boolean
   filesSizeSum: number
   isExifLoading: boolean
   isGalleryLoading: boolean
   isDeleteProcessing: boolean
   preview: Preview
+  sort: {
+    gallerySortingList: GallerySortingItem[]
+    randomSort: boolean
+    groupedByDate: boolean
+  }
 }
 
 export const initialState: State = {
@@ -48,8 +51,6 @@ export const initialState: State = {
     totalPages: 1,
     pageSizeOptions: [10, 20, 50, 100],
   },
-  gallerySortingList: defaultGallerySortingList,
-  randomSort: false,
   filesSizeSum: 0,
   isExifLoading: false,
   isGalleryLoading: false,
@@ -58,5 +59,10 @@ export const initialState: State = {
     previewType: undefined,
     originalName: '',
     originalPath: '',
+  },
+  sort: {
+    gallerySortingList: defaultGallerySortingList,
+    randomSort: false,
+    groupedByDate: false,
   },
 }

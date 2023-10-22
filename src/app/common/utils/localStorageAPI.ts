@@ -83,6 +83,15 @@ export const localStorageAPI = {
     return randomSortJSON ? JSON.parse(randomSortJSON) : false
   },
 
+  // groupedByDate
+  set groupedByDate(groupedByDate: boolean) {
+    localStorage.setItem('groupedByDate', JSON.stringify(groupedByDate))
+  },
+  get groupedByDate() {
+    const groupedByDateJSON = localStorage.getItem('groupedByDate')
+    return groupedByDateJSON ? JSON.parse(groupedByDateJSON) : false
+  },
+
   // currentFolderPath
   set currentFolderPath(currentFolderPath: string) {
     localStorage.setItem('currentFolderPath', currentFolderPath)

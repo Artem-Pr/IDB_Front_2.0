@@ -12,13 +12,16 @@ const mainPageSlice = createSlice({
   initialState,
   reducers: {
     resetSort(state) {
-      state.gallerySortingList = defaultGallerySortingList
+      state.sort.gallerySortingList = defaultGallerySortingList
     },
     setRandomSort(state, action: PayloadAction<boolean>) {
-      state.randomSort = action.payload
+      state.sort.randomSort = action.payload
     },
     setGallerySortingList(state, action: PayloadAction<GallerySortingItem[]>) {
-      state.gallerySortingList = action.payload
+      state.sort.gallerySortingList = action.payload
+    },
+    setGroupedByDate(state, action: PayloadAction<boolean>) {
+      state.sort.groupedByDate = action.payload
     },
     setRawFiles(state, action: PayloadAction<DownloadingRawObject[]>) {
       state.rawFiles = action.payload
@@ -105,6 +108,7 @@ const mainPageSlice = createSlice({
 
 export const {
   setGallerySortingList,
+  setGroupedByDate,
   addToDSelectedList,
   removeFromDSelectedList,
   setRawFiles,

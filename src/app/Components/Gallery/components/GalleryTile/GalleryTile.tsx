@@ -1,4 +1,4 @@
-import React, { MouseEvent, SyntheticEvent } from 'react'
+import React, { MouseEvent, SyntheticEvent, memo } from 'react'
 import cn from 'classnames'
 
 import { FullscreenOutlined } from '@ant-design/icons'
@@ -23,7 +23,7 @@ interface Props {
   selectedList: number[]
   isEditMode: boolean
   fitContain: boolean
-  handleImgRefAdd: (ref: HTMLDivElement | null) => void
+  onImgRefAdd: (ref: HTMLDivElement | null, idx: number) => void
   handleImageClick: (i: number, preview?: RawPreview) => () => void
   getExif: (tempPath: string) => (e: MouseEvent) => void
   handleFullScreenClick: (index: number) => () => void
@@ -31,90 +31,96 @@ interface Props {
   onMouseEnter: (index: number | null) => void
 }
 
-export const GalleryTile = ({
-  index,
-  isShiftHover,
-  preview,
-  name,
-  tempPath,
-  originalPath,
-  fullSizeJpgPath,
-  type,
-  previewSize,
-  selectedList,
-  isEditMode,
-  fitContain,
-  handleImgRefAdd,
-  handleImageClick,
-  getExif,
-  handleFullScreenClick,
-  handleImageOnLoad,
-  onMouseEnter,
-}: Props) => {
-  const extensionTypeTouple = type.split('/')
-  const extensionType = extensionTypeTouple[0]
-  const extension = extensionTypeTouple[1]
-  const isJPG = extension === 'jpeg' || extension === 'jpg'
+export const GalleryTile = memo(
+  ({
+    index,
+    isShiftHover,
+    preview,
+    name,
+    tempPath,
+    originalPath,
+    fullSizeJpgPath,
+    type,
+    previewSize,
+    selectedList,
+    isEditMode,
+    fitContain,
+    onImgRefAdd,
+    handleImageClick,
+    getExif,
+    handleFullScreenClick,
+    handleImageOnLoad,
+    onMouseEnter,
+  }: Props) => {
+    const extensionTypeTouple = type.split('/')
+    const extensionType = extensionTypeTouple[0]
+    const extension = extensionTypeTouple[1]
+    const isJPG = extension === 'jpeg' || extension === 'jpg'
 
-  const handleMouseEnter = () => {
-    clearTimeout(timeout)
-    onMouseEnter(index)
-  }
-  const handleMouseLeave = () => {
-    timeout = setTimeout(() => {
-      onMouseEnter(null)
-    }, 300)
-  }
+    const handleMouseEnter = () => {
+      clearTimeout(timeout)
+      onMouseEnter(index)
+    }
+    const handleMouseLeave = () => {
+      timeout = setTimeout(() => {
+        onMouseEnter(null)
+      }, 300)
+    }
 
-  return (
-    <div
-      ref={handleImgRefAdd}
-      style={{ height: `${previewSize}px` }}
-      className={cn(
-        styles.item,
-        {
-          active: selectedList.includes(index),
-          pointer: isEditMode,
-          [styles.shiftHover]: isShiftHover,
-        },
-        'position-relative',
-        'pointer'
-      )}
-      onClick={handleImageClick(index, { originalPath, name, type, fullSizeJpgStatic: fullSizeJpgPath })}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    const handleImgRefAdd = (ref: HTMLDivElement | null) => {
+      onImgRefAdd(ref, index)
+    }
+
+    return (
       <div
+        ref={handleImgRefAdd}
+        style={{ height: `${previewSize}px` }}
         className={cn(
-          styles.itemMenu,
-          `${isEditMode ? 'd-none' : 'd-flex'}`,
-          'position-absolute',
-          'h-100',
-          'flex-column',
-          'justify-content-between'
+          styles.item,
+          {
+            active: selectedList.includes(index),
+            pointer: isEditMode,
+            [styles.shiftHover]: isShiftHover,
+          },
+          'position-relative',
+          'pointer'
         )}
+        onClick={handleImageClick(index, { originalPath, name, type, fullSizeJpgStatic: fullSizeJpgPath })}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
-          Exif
-        </h4>
-        <FullscreenOutlined
-          className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center')}
-          onClick={handleFullScreenClick(index)}
-        />
-      </div>
-      {!isJPG && (
-        <div className={cn(styles.extension, { [styles.video]: extensionType === 'video' }, 'position-absolute')}>
-          {extension}
+        <div
+          className={cn(
+            styles.itemMenu,
+            `${isEditMode ? 'd-none' : 'd-flex'}`,
+            'position-absolute',
+            'h-100',
+            'flex-column',
+            'justify-content-between'
+          )}
+        >
+          <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
+            Exif
+          </h4>
+          <FullscreenOutlined
+            className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center')}
+            onClick={handleFullScreenClick(index)}
+          />
         </div>
-      )}
-      <img
-        style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
-        className={cn(styles.img, 'd-none')}
-        src={preview}
-        alt="image-preview"
-        onLoad={handleImageOnLoad}
-      />
-      <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
-    </div>
-  )
-}
+        {!isJPG && (
+          <div className={cn(styles.extension, { [styles.video]: extensionType === 'video' }, 'position-absolute')}>
+            {extension}
+          </div>
+        )}
+        <img
+          style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
+          className={cn(styles.img, 'd-none')}
+          src={preview}
+          alt="image-preview"
+          onLoad={handleImageOnLoad}
+        />
+        <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
+      </div>
+    )
+  }
+)

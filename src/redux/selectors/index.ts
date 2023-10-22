@@ -14,6 +14,7 @@ export const uploadingFiles = (state: RootState) => state.uploadReducer.uploadin
 export const uploadingBlobs = (state: RootState) => state.uploadReducer.uploadingBlobs
 export const selectedList = (state: RootState) => state.uploadReducer.selectedList
 export const main = (state: RootState) => state.mainPageReducer
+export const sort = (state: RootState) => state.mainPageReducer.sort
 export const dOpenMenus = (state: RootState) => state.mainPageReducer.dOpenMenus
 export const searchMenu = (state: RootState) => state.mainPageReducer.searchMenu
 export const downloadingFiles = (state: RootState) => state.mainPageReducer.downloadingFiles

@@ -20,7 +20,7 @@ const { Content } = Layout
 
 const MainPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
-  const { imgRef, gridRef, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating } = useGridRefControl()
+  const { refs, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating } = useGridRefControl()
   const dispatch = useAppDispatch()
   const mainMenuProps = useMainMenuProps()
   const galleryProps = useGalleryProps()
@@ -60,7 +60,7 @@ const MainPage = () => {
             onSliderMove={onSliderMove}
             setScrollUpWhenUpdating={setScrollUpWhenUpdating}
           />
-          <Gallery {...galleryProps} gridRef={gridRef} imgRef={imgRef} />
+          <Gallery {...galleryProps} refs={refs} />
           {!isComparisonPage && <PaginationMenu />}
         </Content>
       </Layout>

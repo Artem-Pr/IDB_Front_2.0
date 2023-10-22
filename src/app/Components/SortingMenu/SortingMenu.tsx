@@ -10,10 +10,15 @@ import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { SortableList } from './components'
 
-import { main } from '../../../redux/selectors'
+import { sort } from '../../../redux/selectors'
 import type { GallerySortingItem } from '../../../redux/types'
 import { Sort, SortedFields } from '../../../redux/types'
-import { resetSort, setGallerySortingList, setRandomSort } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import {
+  resetSort,
+  setGallerySortingList,
+  setGroupedByDate,
+  setRandomSort,
+} from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { DragHandle, SortableItem } from './components/SortableList/components'
 
 import styles from './SortingMenu.module.scss'
@@ -40,7 +45,7 @@ const switcherOptions = [
 
 export const SortingMenu = () => {
   const dispatch = useAppDispatch()
-  const { gallerySortingList, randomSort } = useSelector(main)
+  const { gallerySortingList, randomSort, groupedByDate } = useSelector(sort)
 
   const handleSortingChange = (updatedList: GallerySortingItem[]) => {
     dispatch(setGallerySortingList(updatedList))
@@ -66,6 +71,10 @@ export const SortingMenu = () => {
     dispatch(setRandomSort(e.target.checked))
   }
 
+  const handleGroupByDateChange = (e: CheckboxChangeEvent) => {
+    dispatch(setGroupedByDate(e.target.checked))
+  }
+
   return (
     <div className="d-flex flex-column gap-10">
       <SortableList
@@ -86,11 +95,17 @@ export const SortingMenu = () => {
         )}
       />
 
-      <div className="d-flex justify-content-between align-items-center gap-10">
+      <div className="d-flex flex-column">
         <Checkbox checked={randomSort} onChange={handleRandomSortChange}>
           Random sort
         </Checkbox>
 
+        <Checkbox checked={groupedByDate} onChange={handleGroupByDateChange}>
+          Grouped by date
+        </Checkbox>
+      </div>
+
+      <div className="d-flex justify-content-end align-items-center gap-10">
         <Button className="margin-left-auto" onClick={handleReset}>
           Reset
         </Button>
