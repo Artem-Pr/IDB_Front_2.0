@@ -137,11 +137,13 @@ const EditMenu = ({ isEditMany }: Props) => {
 
   const handleFinish = (values: InitialFileObject) => {
     form.setFieldsValue({
+      isRating: false,
       isName: false,
       isOriginalDate: false,
       isKeywords: false,
       isFilePath: false,
       isTimeStamp: false,
+      isDescription: false,
       needUpdatePreview: false,
     })
     onFinish(values)
@@ -206,7 +208,6 @@ const EditMenu = ({ isEditMany }: Props) => {
               <AutoComplete
                 placeholder="Edit file path"
                 options={pathsListOptions}
-                // onChange={(value: string) => setCurrentFilePath(value)}
                 filterOption={(inputValue, option) =>
                   option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                 }

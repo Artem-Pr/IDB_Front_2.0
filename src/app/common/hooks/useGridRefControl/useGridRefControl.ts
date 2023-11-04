@@ -25,11 +25,11 @@ export const useGridRefControl = () => {
   )
 
   useEffect(() => {
-    const scrollAndClear = () => {
+    const scrollToTop = () => {
       groupedByDate ? imgFirstGroupNameRef.current?.scrollIntoView() : gridRef.current[0]?.scrollIntoView()
     }
 
-    !isGalleryLoading && scrollAndClear()
+    scrollUpWhenUpdating && !isGalleryLoading && scrollToTop()
   }, [isGalleryLoading, scrollUpWhenUpdating, groupedByDate])
 
   const onSliderMove = (currentHeight: number) => {
