@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { createKeywordsList, createUniqKeywords } from '../helpers'
 import { formatDate } from '../../../common/utils/date'
-import { FieldNames, FieldsLabels } from '../types'
-import { FieldsObj } from '../../../../redux/types'
+import type { FieldNames, FieldsLabels } from '../types'
+import type { FieldsObj } from '../../../../redux/types'
 
 const fieldLabels: Partial<FieldNames> = {
   rating: 'Rating',
@@ -19,16 +19,24 @@ const fieldLabels: Partial<FieldNames> = {
   description: 'Description',
 }
 
+type FieldsLabelsWithArrayDescription = Partial<
+  Omit<FieldsLabels, 'description'> & { description?: (string | undefined)[] }
+>
+
 export const usePropertyFields = (filesArr: FieldsObj[], selectedList: number[]) => {
   const fieldsObjElements = useMemo<Partial<FieldsLabels> | null>(() => {
     const getSumFieldsObjData = (): Partial<FieldsLabels> => {
       const selectedFiles: Partial<FieldsLabels>[] = filesArr.filter((_, i) => selectedList.includes(i))
-      return selectedFiles.reduce(
+      const sumFieldsObjData = selectedFiles.reduce<FieldsLabelsWithArrayDescription>(
         (accum, { rating, description, originalDate, changeDate, size, imageSize, megapixels, type, keywords }) => ({
           rating: accum.rating === rating ? rating : '...',
           name: '...',
           filePath: '...',
-          description: accum.description === description ? description : '...',
+          description: accum.description
+            ? Array.from(new Set([...accum.description, description]))
+            : description
+            ? [description]
+            : undefined,
           keywords: createUniqKeywords(accum.keywords, keywords),
           originalDate: accum.originalDate === originalDate ? originalDate : '...',
           changeDate:
@@ -39,8 +47,16 @@ export const usePropertyFields = (filesArr: FieldsObj[], selectedList: number[])
           megapixels: accum.megapixels === megapixels ? megapixels : '...',
           type: accum.type === type ? type : '...',
           size: (accum.size || 0) + (size || 0),
-        })
+        }),
+        {}
       )
+
+      const sumFieldsObjDataWithStringifiedDescription: Partial<FieldsLabels> = {
+        ...sumFieldsObjData,
+        description: sumFieldsObjData?.description?.join(';\n'),
+      }
+
+      return sumFieldsObjDataWithStringifiedDescription
     }
 
     const getOneFieldObjData = (): Partial<FieldsLabels> => {

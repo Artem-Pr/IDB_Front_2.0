@@ -19,7 +19,7 @@ export const getLabelValue = (fieldName: keyof FieldsLabels, fieldsObj: Partial<
         <Rate defaultValue={(fieldsObj[fieldName] as number) || undefined} disabled />
       )
     case 'description':
-      return <TextArea style={{ resize: 'vertical' }} defaultValue={fieldsObj[fieldName] as string} disabled />
+      return <TextArea style={{ resize: 'vertical' }} value={fieldsObj[fieldName]} disabled />
     default:
       return fieldsObj[fieldName]
   }
