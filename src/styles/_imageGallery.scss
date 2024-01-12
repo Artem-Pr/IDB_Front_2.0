@@ -2,34 +2,17 @@
   height: 100%;
 
   & .image-gallery-content {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: minmax(0, 100%) 1fr;
     height: 100%;
+    overflow: hidden;
+    width: 100%;
 
-    & .image-gallery-slide-wrapper {
-      height: 100%;
-
-      & .image-gallery-swipe {
+    & .image-gallery-slide-wrapper .image-gallery-swipe {
         height: 100%;
-
-        & .image-gallery-slides {
-          height: 100%;
-
-          & .image-gallery-slide {
-            height: 100%;
-
-            & > div {
-              height: 100%;
-
-              & img {
-                height: 100%;
-                width: 100%;
-                object-fit: contain;
-              }
-            }
-          }
-        }
       }
     }
-  }
 }
 
 .image-gallery-slides {
@@ -42,4 +25,13 @@
 }
 .image-gallery-slide .image-gallery-image {
   height: 100%;
+}
+
+.image-gallery-content .image-gallery-slide .image-gallery-image {
+  max-height: 100%;
+}
+
+.image-gallery-thumbnail .image-gallery-thumbnail-image {
+  max-height: 200px;
+  object-fit: contain;
 }

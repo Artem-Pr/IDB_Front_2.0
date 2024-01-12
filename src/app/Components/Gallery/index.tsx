@@ -6,14 +6,12 @@ import ImageGallery from 'react-image-gallery'
 
 import styles from './index.module.scss'
 import type { ExifFilesList, FieldsObj } from '../../../redux/types'
-import { setPreview } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { getLastItem, isVideo } from '../../common/utils/utils'
-import { session, sort, uploadingBlobs } from '../../../redux/selectors'
-import type { RawPreview } from './type'
-import { GalleryTile } from './components'
-import { useImageGalleryData, useSelectWithShift } from './hooks'
+import { session, sort } from '../../../redux/selectors'
+import { GalleryTile, ImageGalleryMenu } from './components'
+import { useImageArrayGroupedByDate, useImageClick, useImageGalleryData, useSelectWithShift } from './hooks'
 import { MainMenuKeys } from '../../../redux/types'
 import { useGetFullExifList } from './hooks/useGefFullExifList'
+import { setPreviewPlaying } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('d-none')
@@ -51,11 +49,11 @@ const Gallery = ({
   refs: { gridRef, imgRef, imgFirstGroupNameRef },
 }: GalleryProps) => {
   const dispatch = useDispatch()
-  const blobFiles = useSelector(uploadingBlobs)
   const { fitContain, previewSize } = useSelector(session)
   const { groupedByDate } = useSelector(sort)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
+  const [showPreviewList, setShowPreviewList] = useState(true)
   const isEditMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
   const isTemplateMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
   const isPropertiesMenu = useMemo(() => openMenus.includes(MainMenuKeys.PROPERTIES), [openMenus])
@@ -69,87 +67,58 @@ const Gallery = ({
     addToSelectedList,
     removeFromSelectedList,
   })
-  const { galleryArr, setShowPlayButton, showPlayButton, showFullscreenButton, setShowFullscreenButton } =
-    useImageGalleryData(imageArr, isMainPage)
+  const { galleryArr, playing, setPlaying } = useImageGalleryData(imageArr, isMainPage)
 
-  const imageArrayGroupedByDate = useMemo(
-    () =>
-      imageArr.reduce<Record<string, (FieldsObj & { index: number })[]>>((accum, file, idx) => {
-        const originalDateWithoutTime = file.originalDate.split(' ')[0]
-        const fileWithIndex = { ...file, index: idx }
-
-        return {
-          ...accum,
-          [originalDateWithoutTime]: accum[originalDateWithoutTime]
-            ? [...accum[originalDateWithoutTime], fileWithIndex]
-            : [fileWithIndex],
-        }
-      }, {}),
-    [imageArr]
-  )
+  const { imageArrayGroupedByDate } = useImageArrayGroupedByDate(imageArr)
 
   const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
 
-  const handleImageClick = useCallback(
-    (i: number, preview?: RawPreview) => () => {
-      const updateFilesArr = () => {
-        addToSelectedList([i])
-      }
-      const selectOnlyOne = () => {
-        clearSelectedList()
-        updateFilesArr()
-      }
-      const selectAnyQuantity = () => {
-        selectedList.includes(i) ? removeFromSelectedList([i]) : updateFilesArr()
-      }
+  const { handleImageClick } = useImageClick({
+    selectedList,
+    isShiftPressed,
+    isEditMenu,
+    isPropertiesMenu,
+    isTemplateMenu,
+    hoveredIndex,
+    selectWithShift,
+    removeFromSelectedList,
+    addToSelectedList,
+    clearSelectedList,
+  })
 
-      const lastSelectedElemIndex = getLastItem(selectedList)
-
-      isShiftPressed && !isEditMenu && (lastSelectedElemIndex || hoveredIndex) && selectWithShift(lastSelectedElemIndex)
-      !isShiftPressed && isPropertiesMenu && !isEditMenu && !isTemplateMenu && selectOnlyOne()
-      !isShiftPressed && isEditMenu && selectOnlyOne()
-      !isShiftPressed && isTemplateMenu && selectAnyQuantity()
-      preview &&
-        dispatch(
-          setPreview({
-            previewType: isVideo(preview.type) ? 'video' : 'image',
-            originalName: preview.name,
-            originalPath: preview.fullSizeJpgStatic || preview.originalPath || blobFiles[preview.name],
-          })
-        )
-    },
-    [
-      addToSelectedList,
-      blobFiles,
-      clearSelectedList,
-      dispatch,
-      hoveredIndex,
-      isEditMenu,
-      isPropertiesMenu,
-      isShiftPressed,
-      isTemplateMenu,
-      removeFromSelectedList,
-      selectWithShift,
-      selectedList,
-    ]
+  const imageGalleryMenu = useCallback(
+    (onFullScreenClick: React.MouseEventHandler<HTMLElement>, isFullscreen: boolean) => (
+      <ImageGalleryMenu
+        onFullScreenClick={onFullScreenClick}
+        onShowPreviewClick={() => setShowPreviewList(prev => !prev)}
+        isFullscreen={isFullscreen}
+        showPreview={showPreviewList}
+      />
+    ),
+    [showPreviewList]
   )
 
   const handleSlide = (currentIndex: number) => {
     setCurrentImage(currentIndex)
-    setShowPlayButton(true)
-    setShowFullscreenButton(true)
+    setPlaying(false)
   }
 
   const handleImageModalClose = () => {
-    setShowImageModal(false)
+    const stopVideoAndCloseModal = () => {
+      setPlaying(false)
+      setTimeout(() => setShowImageModal(false), 100)
+    }
+
+    playing ? stopVideoAndCloseModal() : setShowImageModal(false)
   }
 
   const handleFullScreenClick = useCallback(
-    (i: number) => () => {
+    (i: number) => {
       setShowImageModal(true)
       setCurrentImage(i)
+      dispatch(setPreviewPlaying(false))
     },
-    []
+    [dispatch]
   )
 
   const handleImgRefAdd = useCallback(
@@ -183,32 +152,32 @@ const Gallery = ({
               {date}
             </h2>
             <div
+              className={cn(styles.wrapper, 'd-grid grid-wrapper')}
               ref={ref => handleGridRefAdd(ref, dateGroupIdx)}
               style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
-              className={cn(styles.wrapper, 'd-grid grid-wrapper')}
             >
               {imageArrayGroupedByDate[date].map(
                 ({ fullSizeJpgPath, preview, name, tempPath, originalPath, type, _id, index }) => (
                   <GalleryTile
-                    key={preview + _id}
-                    index={index}
-                    isShiftHover={isShiftHover(index)}
-                    preview={preview}
-                    name={name}
-                    tempPath={tempPath}
-                    originalPath={originalPath}
+                    fitContain={fitContain}
                     fullSizeJpgPath={fullSizeJpgPath}
-                    type={type}
+                    getExif={getExif}
+                    index={index}
+                    isEditMode={isEditMode}
+                    isShiftHover={isShiftHover(index)}
+                    key={preview + _id}
+                    name={name}
+                    onFullScreenClick={handleFullScreenClick}
+                    onImageClick={handleImageClick}
+                    onImageOnLoad={handleImageOnLoad}
+                    onImgRefAdd={handleImgRefAdd}
+                    onMouseEnter={setHoveredIndex}
+                    originalPath={originalPath}
+                    preview={preview}
                     previewSize={previewSize}
                     selectedList={selectedList}
-                    isEditMode={isEditMode}
-                    fitContain={fitContain}
-                    onImgRefAdd={handleImgRefAdd}
-                    handleImageClick={handleImageClick}
-                    getExif={getExif}
-                    handleFullScreenClick={handleFullScreenClick}
-                    handleImageOnLoad={handleImageOnLoad}
-                    onMouseEnter={setHoveredIndex}
+                    tempPath={tempPath}
+                    type={type}
                   />
                 )
               )}
@@ -217,31 +186,31 @@ const Gallery = ({
         ))
       ) : (
         <div
+          className={cn(styles.wrapper, 'd-grid')}
           ref={ref => handleGridRefAdd(ref, 0)}
           style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
-          className={cn(styles.wrapper, 'd-grid')}
         >
           {imageArr.map(({ fullSizeJpgPath, preview, name, tempPath, originalPath, type, _id }, i) => (
             <GalleryTile
-              key={preview + _id}
-              index={i}
-              isShiftHover={isShiftHover(i)}
-              preview={preview}
-              name={name}
-              tempPath={tempPath}
-              originalPath={originalPath}
+              fitContain={fitContain}
               fullSizeJpgPath={fullSizeJpgPath}
-              type={type}
+              getExif={getExif}
+              index={i}
+              isEditMode={isEditMode}
+              isShiftHover={isShiftHover(i)}
+              key={preview + _id}
+              name={name}
+              onFullScreenClick={handleFullScreenClick}
+              onImageClick={handleImageClick}
+              onImageOnLoad={handleImageOnLoad}
+              onImgRefAdd={handleImgRefAdd}
+              onMouseEnter={setHoveredIndex}
+              originalPath={originalPath}
+              preview={preview}
               previewSize={previewSize}
               selectedList={selectedList}
-              isEditMode={isEditMode}
-              fitContain={fitContain}
-              onImgRefAdd={handleImgRefAdd}
-              handleImageClick={handleImageClick}
-              getExif={getExif}
-              handleFullScreenClick={handleFullScreenClick}
-              handleImageOnLoad={handleImageOnLoad}
-              onMouseEnter={setHoveredIndex}
+              tempPath={tempPath}
+              type={type}
             />
           ))}
         </div>
@@ -255,34 +224,37 @@ const Gallery = ({
             <Switch className="margin-left-10" onChange={handleJSONModeChange} checked={isJSONMode} />
           </>
         }
-        width={'60%'}
         footer={null}
-        open={showModal}
         onCancel={handleShowModalClose}
+        open={showModal}
+        width={'60%'}
       >
         <pre className="overflow-y-scroll">{exif}</pre>
       </Modal>
 
-      {isMainPage ? (
+      {isMainPage && galleryArr.length ? (
         <Modal
-          open={showImageModal}
-          wrapClassName="image-modal"
-          closable={false}
           centered
-          width="90%"
+          closable={false}
           footer={null}
           onCancel={handleImageModalClose}
+          open={showImageModal}
+          width="90%"
+          wrapClassName="image-modal"
         >
           <ImageGallery
+            infinite={false}
             items={galleryArr}
+            onSlide={handleSlide}
+            renderFullscreenButton={imageGalleryMenu}
+            showFullscreenButton={true}
+            showThumbnails={showPreviewList}
             slideDuration={0}
             slideInterval={3000}
             startIndex={currentImage}
-            showThumbnails={false}
-            onSlide={handleSlide}
-            showPlayButton={showPlayButton}
-            showFullscreenButton={showFullscreenButton}
+            lazyLoad
             showIndex
+            useTranslate3D
           />
         </Modal>
       ) : (

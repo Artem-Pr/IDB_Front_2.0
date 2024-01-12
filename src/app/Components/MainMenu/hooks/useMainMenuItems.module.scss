@@ -1,0 +1,12 @@
+.collapsePreviewItem {
+    &:global.ant-collapse-item-active {
+        display: grid;
+        grid-template-rows: auto 1fr;
+    }
+
+    :global {
+        .ant-collapse-content-box {
+            height: 100%;
+        }
+    }
+}

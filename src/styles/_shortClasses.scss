@@ -1,3 +1,8 @@
+.parent-size {
+  height: 100%;
+  width: 100%;
+}
+
 .margin-left-auto {
   margin-left: auto;
 }
@@ -47,7 +52,7 @@
 }
 
 .d-none {
-  display: none;
+  display: none !important;
 }
 
 .justify-content-between {

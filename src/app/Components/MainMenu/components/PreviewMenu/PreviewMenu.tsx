@@ -1,34 +1,47 @@
+import type { MutableRefObject } from 'react'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import cn from 'classnames'
-import Iframe from 'react-iframe'
 
 import { imagePreview } from '../../../../../redux/selectors'
 
 import styles from './PreviewMenu.module.scss'
-import { useOpenMenus } from '../../../../common/hooks/hooks'
-import { MainMenuKeys } from '../../../../../redux/types'
+import { GalleryMediaItem } from '../../../Gallery/components'
+import { useAppDispatch } from '../../../../../redux/store/store'
+import { setPreviewPlaying, startVideoPreview } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { isVideo } from '../../../../common/utils/utils'
 
-export const PreviewMenu = () => {
-  const { previewType, originalPath, originalName } = useSelector(imagePreview)
-  const { openMenuKeys } = useOpenMenus()
-  const showContent = openMenuKeys.includes(MainMenuKeys.PREVIEW)
+export interface PreviewMenuProps {
+  videoPreviewRef?: MutableRefObject<HTMLDivElement | null>
+}
+export const PreviewMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
+  const dispatch = useAppDispatch()
+  const { previewType, originalPath, originalName, preview, playing, stop } = useSelector(imagePreview)
 
-  return showContent ? (
-    <div className={cn(styles.preview)}>
-      {previewType === 'video' ? (
-        <Iframe
-          url={originalPath || ''}
-          width="80vm"
-          id="myId"
-          className={styles.previewImg}
-          position="relative"
-          allowFullScreen
-        />
-      ) : (
-        <img className={styles.previewImg} src={originalPath} alt={originalName} />
-      )}
+  const handleSetPlaying = (value: boolean) => {
+    dispatch(setPreviewPlaying(value))
+  }
+
+  const handleStart = () => {
+    dispatch(startVideoPreview())
+  }
+
+  const isPlayingVideo = isVideo(previewType) && Boolean(playing)
+
+  return (
+    <div className={cn(styles.preview, { [styles.notPlayingVideo]: !isPlayingVideo })} ref={videoPreviewRef}>
+      <GalleryMediaItem
+        originalPath={originalPath || ''}
+        playing={playing}
+        preview={preview}
+        setPlaying={handleSetPlaying}
+        setStop={handleStart}
+        stop={stop}
+        type={previewType}
+        muted
+        usePlaceholder
+      />
       <h3>{originalName}</h3>
     </div>
-  ) : null
+  )
 }

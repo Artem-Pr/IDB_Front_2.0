@@ -1,4 +1,6 @@
 import type { Key } from 'react'
+
+import { MimeTypes } from './MimeTypes'
 export type { Duration } from 'dayjs/plugin/duration'
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
@@ -133,7 +135,7 @@ export interface UploadingObject extends Omit<AxiosPreviews, 'fullSizeJpg'>, Upd
   changeDate: number
   name: string
   size: number
-  type: string
+  type: MimeTypes
   originalPath?: string
   timeStamp?: string
   needUpdatePreview?: boolean
@@ -158,7 +160,7 @@ export interface DownloadingRawObject
     Omit<AxiosPreviews, 'fullSizeJpg'>,
     Omit<DownloadingObject, keyof UploadingObject> {
   changeDate: number
-  mimetype: string
+  mimetype: MimeTypes
   originalName: string
   size: number
   originalPath: string
@@ -224,9 +226,12 @@ export interface DirectoryInfo extends CheckedDirectoryRequest {
 }
 
 export interface Preview {
-  previewType: PreviewType
-  originalPath: string | undefined
   originalName: string
+  originalPath: string | undefined
+  playing?: boolean
+  preview: string
+  previewType: MimeTypes
+  stop?: boolean
 }
 
 export interface BlobDispatchPayload {

@@ -1,0 +1,28 @@
+.showPreviewButton {
+    right: 50px;
+    bottom: 0;
+
+    svg,
+    svg:hover {
+        height: 66px;
+        width: 80px;
+        padding: 0;
+        margin: 0;
+        transform: rotate(90deg) !important;
+    }
+
+    svg:hover {
+        transform: scale(1.1) rotate(90deg) !important;
+    }
+}
+
+.hidePreview {
+    svg,
+    svg:hover {
+        transform: rotate(-90deg) !important;
+    }
+
+    svg:hover {
+        transform: scale(1.1) rotate(-90deg) !important;
+    }
+}

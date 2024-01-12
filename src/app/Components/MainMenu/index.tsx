@@ -11,18 +11,21 @@ import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
 import { useMainMenuItems } from './hooks'
 import { useAppDispatch } from '../../../redux/store/store'
 import { useClearSelectedList, useOpenMenus, useUpdateOpenMenus } from '../../common/hooks/hooks'
+import { setPreviewPlaying, stopVideoPreview } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 
 const { Sider } = Layout
 
+const isMainMenuKeysArray = (keys: string | string[]): keys is MainMenuKeys[] => Array.isArray(keys)
 interface Props {
   menuRef: MutableRefObject<HTMLDivElement | null>
+  videoPreviewRef?: MutableRefObject<HTMLDivElement | null>
 }
 
-const MainMenu = ({ menuRef }: Props) => {
+const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
   const dispatch = useAppDispatch()
   const { asideMenuWidth: defaultMenuWidth } = useSelector(session)
   const { keywordsList: allKeywords } = useSelector(folderElement)
-  const { collapseMenu, extraMenu } = useMainMenuItems()
+  const { collapseMenu, extraMenu } = useMainMenuItems(videoPreviewRef)
   const { setOpenMenus } = useUpdateOpenMenus()
   const { clearSelectedList } = useClearSelectedList()
   const { openMenuKeys } = useOpenMenus()
@@ -31,8 +34,13 @@ const MainMenu = ({ menuRef }: Props) => {
     !allKeywords.length && dispatch(fetchKeywordsList())
   }, [allKeywords.length, dispatch])
 
+  useEffect(() => {
+    // eslint-disable-next-line functional/immutable-data
+    videoPreviewRef?.current && (videoPreviewRef.current.style.height = menuRef?.current?.style.width || '')
+  }, [menuRef, videoPreviewRef])
+
   const handleTitleClick = (keys: string | string[]) => {
-    const keysArr = Array.isArray(keys) ? (keys as MainMenuKeys[]) : ([keys] as MainMenuKeys[])
+    const keysArr = isMainMenuKeysArray(keys) ? keys : ([keys] as MainMenuKeys[])
 
     const clearSelectedListWhenCloseEditors = () => {
       const closingKey = difference(openMenuKeys, keysArr)[0]
@@ -51,6 +59,10 @@ const MainMenu = ({ menuRef }: Props) => {
     openingKey === MainMenuKeys.EDIT_BULK && openKeysSet.delete(MainMenuKeys.EDIT) && clearSelectedList()
     clearSelectedListWhenCloseEditors()
     setOpenMenus(Array.from(openKeysSet))
+    setTimeout(() => {
+      dispatch(setPreviewPlaying(false))
+      dispatch(stopVideoPreview())
+    }, 300) // Wait for collapse animation
   }
 
   return (

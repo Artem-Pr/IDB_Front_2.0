@@ -1,2 +1,3 @@
 export { GalleryTile } from './GalleryTile'
-export { VideoGalleryPreview } from './VideoGalleryPreview'
+export { GalleryMediaItem } from './GalleryMediaItem'
+export { ImageGalleryMenu } from './ImageGalleryMenu'

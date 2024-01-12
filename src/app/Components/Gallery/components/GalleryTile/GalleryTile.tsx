@@ -6,51 +6,52 @@ import { FullscreenOutlined } from '@ant-design/icons'
 import styles from './GalleryTile.module.scss'
 import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
 import { RawPreview } from '../../type'
+import { MimeTypes } from '../../../../../redux/types/MimeTypes'
 
 // eslint-disable-next-line functional/no-let
 let timeout: NodeJS.Timeout
 
 interface Props {
-  index: number
-  isShiftHover: boolean
-  preview: string
-  name: string
-  tempPath: string
-  originalPath: string | undefined
+  fitContain: boolean
   fullSizeJpgPath: string
-  type: string
+  getExif: (tempPath: string) => (e: MouseEvent) => void
+  index: number
+  isEditMode: boolean
+  isShiftHover: boolean
+  name: string
+  onFullScreenClick: (index: number) => void
+  onImageClick: (i: number, preview?: RawPreview) => void
+  onImageOnLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => void
+  onImgRefAdd: (ref: HTMLDivElement | null, idx: number) => void
+  onMouseEnter: (index: number | null) => void
+  originalPath: string | undefined
+  preview: string
   previewSize: number
   selectedList: number[]
-  isEditMode: boolean
-  fitContain: boolean
-  onImgRefAdd: (ref: HTMLDivElement | null, idx: number) => void
-  handleImageClick: (i: number, preview?: RawPreview) => () => void
-  getExif: (tempPath: string) => (e: MouseEvent) => void
-  handleFullScreenClick: (index: number) => () => void
-  handleImageOnLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => void
-  onMouseEnter: (index: number | null) => void
+  tempPath: string
+  type: MimeTypes
 }
 
 export const GalleryTile = memo(
   ({
-    index,
-    isShiftHover,
-    preview,
-    name,
-    tempPath,
-    originalPath,
+    fitContain,
     fullSizeJpgPath,
-    type,
+    getExif,
+    index,
+    isEditMode,
+    isShiftHover,
+    name,
+    onFullScreenClick,
+    onImageClick,
+    onImageOnLoad,
+    onImgRefAdd,
+    onMouseEnter,
+    originalPath,
+    preview,
     previewSize,
     selectedList,
-    isEditMode,
-    fitContain,
-    onImgRefAdd,
-    handleImageClick,
-    getExif,
-    handleFullScreenClick,
-    handleImageOnLoad,
-    onMouseEnter,
+    tempPath,
+    type,
   }: Props) => {
     const extensionTypeTouple = type.split('/')
     const extensionType = extensionTypeTouple[0]
@@ -71,10 +72,18 @@ export const GalleryTile = memo(
       onImgRefAdd(ref, index)
     }
 
+    const handleFullScreenClick = (event: MouseEvent) => {
+      event.stopPropagation()
+      onFullScreenClick(index)
+    }
+
+    const handleImageClick = (event: MouseEvent) => {
+      event.stopPropagation()
+      onImageClick(index, { originalPath, name, type, preview, fullSizeJpgStatic: fullSizeJpgPath })
+    }
+
     return (
       <div
-        ref={handleImgRefAdd}
-        style={{ height: `${previewSize}px` }}
         className={cn(
           styles.item,
           {
@@ -85,9 +94,11 @@ export const GalleryTile = memo(
           'position-relative',
           'pointer'
         )}
-        onClick={handleImageClick(index, { originalPath, name, type, fullSizeJpgStatic: fullSizeJpgPath })}
+        onClick={handleImageClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        ref={handleImgRefAdd}
+        style={{ height: `${previewSize}px` }}
       >
         <div
           className={cn(
@@ -104,7 +115,7 @@ export const GalleryTile = memo(
           </h4>
           <FullscreenOutlined
             className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center')}
-            onClick={handleFullScreenClick(index)}
+            onClick={handleFullScreenClick}
           />
         </div>
         {!isJPG && (
@@ -113,11 +124,11 @@ export const GalleryTile = memo(
           </div>
         )}
         <img
-          style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
-          className={cn(styles.img, 'd-none')}
-          src={preview}
           alt="image-preview"
-          onLoad={handleImageOnLoad}
+          className={cn(styles.img, 'd-none')}
+          onLoad={onImageOnLoad}
+          src={preview}
+          style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
         />
         <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
       </div>

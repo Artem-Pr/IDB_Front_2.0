@@ -6,6 +6,7 @@ import {
   MainMenuKeys,
   Preview,
 } from '../../types'
+import { MimeTypes } from '../../types/MimeTypes'
 import { defaultGallerySortingList } from './helpers'
 import { SearchMenu } from './types'
 
@@ -56,9 +57,12 @@ export const initialState: State = {
   isGalleryLoading: false,
   isDeleteProcessing: false,
   preview: {
-    previewType: undefined,
     originalName: '',
     originalPath: '',
+    playing: false,
+    preview: '',
+    previewType: MimeTypes.jpeg,
+    stop: false,
   },
   sort: {
     gallerySortingList: defaultGallerySortingList,

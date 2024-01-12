@@ -1,0 +1,1 @@
+export { useImageClick } from './useImageClick'

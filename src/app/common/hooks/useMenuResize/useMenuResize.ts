@@ -8,29 +8,38 @@ import { setAsideMenuWidth } from '../../../../redux/reducers/sessionSlice-reduc
 const MIN_ASIDE_WIDTH = 200
 const THROTTLE_TIME = 10
 
-const applyNewWidth = (
-  oldWidthNumber: number,
-  moveX: number,
+interface UpdateWithProps {
+  oldWidth: string
+  moveX: number
   menuRef: React.MutableRefObject<HTMLDivElement | null>
-) => {
+  videoPreviewRef: React.MutableRefObject<HTMLDivElement | null>
+}
+
+interface ApplyNewWidthProps extends Omit<UpdateWithProps, 'oldWidth'> {
+  oldWidthNumber: number
+}
+
+const applyNewWidth = ({ oldWidthNumber, moveX, menuRef, videoPreviewRef }: ApplyNewWidthProps) => {
   const newWidth = `${oldWidthNumber + moveX}px`
   menuRef.current && (menuRef.current.style.width = newWidth)
   menuRef.current && (menuRef.current.style.flexBasis = newWidth)
   menuRef.current && (menuRef.current.style.maxWidth = newWidth)
+  videoPreviewRef.current && (videoPreviewRef.current.style.height = newWidth)
 }
 
-const updateWidth = (oldWidth: string, moveX: number, menuRef: React.MutableRefObject<HTMLDivElement | null>) => {
+const updateWidth = ({ oldWidth, moveX, menuRef, videoPreviewRef }: UpdateWithProps): void => {
   const oldWidthNumber = parseInt(oldWidth)
   const widthIsBiggerThenMin = oldWidthNumber > MIN_ASIDE_WIDTH || moveX > 0
-  widthIsBiggerThenMin && applyNewWidth(oldWidthNumber, moveX, menuRef)
+  widthIsBiggerThenMin && applyNewWidth({ oldWidthNumber, moveX, menuRef, videoPreviewRef })
 }
 
 export const useMenuResize = () => {
   const menuRef = useRef<HTMLDivElement | null>(null)
+  const videoPreviewRef = useRef<HTMLDivElement | null>(null)
   const handleDividerMove = useRef(
     throttle((moveX: number) => {
       const width = menuRef.current?.style.width
-      width && updateWidth(width, moveX, menuRef)
+      width && updateWidth({ oldWidth: width, moveX, menuRef, videoPreviewRef })
     }, THROTTLE_TIME)
   ).current
   const dispatch = useDispatch()
@@ -39,5 +48,5 @@ export const useMenuResize = () => {
     dispatch(setAsideMenuWidth(parseInt(menuRef.current?.style.width || '0')))
   }, [dispatch])
 
-  return { menuRef, handleDividerMove, handleFinishResize }
+  return { menuRef, videoPreviewRef, handleDividerMove, handleFinishResize }
 }

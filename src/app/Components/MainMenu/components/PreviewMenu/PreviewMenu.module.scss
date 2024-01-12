@@ -1,8 +1,19 @@
 .preview {
-  height: 100% !important;
+  position: relative;
   cursor: default !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
+  min-height: 200px;
+  display: grid;
+  grid-template-rows: 1fr auto;
+
+  h3 {
+    margin: 0
+  }
+}
+
+.notPlayingVideo {
+  height: 100% !important;
 }
 
 .previewImg {

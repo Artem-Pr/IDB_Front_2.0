@@ -44,7 +44,7 @@ export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
 export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) =>
   sortBy<K>(compose(toLower, prop(String(fieldName))))
-export const isVideo = (contentType: string) => contentType.startsWith('video')
+export const isVideo = (contentType: MimeTypes) => contentType.startsWith('video')
 export const isVideoByExt = (fileExtension: string) => {
   const lowerCaseExt = fileExtension.toLowerCase()
   return lowerCaseExt in MimeTypes ? isVideo(MimeTypes[lowerCaseExt as keyof typeof MimeTypes]) : false

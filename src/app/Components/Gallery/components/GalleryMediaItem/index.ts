@@ -1,0 +1,1 @@
+export { GalleryMediaItem } from './GalleryMediaItem'

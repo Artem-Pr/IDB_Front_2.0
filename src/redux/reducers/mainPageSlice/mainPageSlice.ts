@@ -103,38 +103,54 @@ const mainPageSlice = createSlice({
     setPreview(state, action: PayloadAction<Preview>) {
       state.preview = action.payload
     },
+    setPreviewPlaying(state, action: PayloadAction<boolean>) {
+      state.preview.playing = action.payload
+    },
+    stopVideoPreview(state) {
+      state.preview.stop = true
+    },
+    startVideoPreview(state) {
+      state.preview.stop = false
+    },
+    cleanPreview(state) {
+      state.preview = initialState.preview
+    },
   },
 })
 
 export const {
+  addToDSelectedList,
+  cleanPreview,
+  clearDSelectedList,
+  clearDownloadingState,
+  removeFromDSelectedList,
+  resetSearchMenu,
+  resetSort,
+  selectAllD,
+  setDGalleryLoading,
+  setDLoading,
+  setDateRange,
+  setDescriptionFilter,
+  setDownloadingFiles,
+  setExcludeTags,
+  setFilesSizeSum,
+  setGalleryPagination,
   setGallerySortingList,
   setGroupedByDate,
-  addToDSelectedList,
-  removeFromDSelectedList,
-  setRawFiles,
-  setDownloadingFiles,
-  updateDOpenMenus,
-  clearDSelectedList,
-  selectAllD,
-  setRatingFilter,
-  setSearchFileName,
   setIncludeAllSearchTags,
-  setSearchTags,
-  setExcludeTags,
-  setMimeTypes,
-  setDateRange,
   setIsAnyDescriptionFilter,
-  setDescriptionFilter,
-  clearDownloadingState,
-  setGalleryPagination,
-  setDLoading,
-  setDGalleryLoading,
   setIsDeleteProcessing,
-  setFilesSizeSum,
+  setMimeTypes,
   setPreview,
+  setPreviewPlaying,
   setRandomSort,
-  resetSort,
-  resetSearchMenu,
+  setRatingFilter,
+  setRawFiles,
+  setSearchFileName,
+  setSearchTags,
+  startVideoPreview,
+  stopVideoPreview,
+  updateDOpenMenus,
 } = mainPageSlice.actions
 
 export const mainPageReducer = mainPageSlice.reducer

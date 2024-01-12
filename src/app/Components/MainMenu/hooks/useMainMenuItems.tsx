@@ -1,6 +1,7 @@
-import React, { ReactNode, useMemo } from 'react'
+import React, { useMemo } from 'react'
+import type { MutableRefObject, ReactNode } from 'react'
 
-import { CollapseProps } from 'antd'
+import type { CollapseProps } from 'antd'
 
 import {
   CreditCardFilled,
@@ -13,6 +14,8 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 
+import styles from './useMainMenuItems.module.scss'
+
 import { MainMenuKeys } from '../../../../redux/types'
 
 import { useCurrentPage } from '../../../common/hooks'
@@ -22,15 +25,20 @@ import { SortingMenu } from '../../SortingMenu'
 import { SearchMenu } from '../../SearchMenu'
 import PropertyMenu from '../../PropertyMenu'
 import EditMenu from '../../EditMenu'
-
+import type { PreviewMenuProps } from '../components/PreviewMenu/PreviewMenu'
 export interface MenuItem {
   key: MainMenuKeys
   label: ReactNode
   icon: JSX.Element
   children: ReactNode
+  ref?: MutableRefObject<HTMLDivElement | null>
 }
 
-const menuItems: MenuItem[] = [
+interface MenuItemsProps {
+  videoPreviewRef?: PreviewMenuProps['videoPreviewRef']
+}
+
+const menuItems = ({ videoPreviewRef }: MenuItemsProps): MenuItem[] => [
   {
     key: MainMenuKeys.SORT,
     label: 'Sort',
@@ -77,7 +85,7 @@ const menuItems: MenuItem[] = [
     key: MainMenuKeys.PREVIEW,
     label: 'Preview',
     icon: <PictureOutlined />,
-    children: <PreviewMenu />,
+    children: <PreviewMenu videoPreviewRef={videoPreviewRef} />,
   },
 ]
 
@@ -108,7 +116,7 @@ interface MenuItemReturningValue {
   extraMenu: Pick<MenuItem, 'key' | 'children'>[]
 }
 
-export const useMainMenuItems = (): MenuItemReturningValue => {
+export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivElement | null>): MenuItemReturningValue => {
   const { isMainPage, isUploadingPage, isComparisonPage } = useCurrentPage()
 
   return useMemo(() => {
@@ -119,11 +127,18 @@ export const useMainMenuItems = (): MenuItemReturningValue => {
 
     return {
       extraMenu: [buttonsMenu].filter(menuItemsFilter),
-      collapseMenu: menuItems.filter(menuItemsFilter).map(({ key, label, icon, children }) => ({
-        key,
-        label: <PanelHeader label={label} icon={icon} />,
-        children,
-      })),
+      collapseMenu: menuItems({ videoPreviewRef })
+        .filter(menuItemsFilter)
+        .map(({ key, label, icon, children }) => {
+          const className = key === MainMenuKeys.PREVIEW ? styles.collapsePreviewItem : ''
+
+          return {
+            key,
+            label: <PanelHeader label={label} icon={icon} />,
+            children,
+            className,
+          }
+        }),
     }
-  }, [isComparisonPage, isMainPage, isUploadingPage])
+  }, [isComparisonPage, isMainPage, isUploadingPage, videoPreviewRef])
 }

@@ -1,4 +1,5 @@
 import { FullExifObj, NameParts, UploadingObject } from '../../redux/types'
+import { MimeTypes } from '../../redux/types/MimeTypes'
 
 export const foldersSliceFolderTree = [
   {
@@ -103,7 +104,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2805824,
     tempPath: 'temp/47e5ff7410eeeee9506ca446b9498ad8',
     fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
-    type: 'image/jpeg',
+    type: MimeTypes.jpeg,
     rating: 0,
     description: '',
     DBFullPathFullSize: '',
@@ -120,7 +121,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2191001,
     tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
     fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
-    type: 'image/jpeg',
+    type: MimeTypes.jpeg,
     rating: 0,
     description: '',
     DBFullPathFullSize: '',
@@ -137,7 +138,7 @@ export const uploadingFilesMock: UploadingObject[] = [
     size: 2812368,
     tempPath: 'temp/33237a85357bbb9c4d7c8da122ef3c0a',
     fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
-    type: 'image/jpeg',
+    type: MimeTypes.jpeg,
     rating: 0,
     description: '',
     DBFullPathFullSize: '',
