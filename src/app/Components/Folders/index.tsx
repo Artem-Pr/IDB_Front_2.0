@@ -13,10 +13,12 @@ import styles from './index.module.scss'
 import { curFolderInfo, folderElement, pathsArr, pathsArrOptionsSelector } from '../../../redux/selectors'
 import {
   checkDirectory,
+  fetchPathsList,
   setCurrentFolderKey,
   setCurrentFolderPath,
   setExpandedKeys,
   setFolderTree,
+  setIsDynamicFolders,
   setPathsArr,
   setShowSubfolders,
 } from '../../../redux/reducers/foldersSlice-reducer'
@@ -32,7 +34,7 @@ const Folders = () => {
   const [modal, contextHolder] = Modal.useModal()
   const { folderTree } = useSelector(folderElement)
   const { isMainPage } = useCurrentPage()
-  const { currentFolderPath, showSubfolders } = useSelector(curFolderInfo)
+  const { currentFolderPath, showSubfolders, isDynamicFolders } = useSelector(curFolderInfo)
   const directoriesArr = useSelector(pathsArr)
   const options = useSelector(pathsArrOptionsSelector)
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -65,6 +67,11 @@ const Folders = () => {
 
   const handleShowSubfoldersChange = (e: CheckboxChangeEvent) => {
     dispatch(setShowSubfolders(e.target.checked))
+  }
+
+  const handleDynamicFolderClick = (e: CheckboxChangeEvent) => {
+    dispatch(setIsDynamicFolders(e.target.checked))
+    !e.target.checked && dispatch(fetchPathsList())
   }
 
   const handleReset = () => {
@@ -126,9 +133,14 @@ const Folders = () => {
       </div>
 
       <div className="d-flex justify-content-between margin-top-10">
-        <Checkbox className={styles.showSubfolders} checked={showSubfolders} onChange={handleShowSubfoldersChange}>
-          Show subfolders
-        </Checkbox>
+        <div className="d-flex flex-column">
+          <Checkbox className={styles.showSubfolders} checked={showSubfolders} onChange={handleShowSubfoldersChange}>
+            Show subfolders
+          </Checkbox>
+          <Checkbox className={styles.showSubfolders} checked={isDynamicFolders} onChange={handleDynamicFolderClick}>
+            Dynamic folders
+          </Checkbox>
+        </div>
 
         <Button onClick={handleReset}>Reset</Button>
       </div>

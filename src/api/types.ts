@@ -2,20 +2,21 @@ import { MimeTypes } from '../redux/types/MimeTypes'
 import { Sort, SortedFields } from '../redux/types'
 
 export interface GetPhotosByTagsRequest {
+  comparisonFolder?: string
+  dontSavePreview?: boolean
+  excludeTags?: string[]
+  fileName?: string
+  folderPath?: string
+  isDynamicFolders?: boolean
+  isFullSizePreview?: boolean
+  isNameComparison?: boolean
+  mimeTypes?: MimeTypes[]
   page: number
   perPage: number
-  sorting: Partial<Record<SortedFields, Sort>>
-  fileName?: string
-  searchTags?: string[]
-  excludeTags?: string[]
-  mimeTypes?: MimeTypes[]
-  folderPath?: string
-  comparisonFolder?: string
-  isNameComparison?: boolean
-  showSubfolders?: boolean
-  isFullSizePreview?: boolean
   randomSort?: boolean
-  dontSavePreview?: boolean
+  searchTags?: string[]
+  showSubfolders?: boolean
+  sorting: Partial<Record<SortedFields, Sort>>
 }
 
 export enum API_STATUS {

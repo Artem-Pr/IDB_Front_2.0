@@ -14,6 +14,8 @@ import {
   setRawFiles,
 } from '../mainPageSlice'
 import { prepareSortingList } from '../../../../api/helpers'
+import { setFolderTree, setPathsArr } from '../../foldersSlice-reducer'
+import { createFolderTree } from '../../../../app/common/folderTree'
 
 interface FetchPhotos {
   isNameComparison?: boolean
@@ -47,7 +49,7 @@ export const fetchPhotos =
     } = mainPageReducer
     const { currentPage, nPerPage } = galleryPagination
     const folderPath = isNameComparison ? '' : currentFolderInfo.currentFolderPath
-    const showSubfolders = currentFolderInfo.showSubfolders
+    const { showSubfolders, isDynamicFolders } = currentFolderInfo
     dispatch(setDGalleryLoading(true))
     mainApi
       .getPhotosByTags({
@@ -70,15 +72,18 @@ export const fetchPhotos =
         ...(isFullSizePreview && { isFullSizePreview }),
         ...(!savePreview && { dontSavePreview: !savePreview }),
         ...(randomSort && { randomSort }),
+        ...(isDynamicFolders && { isDynamicFolders }),
       })
-      .then(({ data }) => {
-        const rawFiles: DownloadingRawObject[] = data?.files || []
-        const files: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
+      .then(({ data: { files, searchPagination, filesSizeSum, dynamicFolders } }) => {
+        const rawFiles: DownloadingRawObject[] = files || []
+        const preparedFiles: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
+        dynamicFolders && dynamicFolders.length && dispatch(setPathsArr(dynamicFolders))
+        dynamicFolders && dynamicFolders.length && dispatch(setFolderTree(createFolderTree(dynamicFolders)))
         dispatch(clearDSelectedList())
         dispatch(setRawFiles(rawFiles))
-        dispatch(setDownloadingFiles(files))
-        dispatch(setGalleryPagination(data.searchPagination))
-        dispatch(setFilesSizeSum(data.filesSizeSum))
+        dispatch(setDownloadingFiles(preparedFiles))
+        dispatch(setGalleryPagination(searchPagination))
+        dispatch(setFilesSizeSum(filesSizeSum))
         dispatch(setDGalleryLoading(false))
       })
       .catch(error => {

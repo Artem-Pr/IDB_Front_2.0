@@ -191,6 +191,7 @@ export interface GalleryPagination {
 }
 
 export interface FetchingGalleryContent {
+  dynamicFolders: string[] | false
   files: DownloadingRawObject[]
   filesSizeSum: number
   searchPagination: GalleryPagination
@@ -223,6 +224,7 @@ export interface DirectoryInfo extends CheckedDirectoryRequest {
   expandedKeys: Key[]
   showInfoModal: boolean
   showSubfolders: boolean
+  isDynamicFolders: boolean
 }
 
 export interface Preview {

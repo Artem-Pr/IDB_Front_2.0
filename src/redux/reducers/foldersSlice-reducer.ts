@@ -26,6 +26,7 @@ const initialState: State = {
     expandedKeys: [],
     showInfoModal: false,
     showSubfolders: true,
+    isDynamicFolders: false,
   },
   pathsArr: [],
   keywordsList: [],
@@ -65,20 +66,24 @@ const folderSlice = createSlice({
     setShowSubfolders(state, action: PayloadAction<boolean>) {
       state.currentFolderInfo.showSubfolders = action.payload
     },
+    setIsDynamicFolders(state, action: PayloadAction<boolean>) {
+      state.currentFolderInfo.isDynamicFolders = action.payload
+    },
   },
 })
 
 export const {
-  setFolderTree,
+  setCurrentFolderKey,
   setCurrentFolderPath,
-  setPathsArr,
+  setExpandedKeys,
+  setFolderTree,
+  setIsDynamicFolders,
   setKeywordsList,
   setNumberOfFilesInDirectory,
   setNumberOfSubdirectories,
+  setPathsArr,
   setShowInfoModal,
   setShowSubfolders,
-  setCurrentFolderKey,
-  setExpandedKeys,
 } = folderSlice.actions
 
 export default folderSlice.reducer
