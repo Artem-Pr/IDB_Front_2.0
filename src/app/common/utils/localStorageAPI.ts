@@ -5,6 +5,13 @@ import { initialState as settingsInitialState } from '../../../redux/reducers/se
 import { defaultGallerySortingList } from '../../../redux/reducers/mainPageSlice/helpers'
 
 export const localStorageAPI = {
+  // isDynamicFolders
+  set isDynamicFolders(isDynamicFolders: boolean) {
+    localStorage.setItem('isDynamicFolders', String(Number(isDynamicFolders)))
+  },
+  get isDynamicFolders() {
+    return Boolean(Number(localStorage.getItem('isDynamicFolders')))
+  },
   // savePreview
   set savePreview(savePreview: boolean) {
     localStorage.setItem('savePreview', String(Number(savePreview)))

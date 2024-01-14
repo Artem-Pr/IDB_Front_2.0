@@ -22,7 +22,12 @@ import {
   setSearchTags,
   updateDOpenMenus,
 } from '../reducers/mainPageSlice/mainPageSlice'
-import { setCurrentFolderKey, setCurrentFolderPath, setExpandedKeys } from '../reducers/foldersSlice-reducer'
+import {
+  setCurrentFolderKey,
+  setCurrentFolderPath,
+  setExpandedKeys,
+  setIsDynamicFolders,
+} from '../reducers/foldersSlice-reducer'
 
 export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setSavePreview(localStorageAPI.savePreview))
@@ -61,4 +66,5 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setCurrentFolderPath(localStorageAPI.currentFolderPath))
   dispatch(setCurrentFolderKey(localStorageAPI.currentFolderKey))
   dispatch(setExpandedKeys(localStorageAPI.expandedKeys))
+  dispatch(setIsDynamicFolders(localStorageAPI.isDynamicFolders))
 }

@@ -27,7 +27,12 @@ import {
   updateDOpenMenus,
 } from '../../reducers/mainPageSlice/mainPageSlice'
 import { defaultGallerySortingList } from '../../reducers/mainPageSlice/helpers'
-import { setCurrentFolderKey, setCurrentFolderPath, setExpandedKeys } from '../../reducers/foldersSlice-reducer'
+import {
+  setCurrentFolderKey,
+  setCurrentFolderPath,
+  setExpandedKeys,
+  setIsDynamicFolders,
+} from '../../reducers/foldersSlice-reducer'
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 import { RootState } from '../rootReducer'
 
@@ -201,6 +206,13 @@ listenerMiddleware.startListening({
   actionCreator: setExpandedKeys,
   effect: action => {
     localStorageAPI.expandedKeys = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setIsDynamicFolders,
+  effect: action => {
+    localStorageAPI.isDynamicFolders = action.payload
   },
 })
 
