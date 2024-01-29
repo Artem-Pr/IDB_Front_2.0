@@ -3,9 +3,9 @@ import { mainApi } from '../../../../api/api'
 import type { UploadingObject } from '../../../types'
 import { errorMessage } from '../../../../app/common/notifications'
 import { decreaseCountOfPreviewLoading } from '../uploadSlice'
-import { addUploadingFile } from './addUploadingFile'
 import { defaultTimeStamp } from '../../../../app/common/utils/date/dateFormats'
 import { isVideo } from '../../../../app/common/utils/utils'
+import { updateUploadingFile } from './updateUploadingFile'
 
 export const fetchPhotosPreview =
   (file: any): AppThunk =>
@@ -14,26 +14,28 @@ export const fetchPhotosPreview =
     await mainApi
       .sendPhoto(file)
       .then(({ data }) => {
-        const { preview, tempPath, fullSizeJpg, fullSizeJpgPath, DBFullPathFullSize, DBFullPath } = data
+        const { preview, tempPath, fullSizeJpg, fullSizeJpgPath, DBFullPathFullSize, DBFullPath, existedFilesArr } =
+          data
         const uploadingFile: UploadingObject = {
-          changeDate,
-          name,
-          size,
-          type,
-          fullSizeJpgPath: fullSizeJpg,
-          DBFullPathFullSize,
           DBFullPath,
-          preview,
-          tempPath,
-          originalPath: fullSizeJpgPath,
-          originalDate: '-',
+          DBFullPathFullSize,
+          changeDate,
+          description: '',
+          existedFilesArr,
+          fullSizeJpgPath: fullSizeJpg,
           keywords: null,
           megapixels: '',
+          name,
+          originalDate: '-',
+          originalPath: fullSizeJpgPath,
+          preview,
           rating: 0,
-          description: '',
+          size,
+          tempPath,
+          type,
           ...(isVideo(type) && { timeStamp: defaultTimeStamp }),
         }
-        dispatch(addUploadingFile(uploadingFile))
+        dispatch(updateUploadingFile(uploadingFile))
       })
       .catch(error => errorMessage(error, 'Error when getting Preview: '))
       .finally(() => dispatch(decreaseCountOfPreviewLoading()))

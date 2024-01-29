@@ -2,6 +2,7 @@ import {
   addIndex,
   compose,
   dec,
+  descend,
   filter,
   inc,
   includes,
@@ -12,7 +13,9 @@ import {
   omit,
   prop,
   reject,
+  reverse,
   sortBy,
+  sortWith,
   toLower,
   union,
   without,
@@ -44,10 +47,14 @@ export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
 export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) =>
   sortBy<K>(compose(toLower, prop(String(fieldName))))
+export const sortByFieldDescending = <K extends Record<string, any>>(fieldName: keyof K) =>
+  sortWith<K>([descend(compose(toLower, prop(String(fieldName))))])
+export const typeIsMimeTypesKey = (type: string): type is keyof typeof MimeTypes => type.toLowerCase() in MimeTypes
+export const isMimeType = (type: string): type is MimeTypes => Object.values(MimeTypes).includes(type as MimeTypes)
 export const isVideo = (contentType: MimeTypes) => contentType.startsWith('video')
 export const isVideoByExt = (fileExtension: string) => {
   const lowerCaseExt = fileExtension.toLowerCase()
-  return lowerCaseExt in MimeTypes ? isVideo(MimeTypes[lowerCaseExt as keyof typeof MimeTypes]) : false
+  return typeIsMimeTypesKey(lowerCaseExt) ? isVideo(MimeTypes[lowerCaseExt]) : false
 }
 
 export const getNameParts = (fullName: string): NameParts => {

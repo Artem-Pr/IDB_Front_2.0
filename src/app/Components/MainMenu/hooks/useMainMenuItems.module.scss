@@ -10,3 +10,11 @@
         }
     }
 }
+
+.collapseDuplicateItem {
+    :global {
+        .ant-collapse-header {
+            background: var(--collapse-duplicate-item-color);
+        }
+    }
+}

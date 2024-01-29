@@ -1,7 +1,13 @@
 /* eslint functional/immutable-data: 0 */
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
-import type { BlobDispatchPayload, ExifFilesList, LoadingStatus, UploadingObject } from '../../types'
+import type {
+  BlobDispatchPayload,
+  BlobUpdateNamePayload,
+  ExifFilesList,
+  LoadingStatus,
+  UploadingObject,
+} from '../../types'
 import { MainMenuKeys } from '../../types'
 import { initialState } from './uploadState'
 import type { FullExifPayload } from './types'
@@ -45,9 +51,11 @@ const uploadSlice = createSlice({
       state.openMenus = Array.from(set)
     },
     clearUploadingState(state) {
-      state.uploadingFiles = []
-      state.selectedList = []
-      state.fullExifFilesList = {}
+      state.uploadingFiles = initialState.uploadingFiles
+      state.selectedList = initialState.selectedList
+      state.fullExifFilesList = initialState.fullExifFilesList
+      state.checkForDuplicatesOnlyInCurrentFolder = initialState.checkForDuplicatesOnlyInCurrentFolder
+      state.uploadingBlobs = initialState.uploadingBlobs
     },
     setIsExifLoading(state, action: PayloadAction<boolean>) {
       state.isExifLoading = action.payload
@@ -64,25 +72,38 @@ const uploadSlice = createSlice({
     setBlob(state, action: PayloadAction<BlobDispatchPayload>) {
       state.uploadingBlobs[action.payload.name] = action.payload.originalPath
     },
+    updateBlobName(state, action: PayloadAction<BlobUpdateNamePayload>) {
+      state.uploadingBlobs[action.payload.newName] = state.uploadingBlobs[action.payload.oldName]
+      delete state.uploadingBlobs[action.payload.oldName]
+    },
+    removeBlob(state, action: PayloadAction<string>) {
+      delete state.uploadingBlobs[action.payload]
+    },
+    setCheckForDuplicatesOnlyInCurrentFolder(state, action: PayloadAction<boolean>) {
+      state.checkForDuplicatesOnlyInCurrentFolder = action.payload
+    },
   },
 })
 
 export const {
-  updateUploadingFilesArr,
   addFullExifFile,
-  updateFullExifFile,
   addToSelectedList,
-  removeFromSelectedList,
   clearSelectedList,
-  selectAll,
-  updateOpenMenus,
-  removeFromOpenMenus,
   clearUploadingState,
-  setIsExifLoading,
-  increaseCountOfPreviewLoading,
   decreaseCountOfPreviewLoading,
-  setUploadingStatus,
+  increaseCountOfPreviewLoading,
+  removeBlob,
+  removeFromOpenMenus,
+  removeFromSelectedList,
+  selectAll,
   setBlob,
+  setCheckForDuplicatesOnlyInCurrentFolder,
+  setIsExifLoading,
+  setUploadingStatus,
+  updateBlobName,
+  updateFullExifFile,
+  updateOpenMenus,
+  updateUploadingFilesArr,
 } = uploadSlice.actions
 
 export const uploadSliceReducer = uploadSlice.reducer

@@ -8,6 +8,7 @@ import { mainApi } from '../../api/api'
 import { errorMessage, successMessage } from '../../app/common/notifications'
 import { createFolderTree } from '../../app/common/folderTree'
 import { fetchPhotos } from './mainPageSlice/thunks'
+import { curFolderInfo } from '../selectors'
 
 interface State {
   folderTree: FolderTreeItem[]
@@ -112,7 +113,7 @@ export const checkDirectory = (): AppThunk => (dispatch, getState) => {
     dispatch(setShowInfoModal(true))
   }
 
-  const { currentFolderPath } = getState().folderReducer.currentFolderInfo
+  const { currentFolderPath } = curFolderInfo(getState())
   mainApi
     .checkDirectory(currentFolderPath)
     .then(({ data }) => {
@@ -123,7 +124,7 @@ export const checkDirectory = (): AppThunk => (dispatch, getState) => {
 }
 
 export const removeDirectory = (): AppThunk => (dispatch, getState) => {
-  const { currentFolderPath } = getState().folderReducer.currentFolderInfo
+  const { currentFolderPath } = curFolderInfo(getState())
   const updateContent = (filePaths: string[]) => {
     dispatch(setFolderTree(createFolderTree(filePaths)))
     dispatch(setPathsArr(filePaths))

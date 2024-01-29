@@ -4,6 +4,11 @@
   border-radius: 5px;
   overflow: hidden;
   transition: transform 0.2s ease;
+  user-select: none;
+
+  &.loading {
+    opacity: 0.4;
+  }
 
   &.shiftHover {
     transform: matrix3d(1, 0, 0, 0.001, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1.2);
@@ -32,6 +37,25 @@
   color: $galleryItemMenuText;
   transition: left 0.3s ease;
   cursor: default;
+
+  &.highlighted {
+    left: 0;
+    background: var(--gallery-error-highlight);
+  }
+
+  &.isUploading {
+    left: -30px !important;
+  }
+}
+
+.errorHighlight {
+  outline: solid 20px var(--gallery-error-highlight);
+  opacity: 0.5;
+  top: 5%;
+  bottom: 5%;
+  right: 5%;
+  left: 5%;
+
 }
 
 .itemMenuExif {

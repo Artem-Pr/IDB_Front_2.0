@@ -14,18 +14,22 @@ import {
   UserOutlined,
 } from '@ant-design/icons'
 
+import { useSelector } from 'react-redux'
+import cn from 'classnames'
+
 import styles from './useMainMenuItems.module.scss'
 
 import { MainMenuKeys } from '../../../../redux/types'
 
 import { useCurrentPage } from '../../../common/hooks'
 import Folders from '../../Folders'
-import { ButtonsMenu, KeywordsMenuWrapper, PreviewMenu } from '../components'
+import { ButtonsMenu, KeywordsMenuWrapper, PreviewMenu, DuplicatesMenu } from '../components'
 import { SortingMenu } from '../../SortingMenu'
 import { SearchMenu } from '../../SearchMenu'
 import PropertyMenu from '../../PropertyMenu'
 import EditMenu from '../../EditMenu'
 import type { PreviewMenuProps } from '../components/PreviewMenu/PreviewMenu'
+import { previewDuplicates } from '../../../../redux/selectors'
 export interface MenuItem {
   key: MainMenuKeys
   label: ReactNode
@@ -87,6 +91,12 @@ const menuItems = ({ videoPreviewRef }: MenuItemsProps): MenuItem[] => [
     icon: <PictureOutlined />,
     children: <PreviewMenu videoPreviewRef={videoPreviewRef} />,
   },
+  {
+    key: MainMenuKeys.DUPLICATES,
+    label: 'Duplicates',
+    icon: <PictureOutlined />,
+    children: <DuplicatesMenu videoPreviewRef={videoPreviewRef} />,
+  },
 ]
 
 const buttonsMenu = {
@@ -94,9 +104,14 @@ const buttonsMenu = {
   children: <ButtonsMenu />,
 }
 
-const excludedMainPageMenuItems = [MainMenuKeys.BUTTONS_MENU]
-const excludedUploadingPageMenuItems = [MainMenuKeys.FILTER]
-const excludedComparisonPageMenuItems = [MainMenuKeys.FILTER, MainMenuKeys.FOLDERS, MainMenuKeys.BUTTONS_MENU]
+const excludedMainPageMenuItems = [MainMenuKeys.BUTTONS_MENU, MainMenuKeys.DUPLICATES]
+const excludedUploadingPageMenuItems = [MainMenuKeys.FILTER, MainMenuKeys.DUPLICATES]
+const excludedComparisonPageMenuItems = [
+  MainMenuKeys.FILTER,
+  MainMenuKeys.FOLDERS,
+  MainMenuKeys.BUTTONS_MENU,
+  MainMenuKeys.DUPLICATES,
+]
 
 const PanelHeaderStyles = {
   display: 'flex',
@@ -118,19 +133,27 @@ interface MenuItemReturningValue {
 
 export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivElement | null>): MenuItemReturningValue => {
   const { isMainPage, isUploadingPage, isComparisonPage } = useCurrentPage()
+  const previewDuplicatesArr = useSelector(previewDuplicates)
 
   return useMemo(() => {
-    const menuItemsFilter = ({ key }: { key: MainMenuKeys }) =>
-      (isMainPage && !excludedMainPageMenuItems.includes(key)) ||
-      (isUploadingPage && !excludedUploadingPageMenuItems.includes(key)) ||
-      (isComparisonPage && !excludedComparisonPageMenuItems.includes(key))
+    const menuItemsFilter = ({ key }: { key: MainMenuKeys }) => {
+      return (
+        (isMainPage && !excludedMainPageMenuItems.includes(key)) ||
+        (isUploadingPage && !excludedUploadingPageMenuItems.includes(key)) ||
+        (isUploadingPage && previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES) ||
+        (isComparisonPage && !excludedComparisonPageMenuItems.includes(key))
+      )
+    }
 
     return {
       extraMenu: [buttonsMenu].filter(menuItemsFilter),
       collapseMenu: menuItems({ videoPreviewRef })
         .filter(menuItemsFilter)
         .map(({ key, label, icon, children }) => {
-          const className = key === MainMenuKeys.PREVIEW ? styles.collapsePreviewItem : ''
+          const className = cn({
+            [styles.collapsePreviewItem]: key === MainMenuKeys.PREVIEW,
+            [styles.collapseDuplicateItem]: key === MainMenuKeys.DUPLICATES,
+          })
 
           return {
             key,
@@ -140,5 +163,5 @@ export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivEleme
           }
         }),
     }
-  }, [isComparisonPage, isMainPage, isUploadingPage, videoPreviewRef])
+  }, [isComparisonPage, isMainPage, isUploadingPage, previewDuplicatesArr.length, videoPreviewRef])
 }

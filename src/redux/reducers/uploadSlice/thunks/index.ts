@@ -1,5 +1,6 @@
 export { addUploadingFile } from './addUploadingFile'
-export { uploadFiles } from './uploadFiles'
-export { fetchPhotosPreview } from './fetchPhotosPreview'
 export { fetchFullExif } from './fetchFullExif'
+export { fetchPhotosPreview } from './fetchPhotosPreview'
 export { removeFileFromUploadState } from './removeFileFromUploadState'
+export { updateUploadingFile } from './updateUploadingFile'
+export { uploadFiles } from './uploadFiles'

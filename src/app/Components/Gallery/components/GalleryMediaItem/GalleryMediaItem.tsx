@@ -10,7 +10,7 @@ import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeho
 
 import styles from './GalleryMediaItem.module.scss'
 import { MimeTypes } from '../../../../../redux/types/MimeTypes'
-import { isVideo } from '../../../../common/utils/utils'
+import { isVideo, isVideoByExt } from '../../../../common/utils/utils'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('transparent')
@@ -19,6 +19,7 @@ const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
 const Loader = <Spin className={styles.loader} size="large" spinning={true} />
 
 export interface Props {
+  ext?: string
   height?: string
   muted?: boolean
   originalPath: string
@@ -27,12 +28,13 @@ export interface Props {
   setPlaying?: (value: boolean) => void
   setStop?: (value: boolean) => void
   stop?: boolean
-  type: MimeTypes
+  type?: MimeTypes
   usePlaceholder?: boolean
 }
 
 export const GalleryMediaItem = React.memo(
   ({
+    ext,
     height = '100%',
     muted,
     originalPath,
@@ -46,10 +48,11 @@ export const GalleryMediaItem = React.memo(
   }: Props) => {
     const [showVideo, setShowVideo] = useState(false)
 
+    const isVideoPreview = (type && isVideo(type)) || (ext && isVideoByExt(ext)) || false
     const showPlaceholder = usePlaceholder && !originalPath && !preview
-    const showVideoPlayer = showVideo && isVideo(type) && !stop
-    const showVideoPreview = (!showVideo || stop) && isVideo(type)
-    const showImage = !isVideo(type)
+    const showVideoPlayer = showVideo && isVideoPreview && !stop
+    const showVideoPreview = (!showVideo || stop) && isVideoPreview
+    const showImage = !isVideoPreview
 
     const handleStart = () => {
       setShowVideo(true)

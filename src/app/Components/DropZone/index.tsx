@@ -1,3 +1,4 @@
+/* eslint functional/immutable-data: 0 */
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { message, Progress, Upload, UploadProps } from 'antd'
@@ -11,13 +12,16 @@ import type { UploadChangeParam } from 'antd/es/upload'
 
 import styles from './index.module.scss'
 import { curFolderInfo, upload } from '../../../redux/selectors'
-import { fetchPhotosPreview } from '../../../redux/reducers/uploadSlice/thunks'
+import { addUploadingFile, fetchPhotosPreview } from '../../../redux/reducers/uploadSlice/thunks'
 import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice'
 import { MainMenuKeys } from '../../../redux/types'
 import { errorMessage } from '../../common/notifications'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
 import { getDispatchObjFromBlob, isFile, isFileNameAlreadyExist } from './heplers'
 import { useAppDispatch } from '../../../redux/store/store'
+import { getEmptyUploadObject } from './heplers/getEmptyUploadObject'
+import { isMimeType } from '../../common/utils'
+import { setIsLoading } from '../../../redux/reducers/sessionSlice-reducer'
 
 const { Dragger } = Upload
 const uploading = {
@@ -48,28 +52,38 @@ const DropZone = ({ openMenus }: Props) => {
       'Content-Type': 'application/json',
     },
     async customRequest({ file }) {
+      dispatch(setIsLoading(true))
       const uploadFile = async () => {
         const dispatchNewFile = async () => {
-          // eslint-disable-next-line functional/immutable-data
           uploading.isProcessing = true
           dispatch(increaseCountOfPreviewLoading())
           isFile(file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(file)
           dispatch<any>(fetchPhotosPreview(file)).then(() => {
-            // eslint-disable-next-line functional/immutable-data
             uploading.isProcessing = false
             setFinishedNumberOfFiles(prevState => prevState + 1)
           })
           dispatch(setUploadingStatus('empty'))
         }
 
-        uploading.isProcessing ? setTimeout(() => uploadFile(), 100) : await dispatchNewFile()
+        uploading.isProcessing ? setTimeout(uploadFile, 100) : await dispatchNewFile()
       }
-      // eslint-disable-next-line functional/immutable-data
+
+      const handleError = (message: string) => {
+        const uploadingError = new Error(`${isFile(file) ? file.name : '?'} ${message}`)
+        errorMessage(uploadingError, 'File is not uploaded')
+        uploading.isProcessing = false
+        setFinishedNumberOfFiles(prevState => prevState + 1)
+      }
       ++uploading.totalFiles
       const fileAlreadyExist = isFile(file) && isFileNameAlreadyExist(file, uploadingBlobs)
-      fileAlreadyExist
-        ? errorMessage(new Error(`${isFile(file) ? file.name : '?'} is already exist`), 'File is not uploaded')
-        : setTimeout(() => uploadFile())
+      const isMimeTypeExist = isFile(file) && isMimeType(file.type)
+
+      fileAlreadyExist && handleError('is already exist')
+      !isMimeTypeExist && handleError('file type not supported')
+      !fileAlreadyExist && isMimeTypeExist && setTimeout(uploadFile)
+      !fileAlreadyExist &&
+        isMimeTypeExist &&
+        dispatch(addUploadingFile(getEmptyUploadObject({ type: file.type, name: file.name })))
     },
     onChange(info: UploadChangeParam) {
       const { status } = info.file
@@ -87,7 +101,6 @@ const DropZone = ({ openMenus }: Props) => {
   useEffect(() => {
     const refreshLoading = () => {
       setFinishedNumberOfFiles(0)
-      // eslint-disable-next-line functional/immutable-data
       uploading.totalFiles = 0
     }
     ;(progress === 100 || progress === Infinity) && refreshLoading()

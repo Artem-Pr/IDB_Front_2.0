@@ -2,8 +2,10 @@ import { ReactNode } from 'react'
 
 import { FieldsObj } from '../../../redux/types'
 
+type OmittedFieldsObj = Omit<FieldsObj, 'existedFilesArr'>
+
 export type FieldsLabels = {
-  [key in keyof FieldsObj]: ReactNode
+  [key in keyof OmittedFieldsObj]: ReactNode
 } & {
   description: string
   keywords: string[] | null
@@ -11,5 +13,5 @@ export type FieldsLabels = {
 }
 
 export type FieldNames = {
-  [key in keyof FieldsObj]: string
+  [key in keyof OmittedFieldsObj]: string
 }

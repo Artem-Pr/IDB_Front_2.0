@@ -8,6 +8,7 @@ interface State {
   fitContain: boolean
   previewSize: number
   isTimesDifferenceApplied: boolean
+  isLoading: boolean
 }
 
 const initialState: State = {
@@ -15,6 +16,7 @@ const initialState: State = {
   fitContain: false,
   previewSize: DEFAULT_PREVIEW_SIZE,
   isTimesDifferenceApplied: false,
+  isLoading: false,
 }
 
 const sessionSlice = createSlice({
@@ -36,10 +38,19 @@ const sessionSlice = createSlice({
     setIsTimeDifferenceApplied(state, action: PayloadAction<boolean>) {
       state.isTimesDifferenceApplied = action.payload
     },
+    setIsLoading(state, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload
+    },
   },
 })
 
-export const { setAsideMenuWidth, setFitContain, setPreviewSize, refreshPreviewSize, setIsTimeDifferenceApplied } =
-  sessionSlice.actions
+export const {
+  refreshPreviewSize,
+  setAsideMenuWidth,
+  setFitContain,
+  setIsLoading,
+  setIsTimeDifferenceApplied,
+  setPreviewSize,
+} = sessionSlice.actions
 
 export default sessionSlice.reducer

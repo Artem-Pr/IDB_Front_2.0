@@ -35,6 +35,7 @@ import {
 } from '../../reducers/foldersSlice-reducer'
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 import { RootState } from '../rootReducer'
+import { main } from '../../selectors'
 
 export const listenerMiddleware = createListenerMiddleware<RootState>()
 
@@ -155,7 +156,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setGalleryPagination,
   effect: (action, state) => {
-    const { galleryPagination } = state.getState().mainPageReducer
+    const { galleryPagination } = main(state.getState())
     localStorageAPI.galleryPagination = { ...galleryPagination, ...action.payload }
   },
 })

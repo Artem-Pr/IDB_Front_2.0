@@ -24,7 +24,7 @@ import {
   updateUploadingFilesArr,
 } from '../../../redux/reducers/uploadSlice'
 import { fetchFullExif } from '../../../redux/reducers/uploadSlice/thunks'
-import type { DownloadingObject, MainMenuKeys, UploadingObject } from '../../../redux/types'
+import type { BlobUpdateNamePayload, DownloadingObject, MainMenuKeys, UploadingObject } from '../../../redux/types'
 import { PagePaths } from '../../../redux/types'
 import {
   clearDownloadingState,
@@ -35,6 +35,24 @@ import {
 } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import type { RootState } from '../../../redux/store/rootReducer'
 import { useAppDispatch } from '../../../redux/store/store'
+import { fetchDuplicates } from '../../../redux/reducers/uploadSlice/thunks/fetchDuplicates'
+import { updateBlobName } from '../../../redux/reducers/uploadSlice/uploadSlice'
+
+const isEditNameOperation = (blobNameData: BlobUpdateNamePayload | false): blobNameData is BlobUpdateNamePayload =>
+  blobNameData !== false && blobNameData.oldName !== blobNameData.newName
+
+const prepareBlobUpdateNamePayload =
+  (newFilesArr: UploadingObject[]) =>
+  ({ name, tempPath }: UploadingObject): BlobUpdateNamePayload | false => {
+    const updatedName = newFilesArr.find(newItem => newItem.tempPath === tempPath)?.name
+
+    return updatedName
+      ? {
+          oldName: name,
+          newName: updatedName,
+        }
+      : false
+  }
 
 export const useCurrentPage = () => {
   const { pathname, search } = useLocation()
@@ -212,7 +230,7 @@ export const useEditFilesArr = (
   sameKeywords: string[] = [],
   isMainPage: boolean
 ) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const updatingAction = useMemo(() => (isMainPage ? setDownloadingFiles : updateUploadingFilesArr), [isMainPage])
 
   return useMemo(() => {
@@ -231,11 +249,24 @@ export const useEditFilesArr = (
       addEditedFieldsToFileArr
     )(selectedFilesWithoutSameKeywords)
     const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)(isMainPage ? '_id' : 'tempPath', filesArr)
+    const updateFileBlobsNamesMiddleware = (newFilesArr: UploadingObject[]) => {
+      filesArr
+        .map(prepareBlobUpdateNamePayload(newFilesArr))
+        .filter(isEditNameOperation)
+        .forEach(compose(dispatch, updateBlobName))
+      return newFilesArr
+    }
+    const checkNameDuplicatesMiddleware = (filesArr: UploadingObject[]) => {
+      dispatch(fetchDuplicates(filesArr.map(({ name }) => name)))
+      return filesArr
+    }
 
     return compose(
       dispatch,
       <any>updatingAction,
       mixUpdatedFilesItemsWithOriginalOnes,
+      updateFileBlobsNamesMiddleware,
+      checkNameDuplicatesMiddleware,
       getRenamedObjects,
       AddEditedFieldsToFilteredFileArr
     )

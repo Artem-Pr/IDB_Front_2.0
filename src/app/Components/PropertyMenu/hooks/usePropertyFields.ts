@@ -20,13 +20,16 @@ const fieldLabels: Partial<FieldNames> = {
 }
 
 type FieldsLabelsWithArrayDescription = Partial<
-  Omit<FieldsLabels, 'description'> & { description?: (string | undefined)[] }
+  Omit<FieldsLabels, 'description' | 'existedFilesArr'> & {
+    description?: (string | undefined)[]
+    existedFilesArr?: string[]
+  }
 >
 
 export const usePropertyFields = (filesArr: FieldsObj[], selectedList: number[]) => {
   const fieldsObjElements = useMemo<Partial<FieldsLabels> | null>(() => {
     const getSumFieldsObjData = (): Partial<FieldsLabels> => {
-      const selectedFiles: Partial<FieldsLabels>[] = filesArr.filter((_, i) => selectedList.includes(i))
+      const selectedFiles = filesArr.filter((_, i) => selectedList.includes(i))
       const sumFieldsObjData = selectedFiles.reduce<FieldsLabelsWithArrayDescription>(
         (accum, { rating, description, originalDate, changeDate, size, imageSize, megapixels, type, keywords }) => ({
           rating: accum.rating === rating ? rating : '...',

@@ -3,9 +3,10 @@ import { mainApi } from '../../../../api/api'
 import { errorMessage, successMessage } from '../../../../app/common/notifications'
 import { setIsDeleteProcessing } from '../mainPageSlice'
 import { fetchPhotos } from './fetchPhotos'
+import { main } from '../../../selectors'
 
 export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
-  const { dSelectedList, downloadingFiles } = getState().mainPageReducer
+  const { dSelectedList, downloadingFiles } = main(getState())
   const currentPhotoId = downloadingFiles[dSelectedList[0]]._id
   setIsDeleteProcessing(true)
   mainApi

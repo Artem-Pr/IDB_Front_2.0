@@ -36,6 +36,7 @@ export enum MainMenuKeys {
   KEYWORDS = 'keywords',
   PREVIEW = 'preview',
   BUTTONS_MENU = 'buttons-menu',
+  DUPLICATES = 'duplicates',
 }
 
 export enum SortedFields {
@@ -104,6 +105,10 @@ export interface RawFullExifObj extends FullExifBasic {
 
 export type ExifFilesList = Record<string, RawFullExifObj>
 
+type ExistedFilesFieldNames = 'filePath' | 'fullSizeJpgPath' | 'originalName' | 'originalPath' | 'preview'
+
+export type ExistedFile = Record<ExistedFilesFieldNames, string>
+
 export interface AxiosPreviews {
   DBFullPath: string // "/60dcc5bc4f211eabf8de258d1172a5f8-preview.jpg"
   DBFullPathFullSize: string // "/60dcc5bc4f211eabf8de258d1172a5f8-fullSize.jpg"
@@ -111,6 +116,7 @@ export interface AxiosPreviews {
   fullSizeJpgPath: string // "uploadTemp/60dcc5bc4f211eabf8de258d1172a5f8-fullSize.jpg"
   preview: string // "http://localhost:5000/upload_images/60dcc5bc4f211eabf8de258d1172a5f8-preview.jpg"
   tempPath: string // "uploadTemp/60dcc5bc4f211eabf8de258d1172a5f8"
+  existedFilesArr?: ExistedFile[]
 }
 
 export interface UpdatingFields {
@@ -239,4 +245,9 @@ export interface Preview {
 export interface BlobDispatchPayload {
   name: string
   originalPath: string
+}
+
+export interface BlobUpdateNamePayload {
+  oldName: string
+  newName: string
 }

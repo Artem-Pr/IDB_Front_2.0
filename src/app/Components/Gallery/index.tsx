@@ -157,15 +157,20 @@ const Gallery = ({
               style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
             >
               {imageArrayGroupedByDate[date].map(
-                ({ fullSizeJpgPath, preview, name, tempPath, originalPath, type, _id, index }) => (
+                (
+                  { _id, existedFilesArr, fullSizeJpgPath, index, name, originalPath, preview, tempPath, type },
+                  idx
+                ) => (
                   <GalleryTile
+                    existedFilesArr={existedFilesArr}
                     fitContain={fitContain}
                     fullSizeJpgPath={fullSizeJpgPath}
                     getExif={getExif}
                     index={index}
                     isEditMode={isEditMode}
+                    isMainPage={isMainPage}
                     isShiftHover={isShiftHover(index)}
-                    key={preview + _id}
+                    key={name + _id + idx}
                     name={name}
                     onFullScreenClick={handleFullScreenClick}
                     onImageClick={handleImageClick}
@@ -190,29 +195,33 @@ const Gallery = ({
           ref={ref => handleGridRefAdd(ref, 0)}
           style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
         >
-          {imageArr.map(({ fullSizeJpgPath, preview, name, tempPath, originalPath, type, _id }, i) => (
-            <GalleryTile
-              fitContain={fitContain}
-              fullSizeJpgPath={fullSizeJpgPath}
-              getExif={getExif}
-              index={i}
-              isEditMode={isEditMode}
-              isShiftHover={isShiftHover(i)}
-              key={preview + _id}
-              name={name}
-              onFullScreenClick={handleFullScreenClick}
-              onImageClick={handleImageClick}
-              onImageOnLoad={handleImageOnLoad}
-              onImgRefAdd={handleImgRefAdd}
-              onMouseEnter={setHoveredIndex}
-              originalPath={originalPath}
-              preview={preview}
-              previewSize={previewSize}
-              selectedList={selectedList}
-              tempPath={tempPath}
-              type={type}
-            />
-          ))}
+          {imageArr.map(
+            ({ _id, existedFilesArr, fullSizeJpgPath, name, originalPath, preview, tempPath, type }, idx) => (
+              <GalleryTile
+                existedFilesArr={existedFilesArr}
+                fitContain={fitContain}
+                fullSizeJpgPath={fullSizeJpgPath}
+                getExif={getExif}
+                index={idx}
+                isEditMode={isEditMode}
+                isMainPage={isMainPage}
+                isShiftHover={isShiftHover(idx)}
+                key={name + _id + idx}
+                name={name}
+                onFullScreenClick={handleFullScreenClick}
+                onImageClick={handleImageClick}
+                onImageOnLoad={handleImageOnLoad}
+                onImgRefAdd={handleImgRefAdd}
+                onMouseEnter={setHoveredIndex}
+                originalPath={originalPath}
+                preview={preview}
+                previewSize={previewSize}
+                selectedList={selectedList}
+                tempPath={tempPath}
+                type={type}
+              />
+            )
+          )}
         </div>
       )}
 

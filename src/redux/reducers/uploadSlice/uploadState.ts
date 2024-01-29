@@ -2,23 +2,25 @@ import type { ExifFilesList, LoadingStatus, UploadingObject } from '../../types'
 import { MainMenuKeys } from '../../types'
 
 interface State {
-  uploadingFiles: UploadingObject[]
-  uploadingBlobs: Record<string, string>
+  checkForDuplicatesOnlyInCurrentFolder: boolean
   fullExifFilesList: ExifFilesList
-  selectedList: number[]
-  openMenus: MainMenuKeys[]
   isExifLoading: boolean
+  openMenus: MainMenuKeys[]
   previewLoadingCount: number
+  selectedList: number[]
+  uploadingBlobs: Record<string, string>
+  uploadingFiles: UploadingObject[]
   uploadingStatus: LoadingStatus
 }
 
 export const initialState: State = {
-  uploadingFiles: [],
-  uploadingBlobs: {},
+  checkForDuplicatesOnlyInCurrentFolder: false,
   fullExifFilesList: {},
-  selectedList: [],
-  openMenus: [MainMenuKeys.FOLDERS],
   isExifLoading: false,
+  openMenus: [MainMenuKeys.FOLDERS],
   previewLoadingCount: 0,
+  selectedList: [],
+  uploadingBlobs: {},
+  uploadingFiles: [],
   uploadingStatus: 'empty',
 }

@@ -2,6 +2,7 @@ import type {
   AxiosPreviews,
   CheckedDirectoryRequest,
   ExifFilesList,
+  ExistedFile,
   FetchingGalleryContent,
   QueryResponse,
   UpdatedObject,
@@ -39,6 +40,12 @@ export const mainApi = {
 
   getUnusedKeywordsList() {
     return instance.get<string[]>('/unused-keywords')
+  },
+
+  checkDuplicates(fileNameArr: string[]) {
+    return instance.get<Record<string, ExistedFile[]>>('check-duplicates', {
+      params: { names: fileNameArr },
+    })
   },
 
   removeKeyword(keyword: string) {

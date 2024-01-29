@@ -7,6 +7,7 @@ import type { UploadingObject } from '../../../types'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../../../app/common/utils'
 import { errorMessage } from '../../../../app/common/notifications'
 import { updateFullExifFile, updateUploadingFilesArr } from '../uploadSlice'
+import { upload } from '../../../selectors'
 
 export const fetchFullExif =
   (tempPathArr: string[]): AppThunk =>
@@ -15,7 +16,7 @@ export const fetchFullExif =
       .getKeywordsFromPhoto(tempPathArr)
       .then(({ data }) => {
         dispatch(updateFullExifFile(data))
-        const { uploadingFiles, fullExifFilesList } = getState().uploadReducer
+        const { uploadingFiles, fullExifFilesList } = upload(getState())
         const getUpdatingObj = curry(getUpdatedExifFieldsObj)(fullExifFilesList)
 
         const loadExifToUploadingFiles = (acc: UploadingObject[], tempPath: string): UploadingObject[] => {
