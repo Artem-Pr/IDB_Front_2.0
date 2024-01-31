@@ -1,13 +1,15 @@
 import type { UploadingObject } from '../../../types'
 import type { AppThunk } from '../../../store/store'
-import { sortByFieldDescending } from '../../../../app/common/utils'
 import { updateUploadingFilesArr } from '../uploadSlice'
-import { upload } from '../../../selectors'
+import { upload, uploadPageSort } from '../../../selectors'
+import { customSortingComparator } from '../helpers'
 
 export const addUploadingFile =
   (uploadingFile: UploadingObject): AppThunk =>
   (dispatch, getState) => {
+    const { gallerySortingList } = uploadPageSort(getState())
     const { uploadingFiles } = upload(getState())
-    const updatedUploadingFiles = sortByFieldDescending<UploadingObject>('name')([...uploadingFiles, uploadingFile])
-    dispatch(updateUploadingFilesArr(updatedUploadingFiles))
+
+    const sortedFiles = [...uploadingFiles, uploadingFile].sort(customSortingComparator(gallerySortingList))
+    dispatch(updateUploadingFilesArr(sortedFiles))
   }

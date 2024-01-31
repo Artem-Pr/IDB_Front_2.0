@@ -10,13 +10,13 @@ import {
 import { localStorageAPI } from '../../../app/common/utils/localStorageAPI'
 import {
   resetSearchMenu,
-  resetSort,
+  resetSort as resetSortMainPage,
   setDateRange,
   setDescriptionFilter,
   setExcludeTags,
   setGalleryPagination,
-  setGallerySortingList,
-  setGroupedByDate,
+  setGallerySortingList as setGallerySortingListMainPage,
+  setGroupedByDate as setGroupedByDateMainPage,
   setIncludeAllSearchTags,
   setIsAnyDescriptionFilter,
   setMimeTypes,
@@ -26,7 +26,7 @@ import {
   setSearchTags,
   updateDOpenMenus,
 } from '../../reducers/mainPageSlice/mainPageSlice'
-import { defaultGallerySortingList } from '../../reducers/mainPageSlice/helpers'
+import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../reducers/mainPageSlice/helpers'
 import {
   setCurrentFolderKey,
   setCurrentFolderPath,
@@ -36,6 +36,11 @@ import {
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 import { RootState } from '../rootReducer'
 import { main } from '../../selectors'
+import {
+  resetSort as resetSortUploadPage,
+  setGallerySortingList as setGallerySortingListUploadPage,
+} from '../../reducers/uploadSlice/uploadSlice'
+import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../reducers/uploadSlice/helpers'
 
 export const listenerMiddleware = createListenerMiddleware<RootState>()
 
@@ -162,16 +167,30 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setGallerySortingList,
+  actionCreator: setGallerySortingListMainPage,
   effect: action => {
-    localStorageAPI.gallerySortingList = action.payload
+    localStorageAPI.gallerySortingListMainPage = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: resetSort,
+  actionCreator: setGallerySortingListUploadPage,
+  effect: action => {
+    localStorageAPI.gallerySortingListUploadPage = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: resetSortMainPage,
   effect: () => {
-    localStorageAPI.gallerySortingList = defaultGallerySortingList
+    localStorageAPI.gallerySortingListMainPage = defaultGallerySortingListMainPage
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: resetSortUploadPage,
+  effect: () => {
+    localStorageAPI.gallerySortingListUploadPage = defaultGallerySortingListUploadPage
   },
 })
 
@@ -183,9 +202,9 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setGroupedByDate,
+  actionCreator: setGroupedByDateMainPage,
   effect: action => {
-    localStorageAPI.groupedByDate = action.payload
+    localStorageAPI.groupedByDateMainPage = action.payload
   },
 })
 

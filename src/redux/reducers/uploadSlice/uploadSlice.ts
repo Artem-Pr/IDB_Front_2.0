@@ -5,17 +5,28 @@ import type {
   BlobDispatchPayload,
   BlobUpdateNamePayload,
   ExifFilesList,
+  GallerySortingItem,
   LoadingStatus,
   UploadingObject,
 } from '../../types'
 import { MainMenuKeys } from '../../types'
 import { initialState } from './uploadState'
 import type { FullExifPayload } from './types'
+import { defaultGallerySortingList } from './helpers'
 
 const uploadSlice = createSlice({
   name: 'uploadPage',
   initialState,
   reducers: {
+    resetSort(state) {
+      state.sort.gallerySortingList = defaultGallerySortingList
+    },
+    setGallerySortingList(state, action: PayloadAction<GallerySortingItem[]>) {
+      state.sort.gallerySortingList = action.payload
+    },
+    setGroupedByDate(state, action: PayloadAction<boolean>) {
+      state.sort.groupedByDate = action.payload
+    },
     updateUploadingFilesArr(state, action: PayloadAction<UploadingObject[]>) {
       state.uploadingFiles = action.payload
     },
@@ -95,9 +106,12 @@ export const {
   removeBlob,
   removeFromOpenMenus,
   removeFromSelectedList,
+  resetSort,
   selectAll,
   setBlob,
   setCheckForDuplicatesOnlyInCurrentFolder,
+  setGallerySortingList,
+  setGroupedByDate,
   setIsExifLoading,
   setUploadingStatus,
   updateBlobName,

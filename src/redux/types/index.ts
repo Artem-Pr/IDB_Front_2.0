@@ -49,6 +49,8 @@ export enum SortedFields {
   SIZE = 'size',
   RATING = 'rating',
   DESCRIPTION = 'description',
+  NAME = 'name',
+  TYPE = 'type',
 }
 
 export enum Sort {
@@ -250,4 +252,10 @@ export interface BlobDispatchPayload {
 export interface BlobUpdateNamePayload {
   oldName: string
   newName: string
+}
+
+export interface SortingData {
+  gallerySortingList: GallerySortingItem[]
+  groupedByDate: boolean
+  randomSort?: boolean
 }

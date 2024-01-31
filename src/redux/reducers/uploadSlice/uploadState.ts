@@ -1,5 +1,6 @@
-import type { ExifFilesList, LoadingStatus, UploadingObject } from '../../types'
+import type { ExifFilesList, LoadingStatus, SortingData, UploadingObject } from '../../types'
 import { MainMenuKeys } from '../../types'
+import { defaultGallerySortingList } from './helpers'
 
 interface State {
   checkForDuplicatesOnlyInCurrentFolder: boolean
@@ -11,6 +12,7 @@ interface State {
   uploadingBlobs: Record<string, string>
   uploadingFiles: UploadingObject[]
   uploadingStatus: LoadingStatus
+  sort: SortingData
 }
 
 export const initialState: State = {
@@ -23,4 +25,8 @@ export const initialState: State = {
   uploadingBlobs: {},
   uploadingFiles: [],
   uploadingStatus: 'empty',
+  sort: {
+    gallerySortingList: defaultGallerySortingList,
+    groupedByDate: false,
+  },
 }

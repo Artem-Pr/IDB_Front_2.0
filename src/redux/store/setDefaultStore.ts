@@ -11,8 +11,8 @@ import {
   setDescriptionFilter,
   setExcludeTags,
   setGalleryPagination,
-  setGallerySortingList,
-  setGroupedByDate,
+  setGallerySortingList as setGallerySortingListMainPage,
+  setGroupedByDate as setGroupedByDateMainPage,
   setIncludeAllSearchTags,
   setIsAnyDescriptionFilter,
   setMimeTypes,
@@ -28,6 +28,7 @@ import {
   setExpandedKeys,
   setIsDynamicFolders,
 } from '../reducers/foldersSlice-reducer'
+import { setGallerySortingList as setGallerySortingListUploadPage } from '../reducers/uploadSlice/uploadSlice'
 
 export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setSavePreview(localStorageAPI.savePreview))
@@ -59,9 +60,10 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setIsAnyDescriptionFilter(anyDescription))
 
   dispatch(setGalleryPagination(localStorageAPI.galleryPagination))
-  dispatch(setGallerySortingList(localStorageAPI.gallerySortingList))
+  dispatch(setGallerySortingListMainPage(localStorageAPI.gallerySortingListMainPage))
+  dispatch(setGallerySortingListUploadPage(localStorageAPI.gallerySortingListUploadPage))
+  dispatch(setGroupedByDateMainPage(localStorageAPI.groupedByDateMainPage))
   dispatch(setRandomSort(localStorageAPI.randomSort))
-  dispatch(setGroupedByDate(localStorageAPI.groupedByDate))
 
   dispatch(setCurrentFolderPath(localStorageAPI.currentFolderPath))
   dispatch(setCurrentFolderKey(localStorageAPI.currentFolderKey))

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 
 import { Button, Checkbox, Segmented } from 'antd'
 import { DownCircleTwoTone, UpCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
@@ -10,20 +9,16 @@ import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 import { SortableList } from './components'
 
-import { sort } from '../../../redux/selectors'
 import type { GallerySortingItem } from '../../../redux/types'
 import { Sort, SortedFields } from '../../../redux/types'
-import {
-  resetSort,
-  setGallerySortingList,
-  setGroupedByDate,
-  setRandomSort,
-} from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { DragHandle, SortableItem } from './components/SortableList/components'
 
 import styles from './SortingMenu.module.scss'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { useAppDispatch } from '../../../redux/store/store'
+import { useSortingMenu } from './hooks'
+import { useCurrentPage } from '../../common/hooks'
+import { applySorting } from '../../../redux/reducers/uploadSlice/thunks/applySorting'
 
 const switcherOptions = [
   {
@@ -45,10 +40,12 @@ const switcherOptions = [
 
 export const SortingMenu = () => {
   const dispatch = useAppDispatch()
-  const { gallerySortingList, randomSort, groupedByDate } = useSelector(sort)
+  const { isMainPage, isUploadingPage } = useCurrentPage()
+  const { gallerySortingList, randomSort, groupedByDate, setSortingList, resetSort, setRandomSort, setGroupedByDate } =
+    useSortingMenu()
 
   const handleSortingChange = (updatedList: GallerySortingItem[]) => {
-    dispatch(setGallerySortingList(updatedList))
+    setSortingList(updatedList)
   }
 
   const handleSegmentedChange = (id: SortedFields) => (value: string | number) => {
@@ -56,23 +53,24 @@ export const SortingMenu = () => {
     const updatedList: GallerySortingItem[] = gallerySortingList.map(sortItem => {
       return sortItem.id === id ? { ...sortItem, sort: sortValue } : sortItem
     })
-    dispatch(setGallerySortingList(updatedList))
+    setSortingList(updatedList)
   }
 
-  const handleDataReload = () => {
-    dispatch(fetchPhotos())
+  const handleApply = () => {
+    isMainPage && dispatch(fetchPhotos())
+    isUploadingPage && dispatch(applySorting())
   }
 
   const handleReset = () => {
-    dispatch(resetSort())
+    resetSort()
   }
 
   const handleRandomSortChange = (e: CheckboxChangeEvent) => {
-    dispatch(setRandomSort(e.target.checked))
+    setRandomSort(e.target.checked)
   }
 
   const handleGroupByDateChange = (e: CheckboxChangeEvent) => {
-    dispatch(setGroupedByDate(e.target.checked))
+    setGroupedByDate(e.target.checked)
   }
 
   return (
@@ -96,9 +94,11 @@ export const SortingMenu = () => {
       />
 
       <div className="d-flex flex-column">
-        <Checkbox checked={randomSort} onChange={handleRandomSortChange}>
-          Random sort
-        </Checkbox>
+        {isMainPage && (
+          <Checkbox checked={randomSort} onChange={handleRandomSortChange}>
+            Random sort
+          </Checkbox>
+        )}
 
         <Checkbox checked={groupedByDate} onChange={handleGroupByDateChange}>
           Grouped by date
@@ -110,8 +110,9 @@ export const SortingMenu = () => {
           Reset
         </Button>
 
-        <Button type="primary" onClick={handleDataReload}>
-          Reload data
+        <Button type="primary" onClick={handleApply}>
+          {isMainPage && 'Reload data'}
+          {isUploadingPage && 'Apply sorting'}
         </Button>
       </div>
     </div>

@@ -6,12 +6,13 @@ import ImageGallery from 'react-image-gallery'
 
 import styles from './index.module.scss'
 import type { ExifFilesList, FieldsObj } from '../../../redux/types'
-import { session, sort } from '../../../redux/selectors'
+import { session } from '../../../redux/selectors'
 import { GalleryTile, ImageGalleryMenu } from './components'
 import { useImageArrayGroupedByDate, useImageClick, useImageGalleryData, useSelectWithShift } from './hooks'
 import { MainMenuKeys } from '../../../redux/types'
 import { useGetFullExifList } from './hooks/useGefFullExifList'
 import { setPreviewPlaying } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { useSort } from '../../common/hooks/useSort'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('d-none')
@@ -50,7 +51,7 @@ const Gallery = ({
 }: GalleryProps) => {
   const dispatch = useDispatch()
   const { fitContain, previewSize } = useSelector(session)
-  const { groupedByDate } = useSelector(sort)
+  const { groupedByDate } = useSort()
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [showPreviewList, setShowPreviewList] = useState(true)

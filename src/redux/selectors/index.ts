@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { compose, map } from 'ramda'
 
 import type { RootState } from '../store/rootReducer'
-import type { ExistedFile, FieldsObj, UploadingObject } from '../types'
+import type { ExistedFile, FieldsObj, SortingData, UploadingObject } from '../types'
 import { getSameKeywords, getUniqArr } from '../../app/common/utils'
 
 export const folderElement = (state: RootState) => state.folderReducer
@@ -13,10 +13,11 @@ export const openMenus = (state: RootState) => state.uploadReducer.openMenus
 export const uploadingFiles = (state: RootState) => state.uploadReducer.uploadingFiles
 export const uploadingBlobs = (state: RootState) => state.uploadReducer.uploadingBlobs
 export const selectedList = (state: RootState) => state.uploadReducer.selectedList
+export const uploadPageSort = (state: RootState) => state.uploadReducer.sort
 export const checkForDuplicatesOnlyInCurrentFolder = (state: RootState) =>
   state.uploadReducer.checkForDuplicatesOnlyInCurrentFolder
 export const main = (state: RootState) => state.mainPageReducer
-export const sort = (state: RootState) => state.mainPageReducer.sort
+export const mainPageSort = (state: RootState) => state.mainPageReducer.sort
 export const dOpenMenus = (state: RootState) => state.mainPageReducer.dOpenMenus
 export const searchMenu = (state: RootState) => state.mainPageReducer.searchMenu
 export const downloadingFiles = (state: RootState) => state.mainPageReducer.downloadingFiles
@@ -32,6 +33,16 @@ export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArr => pathsArr.map(path => ({ value: path })))
+
+export const sort = createSelector(
+  [
+    uploadPageSort,
+    mainPageSort,
+    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+  ],
+  (uploadPageSort, mainPageSort, { isMainPage, isUploadingPage }): SortingData =>
+    isMainPage ? mainPageSort : isUploadingPage ? uploadPageSort : { gallerySortingList: [], groupedByDate: false }
+)
 
 export const duplicateFilesArr = createSelector(
   [uploadingFiles, checkForDuplicatesOnlyInCurrentFolder, curFolderInfo],
@@ -55,11 +66,11 @@ export const openMenusSelector = createSelector(
     (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
   ],
   (openMenus, dOpenMenus, { isMainPage, isUploadingPage }) => {
-    const isMainPageOpenMenus = isMainPage && dOpenMenus
-    const isUploadPageOpenMenus = isUploadingPage && openMenus
+    const mainPageOpenMenus = isMainPage && dOpenMenus
+    const uploadPageOpenMenus = isUploadingPage && openMenus
 
     return {
-      openMenuKeys: isMainPageOpenMenus || isUploadPageOpenMenus || [],
+      openMenuKeys: mainPageOpenMenus || uploadPageOpenMenus || [],
     }
   }
 )

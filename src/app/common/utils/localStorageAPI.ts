@@ -2,7 +2,17 @@ import { GalleryPagination, GallerySortingItem, MainMenuKeys } from '../../../re
 import { SearchMenu } from '../../../redux/reducers/mainPageSlice/types'
 import { initialState as mainPageInitialState } from '../../../redux/reducers/mainPageSlice/mainPageState'
 import { initialState as settingsInitialState } from '../../../redux/reducers/settingsSlice-reducer'
-import { defaultGallerySortingList } from '../../../redux/reducers/mainPageSlice/helpers'
+import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../../redux/reducers/mainPageSlice/helpers'
+import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../../redux/reducers/uploadSlice/helpers'
+
+const safetyJSONParse = <T>(str: string | null) => {
+  // eslint-disable-next-line functional/no-try-statement
+  try {
+    return str ? (JSON.parse(str) as T) : null
+  } catch (e) {
+    return null
+  }
+}
 
 export const localStorageAPI = {
   // isDynamicFolders
@@ -72,13 +82,22 @@ export const localStorageAPI = {
     return galleryPaginationJSON ? JSON.parse(galleryPaginationJSON) : mainPageInitialState.galleryPagination
   },
 
-  // gallerySortingList
-  set gallerySortingList(gallerySortingList: GallerySortingItem[]) {
-    localStorage.setItem('gallerySortingList', JSON.stringify(gallerySortingList))
+  // gallerySortingListMainPage
+  set gallerySortingListMainPage(gallerySortingList: GallerySortingItem[]) {
+    localStorage.setItem('gallerySortingListMainPage', JSON.stringify(gallerySortingList))
   },
-  get gallerySortingList() {
-    const gallerySortingListJSON = localStorage.getItem('gallerySortingList')
-    return gallerySortingListJSON ? JSON.parse(gallerySortingListJSON) : defaultGallerySortingList
+  get gallerySortingListMainPage() {
+    const gallerySortingListJSON = localStorage.getItem('gallerySortingListMainPage')
+    return safetyJSONParse(gallerySortingListJSON) || defaultGallerySortingListMainPage
+  },
+
+  // gallerySortingListUploadPage
+  set gallerySortingListUploadPage(gallerySortingList: GallerySortingItem[]) {
+    localStorage.setItem('gallerySortingListUploadPage', JSON.stringify(gallerySortingList))
+  },
+  get gallerySortingListUploadPage() {
+    const gallerySortingListJSON = localStorage.getItem('gallerySortingListUploadPage')
+    return safetyJSONParse(gallerySortingListJSON) || defaultGallerySortingListUploadPage
   },
 
   // randomSort
@@ -90,13 +109,13 @@ export const localStorageAPI = {
     return randomSortJSON ? JSON.parse(randomSortJSON) : false
   },
 
-  // groupedByDate
-  set groupedByDate(groupedByDate: boolean) {
-    localStorage.setItem('groupedByDate', JSON.stringify(groupedByDate))
+  // groupedByDateMainPage
+  set groupedByDateMainPage(groupedByDate: boolean) {
+    localStorage.setItem('groupedByDateMainPage', JSON.stringify(groupedByDate))
   },
-  get groupedByDate() {
-    const groupedByDateJSON = localStorage.getItem('groupedByDate')
-    return groupedByDateJSON ? JSON.parse(groupedByDateJSON) : false
+  get groupedByDateMainPage() {
+    const groupedByDateJSON = localStorage.getItem('groupedByDateMainPage')
+    return safetyJSONParse(groupedByDateJSON) || false
   },
 
   // currentFolderPath

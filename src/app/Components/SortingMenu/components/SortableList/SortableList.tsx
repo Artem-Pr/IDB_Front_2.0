@@ -9,8 +9,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { Over } from '@dnd-kit/core'
-import type { Active, UniqueIdentifier } from '@dnd-kit/core'
+import type { Active, UniqueIdentifier, Over } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 
 import styles from './SortableList.module.scss'

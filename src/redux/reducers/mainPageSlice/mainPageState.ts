@@ -1,14 +1,14 @@
-import {
+import type {
   DownloadingObject,
   DownloadingRawObject,
   GalleryPagination,
-  GallerySortingItem,
   MainMenuKeys,
   Preview,
+  SortingData,
 } from '../../types'
 import { MimeTypes } from '../../types/MimeTypes'
 import { defaultGallerySortingList } from './helpers'
-import { SearchMenu } from './types'
+import type { SearchMenu } from './types'
 
 export interface State {
   rawFiles: DownloadingRawObject[]
@@ -22,11 +22,7 @@ export interface State {
   isGalleryLoading: boolean
   isDeleteProcessing: boolean
   preview: Preview
-  sort: {
-    gallerySortingList: GallerySortingItem[]
-    randomSort: boolean
-    groupedByDate: boolean
-  }
+  sort: SortingData
 }
 
 export const initialState: State = {
