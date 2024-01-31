@@ -13,7 +13,6 @@ import {
   omit,
   prop,
   reject,
-  reverse,
   sortBy,
   sortWith,
   toLower,

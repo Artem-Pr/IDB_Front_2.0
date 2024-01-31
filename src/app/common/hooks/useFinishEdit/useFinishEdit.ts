@@ -195,7 +195,7 @@ export const useFinishEdit = ({
         needUpdatePreview
       )
       const filesSizeIfLongProcess =
-        !needModalIsDuplicate && !isEmptyCheckboxes && getFilesSizeIfLongProcess(filesArr, selectedList)
+        isMainPage && !needModalIsDuplicate && !isEmptyCheckboxes && getFilesSizeIfLongProcess(filesArr, selectedList)
 
       needModalIsDuplicate && modal.warning(duplicateConfig)
       isEmptyCheckboxes && modal.warning(emptyCheckboxesConfig)
