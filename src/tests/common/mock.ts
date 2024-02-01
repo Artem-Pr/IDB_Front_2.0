@@ -316,7 +316,7 @@ export const uploadingFilesWithKeywordsMock: Omit<UploadingObject, 'keywords'>[]
   (item, i) => ({
     ...item,
     keywords: fullExifObjArr[i].Keywords,
-  })
+  }),
 )
 
 export const namePartsArrMock: NameParts[] = [

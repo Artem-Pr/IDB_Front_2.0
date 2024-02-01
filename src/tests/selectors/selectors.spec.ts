@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import { copyByJSON } from '../../app/common/utils'
 import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice-reducer'
 import { selectAll, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice'
@@ -13,7 +14,7 @@ import { UploadingObject } from '../../redux/types'
 import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../common/mock'
 
 describe('selectors: ', () => {
-  let initialState: RootState
+  let initialState: RootState = store.getState()
 
   beforeAll(() => {
     const uploadingFiles: UploadingObject[] = copyByJSON(uploadingFilesMock)
