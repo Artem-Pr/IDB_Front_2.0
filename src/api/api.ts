@@ -76,7 +76,7 @@ export const mainApi = {
   },
 
   deleteDirectory(directory: string) {
-    return instance.delete<QueryResponse & { filePaths: string[] }>(`/directory`, {
+    return instance.delete<QueryResponse & { filePaths: string[] }>('/directory', {
       params: { name: directory },
     })
   },
@@ -84,10 +84,10 @@ export const mainApi = {
 
 export const testApi = {
   matchNumberOfFiles(pid: number) {
-    return instance.post<MatchingNumberOfFilesTest>(`/test/matching-files`, { pid })
+    return instance.post<MatchingNumberOfFilesTest>('/test/matching-files', { pid })
   },
   matchVideoFiles(pid: number) {
-    return instance.post<MatchingVideoFilesTest>(`/test/matching-videos`, { pid })
+    return instance.post<MatchingVideoFilesTest>('/test/matching-videos', { pid })
   },
   rebuildFoldersConfig() {
     return instance.get<QueryResponse>('/rebuild-paths-config')

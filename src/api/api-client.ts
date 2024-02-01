@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios from 'axios'
+import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 export enum HOST {
   HTTP = 'http://localhost:5002',
@@ -9,7 +10,6 @@ interface Aborter {
   [key: string]: AbortController | null
 }
 
-// eslint-disable-next-line functional/no-let
 let cancelController: Aborter = {}
 
 const exceptionUrlList = ['/uploadItem']
@@ -36,11 +36,11 @@ const getAbortControllerSignal = (url: string) => {
   return cancelController[url]?.signal
 }
 
-const setAbortController = (config: AxiosRequestConfig) => {
-  return config.url && !exceptionUrlList.includes(config.url)
+const setAbortController = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => (
+  config.url && !exceptionUrlList.includes(config.url)
     ? { ...config, signal: getAbortControllerSignal(config.url) }
     : config
-}
+)
 
 const resetAbortController = (response: AxiosResponse) => {
   const responseUrl = response.config.url

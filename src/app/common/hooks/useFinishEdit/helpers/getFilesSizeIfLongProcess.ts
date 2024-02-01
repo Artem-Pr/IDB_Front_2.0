@@ -1,6 +1,7 @@
 import { FieldsObj } from '../../../../../redux/types'
-import { getFileSizesSum } from './getFileSizesSum'
 import { formatSize } from '../../../utils'
+
+import { getFileSizesSum } from './getFileSizesSum'
 
 export const maxFileSizeForExifUpdating = 200_000_000 // 200 Mb
 

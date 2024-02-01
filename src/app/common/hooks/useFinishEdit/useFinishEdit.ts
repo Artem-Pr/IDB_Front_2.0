@@ -1,25 +1,30 @@
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { compose, curry, flatten, identity, isEmpty, sortBy, uniq } from 'ramda'
 
 import type { ModalStaticFunctions } from 'antd/es/modal/confirm'
+import {
+  compose, curry, flatten, identity, isEmpty, sortBy, uniq,
+} from 'ramda'
 
+import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
+import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
+import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
+import { folderElement, session } from '../../../../redux/selectors'
+import { useAppDispatch } from '../../../../redux/store/store'
+import type {
+  Checkboxes, FieldsObj, UpdatedObject, UploadingObject,
+} from '../../../../redux/types'
+import type { InitialFileObject } from '../../../Components/EditMenu'
 import {
   getFilesWithUpdatedKeywords,
   getRenamedObjects,
   removeEmptyFields,
   removeIntersectingKeywords,
 } from '../../utils'
-import type { Checkboxes, FieldsObj, UpdatedObject, UploadingObject } from '../../../../redux/types'
-import { useEditFilesArr } from '../hooks'
-import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
 import { formatDate } from '../../utils/date'
+import { useEditFilesArr } from '../hooks'
+
 import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
-import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
-import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
-import { folderElement, session } from '../../../../redux/selectors'
-import type { InitialFileObject } from '../../../Components/EditMenu'
-import { useAppDispatch } from '../../../../redux/store/store'
 
 interface Props {
   filesArr: FieldsObj[]
@@ -64,7 +69,7 @@ export const useFinishEdit = ({
       currentName,
       currentOriginalDate,
       currentFilePath,
-      keywords,
+      keywords: newKeywords,
       description,
       checkboxes,
       timeStamp,
@@ -77,13 +82,16 @@ export const useFinishEdit = ({
           name: currentName,
           originalDate,
         }))
-      const newNamesArr: string[] = getRenamedObjects(selectedFiles).map(({ name }) => name)
+      const newNamesArr: string[] = getRenamedObjects(selectedFiles)
+        .map(item => item.name)
       const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFiles)
-      const newKeywordsArr: string[][] = getFilesWithUpdatedKeywords(selectedFilesWithoutSameKeywords, keywords).map(
-        ({ keywords }) => keywords || []
-      )
-      const getNewOriginalDate = (idx: number) =>
+      const newKeywordsArr: string[][] = getFilesWithUpdatedKeywords(selectedFilesWithoutSameKeywords, newKeywords)
+        .map(
+          ({ keywords }) => keywords || [],
+        )
+      const getNewOriginalDate = (idx: number) => (
         isTimesDifferenceApplied ? selectedFiles[idx].originalDate : currentOriginalDate
+      )
 
       const getUpdatedFields = (idx: number): UpdatedObject['updatedFields'] => {
         const {
@@ -112,9 +120,9 @@ export const useFinishEdit = ({
         updatedFields: getUpdatedFields(i),
       }))
 
-      updatedFiles.length && compose(dispatch, updatePhotos)(updatedFiles)
+      updatedFiles.length && dispatch(updatePhotos(updatedFiles))
     },
-    [dispatch, filesArr, isTimesDifferenceApplied, sameKeywords, selectedList]
+    [dispatch, filesArr, isTimesDifferenceApplied, sameKeywords, selectedList],
   )
 
   const onFinish = useCallback(
@@ -137,9 +145,9 @@ export const useFinishEdit = ({
     }: InitialFileObject) => {
       const currentName = newName ? newName + ext : ''
       const currentOriginalDate = newOriginalDate ? formatDate(newOriginalDate) : null
-      const isDuplicateName = curry((filesArr: UploadingObject[], currentName: string) => {
-        const fileArrNames = filesArr.map(({ name }) => name)
-        return fileArrNames.includes(currentName)
+      const isDuplicateName = curry((newFilesArr: UploadingObject[], newCurrentName: string) => {
+        const fileArrNames = newFilesArr.map(item => item.name)
+        return fileArrNames.includes(newCurrentName)
       })(filesArr)
 
       const updateValues = () => {
@@ -168,8 +176,8 @@ export const useFinishEdit = ({
           isTimeStamp,
           needUpdatePreview,
         }
-        isMainPage &&
-          sendUpdatedFiles({
+        isMainPage
+          && sendUpdatedFiles({
             currentName,
             currentOriginalDate,
             currentFilePath: `/${filePath}`,
@@ -185,22 +193,24 @@ export const useFinishEdit = ({
 
       const needModalIsDuplicate = !isEditMany && isName && isDuplicateName(currentName)
       const isEmptyCheckboxes = !(
-        isName ||
-        isOriginalDate ||
-        isKeywords ||
-        isFilePath ||
-        isRating ||
-        isDescription ||
-        isTimeStamp ||
-        needUpdatePreview
+        isName
+        || isOriginalDate
+        || isKeywords
+        || isFilePath
+        || isRating
+        || isDescription
+        || isTimeStamp
+        || needUpdatePreview
       )
-      const filesSizeIfLongProcess =
-        isMainPage && !needModalIsDuplicate && !isEmptyCheckboxes && getFilesSizeIfLongProcess(filesArr, selectedList)
+      const filesSizeIfLongProcess = isMainPage
+      && !needModalIsDuplicate
+       && !isEmptyCheckboxes
+       && getFilesSizeIfLongProcess(filesArr, selectedList)
 
       needModalIsDuplicate && modal.warning(duplicateConfig)
       isEmptyCheckboxes && modal.warning(emptyCheckboxesConfig)
-      filesSizeIfLongProcess &&
-        modal.confirm(longProcessConfirmation({ onOk: updateValues, fileSize: filesSizeIfLongProcess }))
+      filesSizeIfLongProcess
+        && modal.confirm(longProcessConfirmation({ onOk: updateValues, fileSize: filesSizeIfLongProcess }))
 
       !(needModalIsDuplicate || isEmptyCheckboxes || filesSizeIfLongProcess) && updateValues()
     },
@@ -217,7 +227,7 @@ export const useFinishEdit = ({
       name,
       sameKeywords,
       selectedList,
-    ]
+    ],
   )
 
   return { onFinish }

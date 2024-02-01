@@ -1,3 +1,4 @@
+import { ResultStatusType } from 'antd/es/result'
 import {
   addIndex,
   compose,
@@ -20,8 +21,6 @@ import {
   without,
 } from 'ramda'
 
-import { ResultStatusType } from 'antd/es/result'
-
 import type {
   DownloadingObject,
   DownloadingRawObject,
@@ -33,8 +32,9 @@ import type {
   UpdatingFieldsWithPath,
   UploadingObject,
 } from '../../../redux/types'
-import { dateTimeFormat, formatDate } from './date'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
+
+import { dateTimeFormat, formatDate } from './date'
 
 export const invokableCompose = <any>compose
 export const filterIndexed = addIndex(filter)
@@ -44,26 +44,31 @@ export const removeExtraFirstSlash = (value: string): string => (value.startsWit
 // Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
-export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) =>
+export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) => (
   sortBy<K>(compose(toLower, prop(String(fieldName))))
-export const sortByFieldDescending = <K extends Record<string, any>>(fieldName: keyof K) =>
+)
+export const sortByFieldDescending = <K extends Record<string, any>>(fieldName: keyof K) => (
   sortWith<K>([descend(compose(toLower, prop(String(fieldName))))])
+)
 export const typeIsMimeTypesKey = (type: string): type is keyof typeof MimeTypes => type.toLowerCase() in MimeTypes
-export const isMimeType = (type: string): type is MimeTypes => Object.values(MimeTypes).includes(type as MimeTypes)
+export const isMimeType = (type: string): type is MimeTypes => Object.values(MimeTypes)
+  .includes(type as MimeTypes)
 export const isVideo = (contentType: MimeTypes) => contentType.startsWith('video')
 export const isVideoByExt = (fileExtension: string) => {
   const lowerCaseExt = fileExtension.toLowerCase()
   return typeIsMimeTypesKey(lowerCaseExt) ? isVideo(MimeTypes[lowerCaseExt]) : false
 }
 
+const getNameObj = (fullName: string) => {
+  const separatedNameArr = fullName.split('.')
+  const shortName = separatedNameArr.slice(0, -1)
+    .join('.')
+  const extWithoutDot = separatedNameArr.at(-1)
+  const ext = `.${extWithoutDot}`
+  return { shortName, ext, extWithoutDot }
+}
+
 export const getNameParts = (fullName: string): NameParts => {
-  const getNameObj = (fullName: string) => {
-    const separatedNameArr = fullName.split('.')
-    const shortName = separatedNameArr.slice(0, -1).join('.')
-    const extWithoutDot = separatedNameArr.at(-1)
-    const ext = '.' + extWithoutDot
-    return { shortName, ext, extWithoutDot }
-  }
   const isValidName = fullName && fullName !== '-'
   return isValidName ? getNameObj(fullName) : { shortName: '-', ext: '' }
 }
@@ -71,15 +76,15 @@ export const getNameParts = (fullName: string): NameParts => {
 export const getTempPath = (filesArr: UploadingObject[], index: number): string => filesArr[index].tempPath
 export const isExifExist = (exifList: ExifFilesList, tempPath: string): boolean => !!exifList[tempPath]
 
+const tryToRestoreKeywords = (keywords: string | null): string[] | null => {
+  const keywordsArray = keywords?.split('.')
+  return keywordsArray?.length ? keywordsArray : null
+}
 // TODO: add tests
 const getPrepareKeywordsFromRawExif = (exifObj: RawFullExifObj) => {
-  const getPreparedKeywords = (keywords: RawFullExifObj['Keywords']) => {
-    const tryToRestoreKeywords = (keywords: string | null): string[] | null => {
-      const keywordsArray = keywords?.split('.')
-      return keywordsArray?.length ? keywordsArray : null
-    }
-    return Array.isArray(keywords) ? keywords : tryToRestoreKeywords(keywords)
-  }
+  const getPreparedKeywords = (keywords: RawFullExifObj['Keywords']) => (
+    Array.isArray(keywords) ? keywords : tryToRestoreKeywords(keywords)
+  )
   return Array.isArray(exifObj.Subject) ? exifObj.Subject : getPreparedKeywords(exifObj.Keywords)
 }
 
@@ -102,13 +107,11 @@ export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: strin
 export const updateFilesArrItemByField = (
   fieldName: keyof UploadingObject,
   filesArr: UploadingObject[],
-  updatingFieldsObj: { [key: string]: any }
-): UploadingObject[] => {
-  return filesArr.map(item => {
-    const isEqualFileName = item[fieldName] === updatingFieldsObj[fieldName]
-    return isEqualFileName ? { ...item, ...updatingFieldsObj } : item
-  })
-}
+  updatingFieldsObj: { [key: string]: any },
+): UploadingObject[] => filesArr.map(item => {
+  const isEqualFileName = item[fieldName] === updatingFieldsObj[fieldName]
+  return isEqualFileName ? { ...item, ...updatingFieldsObj } : item
+})
 
 export const renameEqualStrings = (strArr: string[]) => {
   const count = (accum: Record<string, number>, curValue: string) => {
@@ -119,7 +122,10 @@ export const renameEqualStrings = (strArr: string[]) => {
   const arrCreator = (accum: Record<string, number>, curValue: string): [Record<string, number>, string] => {
     const newValue = accum[curValue] ? dec(accum[curValue]) : curValue
     const newAccum = { ...copyByJSON(accum), [curValue]: newValue }
-    const additionalNumber = accum[curValue] ? `_${accum[curValue].toString().padStart(3, '0')}` : ''
+    const additionalNumber = accum[curValue]
+      ? `_${accum[curValue].toString()
+        .padStart(3, '0')}`
+      : ''
     return [newAccum, `${curValue}${additionalNumber}`]
   }
 
@@ -149,46 +155,38 @@ export const getRenamedObjects = <T extends { name: string }>(filesArr: T[]): T[
 
 export const removeIntersectingKeywords = <T extends { keywords: Keywords }>(
   sameKeywords: string[],
-  filesArr: T[]
-): T[] => {
-  return filesArr.map(item => {
-    return { ...item, keywords: without(sameKeywords, item.keywords || []) }
-  })
-}
+  filesArr: T[],
+): T[] => filesArr.map(item => ({ ...item, keywords: without(sameKeywords, item.keywords || []) }))
 
-export const addKeywordsToAllFiles = <T extends { keywords: Keywords }>(newKeywords: string[], filesArr: T[]): T[] => {
-  return filesArr.map(item => {
-    return { ...item, keywords: union(newKeywords, item.keywords || []) }
-  })
-}
+export const addKeywordsToAllFiles = <T extends { keywords: Keywords }>(newKeywords: string[], filesArr: T[]): T[] => (
+  filesArr.map(item => ({ ...item, keywords: union(newKeywords, item.keywords || []) }))
+)
 
 export const updateFilesArrayItems = <T extends Record<string, any>>(
   uniqField: keyof T,
   originalFilesArr: T[],
-  newFilesArr: T[]
+  newFilesArr: T[],
 ): T[] => {
   const findUpdatedObj = (originalUniqField: string) => newFilesArr.find(file => file[uniqField] === originalUniqField)
   return originalFilesArr.map(file => findUpdatedObj(file[uniqField]) || file)
 }
 
-export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | null => {
-  return status !== 'empty' && status !== 'loading' ? status : null
-}
+export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | null => (
+  status !== 'empty' && status !== 'loading' ? status : null
+)
 
 export const getSameKeywords = (
   filesArr: UploadingObject[] | DownloadingObject[],
-  selectedList: number[]
+  selectedList: number[],
 ): string[] => {
-  const getIntersectionArr = (keywordsArrays: string[][]) => {
-    return keywordsArrays.length
-      ? keywordsArrays.reduce((previousValue, currentValue): string[] => intersection(previousValue, currentValue))
-      : []
-  }
+  const getIntersectionArr = (keywordsArrays: string[][]) => (keywordsArrays.length
+    ? keywordsArrays.reduce((previousValue, currentValue): string[] => intersection(previousValue, currentValue))
+    : [])
 
-  return compose(
+  return compose<any, any, any, any>(
     getIntersectionArr,
     map((item: UploadingObject) => item.keywords || []),
-    filterIndexed((__, index) => includes(index, selectedList))
+    filterIndexed((__: any, index: number) => includes(index, selectedList)),
   )(filesArr)
 }
 
@@ -197,25 +195,30 @@ export const convertDownLoadingRawObj = (downLoadingRawObj: DownloadingRawObject
   return { ...omit(['mimetype', 'originalName'], downLoadingRawObj), name: originalName, type: mimetype }
 }
 
-export const convertDownloadingRawObjectArr = (rawArr: DownloadingRawObject[]): DownloadingObject[] => {
-  return rawArr.map(item => convertDownLoadingRawObj(item))
-}
+export const convertDownloadingRawObjectArr = (rawArr: DownloadingRawObject[]): DownloadingObject[] => (
+  rawArr.map(item => convertDownLoadingRawObj(item))
+)
 
 export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
   filesArr: T[],
-  keywords: string[]
+  keywords: string[],
 ): T[] => {
   const newFilesArr = copyByJSON(filesArr)
   return isEmpty(keywords) ? newFilesArr : addKeywordsToAllFiles(keywords, newFilesArr)
 }
 
-export const getFilePathWithoutName = (fullPath: string): string => {
-  return fullPath.split('/').slice(0, -1).join('/')
-}
+export const getFilePathWithoutName = (fullPath: string): string => fullPath.split('/')
+  .slice(0, -1)
+  .join('/')
 
-export const getFolderNameWithoutPath = (fullPath: string): string => {
-  return fullPath.split('/').slice(-1).join('/')
-}
+export const getFolderNameWithoutPath = (fullPath: string): string => fullPath.split('/')
+  .slice(-1)
+  .join('/')
 
-export const changeExtension = (nameWithExtension: string, newExtension: string): string =>
-  nameWithExtension.split('.').slice(0, -1).join('.') + '.' + newExtension
+export const changeExtension = (nameWithExtension: string, newExtension: string): string => (
+  `${nameWithExtension
+    .split('.')
+    .slice(0, -1)
+    .join('.')
+  }.${newExtension}`
+)
