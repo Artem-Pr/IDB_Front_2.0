@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
-
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RawPreview } from '../../type'
-import { getLastItem } from '../../../../common/utils'
 import { cleanPreview, setPreview } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { uploadingBlobs } from '../../../../../redux/selectors'
 import { Preview } from '../../../../../redux/types'
+import { getLastItem } from '../../../../common/utils'
+import { RawPreview } from '../../type'
 
 interface UseImageClickProps {
   addToSelectedList: (indexArr: number[]) => void
@@ -43,7 +42,7 @@ export const useImageClick = ({
         dispatch(setPreview(newPreview))
       })
     },
-    [dispatch]
+    [dispatch],
   )
 
   const handleImageClick = useCallback(
@@ -66,8 +65,8 @@ export const useImageClick = ({
       !isShiftPressed && isEditMenu && selectOnlyOne()
       !isShiftPressed && isTemplateMenu && selectAnyQuantity()
 
-      rawPreview &&
-        updatePreview({
+      rawPreview
+        && updatePreview({
           previewType: rawPreview.type,
           originalName: rawPreview.name,
           originalPath: rawPreview.fullSizeJpgStatic || rawPreview.originalPath || blobFiles[rawPreview.name],
@@ -87,7 +86,7 @@ export const useImageClick = ({
       selectWithShift,
       selectedList,
       updatePreview,
-    ]
+    ],
   )
 
   return { handleImageClick }

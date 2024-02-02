@@ -1,9 +1,10 @@
 import React, { memo } from 'react'
-import { Input } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { Input } from 'antd'
+
+import { setMinImagePreviewSlideLimit } from '../../../../redux/reducers/settingsSlice/settingsSlice'
 import { settings } from '../../../../redux/selectors'
-import { setMinImagePreviewSlideLimit } from '../../../../redux/reducers/settingsSlice-reducer'
 
 export const MinImageSlideLimit = memo(() => {
   const dispatch = useDispatch()

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import type { MutableRefObject, ReactNode } from 'react'
-
-import type { CollapseProps } from 'antd'
+import { useSelector } from 'react-redux'
 
 import {
   CreditCardFilled,
@@ -13,23 +12,24 @@ import {
   SortDescendingOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-
-import { useSelector } from 'react-redux'
+import type { CollapseProps } from 'antd'
 import cn from 'classnames'
+
+import { previewDuplicates } from '../../../../redux/selectors'
+import { MainMenuKeys } from '../../../../redux/types'
+import { useCurrentPage } from '../../../common/hooks'
+import { EditMenu } from '../../EditMenu'
+import { Folders } from '../../Folders/Folders'
+import { PropertyMenu } from '../../PropertyMenu'
+import { SearchMenu } from '../../SearchMenu'
+import { SortingMenu } from '../../SortingMenu'
+import {
+  ButtonsMenu, KeywordsMenuWrapper, PreviewMenu, DuplicatesMenu,
+} from '../components'
+import type { PreviewMenuProps } from '../components/PreviewMenu/PreviewMenu'
 
 import styles from './useMainMenuItems.module.scss'
 
-import { MainMenuKeys } from '../../../../redux/types'
-
-import { useCurrentPage } from '../../../common/hooks'
-import Folders from '../../Folders'
-import { ButtonsMenu, KeywordsMenuWrapper, PreviewMenu, DuplicatesMenu } from '../components'
-import { SortingMenu } from '../../SortingMenu'
-import { SearchMenu } from '../../SearchMenu'
-import PropertyMenu from '../../PropertyMenu'
-import EditMenu from '../../EditMenu'
-import type { PreviewMenuProps } from '../components/PreviewMenu/PreviewMenu'
-import { previewDuplicates } from '../../../../redux/selectors'
 export interface MenuItem {
   key: MainMenuKeys
   label: ReactNode
@@ -77,7 +77,7 @@ const menuItems = ({ videoPreviewRef }: MenuItemsProps): MenuItem[] => [
     key: MainMenuKeys.EDIT_BULK,
     label: 'Edit bulk',
     icon: <CreditCardFilled />,
-    children: <EditMenu isEditMany={true} />,
+    children: <EditMenu isEditMany />,
   },
   {
     key: MainMenuKeys.KEYWORDS,
@@ -136,20 +136,20 @@ export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivEleme
   const previewDuplicatesArr = useSelector(previewDuplicates)
 
   return useMemo(() => {
-    const menuItemsFilter = ({ key }: { key: MainMenuKeys }) => {
-      return (
-        (isMainPage && !excludedMainPageMenuItems.includes(key)) ||
-        (isUploadingPage && !excludedUploadingPageMenuItems.includes(key)) ||
-        (isUploadingPage && previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES) ||
-        (isComparisonPage && !excludedComparisonPageMenuItems.includes(key))
-      )
-    }
+    const menuItemsFilter = ({ key }: { key: MainMenuKeys }) => (
+      (isMainPage && !excludedMainPageMenuItems.includes(key))
+        || (isUploadingPage && !excludedUploadingPageMenuItems.includes(key))
+        || (isUploadingPage && previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES)
+        || (isComparisonPage && !excludedComparisonPageMenuItems.includes(key))
+    )
 
     return {
       extraMenu: [buttonsMenu].filter(menuItemsFilter),
       collapseMenu: menuItems({ videoPreviewRef })
         .filter(menuItemsFilter)
-        .map(({ key, label, icon, children }) => {
+        .map(({
+          key, label, icon, children,
+        }) => {
           const className = cn({
             [styles.collapsePreviewItem]: key === MainMenuKeys.PREVIEW,
             [styles.collapseDuplicateItem]: key === MainMenuKeys.DUPLICATES,

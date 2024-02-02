@@ -1,21 +1,21 @@
 import { flatten, reduce } from 'ramda'
 
 import { FolderTreeItem } from '../../redux/types'
+
 import { copyByJSON, removeExtraSlash } from './utils'
 
 type KeyType = 'parent' | 'sibling'
 
 export const createKeyForFolderTree = (type: KeyType, key: string): string => {
-  const getKeyFromParent = () => key + '-0'
+  const getKeyFromParent = () => `${key}-0`
   const getKeyFromSibling = () => {
     const keyArr = key.split('-')
-    return `${keyArr.slice(0, -1).join('-')}-${+keyArr.slice(-1) + 1}`
+    return `${keyArr.slice(0, -1)
+      .join('-')}-${+keyArr.slice(-1) + 1}`
   }
   return type === 'parent' ? getKeyFromParent() : getKeyFromSibling()
 }
-export const addChildToTreeElem = ({ title, key }: FolderTreeItem, childTitle: string): FolderTreeItem => {
-  return { title, key, children: [{ title: childTitle, key: createKeyForFolderTree('parent', key) }] }
-}
+export const addChildToTreeElem = ({ title, key }: FolderTreeItem, childTitle: string): FolderTreeItem => ({ title, key, children: [{ title: childTitle, key: createKeyForFolderTree('parent', key) }] })
 export const addSiblingToTree = (title: string, tree: FolderTreeItem[]): FolderTreeItem[] => {
   const treeItem = { title, key: createKeyForFolderTree('sibling', tree.slice(-1)[0].key) }
   return [...copyByJSON(tree), treeItem]
@@ -29,9 +29,7 @@ export const addSiblingIfNeeded = (tree: FolderTreeItem[], titlesArr: string[]):
   return isFoundItem || titlesArr.length === 0 ? tree : addSiblingToTree(titlesArr[0], tree)
 }
 
-const createBasicTree = (title: string): FolderTreeItem[] => {
-  return [{ title, key: '0-0' }]
-}
+const createBasicTree = (title: string): FolderTreeItem[] => [{ title, key: '0-0' }]
 
 export const addFolderToFolderTree = (folderPath: string, tree: FolderTreeItem[]): FolderTreeItem[] => {
   const getNewFolderTree = (titlesArr: string[], subTree: FolderTreeItem[]): FolderTreeItem[] => {
@@ -48,8 +46,9 @@ export const addFolderToFolderTree = (folderPath: string, tree: FolderTreeItem[]
 }
 
 export const getFolderPathFromTreeKey = (tree: FolderTreeItem[], key: string): string => {
-  const getFoundElementPath = (targetKey: string, { children, title }: FolderTreeItem): string =>
+  const getFoundElementPath = (targetKey: string, { children, title }: FolderTreeItem): string => (
     !children ? title : `${title}/${getFolderPathFromTreeKey(children, targetKey)}`
+  )
 
   const foundItem = tree.find(item => key === item.key || key.startsWith(`${item.key}-`))
   const result = foundItem ? getFoundElementPath(key, foundItem) : ''
@@ -61,26 +60,24 @@ const updateFolderTree = (folderTree: FolderTreeItem[], path: string) => {
   return addFolderToFolderTree(cleanFolderPath, folderTree)
 }
 
-export const createFolderTree = (paths: string[]) => {
-  return reduce(updateFolderTree, [], paths)
-}
+export const createFolderTree = (paths: string[]) => reduce(updateFolderTree, [], paths)
 
 export const expandedSearchingTreeKeysParents = (
   tree: FolderTreeItem[],
   searchedTitle: string,
-  parentElem?: FolderTreeItem
-): string[] => {
-  return flatten(
-    tree.map(treeItem => {
-      const childrenKeys: string[] =
-        (treeItem.children && expandedSearchingTreeKeysParents(treeItem.children, searchedTitle, treeItem)) || []
-      const isTitleMatched = treeItem.title.includes(searchedTitle)
-      const parentKey = isTitleMatched ? [parentElem?.key || ''] : []
+  parentElem?: FolderTreeItem,
+): string[] => flatten(
+  tree.map(treeItem => {
+    const childrenKeys: string[] = (
+      (treeItem.children && expandedSearchingTreeKeysParents(treeItem.children, searchedTitle, treeItem)) || []
+    )
+    const isTitleMatched = treeItem.title.includes(searchedTitle)
+    const parentKey = isTitleMatched ? [parentElem?.key || ''] : []
 
-      return [...parentKey, ...childrenKeys]
-    })
-  ).filter(Boolean)
-}
+    return [...parentKey, ...childrenKeys]
+  }),
+)
+  .filter(Boolean)
 
 interface ExpandedTreeKeyFromPath {
   parentKeys: string[]
@@ -90,19 +87,20 @@ interface ExpandedTreeKeyFromPath {
 export const expandedTreeKeyFromPath = (
   tree: FolderTreeItem[],
   treePath: string,
-  parentElem?: FolderTreeItem
+  parentElem?: FolderTreeItem,
 ): ExpandedTreeKeyFromPath => {
   const folderNamesArr = treePath.split('/')
   const currentTreeNode = tree.find(({ title }) => title === folderNamesArr[0])
-  const childrenTreePath = folderNamesArr.slice(1).join('/')
+  const childrenTreePath = folderNamesArr.slice(1)
+    .join('/')
   const childrenTree = currentTreeNode?.children
 
   return childrenTree && childrenTreePath
     ? expandedTreeKeyFromPath(childrenTree, childrenTreePath, currentTreeNode)
     : {
-        parentKeys: [parentElem?.key || ''],
-        elementKey: currentTreeNode?.key || '',
-      }
+      parentKeys: [parentElem?.key || ''],
+      elementKey: currentTreeNode?.key || '',
+    }
 }
 
 export const getExpandedTreeKeys = (tree: FolderTreeItem[], treePath: string): ExpandedTreeKeyFromPath => {
@@ -110,9 +108,9 @@ export const getExpandedTreeKeys = (tree: FolderTreeItem[], treePath: string): E
   const needToOpenDifferentParents = folderNamesArrLength === 1
   const result = needToOpenDifferentParents
     ? {
-        parentKeys: expandedSearchingTreeKeysParents(tree, treePath),
-        elementKey: '',
-      }
+      parentKeys: expandedSearchingTreeKeysParents(tree, treePath),
+      elementKey: '',
+    }
     : expandedTreeKeyFromPath(tree, treePath)
 
   return { ...result, parentKeys: result.parentKeys.filter(Boolean) }

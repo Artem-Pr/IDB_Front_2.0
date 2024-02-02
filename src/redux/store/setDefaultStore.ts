@@ -1,11 +1,10 @@
-import { AppDispatch } from './store'
-import {
-  setIsFullSizePreview,
-  setMaxImagePreviewSlideLimit,
-  setMinImagePreviewSlideLimit,
-  setSavePreview,
-} from '../reducers/settingsSlice-reducer'
 import { localStorageAPI } from '../../app/common/utils/localStorageAPI'
+import {
+  setCurrentFolderKey,
+  setCurrentFolderPath,
+  setExpandedKeys,
+  setIsDynamicFolders,
+} from '../reducers/foldersSlice/foldersSlice'
 import {
   setDateRange,
   setDescriptionFilter,
@@ -23,12 +22,14 @@ import {
   updateDOpenMenus,
 } from '../reducers/mainPageSlice/mainPageSlice'
 import {
-  setCurrentFolderKey,
-  setCurrentFolderPath,
-  setExpandedKeys,
-  setIsDynamicFolders,
-} from '../reducers/foldersSlice-reducer'
+  setIsFullSizePreview,
+  setMaxImagePreviewSlideLimit,
+  setMinImagePreviewSlideLimit,
+  setSavePreview,
+} from '../reducers/settingsSlice/settingsSlice'
 import { setGallerySortingList as setGallerySortingListUploadPage } from '../reducers/uploadSlice/uploadSlice'
+
+import type { AppDispatch } from './types'
 
 export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setSavePreview(localStorageAPI.savePreview))

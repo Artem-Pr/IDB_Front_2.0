@@ -1,4 +1,3 @@
-/* eslint functional/immutable-data: 0 */
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 import type {
@@ -10,9 +9,10 @@ import type {
   UploadingObject,
 } from '../../types'
 import { MainMenuKeys } from '../../types'
-import { initialState } from './uploadState'
-import type { FullExifPayload } from './types'
+
 import { defaultGallerySortingList } from './helpers'
+import type { FullExifPayload } from './types'
+import { initialState } from './uploadState'
 
 const uploadSlice = createSlice({
   name: 'uploadPage',
@@ -120,4 +120,4 @@ export const {
   updateUploadingFilesArr,
 } = uploadSlice.actions
 
-export const uploadSliceReducer = uploadSlice.reducer
+export const uploadPageReducer = uploadSlice.reducer

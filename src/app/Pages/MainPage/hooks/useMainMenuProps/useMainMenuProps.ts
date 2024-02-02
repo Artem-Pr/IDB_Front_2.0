@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -9,7 +8,6 @@ import {
   setDownloadingFiles,
   updateDOpenMenus,
 } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { removeIntersectingKeywords } from '../../../../common/utils'
 import {
   allDownloadingKeywordsSelector,
   curFolderInfo,
@@ -19,6 +17,7 @@ import {
 } from '../../../../../redux/selectors'
 import { MainMenuKeys } from '../../../../../redux/types'
 import { useCurrentPage } from '../../../../common/hooks'
+import { removeIntersectingKeywords } from '../../../../common/utils'
 
 export const useMainMenuProps = () => {
   const dispatch = useDispatch()
@@ -33,7 +32,7 @@ export const useMainMenuProps = () => {
   return useMemo(
     () => ({
       filesArr: imageArr,
-      selectedList: selectedList,
+      selectedList,
       isExifLoading,
       uniqKeywords,
       sameKeywords,
@@ -59,6 +58,6 @@ export const useMainMenuProps = () => {
       sameKeywords,
       selectedList,
       uniqKeywords,
-    ]
+    ],
   )
 }

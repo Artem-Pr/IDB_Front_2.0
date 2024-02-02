@@ -1,9 +1,10 @@
 import React, { memo } from 'react'
-import { Checkbox } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { Checkbox } from 'antd'
+
+import { setIsFullSizePreview } from '../../../../redux/reducers/settingsSlice/settingsSlice'
 import { settings } from '../../../../redux/selectors'
-import { setIsFullSizePreview } from '../../../../redux/reducers/settingsSlice-reducer'
 
 export const FullSizePreview = memo(() => {
   const dispatch = useDispatch()

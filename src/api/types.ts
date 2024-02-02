@@ -1,5 +1,5 @@
-import { MimeTypes } from '../redux/types/MimeTypes'
 import { Sort, SortedFields } from '../redux/types'
+import { MimeTypes } from '../redux/types/MimeTypes'
 
 export interface GetPhotosByTagsRequest {
   comparisonFolder?: string
@@ -19,7 +19,7 @@ export interface GetPhotosByTagsRequest {
   sorting: Partial<Record<SortedFields, Sort>>
 }
 
-export enum API_STATUS {
+export enum ApiStatus {
   DEFAULT = 'default',
   INIT = 'init',
   PENDING = 'pending',
@@ -30,7 +30,7 @@ export enum API_STATUS {
   STOPPED = 'stopped',
 }
 
-export enum WEB_SOCKET_ACTIONS {
+export enum WebSocketActions {
   SYNC_PREVIEWS = 'SYNC_PREVIEWS',
   CREATE_PREVIEWS = 'CREATE_PREVIEWS',
   CREATE_PREVIEWS_STOP = 'CREATE_PREVIEWS_STOP',
@@ -40,17 +40,17 @@ export enum WEB_SOCKET_ACTIONS {
 export interface WebSocketAPICallback<T = undefined> {
   progress: number
   message: string
-  status: API_STATUS
+  status: ApiStatus
   data: T
 }
 
 export interface WebSocketAPIRequest<T = undefined> {
-  action: WEB_SOCKET_ACTIONS
+  action: WebSocketActions
   data: WebSocketAPICallback<T>
 }
 
 export interface WebSocketAPIQuery {
-  action: WEB_SOCKET_ACTIONS
+  action: WebSocketActions
   data?: {
     folderPath?: string
     mimeTypes?: MimeTypes[]

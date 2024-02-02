@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -27,6 +26,6 @@ export const useGalleryProps = () => {
       isLoading: isGalleryLoading,
       isMainPage: true,
     }),
-    [dispatch, isGalleryLoading, mainGalleryProps, updateUploadingFiles]
+    [dispatch, isGalleryLoading, mainGalleryProps, updateUploadingFiles],
   )
 }

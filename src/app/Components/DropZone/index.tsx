@@ -1,27 +1,28 @@
-/* eslint functional/immutable-data: 0 */
 import React, { useEffect, useMemo, useState } from 'react'
-
-import { message, Progress, Upload, UploadProps } from 'antd'
-import { InboxOutlined, LoadingOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
-import cn from 'classnames'
 
+import { InboxOutlined, LoadingOutlined } from '@ant-design/icons'
+import {
+  message, Progress, Upload, UploadProps,
+} from 'antd'
+import type { UploadChangeParam } from 'antd/es/upload'
+import cn from 'classnames'
 import { compose } from 'ramda'
 
-import type { UploadChangeParam } from 'antd/es/upload'
+import { setIsLoading } from '../../../redux/reducers/sessionSlice/sessionSlice'
+import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice'
+import { addUploadingFile, fetchPhotosPreview } from '../../../redux/reducers/uploadSlice/thunks'
+import { curFolderInfo, upload } from '../../../redux/selectors'
+import { useAppDispatch } from '../../../redux/store/store'
+import { MainMenuKeys } from '../../../redux/types'
+import { MimeTypes } from '../../../redux/types/MimeTypes'
+import { errorMessage } from '../../common/notifications'
+import { isMimeType } from '../../common/utils'
+
+import { getDispatchObjFromBlob, isFile, isFileNameAlreadyExist } from './heplers'
+import { getEmptyUploadObject } from './heplers/getEmptyUploadObject'
 
 import styles from './index.module.scss'
-import { curFolderInfo, upload } from '../../../redux/selectors'
-import { addUploadingFile, fetchPhotosPreview } from '../../../redux/reducers/uploadSlice/thunks'
-import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice'
-import { MainMenuKeys } from '../../../redux/types'
-import { errorMessage } from '../../common/notifications'
-import { MimeTypes } from '../../../redux/types/MimeTypes'
-import { getDispatchObjFromBlob, isFile, isFileNameAlreadyExist } from './heplers'
-import { useAppDispatch } from '../../../redux/store/store'
-import { getEmptyUploadObject } from './heplers/getEmptyUploadObject'
-import { isMimeType } from '../../common/utils'
-import { setIsLoading } from '../../../redux/reducers/sessionSlice-reducer'
 
 const { Dragger } = Upload
 const uploading = {
@@ -58,22 +59,24 @@ const DropZone = ({ openMenus }: Props) => {
           uploading.isProcessing = true
           dispatch(increaseCountOfPreviewLoading())
           isFile(file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(file)
-          dispatch<any>(fetchPhotosPreview(file)).then(() => {
-            uploading.isProcessing = false
-            setFinishedNumberOfFiles(prevState => prevState + 1)
-          })
+          dispatch<any>(fetchPhotosPreview(file))
+            .then(() => {
+              uploading.isProcessing = false
+              setFinishedNumberOfFiles(prevState => prevState + 1)
+            })
           dispatch(setUploadingStatus('empty'))
         }
 
         uploading.isProcessing ? setTimeout(uploadFile, 100) : await dispatchNewFile()
       }
 
-      const handleError = (message: string) => {
-        const uploadingError = new Error(`${isFile(file) ? file.name : '?'} ${message}`)
+      const handleError = (notificationMessage: string) => {
+        const uploadingError = new Error(`${isFile(file) ? file.name : '?'} ${notificationMessage}`)
         errorMessage(uploadingError, 'File is not uploaded')
         uploading.isProcessing = false
         setFinishedNumberOfFiles(prevState => prevState + 1)
       }
+      // eslint-disable-next-line no-plusplus
       ++uploading.totalFiles
       const fileAlreadyExist = isFile(file) && isFileNameAlreadyExist(file, uploadingBlobs)
       const isMimeTypeExist = isFile(file) && isMimeType(file.type)
@@ -81,13 +84,13 @@ const DropZone = ({ openMenus }: Props) => {
       fileAlreadyExist && handleError('is already exist')
       !isMimeTypeExist && handleError('file type not supported')
       !fileAlreadyExist && isMimeTypeExist && setTimeout(uploadFile)
-      !fileAlreadyExist &&
-        isMimeTypeExist &&
-        dispatch(addUploadingFile(getEmptyUploadObject({ type: file.type, name: file.name })))
+      !fileAlreadyExist
+        && isMimeTypeExist
+        && dispatch(addUploadingFile(getEmptyUploadObject({ type: file.type, name: file.name })))
     },
     onChange(info: UploadChangeParam) {
       const { status } = info.file
-      status !== 'uploading' && console.log(info.file, info.fileList)
+      status !== 'uploading' && console.info(info.file, info.fileList)
       status === 'done' && message.success(`${info.file.name} file uploaded successfully.`)
       status === 'error' && message.error(`${info.file.name} file upload failed.`)
     },
@@ -95,15 +98,15 @@ const DropZone = ({ openMenus }: Props) => {
 
   const progress = useMemo(
     () => Math.round((finishedNumberOfFiles / uploading.totalFiles) * 100) || false,
-    [finishedNumberOfFiles]
+    [finishedNumberOfFiles],
   )
 
   useEffect(() => {
     const refreshLoading = () => {
       setFinishedNumberOfFiles(0)
       uploading.totalFiles = 0
-    }
-    ;(progress === 100 || progress === Infinity) && refreshLoading()
+    };
+    (progress === 100 || progress === Infinity) && refreshLoading()
   }, [progress])
 
   return (

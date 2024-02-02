@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+
 import type { MenuProps } from 'antd'
 
 import { PagePaths } from '../../../redux/types'

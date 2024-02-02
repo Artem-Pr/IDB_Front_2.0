@@ -1,11 +1,13 @@
-/* eslint functional/immutable-data: 0 */
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
-import type { DownloadingObject, DownloadingRawObject, GallerySortingItem, Preview } from '../../types'
-import { MimeTypes } from '../../types/MimeTypes'
+import type {
+  DownloadingObject, DownloadingRawObject, GallerySortingItem, Preview,
+} from '../../types'
 import { GalleryPagination, MainMenuKeys } from '../../types'
-import { initialState } from './mainPageState'
+import { MimeTypes } from '../../types/MimeTypes'
+
 import { defaultGallerySortingList } from './helpers'
+import { initialState } from './mainPageState'
 
 const mainPageSlice = createSlice({
   name: 'mainPage',

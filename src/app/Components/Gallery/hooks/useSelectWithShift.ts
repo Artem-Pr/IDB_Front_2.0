@@ -48,21 +48,22 @@ export const useSelectWithShift = ({
 
       return isTemplateMenu && isShiftPressed && hoveredIndex !== null && !!selectedList.length && isHover()
     },
-    [hoveredIndex, isShiftPressed, isTemplateMenu, selectedList]
+    [hoveredIndex, isShiftPressed, isTemplateMenu, selectedList],
   )
 
   const selectWithShift = useCallback(
     (lastSelectedElemIndex: number) => {
       const currentHoveredIndex = hoveredIndex === null ? lastSelectedElemIndex : hoveredIndex
-      const currentLastSelectedElemIndex =
-        lastSelectedElemIndex === undefined ? (hoveredIndex as number) : lastSelectedElemIndex
+      const currentLastSelectedElemIndex = lastSelectedElemIndex === undefined
+        ? (hoveredIndex as number)
+        : lastSelectedElemIndex
       const sortedTouple = sort((a, b) => a - b, [currentHoveredIndex, currentLastSelectedElemIndex])
       const hoverList = range(sortedTouple[0], sortedTouple[1] + 1)
       const alreadySelectedItems = difference(hoverList, selectedList)
       alreadySelectedItems.length ? addToSelectedList(hoverList) : removeFromSelectedList(hoverList)
       setHoveredIndex(null)
     },
-    [addToSelectedList, hoveredIndex, removeFromSelectedList, selectedList]
+    [addToSelectedList, hoveredIndex, removeFromSelectedList, selectedList],
   )
 
   return {

@@ -6,7 +6,7 @@ import { mainApi } from '../../../../api/api'
 import { errorMessage } from '../../../../app/common/notifications'
 import { getUpdatedExifFieldsObj, updateFilesArrItemByField } from '../../../../app/common/utils'
 import { upload } from '../../../selectors'
-import type { AppThunk } from '../../../store/store'
+import type { AppThunk } from '../../../store/types'
 import type { UploadingObject } from '../../../types'
 import { updateFullExifFile, updateUploadingFilesArr } from '../uploadSlice'
 

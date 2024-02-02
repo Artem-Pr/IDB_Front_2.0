@@ -1,27 +1,29 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
-import { AutoComplete, Button, List, Progress, Select } from 'antd'
-
+import React, {
+  memo, useCallback, useEffect, useState,
+} from 'react'
 import { useSelector } from 'react-redux'
 
+import {
+  AutoComplete, Button, List, Progress, Select,
+} from 'antd'
 import { keys } from 'ramda'
 
 import { initWebSocket } from '../../../../../api/api-websocket'
-import { API_STATUS, WEB_SOCKET_ACTIONS, WebSocketAPICallback } from '../../../../../api/types'
-
-import styles from './CreatePreviews.module.scss'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types'
 import { pathsArrOptionsSelector } from '../../../../../redux/selectors'
 import { MimeTypes } from '../../../../../redux/types/MimeTypes'
+
+import styles from './CreatePreviews.module.scss'
 
 const { Option } = Select
 const fileTypes = keys(MimeTypes)
 
 const MESSAGE_LIST_LIMIT = 1000
-const isProcessing = (status: API_STATUS) => status === API_STATUS.PENDING || status === API_STATUS.INIT
-const isStopped = (status: API_STATUS) =>
-  status === API_STATUS.STOPPED ||
-  status === API_STATUS.DONE ||
-  status === API_STATUS.ERROR ||
-  status === API_STATUS.PENDING_ERROR
+const isProcessing = (status: ApiStatus) => status === ApiStatus.PENDING || status === ApiStatus.INIT
+const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
+  || status === ApiStatus.DONE
+  || status === ApiStatus.ERROR
+  || status === ApiStatus.PENDING_ERROR
 
 export const CreatePreviews = memo(() => {
   const options = useSelector(pathsArrOptionsSelector)
@@ -30,7 +32,7 @@ export const CreatePreviews = memo(() => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
   const [showMessageList, setShowMessageList] = useState(false)
-  const [status, setStatus] = useState<API_STATUS>(API_STATUS.DEFAULT)
+  const [status, setStatus] = useState<ApiStatus>(ApiStatus.DEFAULT)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
 
   const processing = isProcessing(status)
@@ -38,7 +40,7 @@ export const CreatePreviews = memo(() => {
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(API_STATUS.DEFAULT)
+    setStatus(ApiStatus.DEFAULT)
   }, [webSocket])
 
   useEffect(() => {
@@ -53,17 +55,17 @@ export const CreatePreviews = memo(() => {
     setMimeTypes(value)
   }
 
-  const handleFilterOption = (inputValue: string, option: { value: string } | undefined) =>
-    option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+  const handleFilterOption = (inputValue: string, option: { value: string } | undefined) => option?.value.toUpperCase()
+    .indexOf(inputValue.toUpperCase()) !== -1
 
   const handleProcess = () => {
     processing ? stopProcess() : startProcess()
   }
 
   const stopProcess = () => {
-    webSocket &&
-      webSocket.send({
-        action: WEB_SOCKET_ACTIONS.CREATE_PREVIEWS_STOP,
+    webSocket
+      && webSocket.send({
+        action: WebSocketActions.CREATE_PREVIEWS_STOP,
       })
   }
 
@@ -71,13 +73,13 @@ export const CreatePreviews = memo(() => {
     setMessages([])
     setProgress(0)
 
-    const onMessage = ({ message, progress, status }: WebSocketAPICallback) => {
+    const onMessage = (action: WebSocketAPICallback) => {
       setMessages(prevMessages => [
-        message,
+        action.message,
         ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
-      setProgress(progress)
-      setStatus(status)
+      setProgress(action.progress)
+      setStatus(action.status)
     }
 
     const onError = () => {
@@ -85,13 +87,13 @@ export const CreatePreviews = memo(() => {
       stopProcess()
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.CREATE_PREVIEWS, {
+    const ws = initWebSocket(WebSocketActions.CREATE_PREVIEWS, {
       onMessage,
       onError,
       data: { folderPath, mimeTypes },
     })
     setWebSocket(ws)
-    setStatus(API_STATUS.INIT)
+    setStatus(ApiStatus.INIT)
   }
 
   const handleShowMessageListToggle = () => {
@@ -138,16 +140,18 @@ export const CreatePreviews = memo(() => {
       </div>
       {Boolean(messages.length) && (
         <div className="margin-left-10 w-100">
-          {showMessageList ? (
-            <List
-              className={styles.progress}
-              size="small"
-              dataSource={messages}
-              renderItem={item => <List.Item>{item}</List.Item>}
-            />
-          ) : (
-            <span>{messages[0]}</span>
-          )}
+          {showMessageList
+            ? (
+              <List
+                className={styles.progress}
+                size="small"
+                dataSource={messages}
+                renderItem={item => <List.Item>{item}</List.Item>}
+              />
+            )
+            : (
+              <span>{messages[0]}</span>
+            )}
           <Progress percent={progress} />
         </div>
       )}

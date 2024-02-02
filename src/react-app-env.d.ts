@@ -1,3 +1,4 @@
+/* eslint-disable init-declarations */
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference types="node" />
 /// <reference types="react" />

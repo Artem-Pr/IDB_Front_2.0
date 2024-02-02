@@ -1,0 +1,1 @@
+export { settingsSliceReducer } from './settingsSlice'

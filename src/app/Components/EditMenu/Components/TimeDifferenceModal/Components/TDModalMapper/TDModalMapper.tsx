@@ -1,20 +1,22 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Divider, Spin } from 'antd'
+import React, {
+  memo, useCallback, useEffect, useMemo, useState,
+} from 'react'
 import { useSelector } from 'react-redux'
 
 import { FileDoneOutlined } from '@ant-design/icons'
+import { Button, Divider, Spin } from 'antd'
 
-import { TDModalItem } from '../TDModalItem'
+import { upload } from '../../../../../../../redux/selectors'
 import {
   useCurrentPage,
   useSelectedDateList,
   useSelectedFilesList,
   useUpdateFields,
 } from '../../../../../../common/hooks/hooks'
-import { upload } from '../../../../../../../redux/selectors'
-import type { DataType } from '../TDModalItem/TDModalItem'
 import { successMessage } from '../../../../../../common/notifications'
 import type { OriginalDates } from '../../hooks/useUpdateOriginalDate'
+import { TDModalItem } from '../TDModalItem'
+import type { DataType } from '../TDModalItem/TDModalItem'
 
 const NUMBER_OF_SELECTED_FILES_TO_SHOW_LOADER = 50
 
@@ -49,15 +51,15 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
   const loaderDelay = selectedDates.length > NUMBER_OF_SELECTED_FILES_TO_SHOW_LOADER ? 100 : 0
 
   const setTimeDiffWithLoading = useCallback(
-    (timeDiffConfig: TimeDiffConfig | null) => {
+    (newTimeDiffConfig: TimeDiffConfig | null) => {
       setLoading(true)
       setTimeout(() => {
-        setTimeDiffConfig(timeDiffConfig)
+        setTimeDiffConfig(newTimeDiffConfig)
         successMessage('Copied successfully')
         setLoading(false)
       }, loaderDelay)
     },
-    [loaderDelay]
+    [loaderDelay],
   )
 
   const timeDiff = useMemo(
@@ -66,7 +68,7 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
       copyTimeDiff: setTimeDiffWithLoading,
       pasteTimeDiffTrigger,
     }),
-    [pasteTimeDiffTrigger, setTimeDiffWithLoading, timeDiffConfig]
+    [pasteTimeDiffTrigger, setTimeDiffWithLoading, timeDiffConfig],
   )
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
     (originalDate: string | null, tempPath: string) => {
       setOriginalDatesObj(prevObj => ({ ...prevObj, [tempPath]: originalDate }))
     },
-    [setOriginalDatesObj]
+    [setOriginalDatesObj],
   )
 
   const setApplyAllDatesTriggerWithLoading = (dataType: DataType | null) => () => {
@@ -115,7 +117,7 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
         <Button
           icon={<FileDoneOutlined />}
           onClick={handlePasteTimeDiffToWholeList}
-          disabled={!Boolean(timeDiffConfig)}
+          disabled={!timeDiffConfig}
         >
           Paste time difference to whole list
         </Button>

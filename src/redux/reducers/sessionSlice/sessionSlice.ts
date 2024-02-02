@@ -1,9 +1,8 @@
-/* eslint functional/immutable-data: 0 */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export const DEFAULT_PREVIEW_SIZE = 150
 
-interface State {
+export interface State {
   asideMenuWidth: number
   fitContain: boolean
   previewSize: number
@@ -53,4 +52,4 @@ export const {
   setPreviewSize,
 } = sessionSlice.actions
 
-export default sessionSlice.reducer
+export const sessionSliceReducer = sessionSlice.reducer

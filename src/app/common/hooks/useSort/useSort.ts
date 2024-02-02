@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux'
 
-import type { RootState } from '../../../../redux/store/rootReducer'
-import { useCurrentPage } from '../hooks'
 import { sort } from '../../../../redux/selectors'
+import type { RootState } from '../../../../redux/store/types'
+import { useCurrentPage } from '../hooks'
 
 export const useSort = () => {
   const { isMainPage, isUploadingPage } = useCurrentPage()

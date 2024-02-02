@@ -25,7 +25,8 @@ export const emptyCheckboxesConfig = {
 
 export const longProcessConfirmation = ({ onOk, onCancel, fileSize }: Confirmation & { fileSize: string }) => ({
   title: 'The procedure can take a long time',
-  content: `Files for editing have a total size of ${fileSize}, the procedure may take a long time. Are you sure you want to start?`,
+  content: `Files for editing have a total size of ${fileSize}, 
+    the procedure may take a long time. Are you sure you want to start?`,
   okText: 'Yes',
   cancelText: 'No',
   onOk,

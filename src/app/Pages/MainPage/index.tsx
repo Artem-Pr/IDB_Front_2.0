@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { Layout } from 'antd'
 import { useSelector } from 'react-redux'
-import { isEmpty } from 'ramda'
-
 import { useLocation } from 'react-router-dom'
 
-import { CustomAlert, Gallery, GalleryTopMenu, MainMenu } from '../../Components'
+import { Layout } from 'antd'
+import { isEmpty } from 'ramda'
+
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { dPageGalleryPropsSelector } from '../../../redux/selectors'
-import { useMenuResize, useGridRefControl } from '../../common/hooks'
+import { useAppDispatch } from '../../../redux/store/store'
+import { MainMenuKeys } from '../../../redux/types'
+import {
+  CustomAlert, Gallery, GalleryTopMenu, MainMenu,
+} from '../../Components'
 import PaginationMenu from '../../Components/PaginationMenu'
 import { ResizeDivider } from '../../Components/ResizeDivider'
+import { useMenuResize, useGridRefControl } from '../../common/hooks'
 
 import { useGalleryProps, useMainMenuProps } from './hooks'
-import { MainMenuKeys } from '../../../redux/types'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { useAppDispatch } from '../../../redux/store/store'
 
 const { Content } = Layout
 
 const MainPage = () => {
-  const { menuRef, videoPreviewRef, handleDividerMove, handleFinishResize } = useMenuResize()
-  const { refs, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating } = useGridRefControl()
+  const {
+    menuRef, videoPreviewRef, handleDividerMove, handleFinishResize,
+  } = useMenuResize()
+  const {
+    refs, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating,
+  } = useGridRefControl()
   const dispatch = useAppDispatch()
   const mainMenuProps = useMainMenuProps()
   const galleryProps = useGalleryProps()
@@ -34,13 +40,13 @@ const MainPage = () => {
   const folderParam = query.get('folder') || undefined
 
   useEffect(() => {
-    isEmpty(imageArr) &&
-      !isFilesLoaded &&
-      dispatch(
+    isEmpty(imageArr)
+      && !isFilesLoaded
+      && dispatch(
         fetchPhotos({
           isNameComparison: isComparisonPage,
           comparisonFolder: folderParam,
-        })
+        }),
       )
     setIsFilesLoaded(true)
   }, [dispatch, folderParam, imageArr, isComparisonPage, isFilesLoaded])

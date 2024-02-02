@@ -1,17 +1,15 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Select, DatePicker, Input, Checkbox, Rate } from 'antd'
-import { difference, keys } from 'ramda'
-import cn from 'classnames'
 
-import type { RangePickerProps } from 'antd/es/date-picker'
-
-import dayjs from 'dayjs'
-
+import {
+  Button, Select, DatePicker, Input, Checkbox, Rate,
+} from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
+import type { RangePickerProps } from 'antd/es/date-picker'
+import cn from 'classnames'
+import dayjs from 'dayjs'
+import { difference, keys } from 'ramda'
 
-import { folderElement, main, searchMenu } from '../../../redux/selectors'
-import styles from './index.module.scss'
 import {
   resetSearchMenu,
   setDateRange,
@@ -24,10 +22,13 @@ import {
   setSearchFileName,
   setSearchTags,
 } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { MimeTypes } from '../../../redux/types/MimeTypes'
 import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { dateTimeFormat } from '../../common/utils/date'
+import { folderElement, main, searchMenu } from '../../../redux/selectors'
 import { useAppDispatch } from '../../../redux/store/store'
+import { MimeTypes } from '../../../redux/types/MimeTypes'
+import { dateTimeFormat } from '../../common/utils/date'
+
+import styles from './index.module.scss'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -53,7 +54,7 @@ export const SearchMenu = () => {
   const excludeKeywordsList = useMemo(() => difference(keywordsList, searchTags), [searchTags, keywordsList])
   const dayJsRange: RangePickerProps['value'] = useMemo(
     () => dateRange && [dayjs(dateRange[0]), dayjs(dateRange[1])],
-    [dateRange]
+    [dateRange],
   )
 
   const handleSearchChange = (value: string[]) => {
@@ -76,11 +77,13 @@ export const SearchMenu = () => {
     dispatch(resetSearchMenu())
   }
 
-  const handleRangePickerChange = (dayJsRange: RangePickerProps['value']) => {
-    const dateRange: [string, string] | null = dayJsRange
-      ? [dayjs(dayJsRange[0])?.format(), dayjs(dayJsRange[1])?.format()]
+  const handleRangePickerChange = (dayJsRangeValue: RangePickerProps['value']) => {
+    const dateRangeValue: [string, string] | null = dayJsRangeValue
+      ? [dayjs(dayJsRangeValue[0])
+        ?.format(), dayjs(dayJsRangeValue[1])
+        ?.format()]
       : null
-    dispatch(setDateRange(dateRange))
+    dispatch(setDateRange(dateRangeValue))
   }
 
   const handleSearchingFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {

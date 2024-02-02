@@ -1,9 +1,8 @@
 import React, { Fragment, Key } from 'react'
-import cn from 'classnames'
 
 import { Divider } from 'antd'
+import cn from 'classnames'
 
-import styles from './SettingsPage.module.scss'
 import {
   FullSizePreview,
   MaxImageSlideLimit,
@@ -14,6 +13,8 @@ import {
   UnusedKeywords,
 } from './components'
 import { CreatePreviews } from './components/CreatePreviews'
+
+import styles from './SettingsPage.module.scss'
 
 interface SettingItem {
   key: Key
@@ -70,7 +71,9 @@ const settingsList: SettingItem[] = [
 export const SettingsPage = () => (
   <div className={styles.wrapper}>
     <div className={cn(styles.gridWrapper, 'd-grid')}>
-      {settingsList.map(({ key, label, component, className }) => (
+      {settingsList.map(({
+        key, label, component, className,
+      }) => (
         <Fragment key={key}>
           <div className={cn('d-grid', styles.gridRow, className)}>
             <span>{label}</span>

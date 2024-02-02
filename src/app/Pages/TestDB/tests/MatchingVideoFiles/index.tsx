@@ -1,13 +1,18 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+
 import { Button, Card, Progress } from 'antd'
 
-import styles from './index.module.scss'
-import TableRow from '../../gridItems/TableRow'
+import { fetchVideoFileTests } from 'src/redux/reducers/testsSlice/thunks'
+
+import { refreshSecondTestPid } from '../../../../../redux/reducers/testsSlice/testsSlice'
 import { videoFilesChecking } from '../../../../../redux/selectors'
-import { fetchVideoFileTests, refreshSecondTestPid } from '../../../../../redux/reducers/testsSlice-reducer'
-import TableCollapse from '../../gridItems/TableCollaps'
 import { useAppDispatch } from '../../../../../redux/store/store'
+import TableCollapse from '../../gridItems/TableCollaps'
+import TableRow from '../../gridItems/TableRow'
+
+import styles from './index.module.scss'
 
 const MatchingVideoFiles = () => {
   const dispatch = useAppDispatch()
@@ -57,11 +62,11 @@ const MatchingVideoFiles = () => {
       className={styles.card}
       title="Test for matching video files"
       bordered={false}
-      extra={
+      extra={(
         <Button type="primary" ghost onClick={handleCheckVideoFiles}>
           Start test
         </Button>
-      }
+      )}
     >
       <Progress className={styles.progressBar} percent={progress} />
 

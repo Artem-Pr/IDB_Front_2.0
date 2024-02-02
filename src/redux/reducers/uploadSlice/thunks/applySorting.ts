@@ -1,5 +1,5 @@
 import { uploadPageSort, uploadingFiles } from '../../../selectors'
-import { AppThunk } from '../../../store/store'
+import type { AppThunk } from '../../../store/types'
 import { customSortingComparator } from '../helpers'
 import { updateUploadingFilesArr } from '../uploadSlice'
 

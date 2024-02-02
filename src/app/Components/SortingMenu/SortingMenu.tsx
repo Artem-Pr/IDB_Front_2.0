@@ -1,24 +1,22 @@
 import React from 'react'
 
-import { Button, Checkbox, Segmented } from 'antd'
 import { DownCircleTwoTone, UpCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
-
+import { Button, Checkbox, Segmented } from 'antd'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import cn from 'classnames'
 
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-
-import { SortableList } from './components'
-
+import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+import { applySorting } from '../../../redux/reducers/uploadSlice/thunks/applySorting'
+import { useAppDispatch } from '../../../redux/store/store'
 import type { GallerySortingItem } from '../../../redux/types'
 import { Sort, SortedFields } from '../../../redux/types'
+import { useCurrentPage } from '../../common/hooks'
+
+import { SortableList } from './components'
 import { DragHandle, SortableItem } from './components/SortableList/components'
+import { useSortingMenu } from './hooks'
 
 import styles from './SortingMenu.module.scss'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { useAppDispatch } from '../../../redux/store/store'
-import { useSortingMenu } from './hooks'
-import { useCurrentPage } from '../../common/hooks'
-import { applySorting } from '../../../redux/reducers/uploadSlice/thunks/applySorting'
 
 const switcherOptions = [
   {
@@ -41,8 +39,9 @@ const switcherOptions = [
 export const SortingMenu = () => {
   const dispatch = useAppDispatch()
   const { isMainPage, isUploadingPage } = useCurrentPage()
-  const { gallerySortingList, randomSort, groupedByDate, setSortingList, resetSort, setRandomSort, setGroupedByDate } =
-    useSortingMenu()
+  const {
+    gallerySortingList, randomSort, groupedByDate, setSortingList, resetSort, setRandomSort, setGroupedByDate,
+  } = useSortingMenu()
 
   const handleSortingChange = (updatedList: GallerySortingItem[]) => {
     setSortingList(updatedList)
@@ -50,9 +49,8 @@ export const SortingMenu = () => {
 
   const handleSegmentedChange = (id: SortedFields) => (value: string | number) => {
     const sortValue = value === 0 ? null : (value as Sort)
-    const updatedList: GallerySortingItem[] = gallerySortingList.map(sortItem => {
-      return sortItem.id === id ? { ...sortItem, sort: sortValue } : sortItem
-    })
+    const updatedList: GallerySortingItem[] = gallerySortingList
+      .map(sortItem => (sortItem.id === id ? { ...sortItem, sort: sortValue } : sortItem))
     setSortingList(updatedList)
   }
 

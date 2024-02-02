@@ -1,12 +1,11 @@
 import React from 'react'
 
+import { CopyOutlined } from '@ant-design/icons'
+import { Button, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 
-import { Button, Tooltip } from 'antd'
-import { CopyOutlined } from '@ant-design/icons'
-
-import { dateTimeFormat } from '../../common/utils/date'
 import { copyToClipboard } from '../../common/utils'
+import { dateTimeFormat } from '../../common/utils/date'
 
 interface CopyToClipboardProps {
   text: number | string
@@ -15,7 +14,10 @@ interface CopyToClipboardProps {
 
 export const CopyToClipboard = ({ text, disabled }: CopyToClipboardProps) => {
   const copy = () => {
-    typeof text === 'number' ? copyToClipboard(dayjs(text).format(dateTimeFormat)) : copyToClipboard(text)
+    typeof text === 'number'
+      ? copyToClipboard(dayjs(text)
+        .format(dateTimeFormat))
+      : copyToClipboard(text)
   }
 
   return (

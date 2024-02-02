@@ -1,22 +1,21 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { SyntheticEvent, useState } from 'react'
 
+import { Spin } from 'antd'
+import cn from 'classnames'
 import ReactPlayer from 'react-player/lazy'
 
-import cn from 'classnames'
-
-import { Spin } from 'antd'
-
 import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
-
-import styles from './GalleryMediaItem.module.scss'
 import { MimeTypes } from '../../../../../redux/types/MimeTypes'
 import { isVideo, isVideoByExt } from '../../../../common/utils/utils'
+
+import styles from './GalleryMediaItem.module.scss'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('transparent')
 }
 
-const Loader = <Spin className={styles.loader} size="large" spinning={true} />
+const Loader = <Spin className={styles.loader} size="large" spinning />
 
 export interface Props {
   ext?: string
@@ -102,7 +101,7 @@ export const GalleryMediaItem = React.memo(
         {showImage && (
           <div className={cn({ [styles.placeholderWrapper]: showPlaceholder }, 'parent-size')}>
             <img
-              alt="image-preview"
+              alt="preview"
               className={cn(styles.img, { [styles.placeholder]: showPlaceholder }, 'transparent parent-size')}
               onError={handleImageOnLoad}
               onLoad={handleImageOnLoad}
@@ -113,5 +112,5 @@ export const GalleryMediaItem = React.memo(
         )}
       </>
     )
-  }
+  },
 )

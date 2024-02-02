@@ -38,20 +38,20 @@ const LOCAL_BACKEND_PORT = env.LOCAL_BACKEND_PORT;
 const backendPath = `${PROTOCOLS.HTTP}://${DEFAULT_HOST}:${LOCAL_BACKEND_PORT}`
 const backendWebSocketPath = `${PROTOCOLS.WS}://${DEFAULT_HOST}:${LOCAL_BACKEND_WEB_SOCKET_PORT}`
 
-const MFConfigBase = {
+const configBase = {
     HOST_APP: {
         PORT: HOST_APP_PORT,
         HOST: DEFAULT_HOST,
     },
 };
 
-const config = Object.keys(MFConfigBase).reduce((prevMF, nextMFName) => {
-    const nextMF = MFConfigBase[nextMFName];
+const config = Object.keys(configBase).reduce((prevMF, nextMFName) => {
+    const nextApp = configBase[nextMFName];
     return {
         ...prevMF,
         [nextMFName]: {
-            ...nextMF,
-            URL: getBaseUrl(nextMF.PORT, nextMF.HOST)
+            ...nextApp,
+            URL: getBaseUrl(nextApp.PORT, nextApp.HOST)
         }
     };
 }, {});

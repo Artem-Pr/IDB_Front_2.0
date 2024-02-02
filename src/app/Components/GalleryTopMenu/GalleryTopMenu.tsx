@@ -1,16 +1,20 @@
 import React, { useMemo, useState } from 'react'
-import cn from 'classnames'
-import { Button, Checkbox, Col, Popover, Row, Slider } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 
+import {
+  Button, Checkbox, Col, Popover, Row, Slider,
+} from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import cn from 'classnames'
 
+import { refreshPreviewSize, setFitContain } from '../../../redux/reducers/sessionSlice/sessionSlice'
+import {
+  dSelectedList, filesSizeSum, selectedList, session, settings,
+} from '../../../redux/selectors'
+import { useCurrentPage } from '../../common/hooks'
 import { formatSize } from '../../common/utils'
-import { dSelectedList, filesSizeSum, selectedList, session, settings } from '../../../redux/selectors'
 
 import styles from './GalleryTopMenu.module.scss'
-import { useCurrentPage } from '../../common/hooks'
-import { refreshPreviewSize, setFitContain } from '../../../redux/reducers/sessionSlice-reducer'
 
 interface Props {
   onSliderMove: (value: number) => void
@@ -31,7 +35,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
 
   const selectedListLength = useMemo(
     () => (isMainPage ? downloadSelectedList.length : uploadSelectedList.length),
-    [downloadSelectedList.length, isMainPage, uploadSelectedList.length]
+    [downloadSelectedList.length, isMainPage, uploadSelectedList.length],
   )
 
   const handleFitCoverClick = (e: CheckboxChangeEvent) => {

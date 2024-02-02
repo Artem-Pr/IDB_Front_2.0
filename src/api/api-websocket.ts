@@ -1,8 +1,8 @@
-/* eslint functional/immutable-data: 0 */
+import { errorMessage } from '../app/common/notifications'
+
 import { HOST } from './api-client'
 import type { WebSocketAPICallback, WebSocketAPIQuery, WebSocketAPIRequest } from './types'
-import { API_STATUS, WEB_SOCKET_ACTIONS } from './types'
-import { errorMessage } from '../app/common/notifications'
+import { ApiStatus, WebSocketActions } from './types'
 
 interface InitWebSocketCallback<T = undefined> {
   onMessage: (data: WebSocketAPICallback<T>) => void
@@ -26,13 +26,12 @@ export interface FilesTestAPIData {
   excessiveFolders__filesOnDisc: string[]
 }
 
-// eslint-disable-next-line functional/no-let
 let socket: WebSocket | null = null
 const isSocketReady = () => socket && socket.readyState === WebSocket.OPEN
 
 export const initWebSocket = <T = undefined>(
-  action: WEB_SOCKET_ACTIONS,
-  { onMessage, data }: InitWebSocketCallback<T>
+  action: WebSocketActions,
+  { onMessage, data }: InitWebSocketCallback<T>,
 ) => {
   const errorHandler = (errorTitle: string, error: Error, response?: WebSocketAPIRequest<T>) => {
     console.error(error)
@@ -53,7 +52,7 @@ export const initWebSocket = <T = undefined>(
 
     socket.onmessage = (rawResponse: MessageEvent<string>) => {
       const response: WebSocketAPIRequest<T> = JSON.parse(rawResponse.data)
-      response.data.status === API_STATUS.ERROR
+      response.data.status === ApiStatus.ERROR
         ? errorHandler(response.data.message, new Error(`${response.action} ERROR`), response)
         : onMessage(response.data)
     }
@@ -64,12 +63,12 @@ export const initWebSocket = <T = undefined>(
     }
   }
 
-  const send = (data: WebSocketAPIQuery) => {
+  const send = (sendData: WebSocketAPIQuery) => {
     isSocketReady()
-      ? socket?.send(JSON.stringify(data))
+      ? socket?.send(JSON.stringify(sendData))
       : setTimeout(() => {
-          send(data)
-        }, 50)
+        send(sendData)
+      }, 50)
   }
 
   const close = () => {
@@ -81,8 +80,8 @@ export const initWebSocket = <T = undefined>(
     isSocketReady()
       ? closeWebSocket()
       : setTimeout(() => {
-          close()
-        }, 50)
+        close()
+      }, 50)
   }
 
   !socket && init()

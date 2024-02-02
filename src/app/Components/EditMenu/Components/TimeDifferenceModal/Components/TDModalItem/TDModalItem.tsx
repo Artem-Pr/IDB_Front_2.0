@@ -1,18 +1,22 @@
-import { Button, DatePicker, Divider, Form, Tooltip } from 'antd'
-import React, { memo, useCallback, useEffect, useState } from 'react'
-import cn from 'classnames'
+import React, {
+  memo, useCallback, useEffect, useState,
+} from 'react'
 
+import { DiffOutlined, FileDoneOutlined, RightOutlined } from '@ant-design/icons'
+import {
+  Button, DatePicker, Divider, Form, Tooltip,
+} from 'antd'
+import cn from 'classnames'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 
-import { DiffOutlined, FileDoneOutlined, RightOutlined } from '@ant-design/icons'
-
-import styles from './TDModalItem.module.scss'
 import { dateTimeFormat } from '../../../../../../common/utils/date'
 import { CopyToClipboard } from '../../../../../CopyToClipboard'
-import { TimeDifference } from '../TimeDifference'
-import type { TimeDiff, TimeDiffConfig } from '../TDModalMapper/TDModalMapper'
 import { UIKitBtn } from '../../../../../UIKit'
+import type { TimeDiff, TimeDiffConfig } from '../TDModalMapper/TDModalMapper'
+import { TimeDifference } from '../TimeDifference'
+
+import styles from './TDModalItem.module.scss'
 
 export type DataType = 'original' | 'change'
 
@@ -53,17 +57,17 @@ export const TDModalItem = memo(
       applyAllDatesTrigger && setDate()
     }, [applyAllDatesTrigger, changeDate, originalDate, setOriginalDate, tempPath])
 
-    const setChangeDate = (changeDate: number) => () => {
-      const dayjsDate = dayjs(changeDate)
+    const setChangeDate = (newChangeDate: number) => () => {
+      const dayjsDate = dayjs(newChangeDate)
       const formattedDate = dayjsDate.format(dateTimeFormat)
       setOriginalDate(formattedDate, tempPath)
       setCurrentDate(dayjsDate)
       setDataType('change')
     }
 
-    const setCurrentOriginalDate = (originalDate: string) => () => {
-      setOriginalDate(originalDate, tempPath)
-      setCurrentDate(dayjs(originalDate))
+    const setCurrentOriginalDate = (newOriginalDate: string) => () => {
+      setOriginalDate(newOriginalDate, tempPath)
+      setCurrentDate(dayjs(newOriginalDate))
       setDataType('original')
     }
 
@@ -79,7 +83,7 @@ export const TDModalItem = memo(
         const currentOriginalDate = newDateType === 'original' && Boolean(originalDate) && dayjs(originalDate)
         return currentChangeDate || currentOriginalDate
       },
-      [changeDate, dateType, originalDate]
+      [changeDate, dateType, originalDate],
     )
 
     const handleDurationChange = useCallback(
@@ -93,12 +97,12 @@ export const TDModalItem = memo(
         const defaultDate = getDefaultDate()
         defaultDate && setDuration(defaultDate)
       },
-      [getDefaultDate, setOriginalDate, tempPath]
+      [getDefaultDate, setOriginalDate, tempPath],
     )
 
     const handleCopyTimeDiff = () => {
-      const copy = (defaultDate: Dayjs, currentDate: Dayjs) => {
-        const timeDifference = currentDate.diff(defaultDate)
+      const copy = (defaultDate: Dayjs, newCurrentDate: Dayjs) => {
+        const timeDifference = newCurrentDate.diff(defaultDate)
         copyTimeDiff({
           dateType,
           timeDifference,
@@ -110,10 +114,10 @@ export const TDModalItem = memo(
     }
 
     const handleSetTimeDiffConfig = useCallback(() => {
-      const setTimeDiff = (defaultDate: Dayjs, timeDiffConfig: TimeDiffConfig) => {
-        const newCurrentDate = defaultDate.add(timeDiffConfig.timeDifference)
+      const setTimeDiff = (defaultDate: Dayjs, newTimeDiffConfig: TimeDiffConfig) => {
+        const newCurrentDate = defaultDate.add(newTimeDiffConfig.timeDifference)
 
-        setDataType(timeDiffConfig.dateType)
+        setDataType(newTimeDiffConfig.dateType)
         setOriginalDate(newCurrentDate.format(dateTimeFormat), tempPath)
         setCurrentDate(newCurrentDate)
       }
@@ -172,7 +176,11 @@ export const TDModalItem = memo(
               >
                 <DatePicker format={dateTimeFormat} value={currentDate} onChange={setDayjsDate} showTime />
               </Form.Item>
-              <CopyToClipboard text={dayjs(currentDate).format(dateTimeFormat)} disabled={!currentDate} />
+              <CopyToClipboard
+                text={dayjs(currentDate)
+                  .format(dateTimeFormat)}
+                disabled={!currentDate}
+              />
               <Tooltip title="Copy time difference">
                 <Button icon={<DiffOutlined />} disabled={!currentDate} onClick={handleCopyTimeDiff} />
               </Tooltip>
@@ -184,8 +192,12 @@ export const TDModalItem = memo(
             <div className="d-flex gap-10">
               <Form.Item className="margin-bottom-10" label="Change time difference">
                 <TimeDifference
-                  dateTime1={dayjs(changeDate).format(dateTimeFormat)}
-                  dateTime2={currentDate ? dayjs(currentDate).format(dateTimeFormat) : null}
+                  dateTime1={dayjs(changeDate)
+                    .format(dateTimeFormat)}
+                  dateTime2={currentDate
+                    ? dayjs(currentDate)
+                      .format(dateTimeFormat)
+                    : null}
                   disabled={!currentDate || dateType !== 'change'}
                   onChange={durationMilliseconds => handleDurationChange(durationMilliseconds)}
                 />
@@ -195,7 +207,10 @@ export const TDModalItem = memo(
               <Form.Item className="margin-bottom-0" label="Original time difference">
                 <TimeDifference
                   dateTime1={originalDate}
-                  dateTime2={currentDate ? dayjs(currentDate).format(dateTimeFormat) : null}
+                  dateTime2={currentDate
+                    ? dayjs(currentDate)
+                      .format(dateTimeFormat)
+                    : null}
                   disabled={!currentDate || dateType !== 'original'}
                   onChange={durationMilliseconds => handleDurationChange(durationMilliseconds)}
                 />
@@ -205,5 +220,5 @@ export const TDModalItem = memo(
         </div>
       </>
     )
-  }
+  },
 )

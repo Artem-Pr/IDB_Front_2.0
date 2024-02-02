@@ -1,4 +1,4 @@
-import { setFolderTree, setCurrentFolderPath, setPathsArr } from '../../redux/reducers/foldersSlice-reducer'
+import { setFolderTree, setCurrentFolderPath, setPathsArr } from '../../redux/reducers/foldersSlice/foldersSlice'
 import { pathsArr } from '../../redux/selectors'
 import store from '../../redux/store/store'
 import { foldersSliceFolderTree } from '../common/mock'

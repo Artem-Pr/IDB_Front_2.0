@@ -1,11 +1,12 @@
 import React, { memo, useState } from 'react'
-import { Button, Modal, Tag } from 'antd'
-
 import { useDispatch, useSelector } from 'react-redux'
 
-import { settings } from '../../../../redux/selectors'
-import { deleteUnusedKeyword, fetchUnusedKeywordsList } from '../../../../redux/reducers/settingsSlice-reducer'
+import { Button, Modal, Tag } from 'antd'
+
+import { deleteUnusedKeyword, fetchUnusedKeywordsList } from 'src/redux/reducers/settingsSlice/thunks'
+
 import { deleteConfirmation } from '../../../../assets/config/moduleConfig'
+import { settings } from '../../../../redux/selectors'
 
 export const UnusedKeywords = memo(() => {
   const dispatch = useDispatch<any>()
@@ -19,10 +20,11 @@ export const UnusedKeywords = memo(() => {
 
   const handleUpdateUnusedKeywordsList = async () => {
     setUnusedKeywordsLoading(true)
-    dispatch(fetchUnusedKeywordsList()).then(() => {
-      setUnusedKeywordsLoading(false)
-      setIsUnusedKeywordsLoaded(true)
-    })
+    dispatch(fetchUnusedKeywordsList())
+      .then(() => {
+        setUnusedKeywordsLoading(false)
+        setIsUnusedKeywordsLoaded(true)
+      })
   }
 
   const handleRemoveUnusedKeyword = (keyword: string) => (e: React.MouseEvent<HTMLElement>) => {

@@ -24,12 +24,15 @@ interface Props {
   onChange: (durationMilliseconds: number) => void
 }
 
-export const TimeDifference = memo(({ dateTime1, dateTime2, disabled, onChange }: Props) => {
+export const TimeDifference = memo(({
+  dateTime1, dateTime2, disabled, onChange,
+}: Props) => {
   const [durationState, setDurationState] = useState<TimeDiffObj>(defaultDifObj)
 
   useEffect(() => {
     const calc = (): TimeDiffObj => {
-      const diff = dayjs(dateTime2).diff(dateTime1)
+      const diff = dayjs(dateTime2)
+        .diff(dateTime1)
       const dur = dayjs.duration(diff)
 
       return {

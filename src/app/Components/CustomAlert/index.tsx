@@ -1,6 +1,7 @@
 import React from 'react'
-import { Alert } from 'antd'
+
 import { InfoCircleFilled } from '@ant-design/icons'
+import { Alert } from 'antd'
 import cn from 'classnames'
 
 import styles from './index.module.scss'
@@ -11,16 +12,14 @@ interface Props {
   type: 'success' | 'info' | 'warning' | 'error'
 }
 
-const CustomAlert = ({ message, hide, type }: Props) => {
-  return (
-    <Alert
-      className={cn(styles.alert, { hide }, 'justify-content-center')}
-      message={message}
-      type={type}
-      icon={<InfoCircleFilled />}
-      showIcon
-    />
-  )
-}
+const CustomAlert = ({ message, hide, type }: Props) => (
+  <Alert
+    className={cn(styles.alert, { hide }, 'justify-content-center')}
+    message={message}
+    type={type}
+    icon={<InfoCircleFilled />}
+    showIcon
+  />
+)
 
 export default CustomAlert

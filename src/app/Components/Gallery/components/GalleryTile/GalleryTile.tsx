@@ -1,20 +1,22 @@
-import React, { MouseEvent, SyntheticEvent, memo, useMemo } from 'react'
-import cn from 'classnames'
-
-import { FullscreenOutlined } from '@ant-design/icons'
-
-import { Tooltip } from 'antd'
-
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import React, {
+  MouseEvent, SyntheticEvent, memo, useMemo,
+} from 'react'
 import { useSelector } from 'react-redux'
 
-import styles from './GalleryTile.module.scss'
-import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
-import type { RawPreview } from '../../type'
-import { MimeTypes } from '../../../../../redux/types/MimeTypes'
-import type { ExistedFile } from '../../../../../redux/types'
-import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from '../../../../../redux/selectors'
+import { FullscreenOutlined } from '@ant-design/icons'
+import { Tooltip } from 'antd'
+import cn from 'classnames'
 
-// eslint-disable-next-line functional/no-let
+import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
+import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from '../../../../../redux/selectors'
+import type { ExistedFile } from '../../../../../redux/types'
+import { MimeTypes } from '../../../../../redux/types/MimeTypes'
+import type { RawPreview } from '../../type'
+
+import styles from './GalleryTile.module.scss'
+
+// eslint-disable-next-line init-declarations
 let timeout: NodeJS.Timeout
 
 interface Props {
@@ -73,11 +75,9 @@ export const GalleryTile = memo(
     const isJPG = extension === 'jpeg' || extension === 'jpg'
     const isUploading = isLoading && !preview
 
-    const hasDuplicate = useMemo(() => {
-      return existedFilesArr?.length && watchForDuplicatesOnlyInCurrentFolder
-        ? duplicates.some(({ originalName }) => existedFilesArr[0].originalName === originalName)
-        : Boolean(existedFilesArr?.length)
-    }, [duplicates, existedFilesArr, watchForDuplicatesOnlyInCurrentFolder])
+    const hasDuplicate = useMemo(() => (existedFilesArr?.length && watchForDuplicatesOnlyInCurrentFolder
+      ? duplicates.some(({ originalName }) => existedFilesArr[0].originalName === originalName)
+      : Boolean(existedFilesArr?.length)), [duplicates, existedFilesArr, watchForDuplicatesOnlyInCurrentFolder])
 
     const handleMouseEnter = () => {
       clearTimeout(timeout)
@@ -101,10 +101,13 @@ export const GalleryTile = memo(
     const handleImageClick = (event: MouseEvent) => {
       event.stopPropagation()
       event.preventDefault()
-      !isUploading && onImageClick(index, { originalPath, name, type, preview, fullSizeJpgStatic: fullSizeJpgPath })
+      !isUploading && onImageClick(index, {
+        originalPath, name, type, preview, fullSizeJpgStatic: fullSizeJpgPath,
+      })
     }
 
     return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
         className={cn(
           styles.item,
@@ -115,7 +118,7 @@ export const GalleryTile = memo(
             pointer: isEditMode,
           },
           'position-relative',
-          'pointer'
+          'pointer',
         )}
         onClick={handleImageClick}
         onMouseEnter={handleMouseEnter}
@@ -129,7 +132,7 @@ export const GalleryTile = memo(
               styles.itemMenu,
               { [styles.highlighted]: hasDuplicate, [styles.isUploading]: isUploading },
               `${isEditMode ? 'd-none' : 'd-flex'}`,
-              'position-absolute h-100 flex-column justify-content-between'
+              'position-absolute h-100 flex-column justify-content-between',
             )}
           >
             <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
@@ -150,14 +153,14 @@ export const GalleryTile = memo(
         )}
         {hasDuplicate && isEditMode && <div className={cn(styles.errorHighlight, 'position-absolute')} />}
         <img
-          alt="image-preview"
+          alt="preview"
           className={cn(styles.img, 'd-none')}
           onLoad={onImageOnLoad}
           src={preview}
           style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
         />
-        <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="image placeholder" />
+        <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="placeholder" />
       </div>
     )
-  }
+  },
 )

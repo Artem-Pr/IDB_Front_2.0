@@ -8,12 +8,12 @@ import {
   setCurrentFolderKey,
   setCurrentFolderPath,
   setExpandedKeys,
-} from '../../../redux/reducers/foldersSlice-reducer'
-import { setGalleryPagination } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { curFolderInfo, folderElement } from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import { getFolderPathFromTreeKey } from '../../common/folderTree'
+} from '../../../../../redux/reducers/foldersSlice/foldersSlice'
+import { setGalleryPagination } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { fetchPhotos } from '../../../../../redux/reducers/mainPageSlice/thunks'
+import { curFolderInfo, folderElement } from '../../../../../redux/selectors'
+import { useAppDispatch } from '../../../../../redux/store/store'
+import { getFolderPathFromTreeKey } from '../../../../common/folderTree'
 
 const { DirectoryTree } = Tree
 
@@ -23,7 +23,7 @@ interface Props {
   setAutoExpandParent: (autoExpandParent: boolean) => void
 }
 
-const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props) => {
+export const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props) => {
   const dispatch = useAppDispatch()
   const { folderTree } = useSelector(folderElement)
   const { currentFolderKey, expandedKeys } = useSelector(curFolderInfo)
@@ -68,5 +68,3 @@ const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props
     />
   )
 }
-
-export default FolderTree

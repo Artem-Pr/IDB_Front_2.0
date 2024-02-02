@@ -1,17 +1,21 @@
 import React, { memo, useState } from 'react'
-import { Modal, Spin } from 'antd'
+
 import { FieldTimeOutlined } from '@ant-design/icons'
+import { Modal, Spin } from 'antd'
+
+import { UIKitBtn } from '../../../UIKit/Button'
+
+import { TDModalMapper } from './components'
+import { useUpdateOriginalDate } from './hooks'
 
 import styles from './TimeDifferenceModal.module.scss'
-import { TDModalMapper } from './Components'
-import { useUpdateOriginalDate } from './hooks'
-import { UIKitBtn } from '../../../UIKit/Button'
 
 export const TimeDifferenceModal = memo(() => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showContent, setShowContent] = useState(false)
-  const { isOriginalDatesUpdated, setOriginalDatesObj, updateOriginalDates, isTimesDifferenceApplied } =
-    useUpdateOriginalDate()
+  const {
+    isOriginalDatesUpdated, setOriginalDatesObj, updateOriginalDates, isTimesDifferenceApplied,
+  } = useUpdateOriginalDate()
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -54,11 +58,13 @@ export const TimeDifferenceModal = memo(() => {
         okButtonProps={{ disabled: !isOriginalDatesUpdated }}
         wrapClassName={styles.modal}
       >
-        {showContent ? (
-          <TDModalMapper setOriginalDatesObj={setOriginalDatesObj} />
-        ) : (
-          <Spin className={styles.loader} spinning />
-        )}
+        {showContent
+          ? (
+            <TDModalMapper setOriginalDatesObj={setOriginalDatesObj} />
+          )
+          : (
+            <Spin className={styles.loader} spinning />
+          )}
       </Modal>
     </>
   )

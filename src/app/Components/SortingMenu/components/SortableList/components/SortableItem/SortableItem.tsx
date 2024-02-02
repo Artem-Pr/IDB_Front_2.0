@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import type { CSSProperties, PropsWithChildren } from 'react'
+
 import type { UniqueIdentifier } from '@dnd-kit/core'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -13,7 +14,9 @@ interface Props {
 }
 
 export const SortableItem = ({ children, id }: PropsWithChildren<Props>) => {
-  const { attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition } = useSortable({
+  const {
+    attributes, isDragging, listeners, setNodeRef, setActivatorNodeRef, transform, transition,
+  } = useSortable({
     id,
   })
   const context = useMemo(
@@ -22,7 +25,7 @@ export const SortableItem = ({ children, id }: PropsWithChildren<Props>) => {
       listeners,
       ref: setActivatorNodeRef,
     }),
-    [attributes, listeners, setActivatorNodeRef]
+    [attributes, listeners, setActivatorNodeRef],
   )
   const style: CSSProperties = {
     opacity: isDragging ? 0.4 : undefined,

@@ -1,24 +1,28 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useEffect, useState } from 'react'
-import { Button, Card, List, Progress } from 'antd'
 
-import styles from './index.module.scss'
-import { API_STATUS, WEB_SOCKET_ACTIONS, WebSocketAPICallback } from '../../../../../api/types'
+import {
+  Button, Card, List, Progress,
+} from 'antd'
+
 import { initWebSocket } from '../../../../../api/api-websocket'
 import type { FilesTestAPIData } from '../../../../../api/api-websocket'
-import TableRow from '../../gridItems/TableRow'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types'
 import TableCollapse from '../../gridItems/TableCollaps'
+import TableRow from '../../gridItems/TableRow'
+
+import styles from './index.module.scss'
 
 const MESSAGE_LIST_LIMIT = 1000
-const isStopped = (status: API_STATUS) =>
-  status === API_STATUS.STOPPED ||
-  status === API_STATUS.DONE ||
-  status === API_STATUS.ERROR ||
-  status === API_STATUS.PENDING_ERROR
+const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
+  || status === ApiStatus.DONE
+  || status === ApiStatus.ERROR
+  || status === ApiStatus.PENDING_ERROR
 
 export const FilesTest = () => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
-  const [status, setStatus] = useState<API_STATUS>(API_STATUS.DEFAULT)
+  const [status, setStatus] = useState<ApiStatus>(ApiStatus.DEFAULT)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
   const [testData, setTestData] = useState<FilesTestAPIData>()
   const [showExcessiveFolders_config, setShowExcessiveFolders_config] = useState(false)
@@ -47,7 +51,7 @@ export const FilesTest = () => {
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(API_STATUS.DEFAULT)
+    setStatus(ApiStatus.DEFAULT)
   }, [webSocket])
 
   useEffect(() => {
@@ -58,19 +62,21 @@ export const FilesTest = () => {
     setMessages([])
     setProgress(0)
 
-    const onMessage = ({ message, progress, status, data }: WebSocketAPICallback<FilesTestAPIData>) => {
+    const onMessage = ({
+      message, progress: newProgress, status: newStatus, data,
+    }: WebSocketAPICallback<FilesTestAPIData>) => {
       setMessages(prevMessages => [
         message,
         ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
       setTestData(data)
-      setProgress(progress)
-      setStatus(status)
+      setProgress(newProgress)
+      setStatus(newStatus)
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.FILES_TEST, { onMessage, onError: refreshWebSocketInstance })
+    const ws = initWebSocket(WebSocketActions.FILES_TEST, { onMessage, onError: refreshWebSocketInstance })
     setWebSocket(ws)
-    setStatus(API_STATUS.INIT)
+    setStatus(ApiStatus.INIT)
   }
 
   return (
@@ -78,11 +84,11 @@ export const FilesTest = () => {
       className={styles.card}
       title="Test for matching the number of files"
       bordered={false}
-      extra={
+      extra={(
         <Button type="primary" ghost onClick={handleProcessStart}>
           Start test
         </Button>
-      }
+      )}
     >
       <span className="margin-left-10 margin-top-10 d-block">{messages[0]}</span>
       <Progress className={styles.progressBar} percent={progress} />

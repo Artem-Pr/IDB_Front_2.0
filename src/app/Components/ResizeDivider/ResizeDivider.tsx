@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { MoreOutlined } from '@ant-design/icons'
 
 import styles from './ResizeDivider.module.scss'
@@ -29,6 +30,7 @@ export const ResizeDivider = ({ onDividerMove, onMouseUp }: Props) => {
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div className={styles.divider} onMouseDown={handleDividerMouseDown}>
       <MoreOutlined className={styles.resizeIcon} />
     </div>

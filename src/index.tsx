@@ -1,23 +1,20 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { createRoot } from 'react-dom/client'
-
 import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 
 import dayjs from 'dayjs'
-
 import duration from 'dayjs/plugin/duration'
+import { createRoot } from 'react-dom/client'
+
+import App from './App'
+import store from './redux/store/store'
+import * as serviceWorker from './serviceWorker'
+
+import './styles/index.scss'
+import 'react-image-gallery/styles/scss/image-gallery.scss'
 
 dayjs.extend(duration)
 
-import App from './App'
-import * as serviceWorker from './serviceWorker'
-import store from './redux/store/store'
-
-import 'react-image-gallery/styles/scss/image-gallery.scss'
-import './styles/index.scss'
-
-// eslint-disable-next-line functional/immutable-data
 Object.typedKeys = Object.keys
 
 const container = document.querySelector('#root')
@@ -29,7 +26,7 @@ root.render(
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </Provider>
+  </Provider>,
 )
 
 // If you want your app to work offline and load faster, you can change

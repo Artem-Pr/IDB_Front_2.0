@@ -1,13 +1,12 @@
 import { useCallback, useState } from 'react'
-
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useCurrentPage, useFilesList } from '../../../../../common/hooks/hooks'
 import { setDownloadingFiles } from '../../../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { DownloadingObject } from '../../../../../../redux/types'
+import { setIsTimeDifferenceApplied } from '../../../../../../redux/reducers/sessionSlice/sessionSlice'
 import { updateUploadingFilesArr } from '../../../../../../redux/reducers/uploadSlice'
-import { setIsTimeDifferenceApplied } from '../../../../../../redux/reducers/sessionSlice-reducer'
 import { session } from '../../../../../../redux/selectors'
+import { DownloadingObject } from '../../../../../../redux/types'
+import { useCurrentPage, useFilesList } from '../../../../../common/hooks/hooks'
 
 type FilePath = string
 type FormattedOriginalDate = string
@@ -28,9 +27,9 @@ export const useUpdateOriginalDate = () => {
 
         return isOriginalDateUpdated
           ? {
-              ...file,
-              originalDate: originalDatesObj[tempPath] as string,
-            }
+            ...file,
+            originalDate: originalDatesObj[tempPath] as string,
+          }
           : file
       }
 
@@ -39,11 +38,13 @@ export const useUpdateOriginalDate = () => {
 
     isMainPage && dispatch(setDownloadingFiles(updatedDatesList as DownloadingObject[]))
     isUploadingPage && dispatch(updateUploadingFilesArr(updatedDatesList))
-    isMainPage && dispatch(setIsTimeDifferenceApplied(true)) // Don't set for upload page, because in upload page changes apply immediately
+    // Don't set for upload page, because in upload page changes apply immediately
+    isMainPage && dispatch(setIsTimeDifferenceApplied(true))
   }, [dispatch, filesArr, isMainPage, isUploadingPage, originalDatesObj])
 
   const isOriginalDatesUpdated = Boolean(
-    Object.keys(originalDatesObj).filter(filePath => Boolean(originalDatesObj[filePath])).length
+    Object.keys(originalDatesObj)
+      .filter(filePath => Boolean(originalDatesObj[filePath])).length,
   )
 
   return {

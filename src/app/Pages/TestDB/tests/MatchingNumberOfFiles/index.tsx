@@ -1,13 +1,18 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
+
 import { Button, Card, Progress } from 'antd'
 
-import styles from './index.module.scss'
-import TableRow from '../../gridItems/TableRow'
-import TableCollapse from '../../gridItems/TableCollaps'
+import { fetchFileTests } from 'src/redux/reducers/testsSlice/thunks'
+
+import { refreshFirstTestPid } from '../../../../../redux/reducers/testsSlice/testsSlice'
 import { numberOfFilesChecking } from '../../../../../redux/selectors'
-import { fetchFileTests, refreshFirstTestPid } from '../../../../../redux/reducers/testsSlice-reducer'
 import { useAppDispatch } from '../../../../../redux/store/store'
+import TableCollapse from '../../gridItems/TableCollaps'
+import TableRow from '../../gridItems/TableRow'
+
+import styles from './index.module.scss'
 
 const MatchingNumberOfFiles = () => {
   const dispatch = useAppDispatch()
@@ -61,11 +66,11 @@ const MatchingNumberOfFiles = () => {
       className={styles.card}
       title="Test for matching the number of files"
       bordered={false}
-      extra={
+      extra={(
         <Button type="primary" ghost onClick={handleCheckNumberOfFiles}>
           Start test
         </Button>
-      }
+      )}
     >
       <Progress className={styles.progressBar} percent={progress} />
 

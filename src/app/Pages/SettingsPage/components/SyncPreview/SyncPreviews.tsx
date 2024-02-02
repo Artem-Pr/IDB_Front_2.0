@@ -1,29 +1,34 @@
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
+
 import { Button, List, Progress } from 'antd'
 
 import { initWebSocket } from '../../../../../api/api-websocket'
-import { API_STATUS, WEB_SOCKET_ACTIONS, WebSocketAPICallback } from '../../../../../api/types'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types'
 
 import styles from './SyncPreviews.module.scss'
 
 const MESSAGE_LIST_LIMIT = 1000
-const isStopped = (status: API_STATUS) =>
-  status === API_STATUS.STOPPED ||
-  status === API_STATUS.DONE ||
-  status === API_STATUS.ERROR ||
-  status === API_STATUS.PENDING_ERROR
+const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
+  || status === ApiStatus.DONE
+  || status === ApiStatus.ERROR
+  || status === ApiStatus.PENDING_ERROR
 
 export const SyncPreviews = memo(() => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
   const [showMessageList, setShowMessageList] = useState(false)
-  const [status, setStatus] = useState<API_STATUS>(API_STATUS.DEFAULT)
+  const [status, setStatus] = useState<ApiStatus>(ApiStatus.DEFAULT)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
 
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(API_STATUS.DEFAULT)
+    setStatus(ApiStatus.DEFAULT)
   }, [webSocket])
 
   useEffect(() => {
@@ -34,18 +39,18 @@ export const SyncPreviews = memo(() => {
     setMessages([])
     setProgress(0)
 
-    const onMessage = ({ message, progress, status }: WebSocketAPICallback) => {
+    const onMessage = (action: WebSocketAPICallback) => {
       setMessages(prevMessages => [
-        message,
+        action.message,
         ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
-      setProgress(progress)
-      setStatus(status)
+      setProgress(action.progress)
+      setStatus(action.status)
     }
 
-    const ws = initWebSocket(WEB_SOCKET_ACTIONS.SYNC_PREVIEWS, { onMessage, onError: refreshWebSocketInstance })
+    const ws = initWebSocket(WebSocketActions.SYNC_PREVIEWS, { onMessage, onError: refreshWebSocketInstance })
     setWebSocket(ws)
-    setStatus(API_STATUS.INIT)
+    setStatus(ApiStatus.INIT)
   }
 
   const handleShowMessageListToggle = () => {
@@ -66,16 +71,18 @@ export const SyncPreviews = memo(() => {
       </div>
       {Boolean(messages.length) && (
         <div className="margin-left-10 w-100">
-          {showMessageList ? (
-            <List
-              className={styles.progress}
-              size="small"
-              dataSource={messages}
-              renderItem={item => <List.Item>{item}</List.Item>}
-            />
-          ) : (
-            <span>{messages[0]}</span>
-          )}
+          {showMessageList
+            ? (
+              <List
+                className={styles.progress}
+                size="small"
+                dataSource={messages}
+                renderItem={item => <List.Item>{item}</List.Item>}
+              />
+            )
+            : (
+              <span>{messages[0]}</span>
+            )}
           <Progress percent={progress} />
         </div>
       )}

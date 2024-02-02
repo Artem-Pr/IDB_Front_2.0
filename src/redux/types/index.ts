@@ -1,6 +1,7 @@
 import type { Key } from 'react'
 
 import { MimeTypes } from './MimeTypes'
+
 export type { Duration } from 'dayjs/plugin/duration'
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
@@ -165,8 +166,8 @@ export interface DownloadingObject extends UploadingObject {
 
 export interface DownloadingRawObject
   extends UpdatingFields,
-    Omit<AxiosPreviews, 'fullSizeJpg'>,
-    Omit<DownloadingObject, keyof UploadingObject> {
+  Omit<AxiosPreviews, 'fullSizeJpg'>,
+  Omit<DownloadingObject, keyof UploadingObject> {
   changeDate: number
   mimetype: MimeTypes
   originalName: string

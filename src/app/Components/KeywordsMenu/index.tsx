@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { Tag } from 'antd'
 import { identity, sortBy } from 'ramda'
 
@@ -15,11 +16,12 @@ const KeywordsMenu = ({ keywords, removeKeyword, isUploadingPage }: Props) => {
 
   return (
     <div>
-      {sortBy(identity, keywords).map(item => (
-        <Tag key={item} closable={isUploadingPage} onClose={() => handleClose(item)}>
-          {item}
-        </Tag>
-      ))}
+      {sortBy(identity, keywords)
+        .map(item => (
+          <Tag key={item} closable={isUploadingPage} onClose={() => handleClose(item)}>
+            {item}
+          </Tag>
+        ))}
     </div>
   )
 }

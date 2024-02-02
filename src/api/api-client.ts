@@ -1,10 +1,10 @@
 import axios from 'axios'
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
-export enum HOST {
-  HTTP = 'http://localhost:5002',
-  WEB_SOCKET = 'ws://localhost:5001',
-}
+export const HOST = Object.freeze({
+  HTTP: process.env.BACKEND_URL || '0.0.0.0',
+  WEB_SOCKET: process.env.BACKEND_WEB_SOCKET_URL || '0.0.0.0',
+})
 
 interface Aborter {
   [key: string]: AbortController | null

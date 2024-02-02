@@ -1,16 +1,9 @@
 import React, { useMemo } from 'react'
-import { Layout, Result } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu } from '../../Components'
-import {
-  allSameKeywordsSelector,
-  allUploadKeywordsSelector,
-  curFolderInfo,
-  upload,
-  uploadPageGalleryPropsSelector,
-} from '../../../redux/selectors'
+import { LoadingOutlined } from '@ant-design/icons'
+import { Layout, Result } from 'antd'
+
 import {
   addToSelectedList,
   clearSelectedList,
@@ -20,10 +13,20 @@ import {
   updateUploadingFilesArr,
   clearUploadingState,
 } from '../../../redux/reducers/uploadSlice'
+import {
+  allSameKeywordsSelector,
+  allUploadKeywordsSelector,
+  curFolderInfo,
+  upload,
+  uploadPageGalleryPropsSelector,
+} from '../../../redux/selectors'
+import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
+import {
+  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu,
+} from '../../Components'
+import { ResizeDivider } from '../../Components/ResizeDivider'
 import { useUpdateFields, useMenuResize, useGridRefControl } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
-import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
-import { ResizeDivider } from '../../Components/ResizeDivider'
 
 const { Content } = Layout
 
@@ -76,13 +79,25 @@ const UploadPage = () => {
 
   const ResultComponent = useMemo(() => {
     const validStatus = isValidResultStatus(uploadingStatus)
-    return validStatus ? (
-      <Result status={validStatus || 'info'} title={statusMessage[uploadingStatus]} />
-    ) : uploadingStatus === 'loading' ? (
-      <Result icon={<LoadingOutlined />} title={statusMessage[uploadingStatus]} />
-    ) : (
-      ''
-    )
+    if (validStatus) {
+      return (
+        <Result
+          status={validStatus}
+          title={statusMessage[uploadingStatus]}
+        />
+      )
+    }
+
+    if (uploadingStatus === 'loading') {
+      return (
+        <Result
+          icon={<LoadingOutlined />}
+          title={statusMessage[uploadingStatus]}
+        />
+      )
+    }
+
+    return ''
   }, [uploadingStatus])
 
   return (

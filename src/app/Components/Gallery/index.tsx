@@ -1,18 +1,25 @@
-import React, { Fragment, MutableRefObject, SyntheticEvent, useCallback, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import cn from 'classnames'
-import { Modal, Spin, Switch } from 'antd'
+import React, {
+  Fragment, MutableRefObject, SyntheticEvent, useCallback, useMemo, useState,
+} from 'react'
 import ImageGallery from 'react-image-gallery'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { Modal, Spin, Switch } from 'antd'
+import cn from 'classnames'
+
+import { setPreviewPlaying } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { session } from '../../../redux/selectors'
+import type { ExifFilesList, FieldsObj } from '../../../redux/types'
+import { MainMenuKeys } from '../../../redux/types'
+import { useSort } from '../../common/hooks/useSort'
+
+import { GalleryTile, ImageGalleryMenu } from './components'
+import {
+  useImageArrayGroupedByDate, useImageClick, useImageGalleryData, useSelectWithShift,
+} from './hooks'
+import { useGetFullExifList } from './hooks/useGefFullExifList'
 
 import styles from './index.module.scss'
-import type { ExifFilesList, FieldsObj } from '../../../redux/types'
-import { session } from '../../../redux/selectors'
-import { GalleryTile, ImageGalleryMenu } from './components'
-import { useImageArrayGroupedByDate, useImageClick, useImageGalleryData, useSelectWithShift } from './hooks'
-import { MainMenuKeys } from '../../../redux/types'
-import { useGetFullExifList } from './hooks/useGefFullExifList'
-import { setPreviewPlaying } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { useSort } from '../../common/hooks/useSort'
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('d-none')
@@ -58,11 +65,15 @@ const Gallery = ({
   const isEditMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
   const isTemplateMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
   const isPropertiesMenu = useMemo(() => openMenus.includes(MainMenuKeys.PROPERTIES), [openMenus])
-  const { getExif, showModal, handleShowModalClose, exif, setIsJSONMode, isJSONMode } = useGetFullExifList({
+  const {
+    getExif, showModal, handleShowModalClose, exif, setIsJSONMode, isJSONMode,
+  } = useGetFullExifList({
     fullExifFilesList,
     updateFiles,
   })
-  const { hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover, selectWithShift } = useSelectWithShift({
+  const {
+    hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover, selectWithShift,
+  } = useSelectWithShift({
     isTemplateMenu,
     selectedList,
     addToSelectedList,
@@ -96,7 +107,7 @@ const Gallery = ({
         showPreview={showPreviewList}
       />
     ),
-    [showPreviewList]
+    [showPreviewList],
   )
 
   const handleSlide = (currentIndex: number) => {
@@ -119,24 +130,21 @@ const Gallery = ({
       setCurrentImage(i)
       dispatch(setPreviewPlaying(false))
     },
-    [dispatch]
+    [dispatch],
   )
 
   const handleImgRefAdd = useCallback(
     (ref: HTMLDivElement | null, imgIdx: number) => {
-      // eslint-disable-next-line functional/immutable-data
       imgRef.current[imgIdx] = ref
     },
-    [imgRef]
+    [imgRef],
   )
 
   const handleGridRefAdd = (ref: HTMLDivElement | null, dateGroupIdx: number) => {
-    // eslint-disable-next-line functional/immutable-data
     gridRef.current[dateGroupIdx] = ref
   }
 
   const handleImgFirstGroupNameAdd = (ref: HTMLDivElement | null, imageGroupIdx: number) => {
-    // eslint-disable-next-line functional/immutable-data
     imageGroupIdx === 0 && (imgFirstGroupNameRef.current = ref)
   }
 
@@ -146,130 +154,139 @@ const Gallery = ({
 
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
-      {groupedByDate ? (
-        Object.keys(imageArrayGroupedByDate).map((date, dateGroupIdx) => (
-          <Fragment key={date}>
-            <h2 ref={ref => handleImgFirstGroupNameAdd(ref, dateGroupIdx)} className="margin-left-10">
-              {date}
-            </h2>
-            <div
-              className={cn(styles.wrapper, 'd-grid grid-wrapper')}
-              ref={ref => handleGridRefAdd(ref, dateGroupIdx)}
-              style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
-            >
-              {imageArrayGroupedByDate[date].map(
-                (
-                  { _id, existedFilesArr, fullSizeJpgPath, index, name, originalPath, preview, tempPath, type },
-                  idx
-                ) => (
-                  <GalleryTile
-                    existedFilesArr={existedFilesArr}
-                    fitContain={fitContain}
-                    fullSizeJpgPath={fullSizeJpgPath}
-                    getExif={getExif}
-                    index={index}
-                    isEditMode={isEditMode}
-                    isMainPage={isMainPage}
-                    isShiftHover={isShiftHover(index)}
-                    key={name + _id + idx}
-                    name={name}
-                    onFullScreenClick={handleFullScreenClick}
-                    onImageClick={handleImageClick}
-                    onImageOnLoad={handleImageOnLoad}
-                    onImgRefAdd={handleImgRefAdd}
-                    onMouseEnter={setHoveredIndex}
-                    originalPath={originalPath}
-                    preview={preview}
-                    previewSize={previewSize}
-                    selectedList={selectedList}
-                    tempPath={tempPath}
-                    type={type}
-                  />
-                )
-              )}
-            </div>
-          </Fragment>
-        ))
-      ) : (
-        <div
-          className={cn(styles.wrapper, 'd-grid')}
-          ref={ref => handleGridRefAdd(ref, 0)}
-          style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
-        >
-          {imageArr.map(
-            ({ _id, existedFilesArr, fullSizeJpgPath, name, originalPath, preview, tempPath, type }, idx) => (
-              <GalleryTile
-                existedFilesArr={existedFilesArr}
-                fitContain={fitContain}
-                fullSizeJpgPath={fullSizeJpgPath}
-                getExif={getExif}
-                index={idx}
-                isEditMode={isEditMode}
-                isMainPage={isMainPage}
-                isShiftHover={isShiftHover(idx)}
-                key={name + _id + idx}
-                name={name}
-                onFullScreenClick={handleFullScreenClick}
-                onImageClick={handleImageClick}
-                onImageOnLoad={handleImageOnLoad}
-                onImgRefAdd={handleImgRefAdd}
-                onMouseEnter={setHoveredIndex}
-                originalPath={originalPath}
-                preview={preview}
-                previewSize={previewSize}
-                selectedList={selectedList}
-                tempPath={tempPath}
-                type={type}
-              />
-            )
-          )}
-        </div>
-      )}
+      {groupedByDate
+        ? (
+          Object.keys(imageArrayGroupedByDate)
+            .map((date, dateGroupIdx) => (
+              <Fragment key={date}>
+                <h2 ref={ref => handleImgFirstGroupNameAdd(ref, dateGroupIdx)} className="margin-left-10">
+                  {date}
+                </h2>
+                <div
+                  className={cn(styles.wrapper, 'd-grid grid-wrapper')}
+                  ref={ref => handleGridRefAdd(ref, dateGroupIdx)}
+                  style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
+                >
+                  {imageArrayGroupedByDate[date].map(
+                    (
+                      {
+                        _id, existedFilesArr, fullSizeJpgPath, index, name, originalPath, preview, tempPath, type,
+                      },
+                      idx,
+                    ) => (
+                      <GalleryTile
+                        existedFilesArr={existedFilesArr}
+                        fitContain={fitContain}
+                        fullSizeJpgPath={fullSizeJpgPath}
+                        getExif={getExif}
+                        index={index}
+                        isEditMode={isEditMode}
+                        isMainPage={isMainPage}
+                        isShiftHover={isShiftHover(index)}
+                        key={name + _id + idx}
+                        name={name}
+                        onFullScreenClick={handleFullScreenClick}
+                        onImageClick={handleImageClick}
+                        onImageOnLoad={handleImageOnLoad}
+                        onImgRefAdd={handleImgRefAdd}
+                        onMouseEnter={setHoveredIndex}
+                        originalPath={originalPath}
+                        preview={preview}
+                        previewSize={previewSize}
+                        selectedList={selectedList}
+                        tempPath={tempPath}
+                        type={type}
+                      />
+                    ),
+                  )}
+                </div>
+              </Fragment>
+            ))
+        )
+        : (
+          <div
+            className={cn(styles.wrapper, 'd-grid')}
+            ref={ref => handleGridRefAdd(ref, 0)}
+            style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
+          >
+            {imageArr.map(
+              ({
+                _id, existedFilesArr, fullSizeJpgPath, name, originalPath, preview, tempPath, type,
+              }, idx) => (
+                <GalleryTile
+                  existedFilesArr={existedFilesArr}
+                  fitContain={fitContain}
+                  fullSizeJpgPath={fullSizeJpgPath}
+                  getExif={getExif}
+                  index={idx}
+                  isEditMode={isEditMode}
+                  isMainPage={isMainPage}
+                  isShiftHover={isShiftHover(idx)}
+                  key={name + _id + idx}
+                  name={name}
+                  onFullScreenClick={handleFullScreenClick}
+                  onImageClick={handleImageClick}
+                  onImageOnLoad={handleImageOnLoad}
+                  onImgRefAdd={handleImgRefAdd}
+                  onMouseEnter={setHoveredIndex}
+                  originalPath={originalPath}
+                  preview={preview}
+                  previewSize={previewSize}
+                  selectedList={selectedList}
+                  tempPath={tempPath}
+                  type={type}
+                />
+              ),
+            )}
+          </div>
+        )}
 
       <Modal
-        title={
+        title={(
           <>
             <span>Exif list</span>
             <span style={{ marginLeft: 30 }}>JSON mode</span>
             <Switch className="margin-left-10" onChange={handleJSONModeChange} checked={isJSONMode} />
           </>
-        }
+        )}
         footer={null}
         onCancel={handleShowModalClose}
         open={showModal}
-        width={'60%'}
+        width="60%"
       >
         <pre className="overflow-y-scroll">{exif}</pre>
       </Modal>
 
-      {isMainPage && galleryArr.length ? (
-        <Modal
-          centered
-          closable={false}
-          footer={null}
-          onCancel={handleImageModalClose}
-          open={showImageModal}
-          width="90%"
-          wrapClassName="image-modal"
-        >
-          <ImageGallery
-            infinite={false}
-            items={galleryArr}
-            onSlide={handleSlide}
-            renderFullscreenButton={imageGalleryMenu}
-            showFullscreenButton={true}
-            showThumbnails={showPreviewList}
-            slideDuration={0}
-            slideInterval={3000}
-            startIndex={currentImage}
-            lazyLoad
-            showIndex
-            useTranslate3D
-          />
-        </Modal>
-      ) : (
-        ''
-      )}
+      {isMainPage && galleryArr.length
+        ? (
+          <Modal
+            centered
+            closable={false}
+            footer={null}
+            onCancel={handleImageModalClose}
+            open={showImageModal}
+            width="90%"
+            wrapClassName="image-modal"
+          >
+            <ImageGallery
+              infinite={false}
+              items={galleryArr}
+              onSlide={handleSlide}
+              renderFullscreenButton={imageGalleryMenu}
+              showFullscreenButton
+              showThumbnails={showPreviewList}
+              slideDuration={0}
+              slideInterval={3000}
+              startIndex={currentImage}
+              lazyLoad
+              showIndex
+              useTranslate3D
+            />
+          </Modal>
+        )
+        : (
+          ''
+        )}
     </Spin>
   )
 }

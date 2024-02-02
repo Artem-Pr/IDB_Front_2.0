@@ -1,9 +1,10 @@
-import { AppThunk } from '../../../store/store'
 import { mainApi } from '../../../../api/api'
 import { errorMessage, successMessage } from '../../../../app/common/notifications'
-import { setIsDeleteProcessing } from '../mainPageSlice'
-import { fetchPhotos } from './fetchPhotos'
 import { main } from '../../../selectors'
+import type { AppThunk } from '../../../store/types'
+import { setIsDeleteProcessing } from '../mainPageSlice'
+
+import { fetchPhotos } from './fetchPhotos'
 
 export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
   const { dSelectedList, downloadingFiles } = main(getState())
@@ -17,7 +18,7 @@ export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
       error && errorMessage(new Error(error), 'Deleting file error: ', 0)
     })
     .catch(error => {
-      console.log('error', error)
+      console.error('error', error)
       errorMessage(error.message, 'Deleting file error: ', 0)
     })
     .finally(() => setIsDeleteProcessing(false))

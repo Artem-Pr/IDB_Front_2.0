@@ -1,13 +1,13 @@
-/* eslint-disable functional/immutable-data */
 import { createListenerMiddleware } from '@reduxjs/toolkit'
 
-import {
-  setIsFullSizePreview,
-  setMaxImagePreviewSlideLimit,
-  setMinImagePreviewSlideLimit,
-  setSavePreview,
-} from '../../reducers/settingsSlice-reducer'
 import { localStorageAPI } from '../../../app/common/utils/localStorageAPI'
+import {
+  setCurrentFolderKey,
+  setCurrentFolderPath,
+  setExpandedKeys,
+  setIsDynamicFolders,
+} from '../../reducers/foldersSlice/foldersSlice'
+import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../reducers/mainPageSlice/helpers'
 import {
   resetSearchMenu,
   resetSort as resetSortMainPage,
@@ -26,21 +26,20 @@ import {
   setSearchTags,
   updateDOpenMenus,
 } from '../../reducers/mainPageSlice/mainPageSlice'
-import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../reducers/mainPageSlice/helpers'
-import {
-  setCurrentFolderKey,
-  setCurrentFolderPath,
-  setExpandedKeys,
-  setIsDynamicFolders,
-} from '../../reducers/foldersSlice-reducer'
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
-import { RootState } from '../rootReducer'
-import { main } from '../../selectors'
+import {
+  setIsFullSizePreview,
+  setMaxImagePreviewSlideLimit,
+  setMinImagePreviewSlideLimit,
+  setSavePreview,
+} from '../../reducers/settingsSlice/settingsSlice'
+import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../reducers/uploadSlice/helpers'
 import {
   resetSort as resetSortUploadPage,
   setGallerySortingList as setGallerySortingListUploadPage,
 } from '../../reducers/uploadSlice/uploadSlice'
-import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../reducers/uploadSlice/helpers'
+import { main } from '../../selectors'
+import type { RootState } from '../types'
 
 export const listenerMiddleware = createListenerMiddleware<RootState>()
 
@@ -82,7 +81,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setRatingFilter,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, rating: action.payload }
   },
 })
@@ -90,7 +89,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setSearchFileName,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, fileName: action.payload }
   },
 })
@@ -98,7 +97,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setIncludeAllSearchTags,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, includeAllSearchTags: action.payload }
   },
 })
@@ -106,7 +105,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setSearchTags,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, searchTags: action.payload }
   },
 })
@@ -114,7 +113,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setExcludeTags,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, excludeTags: action.payload }
   },
 })
@@ -122,7 +121,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setMimeTypes,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, mimetypes: action.payload }
   },
 })
@@ -130,7 +129,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setDateRange,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, dateRange: action.payload }
   },
 })
@@ -138,7 +137,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setIsAnyDescriptionFilter,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, anyDescription: action.payload }
   },
 })
@@ -146,7 +145,7 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
   actionCreator: setDescriptionFilter,
   effect: action => {
-    const searchMenu = localStorageAPI.searchMenu
+    const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, description: action.payload }
   },
 })

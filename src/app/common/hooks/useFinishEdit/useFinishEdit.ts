@@ -7,7 +7,7 @@ import {
 } from 'ramda'
 
 import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
-import { setKeywordsList } from '../../../../redux/reducers/foldersSlice-reducer'
+import { setKeywordsList } from '../../../../redux/reducers/foldersSlice/foldersSlice'
 import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
 import { folderElement, session } from '../../../../redux/selectors'
 import { useAppDispatch } from '../../../../redux/store/store'
@@ -61,7 +61,12 @@ export const useFinishEdit = ({
   const dispatch = useAppDispatch()
   const { keywordsList } = useSelector(folderElement)
   const { isTimesDifferenceApplied } = useSelector(session)
-  const editUploadingFiles = useEditFilesArr(selectedList, filesArr, sameKeywords, isMainPage)
+  const editUploadingFiles = useEditFilesArr({
+    filesArr,
+    isMainPage,
+    selectedList,
+    sameKeywords,
+  })
 
   const sendUpdatedFiles = useCallback(
     ({

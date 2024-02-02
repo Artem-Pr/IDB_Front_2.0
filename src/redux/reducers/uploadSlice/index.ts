@@ -14,5 +14,5 @@ export {
   updateFullExifFile,
   updateOpenMenus,
   updateUploadingFilesArr,
-  uploadSliceReducer,
+  uploadPageReducer,
 } from './uploadSlice'

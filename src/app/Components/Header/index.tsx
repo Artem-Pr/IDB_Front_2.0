@@ -1,19 +1,23 @@
 import React, { useEffect, useMemo } from 'react'
-import { Layout, Menu, Modal, Typography } from 'antd'
 import { useSelector } from 'react-redux'
 
-import { useCurrentPage } from '../../common/hooks'
 import {
-  fetchPathsList,
-  removeDirectory,
+  Layout, Menu, Modal, Typography,
+} from 'antd'
+
+import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
+
+import { checkFolderConfirmation, deleteMessageConst } from '../../../assets/config/moduleConfig'
+import {
   setNumberOfFilesInDirectory,
   setNumberOfSubdirectories,
   setShowInfoModal,
-} from '../../../redux/reducers/foldersSlice-reducer'
+} from '../../../redux/reducers/foldersSlice/foldersSlice'
 import { curFolderInfo, pathsArr } from '../../../redux/selectors'
-import { checkFolderConfirmation, deleteMessageConst } from '../../../assets/config/moduleConfig'
-import { PageMenuItems } from './PageMenuItems'
 import { useAppDispatch } from '../../../redux/store/store'
+import { useCurrentPage } from '../../common/hooks'
+
+import { PageMenuItems } from './PageMenuItems'
 
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
@@ -33,7 +37,7 @@ const Header = () => {
         <p>{deleteMessageConst.directory}</p>
       </div>
     ),
-    [numberOfFiles, numberOfSubdirectories]
+    [numberOfFiles, numberOfSubdirectories],
   )
 
   useEffect(() => {

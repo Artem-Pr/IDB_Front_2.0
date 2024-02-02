@@ -1,9 +1,10 @@
-/* eslint functional/immutable-data: 0 */
-import { useMemo } from 'react'
-import { useEffect, useRef, useState } from 'react'
+/* eslint-disable no-param-reassign */
+import {
+  useMemo, useEffect, useRef, useState,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setPreviewSize } from '../../../../redux/reducers/sessionSlice-reducer'
+import { setPreviewSize } from '../../../../redux/reducers/sessionSlice/sessionSlice'
 import { main } from '../../../../redux/selectors'
 import { useSort } from '../useSort'
 
@@ -22,7 +23,7 @@ export const useGridRefControl = () => {
       imgRef,
       imgFirstGroupNameRef,
     }),
-    []
+    [],
   )
 
   useEffect(() => {
@@ -38,7 +39,9 @@ export const useGridRefControl = () => {
       ref && (ref.style.gridTemplateColumns = `repeat(auto-fill,minmax(${currentHeight}px, 1fr))`)
     })
 
-    imgRef.current?.forEach(ref => ref && (ref.style.height = `${currentHeight}px`))
+    imgRef.current?.forEach(ref => {
+      ref && (ref.style.height = `${currentHeight}px`)
+    })
   }
 
   const finishPreviewResize = (currentHeight: number) => {

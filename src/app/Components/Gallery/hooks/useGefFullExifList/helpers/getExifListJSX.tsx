@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import type { ExifFilesList, RawFullExifObj } from '../../../../../../redux/types'
+
 import { prepareExifDataRecursive } from './prepareExifDataRecursive'
 
 export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentTempPath: string, isJSONMode: boolean) => {
@@ -15,18 +16,20 @@ export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentTempPath
 
   const getExifItemJSX = (fieldName: string): ReactNode => (
     <>
-      <span className="bold">{fieldName + ':'}</span>
+      <span className="bold">{`${fieldName}:`}</span>
       <span style={{ marginLeft: 5 }}>{getExifItemValueJSX(fieldName)}</span>
     </>
   )
 
-  return isJSONMode ? (
-    JSON.stringify(rawExif, null, 2)
-  ) : (
-    <>
-      {rawExifFieldNames.map((fieldName, key) => (
-        <div key={`${fieldName}_${key}`}>{getExifItemJSX(fieldName)}</div>
-      ))}
-    </>
-  )
+  return isJSONMode
+    ? (
+      JSON.stringify(rawExif, null, 2)
+    )
+    : (
+      <>
+        {rawExifFieldNames.map((fieldName, key) => (
+          <div key={`${fieldName}_${key}`}>{getExifItemJSX(fieldName)}</div>
+        ))}
+      </>
+    )
 }

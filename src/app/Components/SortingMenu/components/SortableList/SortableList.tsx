@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
+
 import {
   DndContext,
   DragEndEvent,
@@ -12,9 +13,9 @@ import {
 import type { Active, UniqueIdentifier, Over } from '@dnd-kit/core'
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 
-import styles from './SortableList.module.scss'
-
 import { SortableOverlay } from './components'
+
+import styles from './SortableList.module.scss'
 
 interface BaseItem {
   id: UniqueIdentifier
@@ -27,13 +28,13 @@ interface Props<T extends BaseItem> {
 }
 
 export const SortableList = <T extends BaseItem>({ items, onChange, renderItem }: Props<T>) => {
-  const [active, setActive] = useState<Active | null>(null)
-  const activeItem = useMemo(() => items.find(item => item.id === active?.id), [active, items])
+  const [activeElem, setActiveElem] = useState<Active | null>(null)
+  const activeItem = useMemo(() => items.find(item => item.id === activeElem?.id), [activeElem, items])
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   )
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
@@ -46,15 +47,15 @@ export const SortableList = <T extends BaseItem>({ items, onChange, renderItem }
 
     const isItemPlaceUpdated = over && active.id !== over?.id
     isItemPlaceUpdated && updateArrayAfterMoving()
-    setActive(null)
+    setActiveElem(null)
   }
 
   const handleDragStart = ({ active }: DragStartEvent) => {
-    setActive(active)
+    setActiveElem(active)
   }
 
   const handleDragCancel = () => {
-    setActive(null)
+    setActiveElem(null)
   }
 
   return (

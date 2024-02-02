@@ -1,8 +1,11 @@
-import type { ExifFilesList, LoadingStatus, SortingData, UploadingObject } from '../../types'
+import type {
+  ExifFilesList, LoadingStatus, SortingData, UploadingObject,
+} from '../../types'
 import { MainMenuKeys } from '../../types'
+
 import { defaultGallerySortingList } from './helpers'
 
-interface State {
+export interface State {
   checkForDuplicatesOnlyInCurrentFolder: boolean
   fullExifFilesList: ExifFilesList
   isExifLoading: boolean

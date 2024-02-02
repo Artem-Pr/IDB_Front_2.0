@@ -1,17 +1,20 @@
 import React, { MutableRefObject, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Collapse, Layout } from 'antd'
 
+import { Collapse, Layout } from 'antd'
 import { difference } from 'ramda'
 
-import styles from './index.module.scss'
-import { MainMenuKeys } from '../../../redux/types'
-import { folderElement, session } from '../../../redux/selectors'
-import { fetchKeywordsList } from '../../../redux/reducers/foldersSlice-reducer'
-import { useMainMenuItems } from './hooks'
-import { useAppDispatch } from '../../../redux/store/store'
-import { useClearSelectedList, useOpenMenus, useUpdateOpenMenus } from '../../common/hooks/hooks'
+import { fetchKeywordsList } from 'src/redux/reducers/foldersSlice/thunks'
+
 import { setPreviewPlaying, stopVideoPreview } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+import { folderElement, session } from '../../../redux/selectors'
+import { useAppDispatch } from '../../../redux/store/store'
+import { MainMenuKeys } from '../../../redux/types'
+import { useClearSelectedList, useOpenMenus, useUpdateOpenMenus } from '../../common/hooks/hooks'
+
+import { useMainMenuItems } from './hooks'
+
+import styles from './index.module.scss'
 
 const { Sider } = Layout
 
@@ -35,7 +38,6 @@ const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
   }, [allKeywords.length, dispatch])
 
   useEffect(() => {
-    // eslint-disable-next-line functional/immutable-data
     videoPreviewRef?.current && (videoPreviewRef.current.style.height = menuRef?.current?.style.width || '')
   }, [menuRef, videoPreviewRef])
 
@@ -44,12 +46,12 @@ const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
 
     const clearSelectedListWhenCloseEditors = () => {
       const closingKey = difference(openMenuKeys, keysArr)[0]
-      const isClosingPropertyAfterEdit =
-        closingKey === MainMenuKeys.PROPERTIES &&
-        !keysArr.includes(MainMenuKeys.EDIT) &&
-        !keysArr.includes(MainMenuKeys.EDIT_BULK)
-      const needClearing =
-        isClosingPropertyAfterEdit || closingKey === MainMenuKeys.EDIT || closingKey === MainMenuKeys.EDIT_BULK
+      const isClosingPropertyAfterEdit = closingKey === MainMenuKeys.PROPERTIES
+        && !keysArr.includes(MainMenuKeys.EDIT)
+        && !keysArr.includes(MainMenuKeys.EDIT_BULK)
+      const needClearing = isClosingPropertyAfterEdit
+      || closingKey === MainMenuKeys.EDIT
+      || closingKey === MainMenuKeys.EDIT_BULK
       needClearing && clearSelectedList()
     }
 

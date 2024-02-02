@@ -2,9 +2,9 @@ import React from 'react'
 
 import { MinusOutlined } from '@ant-design/icons'
 
+import { FieldsObj } from '../../../../../redux/types'
 import { getLabelValue } from '../../helpers/getLabelValue'
 import { usePropertyFields } from '../../hooks'
-import { FieldsObj } from '../../../../../redux/types'
 
 import styles from './PropertyFields.module.scss'
 
@@ -18,16 +18,20 @@ export const PropertyFields = ({ filesArr, selectedList }: Props) => {
 
   return (
     <>
-      {Object.typedKeys(fieldLabels).map(fieldName => {
-        const labelValue = fieldsObjElements && getLabelValue(fieldName, fieldsObjElements)
+      {Object.typedKeys(fieldLabels)
+        .map(fieldName => {
+          const labelValue = fieldsObjElements && getLabelValue(fieldName, fieldsObjElements)
 
-        return (
-          <div key={fieldName} className={styles.field}>
-            <span>{fieldLabels[fieldName]}:</span>
-            <span>{labelValue || <MinusOutlined />}</span>
-          </div>
-        )
-      })}
+          return (
+            <div key={fieldName} className={styles.field}>
+              <span>
+                {fieldLabels[fieldName]}
+:
+              </span>
+              <span>{labelValue || <MinusOutlined />}</span>
+            </div>
+          )
+        })}
     </>
   )
 }

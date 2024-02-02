@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { copyByJSON } from '../../app/common/utils'
-import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice-reducer'
+import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice/foldersSlice'
 import { selectAll, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice'
 import {
   allSameKeywordsSelector,
@@ -8,9 +8,9 @@ import {
   pathsArr,
   pathsArrOptionsSelector,
 } from '../../redux/selectors'
-import type { RootState } from '../../redux/store/rootReducer'
 import store from '../../redux/store/store'
-import { UploadingObject } from '../../redux/types'
+import type { RootState } from '../../redux/store/types'
+import type { UploadingObject } from '../../redux/types'
 import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../common/mock'
 
 describe('selectors: ', () => {

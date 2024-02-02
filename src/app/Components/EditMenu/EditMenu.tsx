@@ -1,28 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select } from 'antd'
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react'
 import { useSelector } from 'react-redux'
-import { compose, identity, sortBy } from 'ramda'
+
+import {
+  AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select,
+} from 'antd'
+import generatePicker from 'antd/es/date-picker/generatePicker'
+import cn from 'classnames'
 import moment from 'moment'
 import type { Moment } from 'moment'
-import cn from 'classnames'
-
+import { compose, identity, sortBy } from 'ramda'
 import momentGenerateConfig from 'rc-picker/lib/generate/moment'
-import generatePicker from 'antd/es/date-picker/generatePicker'
 
-import { getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash } from '../../common/utils'
-import { folderElement, isDeleteProcessing, main, pathsArrOptionsSelector } from '../../../redux/selectors'
-import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import { deleteConfirmation } from '../../../assets/config/moduleConfig'
-import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice/thunks'
-import { dateTimeFormat } from '../../common/utils/date'
 import { removeCurrentPhoto } from '../../../redux/reducers/mainPageSlice/thunks'
-import type { Checkboxes, UploadingObject } from '../../../redux/types'
-
-import styles from './index.module.scss'
+import { removeFileFromUploadState } from '../../../redux/reducers/uploadSlice/thunks'
+import {
+  folderElement, isDeleteProcessing, main, pathsArrOptionsSelector,
+} from '../../../redux/selectors'
 import { useAppDispatch } from '../../../redux/store/store'
-import { defaultTimeStamp } from '../../common/utils/date/dateFormats'
-import { isVideoByExt } from '../../common/utils/utils'
-import { TimeDifferenceModal } from './Components'
+import type { Checkboxes, UploadingObject } from '../../../redux/types'
+import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import {
   useClearSelectedList,
   useFilesList,
@@ -31,6 +30,16 @@ import {
   useSelectAll,
   useSelectedList,
 } from '../../common/hooks/hooks'
+import {
+  getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash,
+} from '../../common/utils'
+import { dateTimeFormat } from '../../common/utils/date'
+import { defaultTimeStamp } from '../../common/utils/date/dateFormats'
+import { isVideoByExt } from '../../common/utils/utils'
+
+import { TimeDifferenceModal } from './components'
+
+import styles from './EditMenu.module.scss'
 
 const { TextArea } = Input
 const DatePicker = generatePicker<Moment>(momentGenerateConfig)
@@ -66,7 +75,7 @@ const initialFileObject: InitialFileObject = {
   needUpdatePreview: false,
 }
 
-const EditMenu = ({ isEditMany }: Props) => {
+export const EditMenu = ({ isEditMany }: Props) => {
   const dispatch = useAppDispatch()
   const { selectAll } = useSelectAll()
   const { clearSelectedList } = useClearSelectedList()
@@ -83,8 +92,10 @@ const EditMenu = ({ isEditMany }: Props) => {
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
   const { isMainPage } = useCurrentPage()
 
-  const { name, originalDate, rating, description, timeStamp, needUpdatePreview } = useMemo<
-    UploadingObject | InitialFileObject
+  const {
+    name, originalDate, rating, description, timeStamp, needUpdatePreview,
+  } = useMemo<
+  UploadingObject | InitialFileObject
   >(() => (!selectedList.length ? initialFileObject : filesArr[getLastItem(selectedList)]), [filesArr, selectedList])
 
   const disabledInputs = useMemo(() => !selectedList.length, [selectedList])
@@ -180,7 +191,7 @@ const EditMenu = ({ isEditMany }: Props) => {
         </div>
 
         <div className="d-flex">
-          <Form.Item className={styles.checkbox} name="isName" valuePropName="checked">
+          <Form.Item className={styles.df} name="isName" valuePropName="checked">
             <Checkbox>Name:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="name">
@@ -208,9 +219,8 @@ const EditMenu = ({ isEditMany }: Props) => {
               <AutoComplete
                 placeholder="Edit file path"
                 options={pathsListOptions}
-                filterOption={(inputValue, option) =>
-                  option?.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-                }
+                filterOption={(inputValue, option) => option?.value.toUpperCase()
+                  .indexOf(inputValue.toUpperCase()) !== -1}
               />
             </Form.Item>
           </div>
@@ -234,30 +244,32 @@ const EditMenu = ({ isEditMany }: Props) => {
           </Form.Item>
         </div>
 
-        {showTimeStamp ? (
-          <div className="d-flex">
-            <Form.Item className={styles.checkbox} name="isTimeStamp" valuePropName="checked">
-              <Checkbox>TimeStamp:</Checkbox>
-            </Form.Item>
-            <Form.Item className={styles.inputField} name="timeStamp">
-              <Input placeholder="Edit time stamp" />
-            </Form.Item>
-            <Button className="margin-left-10" onClick={refreshTimeStamp}>
-              refresh
-            </Button>
-          </div>
-        ) : (
-          <div className="d-flex">
-            <Form.Item className={styles.checkbox} name="needUpdatePreview" valuePropName="checked">
-              <Checkbox>Update preview</Checkbox>
-            </Form.Item>
-          </div>
-        )}
+        {showTimeStamp
+          ? (
+            <div className="d-flex">
+              <Form.Item className={styles.checkbox} name="isTimeStamp" valuePropName="checked">
+                <Checkbox>TimeStamp:</Checkbox>
+              </Form.Item>
+              <Form.Item className={styles.inputField} name="timeStamp">
+                <Input placeholder="Edit time stamp" />
+              </Form.Item>
+              <Button className="margin-left-10" onClick={refreshTimeStamp}>
+                refresh
+              </Button>
+            </div>
+          )
+          : (
+            <div className="d-flex">
+              <Form.Item className={styles.checkbox} name="needUpdatePreview" valuePropName="checked">
+                <Checkbox>Update preview</Checkbox>
+              </Form.Item>
+            </div>
+          )}
 
         <div className={cn(styles.buttonsWrapper, 'd-flex')}>
           <Form.Item className={styles.button}>
             <Button className="w-100" type="primary" htmlType="submit" loading={isGalleryLoading || isExifLoading}>
-              Edit
+                Edit
             </Button>
           </Form.Item>
           {isEditMany && (
@@ -278,7 +290,7 @@ const EditMenu = ({ isEditMany }: Props) => {
         {isDeleteBtn && (
           <Form.Item className={styles.deleteButton}>
             <Button className="w-100" type="primary" loading={isDeleting} onClick={handleDelete} danger>
-              Delete
+                Delete
             </Button>
           </Form.Item>
         )}
@@ -287,5 +299,3 @@ const EditMenu = ({ isEditMany }: Props) => {
     </div>
   )
 }
-
-export default EditMenu

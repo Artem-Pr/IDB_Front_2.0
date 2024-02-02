@@ -7,6 +7,7 @@ import type {
   SortingData,
 } from '../../types'
 import { MimeTypes } from '../../types/MimeTypes'
+
 import { defaultGallerySortingList } from './helpers'
 import type { SearchMenu } from './types'
 

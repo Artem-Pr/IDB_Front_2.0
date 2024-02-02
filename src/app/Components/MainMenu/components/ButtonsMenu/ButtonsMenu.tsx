@@ -1,16 +1,15 @@
 import React from 'react'
-import { Button, Checkbox, Tooltip } from 'antd'
-
 import { useSelector } from 'react-redux'
 
+import { Button, Checkbox, Tooltip } from 'antd'
 import type { CheckboxProps } from 'antd'
 
 import { uploadFiles } from '../../../../../redux/reducers/uploadSlice/thunks'
-import { MainMenuKeys } from '../../../../../redux/types'
-import { useAppDispatch } from '../../../../../redux/store/store'
-import { useClearFilesArray, useFilesList, useUpdateOpenMenus } from '../../../../common/hooks/hooks'
-import { checkForDuplicatesOnlyInCurrentFolder, curFolderInfo, duplicateFilesArr } from '../../../../../redux/selectors'
 import { setCheckForDuplicatesOnlyInCurrentFolder } from '../../../../../redux/reducers/uploadSlice/uploadSlice'
+import { checkForDuplicatesOnlyInCurrentFolder, curFolderInfo, duplicateFilesArr } from '../../../../../redux/selectors'
+import { useAppDispatch } from '../../../../../redux/store/store'
+import { MainMenuKeys } from '../../../../../redux/types'
+import { useClearFilesArray, useFilesList, useUpdateOpenMenus } from '../../../../common/hooks/hooks'
 
 export const ButtonsMenu = () => {
   const dispatch = useAppDispatch()
@@ -40,7 +39,7 @@ export const ButtonsMenu = () => {
         <Button disabled={!filesArr.length} type="primary" onClick={clearFilesArr} danger>
           Delete all files
         </Button>
-        <Tooltip title={Boolean(duplicates.length) ? 'Please remove all duplicates before uploading' : ''}>
+        <Tooltip title={duplicates.length ? 'Please remove all duplicates before uploading' : ''}>
           <Button disabled={disableUploadButton} type="primary" onClick={handleUploadClick}>
             Upload files
           </Button>

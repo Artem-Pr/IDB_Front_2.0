@@ -1,6 +1,9 @@
-import { MouseEvent, useCallback, useMemo, useState } from 'react'
+import {
+  MouseEvent, useCallback, useMemo, useState,
+} from 'react'
 
 import type { ExifFilesList } from '../../../../../redux/types'
+
 import { getExifListJSX } from './helpers'
 
 interface UseGetFullExifList {
@@ -14,7 +17,7 @@ export const useGetFullExifList = ({ fullExifFilesList, updateFiles }: UseGetFul
   const [isJSONMode, setIsJSONMode] = useState(false)
   const exif = useMemo(
     () => getExifListJSX(fullExifFilesList, currentTempPath, isJSONMode),
-    [fullExifFilesList, currentTempPath, isJSONMode]
+    [fullExifFilesList, currentTempPath, isJSONMode],
   )
 
   const getExif = useCallback(
@@ -24,7 +27,7 @@ export const useGetFullExifList = ({ fullExifFilesList, updateFiles }: UseGetFul
       setCurrentTempPath(tempPath)
       setShowModal(true)
     },
-    [fullExifFilesList, updateFiles]
+    [fullExifFilesList, updateFiles],
   )
 
   const handleShowModalClose = useCallback(() => {

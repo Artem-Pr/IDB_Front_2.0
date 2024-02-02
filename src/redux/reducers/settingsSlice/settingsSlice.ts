@@ -1,12 +1,7 @@
-/* eslint functional/immutable-data: 0 */
 import { createSlice, current } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
-import type { AppThunk } from '../store/store'
-import { mainApi } from '../../api/api'
-import { errorMessage, successMessage } from '../../app/common/notifications'
-
-interface State {
+export interface State {
   globalLoader: boolean
   isFullSizePreview: boolean
   savePreview: boolean
@@ -66,25 +61,4 @@ export const {
   deleteUnusedKeywordFromState,
 } = settingsSlice.actions
 
-export default settingsSlice.reducer
-
-export const fetchUnusedKeywordsList = (): AppThunk => async dispatch => {
-  mainApi
-    .getUnusedKeywordsList()
-    .then(({ data }) => {
-      dispatch(setUnusedKeywords(data))
-    })
-    .catch(error => errorMessage(error, 'Error when getting unused keywords list: '))
-}
-
-export const deleteUnusedKeyword =
-  (keyword: string): AppThunk =>
-  dispatch => {
-    mainApi
-      .removeKeyword(keyword)
-      .then(() => {
-        dispatch(deleteUnusedKeywordFromState(keyword))
-        successMessage('The unused keyword has been deleted')
-      })
-      .catch(error => errorMessage(error, 'Error when removing unused keyword: '))
-  }
+export const settingsSliceReducer = settingsSlice.reducer

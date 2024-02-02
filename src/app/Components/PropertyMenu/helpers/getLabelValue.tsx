@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+
 import { Rate, Tag, Input } from 'antd'
 
 import { formatSize } from '../../../common/utils'
@@ -13,11 +14,13 @@ export const getLabelValue = (fieldName: keyof FieldsLabels, fieldsObj: Partial<
     case 'size':
       return formatSize(fieldsObj.size || 0)
     case 'rating':
-      return typeof fieldsObj[fieldName] === 'string' ? (
-        '...'
-      ) : (
-        <Rate defaultValue={(fieldsObj[fieldName] as number) || undefined} disabled />
-      )
+      return typeof fieldsObj[fieldName] === 'string'
+        ? (
+          '...'
+        )
+        : (
+          <Rate defaultValue={(fieldsObj[fieldName] as number) || undefined} disabled />
+        )
     case 'description':
       return <TextArea style={{ resize: 'vertical' }} value={fieldsObj[fieldName]} disabled />
     default:

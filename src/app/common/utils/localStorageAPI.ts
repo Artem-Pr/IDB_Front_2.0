@@ -1,12 +1,11 @@
-import { GalleryPagination, GallerySortingItem, MainMenuKeys } from '../../../redux/types'
-import { SearchMenu } from '../../../redux/reducers/mainPageSlice/types'
-import { initialState as mainPageInitialState } from '../../../redux/reducers/mainPageSlice/mainPageState'
-import { initialState as settingsInitialState } from '../../../redux/reducers/settingsSlice-reducer'
 import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../../redux/reducers/mainPageSlice/helpers'
+import { initialState as mainPageInitialState } from '../../../redux/reducers/mainPageSlice/mainPageState'
+import { SearchMenu } from '../../../redux/reducers/mainPageSlice/types'
+import { initialState as settingsInitialState } from '../../../redux/reducers/settingsSlice/settingsSlice'
 import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../../redux/reducers/uploadSlice/helpers'
+import { GalleryPagination, GallerySortingItem, MainMenuKeys } from '../../../redux/types'
 
 const safetyJSONParse = <T>(str: string | null) => {
-  // eslint-disable-next-line functional/no-try-statement
   try {
     return str ? (JSON.parse(str) as T) : null
   } catch (e) {

@@ -3,7 +3,6 @@ import { errorMessage, successMessage } from '../../notifications'
 export const copyToClipboardFallback = async (data: string) => {
   const copyToClipboardOldApproach = () => {
     const input = document.createElement('textarea')
-    // eslint-disable-next-line functional/immutable-data
     input.value = data
 
     document.body.appendChild(input)
