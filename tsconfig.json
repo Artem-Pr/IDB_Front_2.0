@@ -12,7 +12,9 @@
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
     "outDir": "./build",                      /* Redirect output structure to the directory. */
     //"rootDir": "./",                        /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    "composite": true,                       /* Enable project compilation */
+    
+    // RETURN THIS LINE IF YOU HAVE PROBLEMS WITH THE BUILD
+    // "composite": true,                        /* Enable project compilation */
     "removeComments": true,                   /* Do not emit comments to output. */
     // "noEmit": true,                        /* Do not emit outputs. */
     // "importHelpers": true,                 /* Import emit helpers from 'tslib'. */
@@ -47,15 +49,12 @@
     "preserveConstEnums": true,               /* Do not erase const enum declarations in generated code. */
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    // "plugins": [
-    //   {
-    //     "name": "typescript-plugin-css-modules",
-    //     "options": {
-    //       "customMatcher": "\\.module\\.scss$"
-    //     }
-    //   }
-    // ]
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
+  // "files": [
+  //   // ... other files
+  //   "src/app/Components/Gallery/components/GalleryMediaItem/GalleryMediaItem.module.scss"
+  // ],
   "include": [
     "src/**/*",
     "src/**/*.json",

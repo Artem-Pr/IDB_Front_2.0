@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { DeleteConfirmationType } from '../../redux/types'
+import type { DeleteConfirmationType } from '../../redux/types'
 
 export interface Confirmation {
   onOk: () => void

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Make sure to give it execute permission by running "chmod +x applyExifToMp4.sh" before executing the script.
+
 # Initialize counters for processed files and errors
 processed_files=0
 error_count=0

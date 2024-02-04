@@ -61,6 +61,9 @@ const envKeys = {
     ['process.env.BACKEND_WEB_SOCKET_URL']: JSON.stringify(backendWebSocketPath),
 }
 
+console.log('env:', env);
+console.log('env front keys:', envKeys);
+
 module.exports = {
     config,
     MODES,
