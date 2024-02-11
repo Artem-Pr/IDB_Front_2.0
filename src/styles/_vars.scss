@@ -14,9 +14,23 @@ $tileExtensionBackground: rgba(64, 64, 64, 25%);
 $tileVideoColor: red;
 
 :root {
+  --primary: #1890ff;
+  --main-title: white;
+  --dark-border: black;
+  --main-background: #e6e6e6;
+
   --success: limegreen;
   --success-btn: limegreen;
   --success-btn-hover: lightgreen;
+
+  --gallery-item-menu: black;
+  --gallery-item-menu-text: white;
+
+  --size-divider: #cacaca;
+
+  --tile-extension-color: #ffff00;
+  --tile-extension-background: rgba(64, 64, 64, 25%);
+  --tile-video-color: red;
 
   --sortable-item-background: white;
   --sortable-item-shadow: 0 0 0 1px rgba(63, 63, 68, 0.05), 0 1px 3px 0 rgba(34, 33, 81, 0.15);

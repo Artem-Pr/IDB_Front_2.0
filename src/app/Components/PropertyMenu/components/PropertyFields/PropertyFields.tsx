@@ -18,7 +18,7 @@ export const PropertyFields = ({ filesArr, selectedList }: Props) => {
 
   return (
     <>
-      {Object.typedKeys(fieldLabels)
+      {Object.keys(fieldLabels)
         .map(fieldName => {
           const labelValue = fieldsObjElements && getLabelValue(fieldName, fieldsObjElements)
 

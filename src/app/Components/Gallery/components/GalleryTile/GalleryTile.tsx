@@ -4,7 +4,7 @@ import React, {
 } from 'react'
 import { useSelector } from 'react-redux'
 
-import { FullscreenOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, FullscreenOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import cn from 'classnames'
 
@@ -12,6 +12,7 @@ import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeho
 import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from '../../../../../redux/selectors'
 import type { ExistedFile } from '../../../../../redux/types'
 import { MimeTypes } from '../../../../../redux/types/MimeTypes'
+import { GetCoordinates } from '../../hooks/useGefFullExifList/useGetFullExifList'
 import type { RawPreview } from '../../type'
 
 import styles from './GalleryTile.module.scss'
@@ -23,6 +24,7 @@ interface Props {
   existedFilesArr: ExistedFile[] | undefined
   fitContain: boolean
   fullSizeJpgPath: string
+  getGPSCoordinates: GetCoordinates
   getExif: (tempPath: string) => (e: MouseEvent) => void
   index: number
   isEditMode: boolean
@@ -33,6 +35,7 @@ interface Props {
   onImageClick: (i: number, preview?: RawPreview) => void
   onImageOnLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => void
   onImgRefAdd: (ref: HTMLDivElement | null, idx: number) => void
+  onLocationClick: (tempPath: string) => void
   onMouseEnter: (index: number | null) => void
   originalPath: string | undefined
   preview: string
@@ -47,6 +50,7 @@ export const GalleryTile = memo(
     existedFilesArr,
     fitContain,
     fullSizeJpgPath,
+    getGPSCoordinates,
     getExif,
     index,
     isEditMode,
@@ -57,6 +61,7 @@ export const GalleryTile = memo(
     onImageClick,
     onImageOnLoad,
     onImgRefAdd,
+    onLocationClick,
     onMouseEnter,
     originalPath,
     preview,
@@ -96,6 +101,11 @@ export const GalleryTile = memo(
     const handleFullScreenClick = (event: MouseEvent) => {
       event.stopPropagation()
       onFullScreenClick(index)
+    }
+
+    const handleLocationClick = (event: MouseEvent) => {
+      event.stopPropagation()
+      onLocationClick(tempPath)
     }
 
     const handleImageClick = (event: MouseEvent) => {
@@ -138,6 +148,12 @@ export const GalleryTile = memo(
             <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
               Exif
             </h4>
+            {Boolean(getGPSCoordinates(tempPath)) && (
+              <EnvironmentOutlined
+                className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center mb-auto')}
+                onClick={handleLocationClick}
+              />
+            )}
             {isMainPage && (
               <FullscreenOutlined
                 className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center')}

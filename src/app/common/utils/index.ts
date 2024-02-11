@@ -1,5 +1,6 @@
 export {
   addKeywordsToAllFiles,
+  capitalize,
   convertDownLoadingRawObj,
   convertDownloadingRawObjectArr,
   copyByJSON,

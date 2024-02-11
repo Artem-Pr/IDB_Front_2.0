@@ -1,3 +1,5 @@
+import type { FullExifObj } from 'src/redux/types'
+
 import { MimeTypes } from '../../types/MimeTypes'
 
 export interface SearchMenu {
@@ -10,4 +12,9 @@ export interface SearchMenu {
   dateRange: [string, string] | null
   anyDescription: boolean
   description: string
+}
+
+export interface FullExifPayload {
+  filePath: string
+  fullExifObj: FullExifObj
 }

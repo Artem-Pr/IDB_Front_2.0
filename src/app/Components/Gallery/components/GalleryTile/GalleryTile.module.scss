@@ -1,5 +1,3 @@
-@import "src/styles/vars";
-
 .item {
   border-radius: 5px;
   overflow: hidden;
@@ -19,7 +17,7 @@
   }
 
   &:global.active {
-    box-shadow: 0 0 0 5px $primary;
+    box-shadow: 0 0 0 5px var(--primary);
   }
 
   &:focus-visible {
@@ -33,8 +31,8 @@
   padding-top: 5px;
   padding-bottom: 5px;
   opacity: 0.6;
-  background: $galleryItemMenu;
-  color: $galleryItemMenuText;
+  background: var(--gallery-item-menu);
+  color: var(--gallery-item-menu-text);
   transition: left 0.3s ease;
   cursor: default;
 
@@ -59,7 +57,7 @@
 }
 
 .itemMenuExif {
-  color: $galleryItemMenuText;
+  color: var(--gallery-item-menu-text);
   margin: 5px 0;
   text-align: center;
 }
@@ -91,8 +89,8 @@
 }
 
 .extension {
-  color: $tileExtensionColor;
-  background: $tileExtensionBackground;
+  color: var(--tile-extension-color);
+  background: var(--tile-extension-background);
   top: 0;
   right: 0;
   font-weight: bold;
@@ -101,5 +99,5 @@
 }
 
 .video {
-  color: $tileVideoColor
+  color: var(--tile-video-color)
 }

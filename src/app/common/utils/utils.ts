@@ -58,6 +58,8 @@ export const isVideoByExt = (fileExtension: string) => {
   const lowerCaseExt = fileExtension.toLowerCase()
   return typeIsMimeTypesKey(lowerCaseExt) ? isVideo(MimeTypes[lowerCaseExt]) : false
 }
+export const capitalize = (str: string): string => str.charAt(0)
+  .toUpperCase() + str.slice(1)
 
 const getNameObj = (fullName: string) => {
   const separatedNameArr = fullName.split('.')
@@ -81,11 +83,11 @@ const tryToRestoreKeywords = (keywords: string | null): string[] | null => {
   return keywordsArray?.length ? keywordsArray : null
 }
 // TODO: add tests
-const getPrepareKeywordsFromRawExif = (exifObj: RawFullExifObj) => {
+const getPrepareKeywordsFromRawExif = (exifObj: RawFullExifObj | undefined) => {
   const getPreparedKeywords = (keywords: RawFullExifObj['Keywords']) => (
     Array.isArray(keywords) ? keywords : tryToRestoreKeywords(keywords)
   )
-  return Array.isArray(exifObj.Subject) ? exifObj.Subject : getPreparedKeywords(exifObj.Keywords)
+  return Array.isArray(exifObj?.Subject) ? exifObj.Subject : getPreparedKeywords(exifObj?.Keywords || null)
 }
 
 export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: string): UpdatingFieldsWithPath => {

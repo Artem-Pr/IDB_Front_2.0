@@ -15,8 +15,6 @@ import 'react-image-gallery/styles/scss/image-gallery.scss'
 
 dayjs.extend(duration)
 
-Object.typedKeys = Object.keys
-
 const container = document.querySelector('#root')
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!)

@@ -66,7 +66,13 @@ const Gallery = ({
   const isTemplateMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
   const isPropertiesMenu = useMemo(() => openMenus.includes(MainMenuKeys.PROPERTIES), [openMenus])
   const {
-    getExif, showModal, handleShowModalClose, exif, setIsJSONMode, isJSONMode,
+    exif,
+    getExif,
+    getGPSCoordinates,
+    handleShowModalClose,
+    isJSONMode,
+    setIsJSONMode,
+    showModal,
   } = useGetFullExifList({
     fullExifFilesList,
     updateFiles,
@@ -152,6 +158,14 @@ const Gallery = ({
     setIsJSONMode(checked)
   }
 
+  const handleLocationClick = (tempPath: string) => {
+    const coordinates = getGPSCoordinates(tempPath)
+    if (coordinates) {
+      const { GPSLatitude, GPSLongitude } = coordinates
+      window.open(`https://www.google.com/maps/search/${GPSLatitude}+${GPSLongitude}/@${GPSLatitude},${GPSLongitude},858m/data=!3m1!1e3!5m1!1e4?entry=ttu`, '_blank')
+    }
+  }
+
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
       {groupedByDate
@@ -179,6 +193,7 @@ const Gallery = ({
                         fitContain={fitContain}
                         fullSizeJpgPath={fullSizeJpgPath}
                         getExif={getExif}
+                        getGPSCoordinates={getGPSCoordinates}
                         index={index}
                         isEditMode={isEditMode}
                         isMainPage={isMainPage}
@@ -189,6 +204,7 @@ const Gallery = ({
                         onImageClick={handleImageClick}
                         onImageOnLoad={handleImageOnLoad}
                         onImgRefAdd={handleImgRefAdd}
+                        onLocationClick={handleLocationClick}
                         onMouseEnter={setHoveredIndex}
                         originalPath={originalPath}
                         preview={preview}
@@ -218,6 +234,7 @@ const Gallery = ({
                   fitContain={fitContain}
                   fullSizeJpgPath={fullSizeJpgPath}
                   getExif={getExif}
+                  getGPSCoordinates={getGPSCoordinates}
                   index={idx}
                   isEditMode={isEditMode}
                   isMainPage={isMainPage}
@@ -228,6 +245,7 @@ const Gallery = ({
                   onImageClick={handleImageClick}
                   onImageOnLoad={handleImageOnLoad}
                   onImgRefAdd={handleImgRefAdd}
+                  onLocationClick={handleLocationClick}
                   onMouseEnter={setHoveredIndex}
                   originalPath={originalPath}
                   preview={preview}

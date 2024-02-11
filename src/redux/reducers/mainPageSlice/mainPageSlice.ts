@@ -1,18 +1,31 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 import type {
-  DownloadingObject, DownloadingRawObject, GallerySortingItem, Preview,
+  DownloadingObject,
+  DownloadingRawObject,
+  ExifFilesList,
+  GalleryPagination,
+  GallerySortingItem,
+  Preview,
 } from '../../types'
-import { GalleryPagination, MainMenuKeys } from '../../types'
+import { MainMenuKeys } from '../../types'
 import { MimeTypes } from '../../types/MimeTypes'
 
 import { defaultGallerySortingList } from './helpers'
 import { initialState } from './mainPageState'
+import type { FullExifPayload } from './types'
 
 const mainPageSlice = createSlice({
   name: 'mainPage',
   initialState,
   reducers: {
+    addFullExifFile(state, action: PayloadAction<FullExifPayload>) {
+      const { filePath, fullExifObj } = action.payload
+      state.fullExifFilesList[filePath] = fullExifObj
+    },
+    updateFullExifFile(state, action: PayloadAction<ExifFilesList>) {
+      state.fullExifFilesList = { ...state.fullExifFilesList, ...action.payload }
+    },
     resetSort(state) {
       state.sort.gallerySortingList = defaultGallerySortingList
     },
@@ -87,8 +100,9 @@ const mainPageSlice = createSlice({
       }
     },
     clearDownloadingState(state) {
-      state.downloadingFiles = []
-      state.dSelectedList = []
+      state.downloadingFiles = initialState.downloadingFiles
+      state.dSelectedList = initialState.dSelectedList
+      state.fullExifFilesList = initialState.fullExifFilesList
     },
     setDLoading(state, action: PayloadAction<boolean>) {
       state.isExifLoading = action.payload
@@ -121,6 +135,7 @@ const mainPageSlice = createSlice({
 })
 
 export const {
+  addFullExifFile,
   addToDSelectedList,
   cleanPreview,
   clearDSelectedList,
@@ -153,6 +168,7 @@ export const {
   startVideoPreview,
   stopVideoPreview,
   updateDOpenMenus,
+  updateFullExifFile,
 } = mainPageSlice.actions
 
 export const mainPageReducer = mainPageSlice.reducer

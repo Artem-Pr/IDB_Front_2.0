@@ -35,6 +35,23 @@ export const pathsConfigRebuildProgress = (state: RootState) => state.testsReduc
 export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
 
+export const currentFullExifFilesList = createSelector(
+  [
+    main,
+    upload,
+    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+  ],
+  (
+    { fullExifFilesList: mainFullExifFilesList },
+    { fullExifFilesList: uploadFullExifFilesList },
+    { isMainPage, isUploadingPage },
+  ) => {
+    if (isMainPage) return mainFullExifFilesList
+    if (isUploadingPage) return uploadFullExifFilesList
+    return {}
+  },
+)
+
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArrSelector => (
   pathsArrSelector
     .map(path => ({ value: path }))
@@ -147,9 +164,8 @@ export const uploadPageGalleryPropsSelector = createSelector(
 
 export const dPageGalleryPropsSelector = createSelector(
   main,
-  upload,
-  (mainPageState, { fullExifFilesList }) => ({
-    fullExifFilesList,
+  mainPageState => ({
+    fullExifFilesList: mainPageState.fullExifFilesList,
     imageArr: mainPageState.downloadingFiles,
     openMenus: mainPageState.dOpenMenus,
     selectedList: mainPageState.dSelectedList,

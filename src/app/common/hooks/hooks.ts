@@ -1,10 +1,12 @@
 import { useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
 import {
   compose, curry, isEmpty, omit,
 } from 'ramda'
+
+import { fetchFullExif as fetchMainPageFullExif } from 'src/redux/reducers/mainPageSlice/thunks'
 
 import {
   clearDownloadingState,
@@ -21,22 +23,22 @@ import {
   updateOpenMenus,
   updateUploadingFilesArr,
 } from '../../../redux/reducers/uploadSlice'
-import { fetchFullExif } from '../../../redux/reducers/uploadSlice/thunks'
+import { fetchFullExif as fetchUploadPageFullExif } from '../../../redux/reducers/uploadSlice/thunks'
 import { fetchDuplicates } from '../../../redux/reducers/uploadSlice/thunks/fetchDuplicates'
 import { updateBlobName } from '../../../redux/reducers/uploadSlice/uploadSlice'
 import {
   allSameKeywords,
   currentFilesList,
+  currentFullExifFilesList,
   currentSelectedList,
   isGlobalExifLoading,
   openMenusSelector,
   selectedDateList,
   selectedFilesList,
   uniqKeywords,
-  upload,
 } from '../../../redux/selectors'
 import { useAppDispatch } from '../../../redux/store/store'
-import type { RootState } from '../../../redux/store/types'
+import type { AppThunk, RootState } from '../../../redux/store/types'
 import { PagePaths } from '../../../redux/types'
 import type {
   BlobUpdateNamePayload, DownloadingObject, MainMenuKeys, UploadingObject,
@@ -194,34 +196,56 @@ export const useClearFilesArray = () => {
 }
 
 export const useUpdateFields = (filesArr: Array<UploadingObject | DownloadingObject>) => {
-  const dispatch = useDispatch<any>()
-  const { fullExifFilesList } = useSelector(upload)
+  const dispatch = useAppDispatch()
+  const currentPage = useCurrentPage()
+  const fullExifFilesList = useSelector((state: RootState) => currentFullExifFilesList(state, currentPage))
 
   const isExifExist = useCallback((tempPath: string): boolean => !!fullExifFilesList[tempPath], [fullExifFilesList])
 
   const updateOne = useCallback(
-    (tempPath: string): Promise<boolean> | false => !isExifExist(tempPath) && dispatch(fetchFullExif([tempPath])),
-    [dispatch, isExifExist],
+    (tempPath: string): Promise<void> | void | false => {
+      if (!isExifExist(tempPath) && currentPage.isMainPage) {
+        return dispatch(fetchMainPageFullExif([tempPath]))
+      }
+      if (!isExifExist(tempPath) && currentPage.isUploadingPage) {
+        return dispatch(fetchUploadPageFullExif([tempPath]))
+      }
+      return false
+    },
+    [currentPage.isMainPage, currentPage.isUploadingPage, dispatch, isExifExist],
   )
 
-  const updateAll = useCallback((): Promise<boolean> | false => {
+  const updateAll = useCallback((): Promise<void> | void | false => {
     const tempPathArr = filesArr.map(({ tempPath }) => tempPath)
       .filter(tempPath => !isExifExist(tempPath))
+
+    let fetchFullExif: ((tempPathArr: string[]) => AppThunk) | false = false
+
+    if (currentPage.isMainPage) {
+      fetchFullExif = fetchMainPageFullExif
+    }
+
+    if (currentPage.isUploadingPage) {
+      fetchFullExif = fetchUploadPageFullExif
+    }
+
+    if (!fetchFullExif) return false
+
     return !!tempPathArr.length && dispatch(fetchFullExif(tempPathArr))
-  }, [dispatch, filesArr, isExifExist])
+  }, [currentPage.isMainPage, currentPage.isUploadingPage, dispatch, filesArr, isExifExist])
 
   const load = useCallback(
-    (response: Promise<boolean>): Promise<boolean> => {
+    (response: Promise<void>): void => {
       dispatch(setIsExifLoading(true))
-      return response.then(() => dispatch(setIsExifLoading(false)))
+      response.then(() => dispatch(setIsExifLoading(false)))
     },
     [dispatch],
   )
 
   const updateUploadingFiles = useCallback(
-    (tempPath: string, all = false): Promise<boolean> => {
+    (tempPath: string, all = false): void => {
       const response = all ? updateAll() : updateOne(tempPath)
-      return response ? load(response) : Promise.resolve(true)
+      response ? load(response) : Promise.resolve(true)
     },
     [load, updateAll, updateOne],
   )

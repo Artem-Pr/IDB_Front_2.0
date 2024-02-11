@@ -10,7 +10,7 @@ export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentTempPath
   const rawExifFieldNames = Object.keys(rawExif || {})
 
   const getExifItemValueJSX = (fieldName: string): ReactNode => {
-    const exifItemValue = rawExif[fieldName]
+    const exifItemValue = rawExif && rawExif[fieldName]
     return prepareExifDataRecursive(exifItemValue)
   }
 

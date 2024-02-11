@@ -81,7 +81,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
             min={imagePreviewSlideLimits.min}
             max={imagePreviewSlideLimits.max}
             onChange={onSliderMove}
-            onAfterChange={finishPreviewResize}
+            onChangeComplete={finishPreviewResize}
           />
         )}
       </Col>

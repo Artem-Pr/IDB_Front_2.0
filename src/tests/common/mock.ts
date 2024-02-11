@@ -153,6 +153,8 @@ export const uploadingFilesMock: UploadingObject[] = [
 export const fullExifObjArr: FullExifObj[] = [
   {
     Megapixels: 8,
+    GPSLatitude: 0,
+    GPSLongitude: 0,
     DateTimeOriginal: {
       year: 2008,
       month: 1,
@@ -206,6 +208,8 @@ export const fullExifObjArr: FullExifObj[] = [
   },
   {
     Megapixels: 8,
+    GPSLatitude: 0,
+    GPSLongitude: 0,
     DateTimeOriginal: {
       year: 2008,
       month: 1,
@@ -259,6 +263,8 @@ export const fullExifObjArr: FullExifObj[] = [
   },
   {
     Megapixels: 8,
+    GPSLatitude: 0,
+    GPSLongitude: 0,
     DateTimeOriginal: {
       year: 2008,
       month: 1,

@@ -191,7 +191,7 @@ export const EditMenu = ({ isEditMany }: Props) => {
         </div>
 
         <div className="d-flex">
-          <Form.Item className={styles.df} name="isName" valuePropName="checked">
+          <Form.Item className={styles.checkbox} name="isName" valuePropName="checked">
             <Checkbox>Name:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="name">
@@ -231,7 +231,7 @@ export const EditMenu = ({ isEditMany }: Props) => {
             <Checkbox>Keywords:</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name="keywords">
-            <Select className={styles.keywords} mode="tags" placeholder="Edit keywords" options={keywordsOptions} />
+            <Select mode="tags" placeholder="Edit keywords" options={keywordsOptions} />
           </Form.Item>
         </div>
 

@@ -7,6 +7,6 @@ export const applySorting = (): AppThunk => (dispatch, getState) => {
   const { gallerySortingList } = uploadPageSort(getState())
   const filesArr = uploadingFiles(getState())
 
-  const sortedFiles = [...filesArr].sort(customSortingComparator(gallerySortingList))
+  const sortedFiles = filesArr.toSorted(customSortingComparator(gallerySortingList))
   dispatch(updateUploadingFilesArr(sortedFiles))
 }

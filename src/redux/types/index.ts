@@ -3,6 +3,8 @@ import type { Key } from 'react'
 import { MimeTypes } from './MimeTypes'
 
 export type { Duration } from 'dayjs/plugin/duration'
+
+export type Defined<T> = Exclude<T, undefined>
 export type Keywords = string[] | null
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType =
@@ -85,6 +87,8 @@ export interface ExifDateTime {
   zoneName: string | undefined
 }
 
+export type GPSCoordinates = Pick<FullExifBasic, 'GPSLatitude' | 'GPSLongitude'>
+
 export interface FullExifBasic {
   Rating: number
   Description: string
@@ -94,10 +98,12 @@ export interface FullExifBasic {
   DateTimeOriginal: ExifDateTime
   CreateDate: ExifDateTime
   CreationDate: ExifDateTime // original date for iPhone video
+  GPSLatitude?: number
+  GPSLongitude?: number
 }
 
 export interface FullExifObj extends FullExifBasic {
-  [key: string]: string | number | Keywords | ExifDateTime
+  [key: string]: string | number | Keywords | ExifDateTime | undefined
 }
 
 export type RawDataValue = undefined | string | number | Keywords | ExifDateTime | Record<string, string | number>
@@ -106,7 +112,7 @@ export interface RawFullExifObj extends FullExifBasic {
   [key: string]: RawDataValue
 }
 
-export type ExifFilesList = Record<string, RawFullExifObj>
+export type ExifFilesList = Record<string, RawFullExifObj | undefined>
 
 type ExistedFilesFieldNames = 'filePath' | 'fullSizeJpgPath' | 'originalName' | 'originalPath' | 'preview'
 

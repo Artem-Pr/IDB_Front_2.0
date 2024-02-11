@@ -1,6 +1,7 @@
 import type {
   DownloadingObject,
   DownloadingRawObject,
+  ExifFilesList,
   GalleryPagination,
   MainMenuKeys,
   Preview,
@@ -14,6 +15,7 @@ import type { SearchMenu } from './types'
 export interface State {
   rawFiles: DownloadingRawObject[]
   downloadingFiles: DownloadingObject[]
+  fullExifFilesList: ExifFilesList
   dSelectedList: number[]
   dOpenMenus: MainMenuKeys[]
   searchMenu: SearchMenu
@@ -29,6 +31,7 @@ export interface State {
 export const initialState: State = {
   rawFiles: [],
   downloadingFiles: [],
+  fullExifFilesList: {},
   dSelectedList: [],
   dOpenMenus: [],
   searchMenu: {
