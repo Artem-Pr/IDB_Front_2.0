@@ -1,7 +1,7 @@
 # Use this if app is not builded
 
 # Stage 1
-FROM node:17-alpine as builder
+FROM node:20-alpine as builder
 
 ARG HOST_APP_PORT
 ARG LOCAL_BACKEND_PORT
