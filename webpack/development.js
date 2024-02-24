@@ -1,6 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const basicPlugins = require('./base/basicPlugins.js');
+const {getBasicPlugins} = require('./base/basicPlugins.js');
 const {
     MODES,
     config,
@@ -29,7 +29,7 @@ module.exports = {
       },
     },
     plugins: [
-        ...basicPlugins,
+        ...getBasicPlugins(MODES.DEV),
         new HtmlWebpackPlugin({
           template: paths.html,
           favicon: paths.public + '/favicon.ico'

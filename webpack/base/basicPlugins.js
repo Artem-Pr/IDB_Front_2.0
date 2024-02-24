@@ -3,8 +3,9 @@ const webpack = require('webpack');
 
 const {envKeys} = require('../variables.js');
 
-
-module.exports = [
+const getBasicPlugins = (mode) => [
   new MiniCssExtractPlugin(),
-  new webpack.DefinePlugin(envKeys),
-];
+  new webpack.DefinePlugin(envKeys[mode]),
+]
+
+module.exports = {getBasicPlugins};

@@ -1,0 +1,55 @@
+version: "3.9"
+# This file should be placed in a directory with 2 folders: IDB_Front_2.0 and ImageDataBaseBackend (should be outside of the frontend folder)
+
+services:
+  idb-front:
+    build: 
+      context: IDB_Front_2.0/
+      dockerfile: Dockerfile
+      args:
+        HOST_APP_PORT: ${HOST_APP_PORT}
+        LOCAL_BACKEND_PORT: ${LOCAL_BACKEND_PORT}
+        LOCAL_BACKEND_WEB_SOCKET_PORT: ${LOCAL_BACKEND_WEB_SOCKET_PORT}
+    container_name: idb-front-2.0
+    ports:
+      - "${HOST_APP_PORT}:3000"
+    restart: unless-stopped
+  image_db_backend:
+    build: ImageDataBaseBackend/
+    container_name: IDB_backend
+    ports:
+      - "${LOCAL_BACKEND_PORT_EXTERNAL}:${LOCAL_BACKEND_PORT}"
+      - "${LOCAL_BACKEND_WEB_SOCKET_PORT_EXTERNAL}:${LOCAL_BACKEND_WEB_SOCKET_PORT}"
+    volumes:
+      # - /Volumes/Transcend V/Yandex.Disk.localized/IDBase/filesVolume:/app/dataBase
+      # - /Volumes/Seagate 2TB/Yandex.Disk.localized/IDBase/filesVolume:/app/dataBase
+      # - /Volumes/Seagate 2TB/Yandex.Disk.localized/IDBase/previews:/app/previews
+
+      # - /Users/artempriadkin/Documents/Yandex.Disk.localized/IDBase/filesVolume:/app/dataBase
+      # - /Users/artempriadkin/Documents/Yandex.Disk.localized/IDBase/previews:/app/previews
+
+      # - /Users/artempriadkin/Documents/IDBase/filesVolume/main/2023:/app/dataBase/main/2023
+      # - /Volumes/Seagate 2TB/IDBase_2023.11.04/IDBase/filesVolume/main/2022:/app/dataBase/main/2022
+      # - /Volumes/Seagate 2TB/IDBase_2023.11.04/IDBase/filesVolume/main/2021:/app/dataBase/main/2021
+      # - /Volumes/Seagate 2TB/IDBase_2023.11.04/IDBase/filesVolume/main/2020:/app/dataBase/main/2020
+      # - /Users/artempriadkin/Documents/IDBase/filesVolume/main/2019:/app/dataBase/main/2019
+      # - /Volumes/Seagate 2TB/IDBase_2023.11.04/IDBase/filesVolume/games:/app/dataBase/games
+
+      # - /Users/artempriadkin/Documents/IDBase/filesVolume/main:/app/dataBase/main
+      # - /Users/artempriadkin/Documents/IDBase/filesVolume/games:/app/dataBase/games
+      - /Users/artempriadkin/Documents/IDBase/filesVolume:/app/dataBase
+      - /Users/artempriadkin/Documents/IDBase/previews:/app/previews
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:4.4
+    container_name: IDB_mongodb
+    user: nobody
+    volumes:
+      # - /Volumes/Seagate 2TB/Yandex.Disk.localized/IDBase/mongodb:/data/db
+      # - /Volumes/Transcend V/Yandex.Disk.localized/IDBase/mongodb:/data/db
+      # - /Users/artempriadkin/Documents/Yandex.Disk.localized/IDBase/mongodb:/data/db
+      - /Users/artempriadkin/Documents/IDBase/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    restart: unless-stopped

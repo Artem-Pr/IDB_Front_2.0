@@ -22,6 +22,7 @@ const paths = {
     build: resolveApp('build'),
     entry: resolveApp('src/index.tsx'),
     env: resolveApp('.env'),
+    env_build: resolveApp('../.env'),
     html: resolveApp('public/index.html'),
     nodeModules: resolveApp('node_modules'),
     public: resolveApp('public'),
@@ -30,17 +31,27 @@ const paths = {
 };
 
 const env = dotenv.config({path: paths.env}).parsed;
+const env_build = dotenv.config({path: paths.env_build}).parsed || env;
 const getBaseUrl = (port, host) => `${PROTOCOLS.HTTP}://${host}:${port}/`;
 
 const HOST_APP_PORT = env.HOST_APP_PORT;
+const HOST_APP_PORT_BUILD = env_build.HOST_APP_PORT
 const LOCAL_BACKEND_WEB_SOCKET_PORT = env.LOCAL_BACKEND_WEB_SOCKET_PORT;
+const LOCAL_BACKEND_WEB_SOCKET_PORT_BUILD = env_build.LOCAL_BACKEND_WEB_SOCKET_PORT;
 const LOCAL_BACKEND_PORT = env.LOCAL_BACKEND_PORT;
+const LOCAL_BACKEND_PORT_BUILD = env_build.LOCAL_BACKEND_PORT;
 const backendPath = `${PROTOCOLS.HTTP}://${DEFAULT_HOST}:${LOCAL_BACKEND_PORT}`
+const backendPathBuild = `${PROTOCOLS.HTTP}://${DEFAULT_HOST}:${LOCAL_BACKEND_PORT_BUILD}`
 const backendWebSocketPath = `${PROTOCOLS.WS}://${DEFAULT_HOST}:${LOCAL_BACKEND_WEB_SOCKET_PORT}`
+const backendWebSocketPathBuild = `${PROTOCOLS.WS}://${DEFAULT_HOST}:${LOCAL_BACKEND_WEB_SOCKET_PORT_BUILD}`
 
 const configBase = {
     HOST_APP: {
         PORT: HOST_APP_PORT,
+        HOST: DEFAULT_HOST,
+    },
+    HOST_APP_BUILD: {
+        PORT: HOST_APP_PORT_BUILD,
         HOST: DEFAULT_HOST,
     },
 };
@@ -57,16 +68,25 @@ const config = Object.keys(configBase).reduce((prevMF, nextMFName) => {
 }, {});
 
 const envKeys = {
-    ['process.env.BACKEND_URL']: JSON.stringify(backendPath),
-    ['process.env.BACKEND_WEB_SOCKET_URL']: JSON.stringify(backendWebSocketPath),
+    [MODES.DEV]: {
+        ['process.env.BACKEND_URL']: JSON.stringify(backendPath),
+        ['process.env.BACKEND_WEB_SOCKET_URL']: JSON.stringify(backendWebSocketPath),
+    },
+    [MODES.PROD]: {
+        ['process.env.BACKEND_URL']: JSON.stringify(backendPathBuild),
+        ['process.env.BACKEND_WEB_SOCKET_URL']: JSON.stringify(backendWebSocketPathBuild),
+    }
 }
 
-console.log('env:', env);
-console.log('env front keys:', envKeys);
+const envPorts = {
+    [MODES.DEV]: env,
+    [MODES.PROD]: env_build
+}
 
 module.exports = {
-    config,
     MODES,
+    config,
     envKeys,
+    envPorts,
     paths,
 };

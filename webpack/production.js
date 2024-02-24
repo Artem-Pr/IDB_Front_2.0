@@ -2,7 +2,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-const basicPlugins = require('./base/basicPlugins.js');
+const {getBasicPlugins} = require('./base/basicPlugins.js');
 const {
     config,
     MODES,
@@ -14,10 +14,10 @@ module.exports = {
     output: {
         filename: '[name].[contenthash].js',
         path: paths.build,
-        publicPath: config.HOST_APP.URL,
+        publicPath: config.HOST_APP_BUILD.URL, // we can use just '/'
     },
     plugins: [
-        ...basicPlugins,
+        ...getBasicPlugins(MODES.PROD),
         new HtmlWebpackPlugin({
             title: 'IDB',
             minify: true,
