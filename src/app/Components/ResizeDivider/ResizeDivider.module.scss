@@ -1,12 +1,10 @@
-@import "src/styles/_vars";
-
 .divider {
   height: 100%;
   cursor: col-resize;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: $sizeDivider;
+  background: var(--size-divider);
   user-select: none;
 
   .resizeIcon {

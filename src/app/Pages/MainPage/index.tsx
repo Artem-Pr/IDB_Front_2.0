@@ -9,12 +9,10 @@ import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { dPageGalleryPropsSelector } from '../../../redux/selectors'
 import { useAppDispatch } from '../../../redux/store/store'
 import { MainMenuKeys } from '../../../redux/types'
-import {
-  CustomAlert, Gallery, GalleryTopMenu, MainMenu,
-} from '../../Components'
-import PaginationMenu from '../../Components/PaginationMenu'
-import { ResizeDivider } from '../../Components/ResizeDivider'
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
+import {
+  CustomAlert, Gallery, GalleryTopMenu, MainMenu, ResizeDivider, PaginationMenu,
+} from '../../components'
 
 import { useGalleryProps, useMainMenuProps } from './hooks'
 

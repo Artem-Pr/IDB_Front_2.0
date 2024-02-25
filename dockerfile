@@ -7,15 +7,15 @@ ARG HOST_APP_PORT
 ARG LOCAL_BACKEND_PORT
 ARG LOCAL_BACKEND_WEB_SOCKET_PORT
 
-WORKDIR /app
-COPY package*.json .
-RUN npm install
-COPY . .
-
 # Create the .env file with multiple environment variables
 RUN echo "HOST_APP_PORT=${HOST_APP_PORT}" > .env && \
     echo "LOCAL_BACKEND_PORT=${LOCAL_BACKEND_PORT}" >> .env && \
     echo "LOCAL_BACKEND_WEB_SOCKET_PORT=${LOCAL_BACKEND_WEB_SOCKET_PORT}" >> .env
+
+WORKDIR /app
+COPY package*.json .
+RUN npm install
+COPY . .
 
 RUN npm run build-dev-back
 

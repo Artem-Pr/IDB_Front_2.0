@@ -4,11 +4,11 @@ import { Route, Switch } from 'react-router-dom'
 
 import { Layout, Spin } from 'antd'
 
-import { Header } from './app/Components'
-import MainPage from './app/Pages/MainPage'
-import { SettingsPage } from './app/Pages/SettingsPage'
-import TestDB from './app/Pages/TestDB'
-import UploadPage from './app/Pages/UploadPage'
+import { Header } from './app/components'
+import MainPage from './app/pages/MainPage'
+import { SettingsPage } from './app/pages/SettingsPage'
+import TestDB from './app/pages/TestDB'
+import UploadPage from './app/pages/UploadPage'
 import { settings } from './redux/selectors'
 
 const App = () => {

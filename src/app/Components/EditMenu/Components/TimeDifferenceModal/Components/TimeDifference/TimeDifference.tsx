@@ -3,7 +3,7 @@ import React, { memo, useEffect, useState } from 'react'
 import { InputNumber } from 'antd'
 import dayjs from 'dayjs'
 
-import { Duration } from '../../../../../../../redux/types'
+import type { Duration } from 'src/redux/types'
 
 type Durations = 'years' | 'months' | 'days' | 'hours' | 'minutes' | 'seconds'
 type TimeDiffObj = Record<Durations, number>

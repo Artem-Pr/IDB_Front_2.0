@@ -14,7 +14,7 @@ import { useAppDispatch } from '../../../../redux/store/store'
 import type {
   Checkboxes, FieldsObj, UpdatedObject, UploadingObject,
 } from '../../../../redux/types'
-import type { InitialFileObject } from '../../../Components/EditMenu'
+import type { InitialFileObject } from '../../../components/EditMenu'
 import {
   getFilesWithUpdatedKeywords,
   getRenamedObjects,

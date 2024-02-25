@@ -21,12 +21,11 @@ import {
   uploadPageGalleryPropsSelector,
 } from '../../../redux/selectors'
 import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
-import {
-  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu,
-} from '../../Components'
-import { ResizeDivider } from '../../Components/ResizeDivider'
 import { useUpdateFields, useMenuResize, useGridRefControl } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
+import {
+  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider,
+} from '../../components'
 
 const { Content } = Layout
 

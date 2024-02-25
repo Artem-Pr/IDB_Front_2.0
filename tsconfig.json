@@ -53,7 +53,7 @@
   },
   // "files": [
   //   // ... other files
-  //   "src/app/Components/Gallery/components/GalleryMediaItem/GalleryMediaItem.module.scss"
+  //   "src/app/components/Gallery/components/GalleryMediaItem/GalleryMediaItem.module.scss"
   // ],
   "include": [
     "src/**/*",
