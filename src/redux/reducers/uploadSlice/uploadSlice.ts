@@ -1,12 +1,13 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
+import type { Media } from 'src/api/models/media'
+
 import type {
   BlobDispatchPayload,
   BlobUpdateNamePayload,
   ExifFilesList,
   GallerySortingItem,
   LoadingStatus,
-  UploadingObject,
 } from '../../types'
 import { MainMenuKeys } from '../../types'
 
@@ -27,7 +28,7 @@ const uploadSlice = createSlice({
     setGroupedByDate(state, action: PayloadAction<boolean>) {
       state.sort.groupedByDate = action.payload
     },
-    updateUploadingFilesArr(state, action: PayloadAction<UploadingObject[]>) {
+    updateUploadingFilesArr(state, action: PayloadAction<Media[]>) {
       state.uploadingFiles = action.payload
     },
     addFullExifFile(state, action: PayloadAction<FullExifPayload>) {
@@ -67,9 +68,6 @@ const uploadSlice = createSlice({
       state.fullExifFilesList = initialState.fullExifFilesList
       state.checkForDuplicatesOnlyInCurrentFolder = initialState.checkForDuplicatesOnlyInCurrentFolder
       state.uploadingBlobs = initialState.uploadingBlobs
-    },
-    setIsExifLoading(state, action: PayloadAction<boolean>) {
-      state.isExifLoading = action.payload
     },
     increaseCountOfPreviewLoading(state) {
       ++state.previewLoadingCount
@@ -112,7 +110,6 @@ export const {
   setCheckForDuplicatesOnlyInCurrentFolder,
   setGallerySortingList,
   setGroupedByDate,
-  setIsExifLoading,
   setUploadingStatus,
   updateBlobName,
   updateFullExifFile,

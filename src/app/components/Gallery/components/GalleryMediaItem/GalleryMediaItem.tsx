@@ -5,9 +5,9 @@ import { Spin } from 'antd'
 import cn from 'classnames'
 import ReactPlayer from 'react-player/lazy'
 
-import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
-import { MimeTypes } from '../../../../../redux/types/MimeTypes'
-import { isVideo, isVideoByExt } from '../../../../common/utils/utils'
+import { isVideo, isVideoByExt } from 'src/app/common/utils'
+import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import styles from './GalleryMediaItem.module.scss'
 
@@ -21,11 +21,11 @@ export interface Props {
   ext?: string
   height?: string
   muted?: boolean
-  originalPath: string
   playing?: boolean
-  preview: string
   setPlaying?: (value: boolean) => void
   setStop?: (value: boolean) => void
+  staticPath: string
+  staticPreview: string
   stop?: boolean
   type?: MimeTypes
   usePlaceholder?: boolean
@@ -36,9 +36,9 @@ export const GalleryMediaItem = React.memo(
     ext,
     height = '100%',
     muted,
-    originalPath,
+    staticPath,
     playing,
-    preview,
+    staticPreview,
     setPlaying,
     setStop,
     stop,
@@ -48,7 +48,7 @@ export const GalleryMediaItem = React.memo(
     const [showVideo, setShowVideo] = useState(false)
 
     const isVideoPreview = (type && isVideo(type)) || (ext && isVideoByExt(ext)) || false
-    const showPlaceholder = usePlaceholder && !originalPath && !preview
+    const showPlaceholder = usePlaceholder && !staticPath && !staticPreview
     const showVideoPlayer = showVideo && isVideoPreview && !stop
     const showVideoPreview = (!showVideo || stop) && isVideoPreview
     const showImage = !isVideoPreview
@@ -78,7 +78,7 @@ export const GalleryMediaItem = React.memo(
               onPlay={handlePlay}
               playing={playing}
               style={{ position: 'absolute', top: 0, left: 0 }}
-              url={originalPath}
+              url={staticPath}
               width="100%"
               controls
               loop
@@ -93,7 +93,7 @@ export const GalleryMediaItem = React.memo(
               className={cn(styles.videoPreview, { [styles.placeholder]: showPlaceholder }, 'transparent parent-size')}
               onError={handleImageOnLoad}
               onLoad={handleImageOnLoad}
-              src={preview}
+              src={staticPreview}
             />
             {Loader}
           </div>
@@ -105,7 +105,7 @@ export const GalleryMediaItem = React.memo(
               className={cn(styles.img, { [styles.placeholder]: showPlaceholder }, 'transparent parent-size')}
               onError={handleImageOnLoad}
               onLoad={handleImageOnLoad}
-              src={showPlaceholder ? imagePlaceholder : originalPath}
+              src={showPlaceholder ? imagePlaceholder : staticPath}
             />
             {Loader}
           </div>

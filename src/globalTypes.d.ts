@@ -11,6 +11,38 @@ declare global {
     filter<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
     filter<S extends T>(predicate: (value: T, index: number, array: T[]) => boolean): S[];
   }
+
+  type WidenLiteral<T> = T extends string
+    ? string
+    : T extends number
+      ? number
+      : T extends boolean
+        ? boolean
+        : T extends bigint
+          ? bigint
+          : T extends symbol
+            ? symbol
+            : T
+
+  interface Array<T> {
+  // .includes now takes a WidenLiteral as the first parameter
+    includes(
+      searchElement: T | (WidenLiteral<T> & {}),
+      fromIndex?: number
+    ): boolean;
+  }
+
+  interface ReadonlyArray<T> {
+  // .includes now takes a WidenLiteral as the first parameter
+    includes(
+      searchElement: T | (WidenLiteral<T> & {}),
+      fromIndex?: number
+    ): boolean;
+  }
+
+  type NonNullableFields<T extends object, P extends keyof T = keyof T> = {
+    [K in keyof T]: K extends P ? NonNullable<T[K]> : T[K];
+  }
 }
 
 export default global

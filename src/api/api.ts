@@ -1,33 +1,33 @@
+import type { RcFile } from 'antd/es/upload'
+
 import type {
-  AxiosPreviews,
-  CheckedDirectoryRequest,
   ExifFilesList,
-  ExistedFile,
   FetchingGalleryContent,
   QueryResponse,
-  UpdatedObject,
-  UpdatePhotosRequest,
-  UploadingObject,
-} from '../redux/types'
-import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../redux/types/testPageTypes'
+} from 'src/redux/types'
+import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from 'src/redux/types/testPageTypes'
 
-import { instance } from './api-client'
+import { instance, instanceNewDB } from './api-client'
+import type { UpdatedFileAPIRequest } from './dto/request-types'
+import type {
+  CheckedDirectoryAPIResponse, CheckOriginalNameDuplicatesAPIResponse, UpdatePhotosAPIResponse, UploadingFileAPIResponse,
+} from './dto/response-types'
 import type { GetPhotosByTagsRequest } from './types'
 
 export const mainApi = {
-  sendPhotos(files: UploadingObject[], path: string) {
-    return instance.post<QueryResponse>(`/upload?path=${path}`, files)
+  savePhotosInDB(files: UpdatedFileAPIRequest[]) {
+    return instanceNewDB.post<QueryResponse>('/upload', files)
   },
 
-  updatePhotos(files: UpdatedObject[]) {
-    return instance.put<UpdatePhotosRequest>('/update', files)
+  updatePhotos(files: UpdatedFileAPIRequest[]) {
+    return instance.put<UpdatePhotosAPIResponse>('/update', files)
   },
 
-  sendPhoto(file: any) {
+  savePhotoInTempPool(file: string | Blob | RcFile) {
     const formData = new FormData()
     formData.append('filedata', file)
 
-    return instance.post<AxiosPreviews>('/uploadItem', formData, {
+    return instanceNewDB.post<UploadingFileAPIResponse>('/uploadItem', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -35,7 +35,7 @@ export const mainApi = {
   },
 
   getKeywordsList() {
-    return instance.get<string[]>('/keywords')
+    return instanceNewDB.get<string[]>('/keywords')
   },
 
   getUnusedKeywordsList() {
@@ -43,8 +43,8 @@ export const mainApi = {
   },
 
   checkDuplicates(fileNameArr: string[]) {
-    return instance.get<Record<string, ExistedFile[]>>('check-duplicates', {
-      params: { names: fileNameArr },
+    return instanceNewDB.get<CheckOriginalNameDuplicatesAPIResponse>('check-duplicates', {
+      params: { originalNames: fileNameArr },
     })
   },
 
@@ -53,18 +53,18 @@ export const mainApi = {
   },
 
   getPathsList() {
-    return instance.get<string[]>('/paths')
+    return instanceNewDB.get<string[]>('/paths')
   },
 
   checkDirectory(directory: string) {
-    return instance.get<CheckedDirectoryRequest>('/check-directory', {
+    return instanceNewDB.get<CheckedDirectoryAPIResponse>('/check-directory', {
       params: { directory },
     })
   },
 
-  getKeywordsFromPhoto(tempPath: string[]) {
+  getKeywordsFromPhoto(ids: string[]) {
     // need to get something even if exif is not exist
-    return instance.post<ExifFilesList>('/image-exif', tempPath)
+    return instance.post<ExifFilesList>('/image-exif', ids)
   },
 
   getPhotosByTags(params: GetPhotosByTagsRequest) {

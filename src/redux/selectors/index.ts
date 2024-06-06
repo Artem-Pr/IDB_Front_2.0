@@ -1,11 +1,12 @@
 import { compose, map } from 'ramda'
 import { createSelector } from 'reselect'
 
+import type { Media } from 'src/api/models/media'
+import type { DuplicateFile } from 'src/api/types'
+
 import { getSameKeywords, getUniqArr } from '../../app/common/utils'
 import type { RootState } from '../store/types'
-import type {
-  ExistedFile, FieldsObj, SortingData, UploadingObject,
-} from '../types'
+import type { SortingData } from '../types'
 
 export const folderElement = (state: RootState) => state.folderReducer
 export const curFolderInfo = (state: RootState) => state.folderReducer.currentFolderInfo
@@ -35,23 +36,6 @@ export const pathsConfigRebuildProgress = (state: RootState) => state.testsReduc
 export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
 
-export const currentFullExifFilesList = createSelector(
-  [
-    main,
-    upload,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
-  ],
-  (
-    { fullExifFilesList: mainFullExifFilesList },
-    { fullExifFilesList: uploadFullExifFilesList },
-    { isMainPage, isUploadingPage },
-  ) => {
-    if (isMainPage) return mainFullExifFilesList
-    if (isUploadingPage) return uploadFullExifFilesList
-    return {}
-  },
-)
-
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArrSelector => (
   pathsArrSelector
     .map(path => ({ value: path }))
@@ -73,8 +57,8 @@ export const sort = createSelector(
 export const duplicateFilesArr = createSelector(
   [uploadingFiles, checkForDuplicatesOnlyInCurrentFolder, curFolderInfo],
   (uploadingFilesArr, onlyDuplicatesInCurrentFolder, { currentFolderPath }) => uploadingFilesArr
-    .reduce<ExistedFile[]>((accum, { existedFilesArr = [] }) => [...accum, ...existedFilesArr], [])
-    .filter(({ filePath }) => (onlyDuplicatesInCurrentFolder ? filePath.startsWith(`/${currentFolderPath}`) : true)),
+    .reduce<DuplicateFile[]>((accum, { duplicates = [] }) => [...accum, ...duplicates], [])
+    .filter(({ filePath }) => (onlyDuplicatesInCurrentFolder ? filePath?.startsWith(`/${currentFolderPath}`) : true)),
 )
 
 export const previewDuplicates = createSelector(
@@ -99,31 +83,13 @@ export const openMenusSelector = createSelector(
   },
 )
 
-export const isGlobalExifLoading = createSelector(
-  main,
-  upload,
-  (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
-  (
-    { isExifLoading: isExifLoadingMainPage },
-    { isExifLoading: isExifLoadingUploadPage },
-    { isMainPage, isUploadingPage },
-  ) => {
-    const isMainPageExifLoading = isMainPage && isExifLoadingMainPage
-    const isUploadPageExifLoading = isUploadingPage && isExifLoadingUploadPage
-
-    return {
-      isExifLoading: isMainPageExifLoading || isUploadPageExifLoading || false,
-    }
-  },
-)
-
 export const currentFilesList = createSelector(
   [
     uploadingFiles,
     downloadingFiles,
     (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
   ],
-  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadingPage }): FieldsObj[] => {
+  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadingPage }): Media[] => {
     const mainPageFilesArr = isMainPage && downloadingFilesArr
     const uploadingPageFilesArr = isUploadingPage && uploadingFilesArr
 
@@ -174,12 +140,12 @@ export const dPageGalleryPropsSelector = createSelector(
 
 export const allUploadKeywordsSelector = createSelector(uploadingFiles, uploadingFilesArr => compose(
   getUniqArr,
-  map((item: UploadingObject) => item.keywords || []),
+  map((item: Media) => item.keywords),
 )(uploadingFilesArr))
 
 export const allDownloadingKeywordsSelector = createSelector(downloadingFiles, downloadingFilesArr => compose(
   getUniqArr,
-  map((item: UploadingObject) => item.keywords || []),
+  map((item: Media) => item.keywords),
 )(downloadingFilesArr))
 
 export const uniqKeywords = createSelector(

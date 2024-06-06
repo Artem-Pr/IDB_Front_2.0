@@ -103,6 +103,10 @@ module.exports = {
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['warn'],
 
+    // Require or disallow an empty line between class members.
+    'lines-between-class-members': 'off',
+    '@typescript-eslint/lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+
     // An unused expression which has no effect on the state of the program indicates a logic error.
     // https://eslint.org/docs/latest/rules/no-unused-expressions
     '@typescript-eslint/no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
@@ -176,7 +180,6 @@ module.exports = {
     'node_modules',
     'build',
     'webpack',
-    '**/*.test.ts',
-    '**/*.test.tsx',
+    'test',
   ],
 }

@@ -1,17 +1,18 @@
 import { identity, sortBy } from 'ramda'
 
-import { mainApi } from '../../../../api/api'
-import { createFolderTree } from '../../../../app/common/folderTree'
-import { errorMessage, successMessage } from '../../../../app/common/notifications'
-import type { AppThunk } from '../../../store/types'
-import type { UpdatedObject } from '../../../types'
+import { mainApi } from 'src/api/api'
+import type { UpdatedFileAPIRequest } from 'src/api/dto/request-types'
+import { createFolderTree } from 'src/app/common/folderTree'
+import { errorMessage, successMessage } from 'src/app/common/notifications'
+import type { AppThunk } from 'src/redux/store/types'
+
 import { setFolderTree, setPathsArr } from '../../foldersSlice/foldersSlice'
 import { setIsTimeDifferenceApplied } from '../../sessionSlice/sessionSlice'
 import { setDGalleryLoading } from '../mainPageSlice'
 
 import { fetchPhotos } from './fetchPhotos'
 
-export const updatePhotos = (updatedObjArr: UpdatedObject[]): AppThunk => dispatch => {
+export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk => dispatch => {
   const addNewPathsArr = (newPathsArr: string[]) => {
     dispatch(setPathsArr(sortBy(identity, newPathsArr)))
     dispatch(setFolderTree(createFolderTree(newPathsArr)))
@@ -22,8 +23,7 @@ export const updatePhotos = (updatedObjArr: UpdatedObject[]): AppThunk => dispat
   mainApi
     .updatePhotos(updatedObjArr)
     .then(response => {
-      const { error, files, newFilePath } = response.data
-      error && errorMessage(new Error(error), 'updating files error: ', 0)
+      const { files, newFilePath } = response.data
       files && newFilePath && successMessage('Files updated successfully')
       newFilePath?.length && addNewPathsArr(newFilePath)
     })

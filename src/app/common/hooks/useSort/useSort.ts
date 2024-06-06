@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux'
 
-import { sort } from '../../../../redux/selectors'
-import type { RootState } from '../../../../redux/store/types'
+import { sort } from 'src/redux/selectors'
+import type { RootState } from 'src/redux/store/types'
+
 import { useCurrentPage } from '../hooks'
 
 export const useSort = () => {

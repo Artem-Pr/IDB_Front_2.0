@@ -6,6 +6,7 @@ import type { CheckboxProps } from 'antd'
 
 import { useClearFilesArray, useFilesList, useUpdateOpenMenus } from 'src/app/common/hooks'
 import { capitalize } from 'src/app/common/utils'
+import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIRequestFromMedia'
 import { uploadFiles } from 'src/redux/reducers/uploadSlice/thunks'
 import { setCheckForDuplicatesOnlyInCurrentFolder } from 'src/redux/reducers/uploadSlice/uploadSlice'
 import { checkForDuplicatesOnlyInCurrentFolder, curFolderInfo, duplicateFilesArr } from 'src/redux/selectors'
@@ -41,7 +42,8 @@ export const ButtonsMenu = () => {
   const showCheckForDuplicatesCheckbox = Boolean(duplicates.length) || watchForDuplicatesOnlyInCurrentFolder
 
   const handleUploadClick = () => {
-    dispatch(uploadFiles(filesArr, currentFolderPath))
+    const fileAPIRequestArr = getFileAPIRequestFromMediaList(filesArr, currentFolderPath)
+    dispatch(uploadFiles(fileAPIRequestArr))
     clearFilesArr()
     setOpenMenus([MainMenuKeys.FOLDERS])
   }

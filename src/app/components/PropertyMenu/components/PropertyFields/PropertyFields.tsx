@@ -2,14 +2,15 @@ import React from 'react'
 
 import { MinusOutlined } from '@ant-design/icons'
 
-import { FieldsObj } from '../../../../../redux/types'
+import type { Media } from 'src/api/models/media'
+
 import { getLabelValue } from '../../helpers/getLabelValue'
 import { usePropertyFields } from '../../hooks'
 
 import styles from './PropertyFields.module.scss'
 
 interface Props {
-  filesArr: FieldsObj[]
+  filesArr: Media[]
   selectedList: number[]
 }
 

@@ -1,4 +1,4 @@
-import type { FullExifObj } from 'src/redux/types'
+import type { Tags } from 'exiftool-vendored'
 
 import { MimeTypes } from '../../types/MimeTypes'
 
@@ -16,5 +16,5 @@ export interface SearchMenu {
 
 export interface FullExifPayload {
   filePath: string
-  fullExifObj: FullExifObj
+  fullExifObj: Tags
 }

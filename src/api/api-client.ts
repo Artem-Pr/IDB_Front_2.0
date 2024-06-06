@@ -18,6 +18,10 @@ export const instance = axios.create({
   baseURL: HOST.HTTP,
 })
 
+export const instanceNewDB = axios.create({
+  baseURL: 'http://localhost:3000',
+})
+
 const cancelAborterItem = (url: string) => {
   cancelController[url]?.abort()
 }

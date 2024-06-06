@@ -1,5 +1,5 @@
 import React, {
-  Fragment, MutableRefObject, SyntheticEvent, useCallback, useMemo, useState,
+  Fragment, MutableRefObject, SyntheticEvent, useCallback, useState,
 } from 'react'
 import ImageGallery from 'react-image-gallery'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Modal, Spin, Switch } from 'antd'
 import cn from 'classnames'
 
+import type { Media } from 'src/api/models/media'
+
 import { setPreviewPlaying } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
 import { session } from '../../../redux/selectors'
-import type { ExifFilesList, FieldsObj } from '../../../redux/types'
+import type { ExifFilesList } from '../../../redux/types'
 import { MainMenuKeys } from '../../../redux/types'
 import { useSort } from '../../common/hooks/useSort'
 
@@ -27,13 +29,12 @@ const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
 
 export interface GalleryProps {
   openMenus: string[]
-  imageArr: FieldsObj[]
+  imageArr: Media[]
   fullExifFilesList: ExifFilesList
   selectedList: number[]
   removeFromSelectedList: (index: number[]) => void
   addToSelectedList: (indexArr: number[]) => void
   clearSelectedList: () => void
-  updateFiles: (tempPath: string) => void
   isLoading?: boolean
   isMainPage?: boolean
   refs: {
@@ -51,7 +52,6 @@ const Gallery = ({
   addToSelectedList,
   removeFromSelectedList,
   clearSelectedList,
-  updateFiles,
   isLoading,
   isMainPage,
   refs: { gridRef, imgRef, imgFirstGroupNameRef },
@@ -62,9 +62,9 @@ const Gallery = ({
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [showPreviewList, setShowPreviewList] = useState(true)
-  const isEditMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
-  const isTemplateMenu = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
-  const isPropertiesMenu = useMemo(() => openMenus.includes(MainMenuKeys.PROPERTIES), [openMenus])
+  const isEditMenu = openMenus.includes(MainMenuKeys.EDIT)
+  const isTemplateMenu = openMenus.includes(MainMenuKeys.EDIT_BULK)
+  const isPropertiesMenu = openMenus.includes(MainMenuKeys.PROPERTIES)
   const {
     exif,
     getExif,
@@ -75,7 +75,6 @@ const Gallery = ({
     showModal,
   } = useGetFullExifList({
     fullExifFilesList,
-    updateFiles,
   })
   const {
     hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover, selectWithShift,
@@ -182,36 +181,27 @@ const Gallery = ({
                   style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
                 >
                   {imageArrayGroupedByDate[date].map(
-                    (
-                      {
-                        _id, existedFilesArr, fullSizeJpgPath, index, name, originalPath, preview, tempPath, type,
-                      },
-                      idx,
-                    ) => (
+                    mediaFileWithIndex => (
                       <GalleryTile
-                        existedFilesArr={existedFilesArr}
                         fitContain={fitContain}
-                        fullSizeJpgPath={fullSizeJpgPath}
                         getExif={getExif}
                         getGPSCoordinates={getGPSCoordinates}
-                        index={index}
+                        // TODO: need to check index, probably I can use another index to fix problem with multiple select
+                        index={mediaFileWithIndex.index}
                         isEditMode={isEditMode}
                         isMainPage={isMainPage}
-                        isShiftHover={isShiftHover(index)}
-                        key={name + _id + idx}
-                        name={name}
+                        // TODO: probably better to move index inside component, because we have index in mediaFile
+                        isShiftHover={isShiftHover(mediaFileWithIndex.index)}
+                        key={mediaFileWithIndex.id}
+                        mediaFile={mediaFileWithIndex}
                         onFullScreenClick={handleFullScreenClick}
                         onImageClick={handleImageClick}
                         onImageOnLoad={handleImageOnLoad}
                         onImgRefAdd={handleImgRefAdd}
                         onLocationClick={handleLocationClick}
                         onMouseEnter={setHoveredIndex}
-                        originalPath={originalPath}
-                        preview={preview}
                         previewSize={previewSize}
                         selectedList={selectedList}
-                        tempPath={tempPath}
-                        type={type}
                       />
                     ),
                   )}
@@ -226,33 +216,25 @@ const Gallery = ({
             style={{ gridTemplateColumns: `repeat(auto-fill,minmax(${previewSize}px, 1fr))` }}
           >
             {imageArr.map(
-              ({
-                _id, existedFilesArr, fullSizeJpgPath, name, originalPath, preview, tempPath, type,
-              }, idx) => (
+              (mediaFile, idx) => (
                 <GalleryTile
-                  existedFilesArr={existedFilesArr}
                   fitContain={fitContain}
-                  fullSizeJpgPath={fullSizeJpgPath}
                   getExif={getExif}
                   getGPSCoordinates={getGPSCoordinates}
                   index={idx}
                   isEditMode={isEditMode}
                   isMainPage={isMainPage}
                   isShiftHover={isShiftHover(idx)}
-                  key={name + _id + idx}
-                  name={name}
+                  key={mediaFile.id}
+                  mediaFile={mediaFile}
                   onFullScreenClick={handleFullScreenClick}
                   onImageClick={handleImageClick}
                   onImageOnLoad={handleImageOnLoad}
                   onImgRefAdd={handleImgRefAdd}
                   onLocationClick={handleLocationClick}
                   onMouseEnter={setHoveredIndex}
-                  originalPath={originalPath}
-                  preview={preview}
                   previewSize={previewSize}
                   selectedList={selectedList}
-                  tempPath={tempPath}
-                  type={type}
                 />
               ),
             )}

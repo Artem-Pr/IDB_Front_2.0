@@ -1,20 +1,23 @@
 import React, { ReactNode } from 'react'
 
-import type { ExifFilesList, RawFullExifObj } from '../../../../../../redux/types'
+import type { Tags } from 'exiftool-vendored'
+
+import type { Media } from 'src/api/models/media'
+import type { ExifFilesList } from 'src/redux/types'
 
 import { prepareExifDataRecursive } from './prepareExifDataRecursive'
 
-export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentTempPath: string, isJSONMode: boolean) => {
-  const rawExif: RawFullExifObj | undefined = fullExifFilesList[currentTempPath] || undefined
+export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentId: Media['id'], isJSONMode: boolean) => {
+  const rawExif: Tags | undefined = fullExifFilesList[currentId] || undefined
 
   const rawExifFieldNames = Object.keys(rawExif || {})
 
-  const getExifItemValueJSX = (fieldName: string): ReactNode => {
+  const getExifItemValueJSX = (fieldName: keyof Tags): ReactNode => {
     const exifItemValue = rawExif && rawExif[fieldName]
     return prepareExifDataRecursive(exifItemValue)
   }
 
-  const getExifItemJSX = (fieldName: string): ReactNode => (
+  const getExifItemJSX = (fieldName: keyof Tags): ReactNode => (
     <>
       <span className="bold">{`${fieldName}:`}</span>
       <span style={{ marginLeft: 5 }}>{getExifItemValueJSX(fieldName)}</span>

@@ -5,18 +5,20 @@ import { Button, Tooltip } from 'antd'
 import dayjs from 'dayjs'
 
 import { copyToClipboard } from '../../common/utils'
-import { dateTimeFormat } from '../../common/utils/date'
+import { DATE_TIME_FORMAT } from '../../common/utils/date'
 
 interface CopyToClipboardProps {
-  text: number | string
+  text: number | string | null
   disabled?: boolean
 }
 
 export const CopyToClipboard = ({ text, disabled }: CopyToClipboardProps) => {
   const copy = () => {
+    if (text === null) return
+
     typeof text === 'number'
       ? copyToClipboard(dayjs(text)
-        .format(dateTimeFormat))
+        .format(DATE_TIME_FORMAT))
       : copyToClipboard(text)
   }
 

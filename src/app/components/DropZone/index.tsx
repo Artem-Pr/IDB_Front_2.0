@@ -5,29 +5,39 @@ import { InboxOutlined, LoadingOutlined } from '@ant-design/icons'
 import {
   message, Progress, Upload, UploadProps,
 } from 'antd'
-import type { UploadChangeParam } from 'antd/es/upload'
+import type { RcFile, UploadChangeParam } from 'antd/es/upload'
 import cn from 'classnames'
 import { compose } from 'ramda'
 
-import { setIsLoading } from '../../../redux/reducers/sessionSlice/sessionSlice'
-import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from '../../../redux/reducers/uploadSlice'
-import { addUploadingFile, fetchPhotosPreview } from '../../../redux/reducers/uploadSlice/thunks'
-import { curFolderInfo, upload } from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import { MainMenuKeys } from '../../../redux/types'
-import { MimeTypes } from '../../../redux/types/MimeTypes'
-import { errorMessage } from '../../common/notifications'
-import { isMimeType } from '../../common/utils'
+import type { Media } from 'src/api/models/media'
+import { MediaInstance } from 'src/api/models/media'
+import { errorMessage } from 'src/app/common/notifications'
+import { wait, isMimeType } from 'src/app/common/utils'
+import { setIsLoading } from 'src/redux/reducers/sessionSlice/sessionSlice'
+import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from 'src/redux/reducers/uploadSlice'
+import { addUploadingFile, fetchPhotosPreview } from 'src/redux/reducers/uploadSlice/thunks'
+import { curFolderInfo, upload } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+import { MainMenuKeys } from 'src/redux/types'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
 
-import { getDispatchObjFromBlob, isFile, isFileNameAlreadyExist } from './heplers'
-import { getEmptyUploadObject } from './heplers/getEmptyUploadObject'
+import {
+  getDispatchObjFromBlob, isFile, isFileNameAlreadyExist,
+} from './heplers'
 
 import styles from './index.module.scss'
 
 const { Dragger } = Upload
+const uploadingFile: ValidRcFile[] = []
 const uploading = {
+  data: uploadingFile,
   isProcessing: false,
   totalFiles: 0,
+  isBeforeProcessing: true,
+}
+
+interface ValidRcFile extends RcFile {
+  type: MimeTypes
 }
 
 interface Props {
@@ -36,7 +46,7 @@ interface Props {
 
 const DropZone = ({ openMenus }: Props) => {
   const { currentFolderPath } = useSelector(curFolderInfo)
-  const { previewLoadingCount, uploadingBlobs } = useSelector(upload)
+  const { previewLoadingCount, uploadingBlobs, uploadingFiles } = useSelector(upload)
   const [finishedNumberOfFiles, setFinishedNumberOfFiles] = useState<number>(0)
   const dispatch = useAppDispatch()
   const isEditOne = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
@@ -46,6 +56,7 @@ const DropZone = ({ openMenus }: Props) => {
     accept: `${MimeTypes.heic}, image/*, video/*`,
     className: cn(styles.dropZone, { active: isEditOne || isEditMany }),
     name: 'file',
+    fileList: [],
     multiple: true,
     showUploadList: false,
     headers: {
@@ -54,41 +65,73 @@ const DropZone = ({ openMenus }: Props) => {
     },
     async customRequest({ file }) {
       dispatch(setIsLoading(true))
-      const uploadFile = async () => {
+      const uploadFile = async (fileFormQueue: RcFile) => {
         const dispatchNewFile = async () => {
           uploading.isProcessing = true
           dispatch(increaseCountOfPreviewLoading())
-          isFile(file) && compose(dispatch, setBlob, getDispatchObjFromBlob)(file)
-          dispatch<any>(fetchPhotosPreview(file))
+          isFile(fileFormQueue) && compose(dispatch, setBlob, getDispatchObjFromBlob)(fileFormQueue)
+          dispatch<any>(fetchPhotosPreview(fileFormQueue))
             .then(() => {
               uploading.isProcessing = false
               setFinishedNumberOfFiles(prevState => prevState + 1)
             })
           dispatch(setUploadingStatus('empty'))
         }
-
-        uploading.isProcessing ? setTimeout(uploadFile, 100) : await dispatchNewFile()
+        dispatchNewFile()
       }
 
       const handleError = (notificationMessage: string) => {
         const uploadingError = new Error(`${isFile(file) ? file.name : '?'} ${notificationMessage}`)
         errorMessage(uploadingError, 'File is not uploaded')
         uploading.isProcessing = false
-        setFinishedNumberOfFiles(prevState => prevState + 1)
       }
-      // eslint-disable-next-line no-plusplus
-      ++uploading.totalFiles
-      const fileAlreadyExist = isFile(file) && isFileNameAlreadyExist(file, uploadingBlobs)
-      const isMimeTypeExist = isFile(file) && isMimeType(file.type)
 
-      fileAlreadyExist && handleError('is already exist')
-      !isMimeTypeExist && handleError('file type not supported')
-      !fileAlreadyExist && isMimeTypeExist && setTimeout(uploadFile)
-      !fileAlreadyExist
-        && isMimeTypeExist
-        && dispatch(addUploadingFile(getEmptyUploadObject({ type: file.type, name: file.name })))
+      const isValidFile = (fileFormQueue: string | Blob | RcFile): fileFormQueue is ValidRcFile => {
+        const fileAlreadyExist = isFile(fileFormQueue) && isFileNameAlreadyExist(fileFormQueue, uploadingBlobs)
+        const isMimeTypeExist = isFile(fileFormQueue) && isMimeType(fileFormQueue.type)
+
+        fileAlreadyExist && handleError('is already exist')
+        !isMimeTypeExist && handleError('file type not supported')
+
+        return !fileAlreadyExist && isMimeTypeExist
+      }
+
+      const proceedUpload = async (counter: number = 0) => {
+        const currentFile: ValidRcFile = uploading.data[counter]
+
+        if (currentFile) {
+          await wait()
+          uploadFile(currentFile)
+          proceedUpload(++counter)
+        }
+      }
+
+      if (isValidFile(file)) {
+        ++uploading.totalFiles
+
+        uploading.data.push(file)
+
+        if (uploading.totalFiles === 1) {
+          proceedUpload()
+        }
+      }
     },
     onChange(info: UploadChangeParam) {
+      if (uploading.isBeforeProcessing) {
+        const isNewFiles = info.fileList.some(({ name }) => !uploadingBlobs[name])
+
+        if (!isNewFiles) return
+
+        setFinishedNumberOfFiles(uploadingFiles.length)
+        info.fileList.forEach(file => {
+          const isFileAlreadyUploaded = uploadingBlobs[file.name]
+          !isFileAlreadyUploaded && dispatch(addUploadingFile(new MediaInstance({
+            mimetype: file.originFileObj?.type as MimeTypes,
+            originalName: (file.originFileObj?.name as Media['originalName'] | undefined) || 'unknown_file.jpg',
+          }).properties))
+        })
+      }
+      uploading.isBeforeProcessing = false
       const { status } = info.file
       status !== 'uploading' && console.info(info.file, info.fileList)
       status === 'done' && message.success(`${info.file.name} file uploaded successfully.`)
@@ -97,14 +140,18 @@ const DropZone = ({ openMenus }: Props) => {
   }
 
   const progress = useMemo(
-    () => Math.round((finishedNumberOfFiles / uploading.totalFiles) * 100) || false,
-    [finishedNumberOfFiles],
+    () => (uploadingFiles.length
+      ? Math.round((finishedNumberOfFiles / uploadingFiles.length) * 100) || false
+      : false),
+    [finishedNumberOfFiles, uploadingFiles.length],
   )
 
   useEffect(() => {
     const refreshLoading = () => {
       setFinishedNumberOfFiles(0)
       uploading.totalFiles = 0
+      uploading.isBeforeProcessing = true
+      uploading.data = []
     };
     (progress === 100 || progress === Infinity) && refreshLoading()
   }, [progress])

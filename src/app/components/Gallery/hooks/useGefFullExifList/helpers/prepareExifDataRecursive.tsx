@@ -1,10 +1,8 @@
 import React from 'react'
 
-import type { RawDataValue } from '../../../../../../redux/types'
-
 import { isObject } from './isObject'
 
-export const prepareExifDataRecursive = (value: RawDataValue) => {
+export const prepareExifDataRecursive = (value: any) => {
   if (isObject(value)) {
     return (
       <ul>

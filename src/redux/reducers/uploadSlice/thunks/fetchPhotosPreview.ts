@@ -1,44 +1,32 @@
-import { mainApi } from '../../../../api/api'
-import { errorMessage } from '../../../../app/common/notifications'
-import { defaultTimeStamp } from '../../../../app/common/utils/date/dateFormats'
-import { isVideo } from '../../../../app/common/utils/utils'
-import type { AppThunk } from '../../../store/types'
-import type { UploadingObject } from '../../../types'
-import { decreaseCountOfPreviewLoading } from '../uploadSlice'
+import type { RcFile } from 'antd/es/upload'
+
+import { mainApi } from 'src/api/api'
+import type { Media } from 'src/api/models/media'
+import { MediaInstance } from 'src/api/models/media'
+import { errorMessage } from 'src/app/common/notifications'
+import imagePlaceholderFailedUploading from 'src/assets/svg-icons-html/image-placeholder-failed-upload3.svg'
+import type { AppThunk } from 'src/redux/store/types'
+
+import { decreaseCountOfPreviewLoading, updateFullExifFile } from '../uploadSlice'
 
 import { updateUploadingFile } from './updateUploadingFile'
 
-export const fetchPhotosPreview = (file: any): AppThunk => async dispatch => {
-  const {
-    lastModified: changeDate, name, size, type,
-  } = file
+export const fetchPhotosPreview = (file: RcFile): AppThunk => async dispatch => {
   await mainApi
-    .sendPhoto(file)
+    .savePhotoInTempPool(file)
     .then(({ data }) => {
-      const {
-        preview, tempPath, fullSizeJpg, fullSizeJpgPath, DBFullPathFullSize, DBFullPath, existedFilesArr,
-      } = data
-      const uploadingFile: UploadingObject = {
-        DBFullPath,
-        DBFullPathFullSize,
-        changeDate,
-        description: '',
-        existedFilesArr,
-        fullSizeJpgPath: fullSizeJpg,
-        keywords: null,
-        megapixels: '',
-        name,
-        originalDate: '-',
-        originalPath: fullSizeJpgPath,
-        preview,
-        rating: 0,
-        size,
-        tempPath,
-        type,
-        ...(isVideo(type) && { timeStamp: defaultTimeStamp }),
-      }
-      dispatch(updateUploadingFile(uploadingFile))
+      dispatch(updateUploadingFile(data.properties, file))
+      dispatch(updateFullExifFile({ [data.properties.id]: data.exif }))
     })
-    .catch(error => errorMessage(error, 'Error when getting Preview: '))
+    .catch(error => {
+      errorMessage(error, 'Error when getting Preview: ')
+      dispatch(updateUploadingFile(new MediaInstance({
+        id: file.name,
+        originalName: file.name as Media['originalName'],
+        mimetype: file.type as Media['mimetype'],
+        staticPreview: imagePlaceholderFailedUploading,
+        size: file.size,
+      }).properties, file))
+    })
     .finally(() => dispatch(decreaseCountOfPreviewLoading()))
 }

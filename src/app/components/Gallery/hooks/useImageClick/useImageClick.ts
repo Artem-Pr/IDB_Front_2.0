@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { cleanPreview, setPreview } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { uploadingBlobs } from '../../../../../redux/selectors'
-import { Preview } from '../../../../../redux/types'
-import { getLastItem } from '../../../../common/utils'
-import { RawPreview } from '../../type'
+import type { Media } from 'src/api/models/media'
+import { getLastItem } from 'src/app/common/utils'
+import { cleanPreview, setPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { uploadingBlobs } from 'src/redux/selectors'
+import type { Preview } from 'src/redux/types'
 
 interface UseImageClickProps {
   addToSelectedList: (indexArr: number[]) => void
@@ -46,7 +46,7 @@ export const useImageClick = ({
   )
 
   const handleImageClick = useCallback(
-    (i: number, rawPreview?: RawPreview) => {
+    (i: number, rawPreview?: Media) => {
       const updateFilesArr = () => {
         addToSelectedList([i])
       }
@@ -67,10 +67,11 @@ export const useImageClick = ({
 
       rawPreview
         && updatePreview({
-          previewType: rawPreview.type,
-          originalName: rawPreview.name,
-          originalPath: rawPreview.fullSizeJpgStatic || rawPreview.originalPath || blobFiles[rawPreview.name],
-          preview: rawPreview.preview,
+          previewType: rawPreview.mimetype,
+          originalName: rawPreview.originalName,
+          // TODO: use Blob if staticPath is too slow
+          staticPath: rawPreview.staticPath || blobFiles[rawPreview.originalName],
+          staticPreview: rawPreview.staticPreview,
         })
     },
     [

@@ -1,6 +1,6 @@
+import type { Media } from 'src/api/models/media'
+
 import type {
-  DownloadingObject,
-  DownloadingRawObject,
   ExifFilesList,
   GalleryPagination,
   MainMenuKeys,
@@ -13,8 +13,8 @@ import { defaultGallerySortingList } from './helpers'
 import type { SearchMenu } from './types'
 
 export interface State {
-  rawFiles: DownloadingRawObject[]
-  downloadingFiles: DownloadingObject[]
+  rawFiles: Media[]
+  downloadingFiles: Media[]
   fullExifFilesList: ExifFilesList
   dSelectedList: number[]
   dOpenMenus: MainMenuKeys[]
@@ -58,9 +58,9 @@ export const initialState: State = {
   isDeleteProcessing: false,
   preview: {
     originalName: '',
-    originalPath: '',
+    staticPath: '',
     playing: false,
-    preview: '',
+    staticPreview: '',
     previewType: MimeTypes.jpeg,
     stop: false,
   },

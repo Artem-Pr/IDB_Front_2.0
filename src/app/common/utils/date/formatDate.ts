@@ -1,9 +1,16 @@
-import moment from 'moment'
-import type { Moment } from 'moment'
+import type { ConfigType } from 'dayjs'
+import dayjs from 'dayjs'
 
-import { dateTimeFormat } from './dateFormats'
+import { DATE_TIME_FORMAT, INVALID_DATE } from './dateFormats'
 
-export const formatDate = (DateTimeOriginal: string | Date | Moment, inputFormat?: string) => (
-  moment(DateTimeOriginal, inputFormat)
-    .format(dateTimeFormat)
-)
+export const formatDate = (DateTimeOriginal: ConfigType, inputFormat?: string, outputFormat?: string): string => {
+  try {
+    const FormattedDate = dayjs(DateTimeOriginal, inputFormat)
+      .format(outputFormat || DATE_TIME_FORMAT)
+
+    return FormattedDate === INVALID_DATE ? '' : FormattedDate
+  } catch (e) {
+    console.error('formatDate error: ', e)
+    return ''
+  }
+}

@@ -1,8 +1,6 @@
 export {
   addKeywordsToAllFiles,
   capitalize,
-  convertDownLoadingRawObj,
-  convertDownloadingRawObjectArr,
   copyByJSON,
   filterIndexed,
   getFilePathWithoutName,
@@ -11,12 +9,12 @@ export {
   getNameParts,
   getRenamedObjects,
   getSameKeywords,
-  getTempPath,
-  getUpdatedExifFieldsObj,
   invokableCompose,
   isExifExist,
   isMimeType,
   isValidResultStatus,
+  isVideo,
+  isVideoByExt,
   removeEmptyFields,
   removeExtraFirstSlash,
   removeExtraSlash,
@@ -26,6 +24,7 @@ export {
   sortByFieldDescending,
   updateFilesArrItemByField,
   updateFilesArrayItems,
+  wait,
 } from './utils'
 export { copyToClipboard } from './copyToClipboard'
 export { formatSize } from './formatSize'

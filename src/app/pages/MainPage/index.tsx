@@ -5,10 +5,11 @@ import { useLocation } from 'react-router-dom'
 import { Layout } from 'antd'
 import { isEmpty } from 'ramda'
 
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { dPageGalleryPropsSelector } from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import { MainMenuKeys } from '../../../redux/types'
+import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { dPageGalleryPropsSelector } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+import { MainMenuKeys } from 'src/redux/types'
+
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import {
   CustomAlert, Gallery, GalleryTopMenu, MainMenu, ResizeDivider, PaginationMenu,

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { difference, range, sort } from 'ramda'
 
-import { getLastItem } from '../../../common/utils'
+import { getLastItem } from 'src/app/common/utils'
 
 interface UseSelectWithShift {
   selectedList: number[]

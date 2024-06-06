@@ -2,10 +2,10 @@ import {
   includes, map, pipe, prop, sum,
 } from 'ramda'
 
-import type { FieldsObj } from '../../../../../redux/types'
-import { filterIndexed } from '../../../utils'
+import type { Media } from 'src/api/models/media'
+import { filterIndexed } from 'src/app/common/utils'
 
-export const getFileSizesSum = (filesArr: FieldsObj[], selectedList: number[]) => pipe<any, any, any, any>(
+export const getFileSizesSum = (filesArr: Media[], selectedList: number[]) => pipe<any, any, any, any>(
   filterIndexed((__: any, idx: number) => includes(idx, selectedList)),
   map(prop('size') as any),
   sum,

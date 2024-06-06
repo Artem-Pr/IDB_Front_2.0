@@ -14,6 +14,7 @@ $tileVideoColor: red;
 :root {
   --primary: #1890ff;
   --main-title: white;
+  --logo-text-shadow: 1px 1px 2px black;;
   --dark-border: black;
   --main-background: #e6e6e6;
 
@@ -37,4 +38,6 @@ $tileVideoColor: red;
   --gallery-error-highlight: red;
   
   --collapse-duplicate-item-color: #de00005e;
+
+  --settings-page-background: white;
 }

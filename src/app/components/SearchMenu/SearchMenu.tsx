@@ -26,7 +26,7 @@ import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
 import { folderElement, main, searchMenu } from '../../../redux/selectors'
 import { useAppDispatch } from '../../../redux/store/store'
 import { MimeTypes } from '../../../redux/types/MimeTypes'
-import { dateTimeFormat } from '../../common/utils/date'
+import { DATE_TIME_FORMAT } from '../../common/utils/date'
 
 import styles from './index.module.scss'
 
@@ -172,7 +172,7 @@ export const SearchMenu = () => {
       </Select>
 
       <span className={styles.title}>Date range:</span>
-      <RangePicker className="w-100" format={dateTimeFormat} value={dayJsRange} onChange={handleRangePickerChange} />
+      <RangePicker className="w-100" format={DATE_TIME_FORMAT} value={dayJsRange} onChange={handleRangePickerChange} />
 
       <div className={cn(styles.title, 'd-flex justify-content-between align-items-center margin-top-10')}>
         <span>Description:</span>

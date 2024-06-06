@@ -1,10 +1,11 @@
-import { upload, uploadPageSort } from '../../../selectors'
-import type { AppThunk } from '../../../store/types'
-import type { UploadingObject } from '../../../types'
+import type { Media } from 'src/api/models/media'
+import { upload, uploadPageSort } from 'src/redux/selectors'
+import type { AppThunk } from 'src/redux/store/types'
+
 import { customSortingComparator } from '../helpers'
 import { updateUploadingFilesArr } from '../uploadSlice'
 
-export const addUploadingFile = (uploadingFile: UploadingObject): AppThunk => (dispatch, getState) => {
+export const addUploadingFile = (uploadingFile: Media): AppThunk => (dispatch, getState) => {
   const { gallerySortingList } = uploadPageSort(getState())
   const { uploadingFiles } = upload(getState())
 

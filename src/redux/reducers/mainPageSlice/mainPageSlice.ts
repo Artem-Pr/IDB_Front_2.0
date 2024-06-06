@@ -1,8 +1,8 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
+import type { Media } from 'src/api/models/media'
+
 import type {
-  DownloadingObject,
-  DownloadingRawObject,
   ExifFilesList,
   GalleryPagination,
   GallerySortingItem,
@@ -19,7 +19,7 @@ const mainPageSlice = createSlice({
   name: 'mainPage',
   initialState,
   reducers: {
-    addFullExifFile(state, action: PayloadAction<FullExifPayload>) {
+    addFullExifFile(state, action: PayloadAction<FullExifPayload>) { // TODO: probably I can remove it in all places
       const { filePath, fullExifObj } = action.payload
       state.fullExifFilesList[filePath] = fullExifObj
     },
@@ -38,10 +38,10 @@ const mainPageSlice = createSlice({
     setGroupedByDate(state, action: PayloadAction<boolean>) {
       state.sort.groupedByDate = action.payload
     },
-    setRawFiles(state, action: PayloadAction<DownloadingRawObject[]>) {
+    setRawFiles(state, action: PayloadAction<Media[]>) {
       state.rawFiles = action.payload
     },
-    setDownloadingFiles(state, action: PayloadAction<DownloadingObject[]>) {
+    setDownloadingFiles(state, action: PayloadAction<Media[]>) {
       state.downloadingFiles = action.payload
     },
     addToDSelectedList(state, action: PayloadAction<number[]>) {

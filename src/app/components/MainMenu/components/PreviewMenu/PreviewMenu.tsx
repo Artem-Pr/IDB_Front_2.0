@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux'
 
 import cn from 'classnames'
 
-import { setPreviewPlaying, startVideoPreview } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { imagePreview } from '../../../../../redux/selectors'
-import { useAppDispatch } from '../../../../../redux/store/store'
-import { isVideo } from '../../../../common/utils/utils'
+import { isVideo } from 'src/app/common/utils'
+import { setPreviewPlaying, startVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { imagePreview } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+
 import { GalleryMediaItem } from '../../../Gallery/components'
 
 import styles from './PreviewMenu.module.scss'
@@ -18,7 +19,7 @@ export interface PreviewMenuProps {
 export const PreviewMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   const dispatch = useAppDispatch()
   const {
-    previewType, originalPath, originalName, preview, playing, stop,
+    previewType, staticPath: originalPath, originalName, staticPreview: preview, playing, stop,
   } = useSelector(imagePreview)
 
   const handleSetPlaying = (value: boolean) => {
@@ -34,9 +35,9 @@ export const PreviewMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   return (
     <div className={cn(styles.preview, { [styles.notPlayingVideo]: !isPlayingVideo })} ref={videoPreviewRef}>
       <GalleryMediaItem
-        originalPath={originalPath || ''}
+        staticPath={originalPath || ''}
         playing={playing}
-        preview={preview}
+        staticPreview={preview}
         setPlaying={handleSetPlaying}
         setStop={handleStart}
         stop={stop}

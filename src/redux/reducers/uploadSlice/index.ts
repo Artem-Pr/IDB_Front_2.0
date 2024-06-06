@@ -9,7 +9,6 @@ export {
   removeFromSelectedList,
   selectAll,
   setBlob,
-  setIsExifLoading,
   setUploadingStatus,
   updateFullExifFile,
   updateOpenMenus,

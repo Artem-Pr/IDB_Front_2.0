@@ -1,23 +1,23 @@
 import { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { useCurrentPage } from 'src/app/common/hooks'
+import { removeIntersectingKeywords } from 'src/app/common/utils'
 import {
   clearDownloadingState,
   clearDSelectedList,
   selectAllD,
   setDownloadingFiles,
   updateDOpenMenus,
-} from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
+} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import {
   allDownloadingKeywordsSelector,
   curFolderInfo,
   dAllSameKeywordsSelector,
   dPageGalleryPropsSelector,
   main,
-} from '../../../../../redux/selectors'
-import { MainMenuKeys } from '../../../../../redux/types'
-import { useCurrentPage } from '../../../../common/hooks'
-import { removeIntersectingKeywords } from '../../../../common/utils'
+} from 'src/redux/selectors'
+import { MainMenuKeys } from 'src/redux/types'
 
 export const useMainMenuProps = () => {
   const dispatch = useDispatch()

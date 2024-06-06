@@ -12,16 +12,17 @@ import {
   selectAll,
   updateUploadingFilesArr,
   clearUploadingState,
-} from '../../../redux/reducers/uploadSlice'
+} from 'src/redux/reducers/uploadSlice'
 import {
   allSameKeywordsSelector,
   allUploadKeywordsSelector,
   curFolderInfo,
   upload,
   uploadPageGalleryPropsSelector,
-} from '../../../redux/selectors'
-import { LoadingStatus, MainMenuKeys } from '../../../redux/types'
-import { useUpdateFields, useMenuResize, useGridRefControl } from '../../common/hooks'
+} from 'src/redux/selectors'
+import { LoadingStatus, MainMenuKeys } from 'src/redux/types'
+
+import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
 import {
   CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider,
@@ -40,13 +41,12 @@ const UploadPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
   const { refs, onSliderMove, finishPreviewResize } = useGridRefControl()
   const dispatch = useDispatch()
-  const { isExifLoading, uploadingStatus } = useSelector(upload)
+  const { uploadingStatus } = useSelector(upload)
   const uniqKeywords = useSelector(allUploadKeywordsSelector)
   const sameKeywords = useSelector(allSameKeywordsSelector)
   const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const { currentFolderPath } = useSelector(curFolderInfo)
-  const { updateUploadingFiles } = useUpdateFields(imageArr)
   const showTopGalleryMenu = mainGalleryProps.imageArr.length !== 0
 
   const galleryProps = {
@@ -54,14 +54,12 @@ const UploadPage = () => {
     removeFromSelectedList: (indexArr: number[]) => dispatch(removeFromSelectedList(indexArr)),
     addToSelectedList: (indexArr: number[]) => dispatch(addToSelectedList(indexArr)),
     clearSelectedList: () => dispatch(clearSelectedList()),
-    updateFiles: (tempPath: string) => updateUploadingFiles(tempPath),
     isLoading: false,
   }
 
   const mainMenuProps = {
     filesArr: imageArr,
     selectedList,
-    isExifLoading,
     uniqKeywords,
     sameKeywords,
     openKeys: openMenus,

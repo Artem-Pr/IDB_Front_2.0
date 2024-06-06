@@ -5,6 +5,7 @@ import {
   Layout, Menu, Modal, Typography,
 } from 'antd'
 
+import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
 import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
 
 import { checkFolderConfirmation, deleteMessageConst } from '../../../assets/config/moduleConfig'
@@ -19,8 +20,14 @@ import { useCurrentPage } from '../../common/hooks'
 
 import { PageMenuItems } from './PageMenuItems'
 
+import styles from './index.module.scss'
+
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
+
+function getRandomBackgroundPosition() {
+  return Math.floor(Math.random() * 50)
+}
 
 const Header = () => {
   const dispatch = useAppDispatch()
@@ -63,7 +70,13 @@ const Header = () => {
 
   return (
     <HeaderLayout className="d-flex justify-content-between align-items-center">
-      <Title>IDBase</Title>
+      <img
+        alt="header-background"
+        style={{ top: `-${getRandomBackgroundPosition()}%` }}
+        className={styles.backgroundImage}
+        src={HeaderBackgroundImage}
+      />
+      <Title className={styles.title}>IDBase</Title>
       <Menu
         style={{ width: 400 }}
         theme="dark"

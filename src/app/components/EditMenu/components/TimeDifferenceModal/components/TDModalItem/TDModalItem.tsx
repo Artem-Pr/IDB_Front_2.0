@@ -10,9 +10,11 @@ import cn from 'classnames'
 import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 
-import { dateTimeFormat } from '../../../../../../common/utils/date'
-import { CopyToClipboard } from '../../../../../CopyToClipboard'
-import { UIKitBtn } from '../../../../../UIKit'
+import type { Media } from 'src/api/models/media'
+import { DATE_TIME_FORMAT } from 'src/app/common/utils/date'
+import { CopyToClipboard } from 'src/app/components/CopyToClipboard'
+import { UIKitBtn } from 'src/app/components/UIKit'
+
 import type { TimeDiff, TimeDiffConfig } from '../TDModalMapper/TDModalMapper'
 import { TimeDifference } from '../TimeDifference'
 
@@ -21,26 +23,22 @@ import styles from './TDModalItem.module.scss'
 export type DataType = 'original' | 'change'
 
 interface Props {
-  changeDate: number
-  originalDate: string
-  name: string
-  preview: string
-  tempPath: string
   applyAllDatesTrigger: DataType | null
+  changeDate: Media['changeDate']
+  mediaFile: Media
+  originalDate: string
+  setOriginalDate: (originalDate: string | null, id: Media['id']) => void
   timeDiff: TimeDiff
-  setOriginalDate: (originalDate: string | null, tempPath: string) => void
 }
 
 export const TDModalItem = memo(
   ({
-    preview,
-    name,
-    changeDate,
-    originalDate,
-    tempPath,
     applyAllDatesTrigger,
-    timeDiff: { timeDiffConfig, copyTimeDiff, pasteTimeDiffTrigger },
+    changeDate,
+    mediaFile,
+    originalDate,
     setOriginalDate,
+    timeDiff: { timeDiffConfig, copyTimeDiff, pasteTimeDiffTrigger },
   }: Props) => {
     const [currentDate, setCurrentDate] = useState<Dayjs | null>(null)
     const [dateType, setDataType] = useState<DataType | null>(null)
@@ -48,31 +46,31 @@ export const TDModalItem = memo(
     useEffect(() => {
       const setDate = () => {
         const dayjsDate = dayjs(applyAllDatesTrigger === 'change' ? changeDate : originalDate)
-        const formattedDate = dayjsDate.format(dateTimeFormat)
-        setOriginalDate(formattedDate, tempPath)
+        const formattedDate = dayjsDate.format(DATE_TIME_FORMAT)
+        setOriginalDate(formattedDate, mediaFile.id)
         setCurrentDate(dayjsDate)
         setDataType(applyAllDatesTrigger)
       }
 
       applyAllDatesTrigger && setDate()
-    }, [applyAllDatesTrigger, changeDate, originalDate, setOriginalDate, tempPath])
+    }, [applyAllDatesTrigger, changeDate, originalDate, setOriginalDate, mediaFile.id])
 
-    const setChangeDate = (newChangeDate: number) => () => {
+    const setChangeDate = (newChangeDate: Media['changeDate']) => () => {
       const dayjsDate = dayjs(newChangeDate)
-      const formattedDate = dayjsDate.format(dateTimeFormat)
-      setOriginalDate(formattedDate, tempPath)
+      const formattedDate = dayjsDate.format(DATE_TIME_FORMAT)
+      setOriginalDate(formattedDate, mediaFile.id)
       setCurrentDate(dayjsDate)
       setDataType('change')
     }
 
     const setCurrentOriginalDate = (newOriginalDate: string) => () => {
-      setOriginalDate(newOriginalDate, tempPath)
+      setOriginalDate(newOriginalDate, mediaFile.id)
       setCurrentDate(dayjs(newOriginalDate))
       setDataType('original')
     }
 
     const setDayjsDate = (dayjsDate: Dayjs | null) => {
-      setOriginalDate(dayjsDate ? dayjsDate.format(dateTimeFormat) : null, tempPath)
+      setOriginalDate(dayjsDate ? dayjsDate.format(DATE_TIME_FORMAT) : null, mediaFile.id)
       setCurrentDate(dayjsDate)
     }
 
@@ -90,14 +88,14 @@ export const TDModalItem = memo(
       (durationMilliseconds: number) => {
         const setDuration = (defaultDate: Dayjs) => {
           const newCurrentDate = defaultDate.add(durationMilliseconds)
-          setOriginalDate(newCurrentDate.format(dateTimeFormat), tempPath)
+          setOriginalDate(newCurrentDate.format(DATE_TIME_FORMAT), mediaFile.id)
           setCurrentDate(newCurrentDate)
         }
 
         const defaultDate = getDefaultDate()
         defaultDate && setDuration(defaultDate)
       },
-      [getDefaultDate, setOriginalDate, tempPath],
+      [getDefaultDate, setOriginalDate, mediaFile.id],
     )
 
     const handleCopyTimeDiff = () => {
@@ -118,13 +116,13 @@ export const TDModalItem = memo(
         const newCurrentDate = defaultDate.add(newTimeDiffConfig.timeDifference)
 
         setDataType(newTimeDiffConfig.dateType)
-        setOriginalDate(newCurrentDate.format(dateTimeFormat), tempPath)
+        setOriginalDate(newCurrentDate.format(DATE_TIME_FORMAT), mediaFile.id)
         setCurrentDate(newCurrentDate)
       }
 
       const defaultDate = getDefaultDate(timeDiffConfig?.dateType || undefined)
       defaultDate && timeDiffConfig && setTimeDiff(defaultDate, timeDiffConfig)
-    }, [getDefaultDate, setOriginalDate, tempPath, timeDiffConfig])
+    }, [getDefaultDate, setOriginalDate, mediaFile.id, timeDiffConfig])
 
     useEffect(() => {
       const setConfig = () => handleSetTimeDiffConfig()
@@ -137,34 +135,34 @@ export const TDModalItem = memo(
         <Divider />
         <div className="d-flex align-items-center">
           <div className={cn(styles.imageContainer, 'd-flex flex-column align-items-center')}>
-            <img className={styles.image} src={preview} alt={name} />
-            <span>{name}</span>
+            <img className={styles.image} src={mediaFile.staticPreview} alt={mediaFile.originalName} />
+            <span>{mediaFile.originalName}</span>
           </div>
           <div>
             <div className="d-flex gap-10 align-items-baseline">
               <Form.Item label="Change date" className="margin-bottom-10 form-label-nowrap">
-                <DatePicker format={dateTimeFormat} value={dayjs(changeDate)} showTime disabled />
+                <DatePicker format={DATE_TIME_FORMAT} value={dayjs(changeDate)} showTime disabled />
               </Form.Item>
               <CopyToClipboard text={changeDate} />
               <UIKitBtn
                 className="margin-left-20"
-                isSuccess={dateType === 'change'}
-                type="primary"
                 icon={<RightOutlined />}
+                isSuccess={dateType === 'change'}
                 onClick={setChangeDate(changeDate)}
+                type="primary"
               />
             </div>
             <div className="d-flex gap-10 align-items-baseline">
               <Form.Item className="margin-bottom-0 form-label-nowrap" label="Original date">
-                <DatePicker format={dateTimeFormat} value={dayjs(originalDate)} showTime disabled />
+                <DatePicker format={DATE_TIME_FORMAT} value={dayjs(originalDate)} showTime disabled />
               </Form.Item>
               <CopyToClipboard text={originalDate} />
               <UIKitBtn
                 className="margin-left-20"
-                isSuccess={dateType === 'original'}
-                type="primary"
                 icon={<RightOutlined />}
+                isSuccess={dateType === 'original'}
                 onClick={setCurrentOriginalDate(originalDate)}
+                type="primary"
               />
             </div>
           </div>
@@ -174,11 +172,11 @@ export const TDModalItem = memo(
                 className={cn(styles.label, 'margin-bottom-10 form-label-nowrap')}
                 label="Result original date"
               >
-                <DatePicker format={dateTimeFormat} value={currentDate} onChange={setDayjsDate} showTime />
+                <DatePicker format={DATE_TIME_FORMAT} value={currentDate} onChange={setDayjsDate} showTime />
               </Form.Item>
               <CopyToClipboard
                 text={dayjs(currentDate)
-                  .format(dateTimeFormat)}
+                  .format(DATE_TIME_FORMAT)}
                 disabled={!currentDate}
               />
               <Tooltip title="Copy time difference">
@@ -193,10 +191,10 @@ export const TDModalItem = memo(
               <Form.Item className="margin-bottom-10" label="Change time difference">
                 <TimeDifference
                   dateTime1={dayjs(changeDate)
-                    .format(dateTimeFormat)}
+                    .format(DATE_TIME_FORMAT)}
                   dateTime2={currentDate
                     ? dayjs(currentDate)
-                      .format(dateTimeFormat)
+                      .format(DATE_TIME_FORMAT)
                     : null}
                   disabled={!currentDate || dateType !== 'change'}
                   onChange={durationMilliseconds => handleDurationChange(durationMilliseconds)}
@@ -209,7 +207,7 @@ export const TDModalItem = memo(
                   dateTime1={originalDate}
                   dateTime2={currentDate
                     ? dayjs(currentDate)
-                      .format(dateTimeFormat)
+                      .format(DATE_TIME_FORMAT)
                     : null}
                   disabled={!currentDate || dateType !== 'original'}
                   onChange={durationMilliseconds => handleDurationChange(durationMilliseconds)}

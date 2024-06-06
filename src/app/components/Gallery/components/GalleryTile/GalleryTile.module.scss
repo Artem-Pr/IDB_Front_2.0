@@ -35,6 +35,7 @@
   color: var(--gallery-item-menu-text);
   transition: left 0.3s ease;
   cursor: default;
+  z-index: 1;
 
   &.highlighted {
     left: 0;
@@ -76,15 +77,18 @@
   height: 100%;
   object-fit: cover;
   border-radius: 5px;
+  z-index: 1;
 
   &:global.d-none + :local.imgPlaceholder {
-    display: block;
     position: absolute;
-    width: 50%;
-    height: 50%;
-    top: 0;
-    left: 0;
-    transform: translate(50%, 50%);
+    display: block;
+    width: 70%;
+    height: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 7px;
+    z-index: 0;
   }
 }
 
@@ -96,6 +100,7 @@
   font-weight: bold;
   padding: 5px;
   border-radius: 5px;
+  z-index: 1;
 }
 
 .video {

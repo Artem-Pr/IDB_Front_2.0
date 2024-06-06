@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
+import type { Media } from 'src/api/models/media'
+
+import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../../app/common/tests/mock'
 import { copyByJSON } from '../../app/common/utils'
 import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice/foldersSlice'
 import { selectAll, updateUploadingFilesArr } from '../../redux/reducers/uploadSlice'
@@ -10,14 +13,12 @@ import {
 } from '../../redux/selectors'
 import store from '../../redux/store/store'
 import type { RootState } from '../../redux/store/types'
-import type { UploadingObject } from '../../redux/types'
-import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../common/mock'
 
 describe('selectors: ', () => {
   let initialState: RootState = store.getState()
 
   beforeAll(() => {
-    const uploadingFiles: UploadingObject[] = copyByJSON(uploadingFilesMock)
+    const uploadingFiles: Media[] = copyByJSON(uploadingFilesMock)
     store.dispatch(updateUploadingFilesArr(uploadingFiles))
     store.dispatch(setFolderTree(foldersSliceFolderTree))
     store.dispatch(setCurrentFolderPath('home/path'))
@@ -40,7 +41,7 @@ describe('selectors: ', () => {
       .toBe('/home')
   })
   it('should return all keywords', async () => {
-    const uploadingFiles: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
+    const uploadingFiles: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
     await store.dispatch(updateUploadingFilesArr(uploadingFiles))
     const initialState = store.getState()
     const allKeywords = allUploadKeywordsSelector(initialState)
@@ -58,7 +59,7 @@ describe('selectors: ', () => {
       .toBeTruthy()
   })
   it('should return intersected keywords', async () => {
-    const uploadingFiles: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
+    const uploadingFiles: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
     await store.dispatch(updateUploadingFilesArr(uploadingFiles))
     await store.dispatch(selectAll())
     const initialState = store.getState()

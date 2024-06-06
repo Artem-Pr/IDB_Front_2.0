@@ -1,5 +1,5 @@
-import { Keywords } from '../../../../redux/types'
-import { getUniqArr } from '../../../common/utils'
+import { getUniqArr } from 'src/app/common/utils'
+import type { Keywords } from 'src/redux/types'
 
 import { createKeywordsList } from './createKeywordsList'
 

@@ -4,7 +4,7 @@ import { clearSelectedList, removeBlob, updateUploadingFilesArr } from '../uploa
 
 export const removeFileFromUploadState = (): AppThunk => (dispatch, getState) => {
   const removeBlobPreview = () => (
-    uploadingFiles.forEach(({ name }, idx) => selectedList.includes(idx) && dispatch(removeBlob(name)))
+    uploadingFiles.forEach(({ originalName }, idx) => selectedList.includes(idx) && dispatch(removeBlob(originalName)))
   )
 
   const { uploadingFiles, selectedList } = upload(getState())

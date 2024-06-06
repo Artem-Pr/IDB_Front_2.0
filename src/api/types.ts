@@ -1,5 +1,8 @@
-import { Sort, SortedFields } from '../redux/types'
+import type { SortingFields } from '../redux/types'
+import { Sort } from '../redux/types'
 import { MimeTypes } from '../redux/types/MimeTypes'
+
+import type { Media } from './models/media'
 
 export interface GetPhotosByTagsRequest {
   comparisonFolder?: string
@@ -16,7 +19,7 @@ export interface GetPhotosByTagsRequest {
   randomSort?: boolean
   searchTags?: string[]
   showSubfolders?: boolean
-  sorting: Partial<Record<SortedFields, Sort>>
+  sorting: Partial<Record<SortingFields, Sort>>
 }
 
 export enum ApiStatus {
@@ -56,3 +59,10 @@ export interface WebSocketAPIQuery {
     mimeTypes?: MimeTypes[]
   }
 }
+
+interface StaticPaths {
+  staticPath: string;
+  staticPreview: string;
+}
+
+export interface DuplicateFile extends StaticPaths, Pick<Media, 'filePath' | 'originalName' | 'mimetype'> {}

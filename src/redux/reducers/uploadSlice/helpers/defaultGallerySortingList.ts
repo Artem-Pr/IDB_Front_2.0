@@ -1,38 +1,39 @@
-import { Sort, SortedFields } from '../../../types'
+import type { GallerySortingItem } from '../../../types'
+import { Sort } from '../../../types'
 
-export const defaultGallerySortingList = [
+export const defaultGallerySortingList: GallerySortingItem[] = [
   {
-    id: SortedFields.NAME,
+    id: 'originalName',
     label: 'Name',
     sort: Sort.DESC,
   },
   {
-    id: SortedFields.TYPE,
+    id: 'mimetype',
     label: 'File type',
     sort: null,
   },
   {
-    id: SortedFields.ORIGINAL_DATE,
+    id: 'originalDate',
     label: 'Original date',
     sort: null,
   },
   {
-    id: SortedFields.MEGAPIXELS,
+    id: 'megapixels',
     label: 'Megapixels',
     sort: null,
   },
   {
-    id: SortedFields.SIZE,
+    id: 'size',
     label: 'Size',
     sort: null,
   },
   {
-    id: SortedFields.RATING,
+    id: 'rating',
     label: 'Rating',
     sort: null,
   },
   {
-    id: SortedFields.DESCRIPTION,
+    id: 'description',
     label: 'Description',
     sort: null,
   },

@@ -1,19 +1,17 @@
 import React, {
-  memo, useCallback, useEffect, useMemo, useState,
+  memo, useCallback, useMemo, useState,
 } from 'react'
-import { useSelector } from 'react-redux'
 
 import { FileDoneOutlined } from '@ant-design/icons'
 import { Button, Divider, Spin } from 'antd'
 
-import { upload } from '../../../../../../../redux/selectors'
+import type { Media } from 'src/api/models/media'
 import {
-  useCurrentPage,
   useSelectedDateList,
   useSelectedFilesList,
-  useUpdateFields,
-} from '../../../../../../common/hooks/hooks'
-import { successMessage } from '../../../../../../common/notifications'
+} from 'src/app/common/hooks/hooks'
+import { successMessage } from 'src/app/common/notifications'
+
 import type { OriginalDates } from '../../hooks/useUpdateOriginalDate'
 import { TDModalItem } from '../TDModalItem'
 import type { DataType } from '../TDModalItem/TDModalItem'
@@ -36,12 +34,8 @@ interface Props {
 }
 
 export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
-  const { isExifLoading } = useSelector(upload)
-
-  const { isUploadingPage } = useCurrentPage()
   const { selectedDates } = useSelectedDateList()
   const { selectedFiles } = useSelectedFilesList()
-  const { updateUploadingFiles } = useUpdateFields(selectedFiles)
 
   const [loading, setLoading] = useState(false)
   const [applyAllDatesTrigger, setApplyAllDatesTrigger] = useState<DataType | null>(null)
@@ -71,13 +65,9 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
     [pasteTimeDiffTrigger, setTimeDiffWithLoading, timeDiffConfig],
   )
 
-  useEffect(() => {
-    selectedDates.length && isUploadingPage && updateUploadingFiles('_', true)
-  }, [isUploadingPage, selectedDates.length, updateUploadingFiles])
-
   const setOriginalDate = useCallback(
-    (originalDate: string | null, tempPath: string) => {
-      setOriginalDatesObj(prevObj => ({ ...prevObj, [tempPath]: originalDate }))
+    (originalDate: string | null, id: Media['id']) => {
+      setOriginalDatesObj(prevObj => ({ ...prevObj, [id]: originalDate }))
     },
     [setOriginalDatesObj],
   )
@@ -106,7 +96,7 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
   }
 
   return (
-    <Spin spinning={loading || isExifLoading}>
+    <Spin spinning={loading}>
       <div className="d-flex gap-10">
         <Button type="primary" onClick={setApplyAllDatesTriggerWithLoading('change')}>
           Apply all change dates
@@ -125,15 +115,13 @@ export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
 
       {selectedDates.map(({ changeDate, originalDate }, idx) => (
         <TDModalItem
-          key={idx}
-          name={selectedFiles[idx].name}
-          preview={selectedFiles[idx].preview}
-          changeDate={changeDate}
-          originalDate={originalDate}
-          tempPath={selectedFiles[idx].tempPath}
           applyAllDatesTrigger={applyAllDatesTrigger}
-          timeDiff={timeDiff}
+          changeDate={changeDate}
+          key={selectedFiles[idx].id}
+          mediaFile={selectedFiles[idx]}
+          originalDate={originalDate}
           setOriginalDate={setOriginalDate}
+          timeDiff={timeDiff}
         />
       ))}
       <Divider />

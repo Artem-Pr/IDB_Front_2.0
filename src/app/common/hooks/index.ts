@@ -6,7 +6,6 @@ export {
   useRemoveKeyword,
   useSelectedList,
   useUniqKeywords,
-  useUpdateFields,
   useUpdateOpenMenus,
 } from './hooks'
 export { useFinishEdit } from './useFinishEdit'

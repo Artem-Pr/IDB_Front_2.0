@@ -8,12 +8,11 @@ import { EnvironmentOutlined, FullscreenOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import cn from 'classnames'
 
-import imagePlaceholder from '../../../../../assets/svg-icons-html/image-placeholder.svg'
-import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from '../../../../../redux/selectors'
-import type { ExistedFile } from '../../../../../redux/types'
-import { MimeTypes } from '../../../../../redux/types/MimeTypes'
+import type { Media } from 'src/api/models/media'
+import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
+import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from 'src/redux/selectors'
+
 import { GetCoordinates } from '../../hooks/useGefFullExifList/useGetFullExifList'
-import type { RawPreview } from '../../type'
 
 import styles from './GalleryTile.module.scss'
 
@@ -21,68 +20,59 @@ import styles from './GalleryTile.module.scss'
 let timeout: NodeJS.Timeout
 
 interface Props {
-  existedFilesArr: ExistedFile[] | undefined
+  mediaFile: Media
   fitContain: boolean
-  fullSizeJpgPath: string
   getGPSCoordinates: GetCoordinates
-  getExif: (tempPath: string) => (e: MouseEvent) => void
+  getExif: (id: Media['id']) => (e: MouseEvent) => void
   index: number
   isEditMode: boolean
   isMainPage: boolean | undefined
   isShiftHover: boolean
-  name: string
   onFullScreenClick: (index: number) => void
-  onImageClick: (i: number, preview?: RawPreview) => void
+  onImageClick: (i: number, preview?: Media) => void
   onImageOnLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => void
   onImgRefAdd: (ref: HTMLDivElement | null, idx: number) => void
-  onLocationClick: (tempPath: string) => void
+  onLocationClick: (id: Media['id']) => void
   onMouseEnter: (index: number | null) => void
-  originalPath: string | undefined
-  preview: string
   previewSize: number
   selectedList: number[]
-  tempPath: string
-  type: MimeTypes
 }
 
 export const GalleryTile = memo(
   ({
-    existedFilesArr,
+    mediaFile,
     fitContain,
-    fullSizeJpgPath,
     getGPSCoordinates,
     getExif,
     index,
     isEditMode,
     isMainPage,
     isShiftHover,
-    name,
     onFullScreenClick,
     onImageClick,
     onImageOnLoad,
     onImgRefAdd,
     onLocationClick,
     onMouseEnter,
-    originalPath,
-    preview,
     previewSize,
     selectedList,
-    tempPath,
-    type,
   }: Props) => {
     const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
-    const duplicates = useSelector(duplicateFilesArr)
+    const duplicatesForAllFiles = useSelector(duplicateFilesArr)
     const { isLoading } = useSelector(session)
 
-    const extensionTypeTouple = type.split('/')
+    const extensionTypeTouple = mediaFile.mimetype.split('/')
     const extensionType = extensionTypeTouple[0]
     const extension = extensionTypeTouple[1]
     const isJPG = extension === 'jpeg' || extension === 'jpg'
-    const isUploading = isLoading && !preview
+    const isUploading = isLoading && !mediaFile.staticPreview
 
-    const hasDuplicate = useMemo(() => (existedFilesArr?.length && watchForDuplicatesOnlyInCurrentFolder
-      ? duplicates.some(({ originalName }) => existedFilesArr[0].originalName === originalName)
-      : Boolean(existedFilesArr?.length)), [duplicates, existedFilesArr, watchForDuplicatesOnlyInCurrentFolder])
+    const hasDuplicate = useMemo(() => (
+      mediaFile.duplicates.length && watchForDuplicatesOnlyInCurrentFolder
+        ? duplicatesForAllFiles
+          .some(({ originalName }) => mediaFile.duplicates[0].originalName === originalName)
+        : Boolean(mediaFile.duplicates.length)
+    ), [duplicatesForAllFiles, mediaFile.duplicates, watchForDuplicatesOnlyInCurrentFolder])
 
     const handleMouseEnter = () => {
       clearTimeout(timeout)
@@ -105,15 +95,13 @@ export const GalleryTile = memo(
 
     const handleLocationClick = (event: MouseEvent) => {
       event.stopPropagation()
-      onLocationClick(tempPath)
+      onLocationClick(mediaFile.id)
     }
 
     const handleImageClick = (event: MouseEvent) => {
       event.stopPropagation()
       event.preventDefault()
-      !isUploading && onImageClick(index, {
-        originalPath, name, type, preview, fullSizeJpgStatic: fullSizeJpgPath,
-      })
+      !isUploading && onImageClick(index, mediaFile)
     }
 
     return (
@@ -136,7 +124,7 @@ export const GalleryTile = memo(
         ref={handleImgRefAdd}
         style={{ height: `${previewSize}px` }}
       >
-        <Tooltip title={hasDuplicate ? `Duplicate (${name})` : ''}>
+        <Tooltip title={hasDuplicate ? `Duplicate (${mediaFile.originalName})` : ''}>
           <div
             className={cn(
               styles.itemMenu,
@@ -145,10 +133,10 @@ export const GalleryTile = memo(
               'position-absolute h-100 flex-column justify-content-between',
             )}
           >
-            <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(tempPath)}>
+            <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(mediaFile.id)}>
               Exif
             </h4>
-            {Boolean(getGPSCoordinates(tempPath)) && (
+            {Boolean(getGPSCoordinates(mediaFile.id)) && (
               <EnvironmentOutlined
                 className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center mb-auto')}
                 onClick={handleLocationClick}
@@ -172,7 +160,7 @@ export const GalleryTile = memo(
           alt="preview"
           className={cn(styles.img, 'd-none')}
           onLoad={onImageOnLoad}
-          src={preview}
+          src={mediaFile.staticPreview}
           style={{ objectFit: `${fitContain ? 'contain' : 'cover'}` }}
         />
         <img className={styles.imgPlaceholder} src={imagePlaceholder} alt="placeholder" />

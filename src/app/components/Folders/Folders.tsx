@@ -7,9 +7,9 @@ import {
 } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-import { checkDirectory, fetchPathsList } from 'src/redux/reducers/foldersSlice/thunks'
-
-import { deleteConfirmation } from '../../../assets/config/moduleConfig'
+import { addFolderToFolderTree, getExpandedTreeKeys } from 'src/app/common/folderTree'
+import { useCurrentPage } from 'src/app/common/hooks'
+import { removeExtraSlash } from 'src/app/common/utils'
 import {
   setCurrentFolderKey,
   setCurrentFolderPath,
@@ -18,15 +18,13 @@ import {
   setIsDynamicFolders,
   setPathsArr,
   setShowSubfolders,
-} from '../../../redux/reducers/foldersSlice/foldersSlice'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
+} from 'src/redux/reducers/foldersSlice/foldersSlice'
+import { fetchPathsList, removeDirectoryIfExists } from 'src/redux/reducers/foldersSlice/thunks'
+import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import {
   curFolderInfo, folderElement, pathsArr, pathsArrOptionsSelector,
-} from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import { addFolderToFolderTree, getExpandedTreeKeys } from '../../common/folderTree'
-import { useCurrentPage } from '../../common/hooks'
-import { removeExtraSlash } from '../../common/utils'
+} from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
 
 import { FolderTree } from './components'
 
@@ -50,6 +48,9 @@ export const Folders = () => {
   }
 
   const setNewFolder = () => {
+    // TODO: fix behaviour:
+    // if you add main/stock/folder/subfolder it will add only main/stock/folder/subfolder
+    // but not main/stock/folder
     dispatch(setPathsArr([...directoriesArr, cleanFolderPath]))
     dispatch(setFolderTree(addFolderToFolderTree(cleanFolderPath, folderTree)))
   }
@@ -62,10 +63,7 @@ export const Folders = () => {
     .indexOf(inputValue.toUpperCase()) !== -1
 
   const handleDeleteClick = () => {
-    const onOk = () => {
-      dispatch(checkDirectory())
-    }
-    modal.confirm(deleteConfirmation({ onOk, type: 'directory' }))
+    dispatch(removeDirectoryIfExists(modal.confirm))
   }
 
   const handleShowSubfoldersChange = (e: CheckboxChangeEvent) => {

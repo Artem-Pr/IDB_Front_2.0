@@ -1,20 +1,20 @@
 import { useCallback } from 'react'
 
+import { useCurrentPage } from 'src/app/common/hooks'
+import { useSort } from 'src/app/common/hooks/useSort'
 import {
   resetSort as resetSortMainPage,
   setGallerySortingList as setGallerySortingListMainPage,
   setGroupedByDate as setGroupedByDateMainPage,
   setRandomSort as setRandomSortMainPage,
-} from '../../../../redux/reducers/mainPageSlice/mainPageSlice'
+} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import {
   resetSort as resetSortUploadingPage,
   setGallerySortingList as setGallerySortingListUploadingPage,
   setGroupedByDate as setGroupedByDateUploadingPage,
-} from '../../../../redux/reducers/uploadSlice/uploadSlice'
-import { useAppDispatch } from '../../../../redux/store/store'
-import type { GallerySortingItem } from '../../../../redux/types'
-import { useCurrentPage } from '../../../common/hooks'
-import { useSort } from '../../../common/hooks/useSort'
+} from 'src/redux/reducers/uploadSlice/uploadSlice'
+import { useAppDispatch } from 'src/redux/store/store'
+import type { GallerySortingItem } from 'src/redux/types'
 
 export const useSortingMenu = () => {
   const dispatch = useAppDispatch()

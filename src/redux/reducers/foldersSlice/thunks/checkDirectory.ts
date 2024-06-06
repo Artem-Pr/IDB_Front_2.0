@@ -17,8 +17,7 @@ export const checkDirectory = (): AppThunk => (dispatch, getState) => {
   mainApi
     .checkDirectory(currentFolderPath)
     .then(({ data }) => {
-      data.error && errorMessage(new Error(data.error), 'Directory checking ERROR: ', 0)
-      data.success && dispatchDirectoryInfo(data)
+      dispatchDirectoryInfo(data)
     })
     .catch(error => errorMessage(new Error(error), 'Directory checking ERROR: ', 0))
 }

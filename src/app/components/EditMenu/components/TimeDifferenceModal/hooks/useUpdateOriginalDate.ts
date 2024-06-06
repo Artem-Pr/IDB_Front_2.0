@@ -1,16 +1,15 @@
 import { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setDownloadingFiles } from '../../../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { setIsTimeDifferenceApplied } from '../../../../../../redux/reducers/sessionSlice/sessionSlice'
-import { updateUploadingFilesArr } from '../../../../../../redux/reducers/uploadSlice'
-import { session } from '../../../../../../redux/selectors'
-import { DownloadingObject } from '../../../../../../redux/types'
-import { useCurrentPage, useFilesList } from '../../../../../common/hooks/hooks'
+import type { Media } from 'src/api/models/media'
+import { useCurrentPage, useFilesList } from 'src/app/common/hooks/hooks'
+import { setDownloadingFiles } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { setIsTimeDifferenceApplied } from 'src/redux/reducers/sessionSlice/sessionSlice'
+import { updateUploadingFilesArr } from 'src/redux/reducers/uploadSlice'
+import { session } from 'src/redux/selectors'
 
-type FilePath = string
 type FormattedOriginalDate = string
-export type OriginalDates = Record<FilePath, FormattedOriginalDate | null>
+export type OriginalDates = Record<Media['id'], FormattedOriginalDate | null>
 
 export const useUpdateOriginalDate = () => {
   const dispatch = useDispatch()
@@ -22,21 +21,21 @@ export const useUpdateOriginalDate = () => {
 
   const updateOriginalDates = useCallback(() => {
     const updatedDatesList = filesArr.map(file => {
-      const getUpdatedFile = (tempPath: string) => {
-        const isOriginalDateUpdated = Boolean(originalDatesObj[tempPath])
+      const getUpdatedFile = (id: Media['id']): Media => {
+        const isOriginalDateUpdated = Boolean(originalDatesObj[id])
 
         return isOriginalDateUpdated
           ? {
             ...file,
-            originalDate: originalDatesObj[tempPath] as string,
+            originalDate: originalDatesObj[id] || '-',
           }
           : file
       }
 
-      return file.tempPath ? getUpdatedFile(file.tempPath) : file
+      return file.id ? getUpdatedFile(file.id) : file
     })
 
-    isMainPage && dispatch(setDownloadingFiles(updatedDatesList as DownloadingObject[]))
+    isMainPage && dispatch(setDownloadingFiles(updatedDatesList))
     isUploadingPage && dispatch(updateUploadingFilesArr(updatedDatesList))
     // Don't set for upload page, because in upload page changes apply immediately
     isMainPage && dispatch(setIsTimeDifferenceApplied(true))

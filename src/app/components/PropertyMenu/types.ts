@@ -1,17 +1,19 @@
 import { ReactNode } from 'react'
 
-import { FieldsObj } from '../../../redux/types'
+import type { Media } from 'src/api/models/media'
 
-type OmittedFieldsObj = Omit<FieldsObj, 'existedFilesArr'>
+export interface MediaProperties extends Omit<
+Media, 'id' | 'duplicates' | 'staticPath' | 'staticPreview'
+> {}
 
 export type FieldsLabels = {
-  [key in keyof OmittedFieldsObj]: ReactNode
+  [key in keyof MediaProperties]: ReactNode
 } & {
   description: string
   keywords: string[] | null
   size: number
 }
 
-export type FieldNames = {
-  [key in keyof OmittedFieldsObj]: string
+export type PropertiesFieldNames = {
+  [key in keyof MediaProperties]: string
 }

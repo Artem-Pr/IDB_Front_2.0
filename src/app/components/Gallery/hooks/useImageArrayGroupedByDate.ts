@@ -1,12 +1,17 @@
 import { useMemo } from 'react'
 
-import { FieldsObj } from '../../../../redux/types'
+import dayjs from 'dayjs'
 
-export const useImageArrayGroupedByDate = (imageArr: FieldsObj[]) => {
+import type { Media } from 'src/api/models/media'
+import { DATE_FORMAT } from 'src/app/common/utils/date'
+
+export const useImageArrayGroupedByDate = (imageArr: Media[]) => {
   const imageArrayGroupedByDate = useMemo(
     // eslint-disable-next-line no-spaced-func
-    () => imageArr.reduce<Record<string, (FieldsObj & { index: number })[]>>((accum, file, idx) => {
-      const originalDateWithoutTime = file.originalDate.split(' ')[0]
+    () => imageArr.reduce<Record<string, (Media & { index: number })[]>>((accum, file, idx) => {
+      const originalDateWithoutTime = dayjs(file.originalDate)
+        .startOf('day')
+        .format(DATE_FORMAT)
       const fileWithIndex = { ...file, index: idx }
 
       return {

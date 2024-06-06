@@ -5,11 +5,12 @@ import { Button, Checkbox, Segmented } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import cn from 'classnames'
 
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { applySorting } from '../../../redux/reducers/uploadSlice/thunks/applySorting'
-import { useAppDispatch } from '../../../redux/store/store'
-import type { GallerySortingItem } from '../../../redux/types'
-import { Sort, SortedFields } from '../../../redux/types'
+import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { applySorting } from 'src/redux/reducers/uploadSlice/thunks/applySorting'
+import { useAppDispatch } from 'src/redux/store/store'
+import { Sort } from 'src/redux/types'
+import type { GallerySortingItem, SortingFields } from 'src/redux/types'
+
 import { useCurrentPage } from '../../common/hooks'
 
 import { SortableList } from './components'
@@ -47,7 +48,7 @@ export const SortingMenu = () => {
     setSortingList(updatedList)
   }
 
-  const handleSegmentedChange = (id: SortedFields) => (value: string | number) => {
+  const handleSegmentedChange = (id: SortingFields) => (value: string | number) => {
     const sortValue = value === 0 ? null : (value as Sort)
     const updatedList: GallerySortingItem[] = gallerySortingList
       .map(sortItem => (sortItem.id === id ? { ...sortItem, sort: sortValue } : sortItem))

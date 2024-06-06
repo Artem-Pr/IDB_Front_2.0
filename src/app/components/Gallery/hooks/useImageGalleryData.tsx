@@ -1,32 +1,39 @@
 import React, { useEffect, useState } from 'react'
+import type { ReactImageGalleryItem } from 'react-image-gallery'
 
-import { FieldsObj, IGallery } from '../../../../redux/types'
-import { MimeTypes } from '../../../../redux/types/MimeTypes'
+import type { Media } from 'src/api/models/media'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
+
 import { GalleryMediaItem } from '../components'
 
-const getOriginalUrl = (file: FieldsObj) => file.fullSizeJpgPath || file.originalPath || ''
-export const useImageGalleryData = (imageArr: FieldsObj[], isMainPage?: boolean) => {
-  const [galleryArr, setGalleryArr] = useState<IGallery[]>([])
+interface UseImageGalleryDataProps {
+  galleryArr: ReactImageGalleryItem[];
+  playing: boolean;
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): UseImageGalleryDataProps => {
+  const [galleryArr, setGalleryArr] = useState<ReactImageGalleryItem[]>([])
   const [playing, setPlaying] = useState(true)
 
   useEffect(() => {
-    const renderMediaItem = (originalPath: string, preview: string, type: MimeTypes) => () => (
+    const renderMediaItem = (staticPath: string, staticPreview: string, mimetype: MimeTypes) => () => (
       <GalleryMediaItem
         height="92%"
-        originalPath={originalPath}
         playing={playing}
-        preview={preview}
         setPlaying={setPlaying}
-        type={type}
+        staticPath={staticPath}
+        staticPreview={staticPreview}
+        type={mimetype}
       />
     )
 
     isMainPage
       && setGalleryArr(
-        imageArr.map(item => ({
-          thumbnail: item.preview,
-          original: getOriginalUrl(item),
-          renderItem: renderMediaItem(getOriginalUrl(item), item.preview, item.type),
+        imageArr.map(({ staticPath, staticPreview, mimetype }) => ({
+          thumbnail: staticPreview,
+          original: staticPath,
+          renderItem: renderMediaItem(staticPath, staticPreview, mimetype),
         })),
       )
   }, [imageArr, isMainPage, playing])

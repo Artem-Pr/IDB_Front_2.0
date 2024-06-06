@@ -1,5 +1,8 @@
-import { FullExifObj, NameParts, UploadingObject } from '../../redux/types'
-import { MimeTypes } from '../../redux/types/MimeTypes'
+import type { Tags } from 'exiftool-vendored'
+
+import type { Media } from 'src/api/models/media'
+import { NameParts } from 'src/redux/types'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 export const foldersSliceFolderTree = [
   {
@@ -93,64 +96,64 @@ export const folderTreeForTest4 = [
   },
 ]
 
-export const uploadingFilesMock: UploadingObject[] = [
+export const uploadingFilesMock: Media[] = [
   {
-    changeDate: 1601655242277,
+    id: '47e5ff7410eeeee9506ca446b9498ad8',
+    filePath: '/images/47e5ff7410eeeee9506ca446b9498ad8.jpg',
+    imageSize: '300x300',
+    changeDate: '2024-01-06T14:52:34.000Z',
     keywords: [],
     megapixels: 8,
-    name: '123.jpg',
+    originalName: '123.jpg',
     originalDate: '24.06.2019',
-    preview: 'http://localhost:5000/images/47e5ff7410eeeee9506ca446b9498ad8-preview.jpg',
+    staticPreview: 'http://localhost:5000/images/47e5ff7410eeeee9506ca446b9498ad8-preview.jpg',
+    staticPath: 'http://localhost:5000/images/47e5ff7410eeeee9506ca446b9498ad8.jpg',
     size: 2805824,
-    tempPath: 'temp/47e5ff7410eeeee9506ca446b9498ad8',
-    fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
-    type: MimeTypes.jpeg,
+    mimetype: MimeTypes.jpeg,
     rating: 0,
     description: '',
-    DBFullPathFullSize: '',
-    DBFullPath: '',
     timeStamp: '',
-    existedFilesArr: [],
+    duplicates: [],
   },
   {
-    changeDate: 1601655242277,
-    keywords: null,
-    megapixels: '',
-    name: 'IMG_20190624_110245.jpg',
+    id: 'f3a168e5d6c61fd02b9b227219011462',
+    filePath: '/images/f3a168e5d6c61fd02b9b227219011462.jpg',
+    imageSize: '300x300',
+    changeDate: '2024-01-06T14:52:34.000Z',
+    keywords: [],
+    megapixels: null,
+    originalName: 'IMG_20190624_110245.jpg',
     originalDate: '-',
-    preview: 'http://localhost:5000/images/f3a168e5d6c61fd02b9b227219011462-preview.jpg',
+    staticPreview: 'http://localhost:5000/images/f3a168e5d6c61fd02b9b227219011462-preview.jpg',
+    staticPath: 'http://localhost:5000/images/f3a168e5d6c61fd02b9b227219011462.jpg',
     size: 2191001,
-    tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
-    fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
-    type: MimeTypes.jpeg,
+    mimetype: MimeTypes.jpeg,
     rating: 0,
     description: '',
-    DBFullPathFullSize: '',
-    DBFullPath: '',
     timeStamp: '',
-    existedFilesArr: [],
+    duplicates: [],
   },
   {
-    changeDate: 1601655242277,
-    keywords: null,
+    id: '33237a85357bbb9c4d7c8da122ef3c0a',
+    filePath: '/images/33237a85357bbb9c4d7c8da122ef3c0a.jpg',
+    imageSize: '300x300',
+    changeDate: '2024-01-06T14:52:34.000Z',
+    keywords: [],
     megapixels: 12,
-    name: 'IMG_20190624_110312.jpg',
+    originalName: 'IMG_20190624_110312.jpg',
     originalDate: '24.09.2016',
-    preview: 'http://localhost:5000/images/33237a85357bbb9c4d7c8da122ef3c0a-preview.jpg',
+    staticPreview: 'http://localhost:5000/images/33237a85357bbb9c4d7c8da122ef3c0a-preview.jpg',
+    staticPath: 'http://localhost:5000/images/33237a85357bbb9c4d7c8da122ef3c0a.jpg',
     size: 2812368,
-    tempPath: 'temp/33237a85357bbb9c4d7c8da122ef3c0a',
-    fullSizeJpgPath: 'uploadTemp/41e082ea221bf0afbcfde106859cfba5-fullSize.jpg',
-    type: MimeTypes.jpeg,
+    mimetype: MimeTypes.jpeg,
     rating: 0,
     description: '',
-    DBFullPathFullSize: '',
-    DBFullPath: '',
     timeStamp: '',
-    existedFilesArr: [],
+    duplicates: [],
   },
 ]
 
-export const fullExifObjArr: FullExifObj[] = [
+export const fullExifObjArr: Tags[] = [
   {
     Megapixels: 8,
     GPSLatitude: 0,
@@ -166,7 +169,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['DateTimeOriginal'],
     CreateDate: {
       year: 2008,
       month: 1,
@@ -178,7 +181,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['CreateDate'],
     CreationDate: {
       year: 2008,
       month: 1,
@@ -190,7 +193,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['CreationDate'],
     Keywords: ['Озеро', 'Эстония', 'Оля'],
     Subject: ['Озеро', 'Эстония', 'Оля'],
     Rating: 0,
@@ -221,7 +224,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['DateTimeOriginal'],
     CreateDate: {
       year: 2008,
       month: 1,
@@ -233,7 +236,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['CreateDate'],
     CreationDate: {
       year: 2008,
       month: 1,
@@ -245,7 +248,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['CreationDate'],
     Keywords: ['Эстония', 'Карта'],
     Subject: ['Эстония', 'Карта'],
     Rating: 0,
@@ -276,7 +279,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['DateTimeOriginal'],
     CreateDate: {
       year: 2008,
       month: 1,
@@ -288,7 +291,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['CreateDate'],
     CreationDate: {
       year: 2008,
       month: 1,
@@ -300,7 +303,7 @@ export const fullExifObjArr: FullExifObj[] = [
       tzoffsetMinutes: undefined,
       rawValue: '2019:06:24 11:02:25',
       zoneName: undefined,
-    },
+    } as Tags['CreationDate'],
     Keywords: ['Эстония', 'Озеро', 'Велосипед', 'Оля'],
     Subject: ['Эстония', 'Озеро', 'Велосипед', 'Оля'],
     Rating: 0,
@@ -318,17 +321,17 @@ export const fullExifObjArr: FullExifObj[] = [
   },
 ]
 
-export const uploadingFilesWithKeywordsMock: Omit<UploadingObject, 'keywords'>[] = uploadingFilesMock.map(
+export const uploadingFilesWithKeywordsMock: Media[] = uploadingFilesMock.map(
   (item, i) => ({
     ...item,
-    keywords: fullExifObjArr[i].Keywords,
+    keywords: fullExifObjArr[i].Keywords as Media['keywords'],
   }),
 )
 
 export const namePartsArrMock: NameParts[] = [
-  { shortName: 'дорога домой', ext: 'img' },
-  { shortName: 'Estonia', ext: 'mp4' },
-  { shortName: 'bom-bom', ext: 'somethingLong' },
+  { shortName: 'дорога домой', ext: '.jpg' },
+  { shortName: 'Estonia', ext: '.mp4' },
+  { shortName: 'bom-bom', ext: '.somethingLong' as NameParts['ext'] },
 ]
 
 export const folderTreeForFilteredTreeKeysTest = [

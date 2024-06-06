@@ -1,12 +1,12 @@
 import { isEmpty } from 'ramda'
 
-import { mainApi } from '../../../../api/api'
-import { prepareSortingList } from '../../../../api/helpers'
-import { createFolderTree } from '../../../../app/common/folderTree'
-import { errorMessage } from '../../../../app/common/notifications'
-import { convertDownloadingRawObjectArr } from '../../../../app/common/utils'
-import type { AppThunk } from '../../../store/types'
-import { DownloadingObject, DownloadingRawObject } from '../../../types'
+import { mainApi } from 'src/api/api'
+import { prepareSortingList } from 'src/api/helpers'
+import type { Media } from 'src/api/models/media'
+import { createFolderTree } from 'src/app/common/folderTree'
+import { errorMessage } from 'src/app/common/notifications'
+import type { AppThunk } from 'src/redux/store/types'
+
 import { setFolderTree, setPathsArr } from '../../foldersSlice/foldersSlice'
 import {
   clearDSelectedList,
@@ -77,13 +77,12 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
         files, searchPagination, filesSizeSum, dynamicFolders,
       },
     }) => {
-      const rawFiles: DownloadingRawObject[] = files || []
-      const preparedFiles: DownloadingObject[] = convertDownloadingRawObjectArr(rawFiles)
+      const mediaFiles: Media[] = files || []
       dynamicFolders && dynamicFolders.length && dispatch(setPathsArr(dynamicFolders))
       dynamicFolders && dynamicFolders.length && dispatch(setFolderTree(createFolderTree(dynamicFolders)))
       dispatch(clearDSelectedList())
-      dispatch(setRawFiles(rawFiles))
-      dispatch(setDownloadingFiles(preparedFiles))
+      dispatch(setRawFiles(mediaFiles)) // TODO: check setRawFiles if it's needed
+      dispatch(setDownloadingFiles(mediaFiles))
       dispatch(setGalleryPagination(searchPagination))
       dispatch(setFilesSizeSum(filesSizeSum))
       dispatch(setDGalleryLoading(false))

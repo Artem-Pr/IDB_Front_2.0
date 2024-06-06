@@ -2,6 +2,7 @@
   height: calc(100vh - 64px);
   padding: 20px;
   overflow-y: scroll;
+  background: var(--settings-page-background);
 
   .gridWrapper {
     grid-auto-rows: minmax(40px, auto);

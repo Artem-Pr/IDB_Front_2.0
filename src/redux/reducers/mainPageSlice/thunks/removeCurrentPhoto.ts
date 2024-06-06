@@ -1,14 +1,15 @@
-import { mainApi } from '../../../../api/api'
-import { errorMessage, successMessage } from '../../../../app/common/notifications'
-import { main } from '../../../selectors'
-import type { AppThunk } from '../../../store/types'
+import { mainApi } from 'src/api/api'
+import { errorMessage, successMessage } from 'src/app/common/notifications'
+import { main } from 'src/redux/selectors'
+import type { AppThunk } from 'src/redux/store/types'
+
 import { setIsDeleteProcessing } from '../mainPageSlice'
 
 import { fetchPhotos } from './fetchPhotos'
 
 export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
   const { dSelectedList, downloadingFiles } = main(getState())
-  const currentPhotoId = downloadingFiles[dSelectedList[0]]._id
+  const currentPhotoId = downloadingFiles[dSelectedList[0]].id
   setIsDeleteProcessing(true)
   mainApi
     .deletePhoto(currentPhotoId)

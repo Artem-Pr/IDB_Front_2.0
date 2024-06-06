@@ -6,44 +6,47 @@ import {
   compose, curry, flatten, identity, isEmpty, sortBy, uniq,
 } from 'ramda'
 
-import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from '../../../../assets/config/moduleConfig'
-import { setKeywordsList } from '../../../../redux/reducers/foldersSlice/foldersSlice'
-import { updatePhotos } from '../../../../redux/reducers/mainPageSlice/thunks'
-import { folderElement, session } from '../../../../redux/selectors'
-import { useAppDispatch } from '../../../../redux/store/store'
+import type { UpdatedFileAPIRequest } from 'src/api/dto/request-types'
+import type { Media, MediaChangeable } from 'src/api/models/media'
+import type { InitialFileObject } from 'src/app/components/EditMenu'
+import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from 'src/assets/config/moduleConfig'
+import { setKeywordsList } from 'src/redux/reducers/foldersSlice/foldersSlice'
+import { updatePhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { folderElement, session } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
 import type {
-  Checkboxes, FieldsObj, UpdatedObject, UploadingObject,
-} from '../../../../redux/types'
-import type { InitialFileObject } from '../../../components/EditMenu'
+  Checkboxes, NameParts,
+} from 'src/redux/types'
+
 import {
   getFilesWithUpdatedKeywords,
   getRenamedObjects,
   removeEmptyFields,
   removeIntersectingKeywords,
 } from '../../utils'
-import { formatDate } from '../../utils/date'
+import { getISOStringWithUTC } from '../../utils/date'
 import { useEditFilesArr } from '../hooks'
 
 import { getNewFilePath, getFilesSizeIfLongProcess } from './helpers'
 
 interface Props {
-  filesArr: FieldsObj[]
+  filesArr: Media[]
   sameKeywords: string[]
   selectedList: number[]
-  ext: string
-  name: string
+  ext: NameParts['ext']
+  originalName: string
   modal: Omit<ModalStaticFunctions, 'warn'>
   isMainPage: boolean
   isEditMany?: boolean
 }
 
 interface SendUpdatedFilesProps {
-  currentName: string
+  currentName: Media['originalName'] | '-'
   currentOriginalDate: string | null
-  currentFilePath: string
-  keywords: string[]
-  rating: number
-  description: string
+  currentFilePath: Media['filePath']
+  keywords: Media['keywords']
+  rating: Media['rating']
+  description: Media['description']
   checkboxes: Checkboxes
   timeStamp: string | undefined
 }
@@ -53,7 +56,7 @@ export const useFinishEdit = ({
   sameKeywords,
   selectedList,
   ext,
-  name,
+  originalName,
   isMainPage,
   isEditMany,
   modal,
@@ -61,7 +64,7 @@ export const useFinishEdit = ({
   const dispatch = useAppDispatch()
   const { keywordsList } = useSelector(folderElement)
   const { isTimesDifferenceApplied } = useSelector(session)
-  const editUploadingFiles = useEditFilesArr({
+  const { editUploadingFiles } = useEditFilesArr({
     filesArr,
     isMainPage,
     selectedList,
@@ -80,15 +83,15 @@ export const useFinishEdit = ({
       timeStamp,
     }: SendUpdatedFilesProps) => {
       const selectedFiles = filesArr
-        .filter((_, idx) => selectedList.includes(idx))
-        .map(({ _id, keywords, originalDate }) => ({
-          _id,
+        .filter((_file, idx) => selectedList.includes(idx))
+        .map(({ id, keywords, originalDate }) => ({
+          id,
           keywords,
-          name: currentName,
+          originalName: currentName,
           originalDate,
         }))
-      const newNamesArr: string[] = getRenamedObjects(selectedFiles)
-        .map(item => item.name)
+      const newNamesArr = getRenamedObjects(selectedFiles)
+        .map(item => item.originalName)
       const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFiles)
       const newKeywordsArr: string[][] = getFilesWithUpdatedKeywords(selectedFilesWithoutSameKeywords, newKeywords)
         .map(
@@ -98,7 +101,7 @@ export const useFinishEdit = ({
         isTimesDifferenceApplied ? selectedFiles[idx].originalDate : currentOriginalDate
       )
 
-      const getUpdatedFields = (idx: number): UpdatedObject['updatedFields'] => {
+      const getUpdatedFields = (idx: number): UpdatedFileAPIRequest['updatedFields'] => {
         const {
           isName,
           isOriginalDate,
@@ -107,22 +110,20 @@ export const useFinishEdit = ({
           isRating,
           isDescription,
           isTimeStamp,
-          needUpdatePreview,
         } = checkboxes
         return {
-          originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] : undefined,
+          originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] as Media['originalName'] : undefined,
           originalDate: (isOriginalDate && getNewOriginalDate(idx)) || undefined,
           keywords: isKeywords ? newKeywordsArr[idx] : undefined,
           filePath: isFilePath ? currentFilePath : undefined,
           rating: isRating ? rating : undefined,
           description: isDescription ? description : undefined,
           timeStamp: isTimeStamp ? timeStamp : undefined,
-          needUpdatePreview: needUpdatePreview || undefined,
         }
       }
-      const updatedFiles: UpdatedObject[] = selectedFiles.map(({ _id }, i) => ({
-        id: _id || '',
-        updatedFields: getUpdatedFields(i),
+      const updatedFiles: UpdatedFileAPIRequest[] = selectedFiles.map(({ id }, idx) => ({
+        id,
+        updatedFields: getUpdatedFields(idx),
       }))
 
       updatedFiles.length && dispatch(updatePhotos(updatedFiles))
@@ -134,7 +135,7 @@ export const useFinishEdit = ({
     ({
       rating,
       description,
-      name: newName,
+      originalName: newName,
       originalDate: newOriginalDate,
       timeStamp,
       keywords,
@@ -146,26 +147,26 @@ export const useFinishEdit = ({
       isRating,
       isDescription,
       isTimeStamp,
-      needUpdatePreview,
     }: InitialFileObject) => {
-      const currentName = newName ? newName + ext : ''
-      const currentOriginalDate = newOriginalDate ? formatDate(newOriginalDate) : null
-      const isDuplicateName = curry((newFilesArr: UploadingObject[], newCurrentName: string) => {
-        const fileArrNames = newFilesArr.map(item => item.name)
+      const currentName = newName ? `${newName}${ext}` as Media['originalName'] : ''
+      const currentOriginalDate = newOriginalDate
+        ? getISOStringWithUTC(newOriginalDate)
+        : null
+      const isDuplicateName = curry((newFilesArr: Media[], newCurrentName: Media['originalName'] | '') => {
+        const fileArrNames = newFilesArr.map(item => item.originalName)
         return fileArrNames.includes(newCurrentName)
       })(filesArr)
 
       const updateValues = () => {
-        const getFilePath = curry(getNewFilePath)(isName, currentName, name)
-        const preparedValue = {
+        const getFilePath = curry(getNewFilePath)(isName, currentName, originalName)
+        const preparedValue: Partial<MediaChangeable> = {
           rating: (isRating && rating) || undefined,
           description: (isDescription && description) || undefined,
-          name: isName && newName ? currentName : undefined,
-          originalDate: isOriginalDate ? currentOriginalDate : undefined,
+          originalName: isName && newName ? currentName || undefined : undefined,
+          originalDate: isOriginalDate ? currentOriginalDate || undefined : undefined,
           keywords: isKeywords ? keywords : sortBy(identity, sameKeywords || []),
           filePath: isFilePath && filePath ? getFilePath(filePath) : undefined,
           timeStamp: isTimeStamp ? timeStamp : undefined,
-          needUpdatePreview: needUpdatePreview || undefined,
         }
 
         const updatedKeywordsList = uniq([...keywordsList, ...flatten(keywords)])
@@ -179,13 +180,12 @@ export const useFinishEdit = ({
           isRating,
           isDescription,
           isTimeStamp,
-          needUpdatePreview,
         }
         isMainPage
           && sendUpdatedFiles({
-            currentName,
+            currentName: currentName || '-',
             currentOriginalDate,
-            currentFilePath: `/${filePath}`,
+            currentFilePath: `/${filePath}` as Media['filePath'],
             keywords,
             rating,
             description,
@@ -205,7 +205,6 @@ export const useFinishEdit = ({
         || isRating
         || isDescription
         || isTimeStamp
-        || needUpdatePreview
       )
       const filesSizeIfLongProcess = isMainPage
       && !needModalIsDuplicate
@@ -229,7 +228,7 @@ export const useFinishEdit = ({
       isMainPage,
       keywordsList,
       modal,
-      name,
+      originalName,
       sameKeywords,
       selectedList,
     ],

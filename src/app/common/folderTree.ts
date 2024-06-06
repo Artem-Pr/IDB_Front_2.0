@@ -1,6 +1,6 @@
 import { flatten, reduce } from 'ramda'
 
-import { FolderTreeItem } from '../../redux/types'
+import { FolderTreeItem } from 'src/redux/types'
 
 import { copyByJSON, removeExtraSlash } from './utils'
 

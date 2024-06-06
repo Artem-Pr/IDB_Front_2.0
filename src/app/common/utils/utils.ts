@@ -11,7 +11,6 @@ import {
   isEmpty,
   map,
   mapAccumRight,
-  omit,
   prop,
   reject,
   sortBy,
@@ -21,29 +20,23 @@ import {
   without,
 } from 'ramda'
 
+import type { Media } from 'src/api/models/media'
 import type {
-  DownloadingObject,
-  DownloadingRawObject,
   ExifFilesList,
   Keywords,
   LoadingStatus,
   NameParts,
-  RawFullExifObj,
-  UpdatingFieldsWithPath,
-  UploadingObject,
-} from '../../../redux/types'
-import { MimeTypes } from '../../../redux/types/MimeTypes'
-
-import { dateTimeFormat, formatDate } from './date'
+} from 'src/redux/types'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 export const invokableCompose = <any>compose
 export const filterIndexed = addIndex(filter)
-export const copyByJSON = (obj: any) => JSON.parse(JSON.stringify(obj))
+export const copyByJSON = <T>(obj: T): T => JSON.parse(JSON.stringify(obj))
 export const removeExtraSlash = (value: string): string => (value.endsWith('/') ? value.slice(0, -1) : value)
 export const removeExtraFirstSlash = (value: string): string => (value.startsWith('/') ? value.slice(1) : value)
 // Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
-export const removeEmptyFields = (obj: Record<string, any>) => reject(field => !field)(obj)
+export const removeEmptyFields = <T extends Record<string, any>>(obj: T): Partial<T> => reject(field => !field)(obj)
 export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) => (
   sortBy<K>(compose(toLower, prop(String(fieldName))))
 )
@@ -61,12 +54,15 @@ export const isVideoByExt = (fileExtension: string) => {
 export const capitalize = (str: string): string => str.charAt(0)
   .toUpperCase() + str.slice(1)
 
-const getNameObj = (fullName: string) => {
+export const wait = async (timeMs: number = 0, func?: Function) => new Promise(resolve => { setTimeout(resolve, timeMs) })
+  .then(() => func && func())
+
+const getNameObj = (fullName: string): NameParts => {
   const separatedNameArr = fullName.split('.')
   const shortName = separatedNameArr.slice(0, -1)
     .join('.')
-  const extWithoutDot = separatedNameArr.at(-1)
-  const ext = `.${extWithoutDot}`
+  const extWithoutDot = <NameParts['extWithoutDot']>separatedNameArr.at(-1)
+  const ext: NameParts['ext'] = extWithoutDot ? `.${extWithoutDot}` : ''
   return { shortName, ext, extWithoutDot }
 }
 
@@ -75,42 +71,13 @@ export const getNameParts = (fullName: string): NameParts => {
   return isValidName ? getNameObj(fullName) : { shortName: '-', ext: '' }
 }
 
-export const getTempPath = (filesArr: UploadingObject[], index: number): string => filesArr[index].tempPath
 export const isExifExist = (exifList: ExifFilesList, tempPath: string): boolean => !!exifList[tempPath]
 
-const tryToRestoreKeywords = (keywords: string | null): string[] | null => {
-  const keywordsArray = keywords?.split('.')
-  return keywordsArray?.length ? keywordsArray : null
-}
-// TODO: add tests
-const getPrepareKeywordsFromRawExif = (exifObj: RawFullExifObj | undefined) => {
-  const getPreparedKeywords = (keywords: RawFullExifObj['Keywords']) => (
-    Array.isArray(keywords) ? keywords : tryToRestoreKeywords(keywords)
-  )
-  return Array.isArray(exifObj?.Subject) ? exifObj.Subject : getPreparedKeywords(exifObj?.Keywords || null)
-}
-
-export const getUpdatedExifFieldsObj = (exifList: ExifFilesList, tempPath: string): UpdatingFieldsWithPath => {
-  const exifObj = exifList[tempPath]
-
-  const originalDateRaw = exifObj?.DateTimeOriginal || exifObj?.CreationDate || exifObj?.CreateDate
-  const originalDateFormatted = originalDateRaw ? formatDate(originalDateRaw.rawValue, dateTimeFormat) : '-'
-
-  return {
-    keywords: getPrepareKeywordsFromRawExif(exifObj),
-    megapixels: exifObj?.Megapixels || '',
-    rating: exifObj?.Rating || 0,
-    description: exifObj?.Description || '',
-    originalDate: originalDateFormatted,
-    tempPath,
-  }
-}
-
 export const updateFilesArrItemByField = (
-  fieldName: keyof UploadingObject,
-  filesArr: UploadingObject[],
+  fieldName: keyof Media,
+  filesArr: Media[],
   updatingFieldsObj: { [key: string]: any },
-): UploadingObject[] => filesArr.map(item => {
+): Media[] => filesArr.map(item => {
   const isEqualFileName = item[fieldName] === updatingFieldsObj[fieldName]
   return isEqualFileName ? { ...item, ...updatingFieldsObj } : item
 })
@@ -122,7 +89,7 @@ export const renameEqualStrings = (strArr: string[]) => {
   }
 
   const arrCreator = (accum: Record<string, number>, curValue: string): [Record<string, number>, string] => {
-    const newValue = accum[curValue] ? dec(accum[curValue]) : curValue
+    const newValue = accum[curValue] ? dec(accum[curValue]) : Number(curValue)
     const newAccum = { ...copyByJSON(accum), [curValue]: newValue }
     const additionalNumber = accum[curValue]
       ? `_${accum[curValue].toString()
@@ -145,13 +112,13 @@ export const renameShortNames = (namePartArr: NameParts[]): NameParts[] => {
   return renamedShortNames.map((item, i) => ({ shortName: item, ext: namePartArr[i].ext }))
 }
 
-export const getRenamedObjects = <T extends { name: string }>(filesArr: T[]): T[] => {
-  const newFilesArr: T[] = copyByJSON(filesArr)
-  const fileNameParts: NameParts[] = newFilesArr.map(({ name }) => getNameParts(name))
+export const getRenamedObjects = <T extends { originalName: Media['originalName'] | '-' }>(filesArr: T[]): T[] => {
+  const newFilesArr = copyByJSON(filesArr)
+  const fileNameParts: NameParts[] = newFilesArr.map(({ originalName }) => getNameParts(originalName))
   const renamedNameParts = renameShortNames(fileNameParts)
   return newFilesArr.map((item, i) => {
     const { shortName, ext } = renamedNameParts[i]
-    return { ...item, name: shortName + ext }
+    return { ...item, originalName: shortName + ext }
   })
 }
 
@@ -178,7 +145,7 @@ export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | n
 )
 
 export const getSameKeywords = (
-  filesArr: UploadingObject[] | DownloadingObject[],
+  filesArr: Media[],
   selectedList: number[],
 ): string[] => {
   const getIntersectionArr = (keywordsArrays: string[][]) => (keywordsArrays.length
@@ -187,19 +154,10 @@ export const getSameKeywords = (
 
   return compose<any, any, any, any>(
     getIntersectionArr,
-    map((item: UploadingObject) => item.keywords || []),
+    map((item: Media) => item.keywords || []),
     filterIndexed((__: any, index: number) => includes(index, selectedList)),
   )(filesArr)
 }
-
-export const convertDownLoadingRawObj = (downLoadingRawObj: DownloadingRawObject): DownloadingObject => {
-  const { originalName, mimetype } = downLoadingRawObj
-  return { ...omit(['mimetype', 'originalName'], downLoadingRawObj), name: originalName, type: mimetype }
-}
-
-export const convertDownloadingRawObjectArr = (rawArr: DownloadingRawObject[]): DownloadingObject[] => (
-  rawArr.map(item => convertDownLoadingRawObj(item))
-)
 
 export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
   filesArr: T[],

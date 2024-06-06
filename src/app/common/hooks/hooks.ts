@@ -6,58 +6,55 @@ import {
   compose, curry, isEmpty, omit,
 } from 'ramda'
 
-import { fetchFullExif as fetchMainPageFullExif } from 'src/redux/reducers/mainPageSlice/thunks'
-
+import type { Media } from 'src/api/models/media'
 import {
   clearDownloadingState,
   clearDSelectedList as clearSelectedListDownload,
   selectAllD as selectAllDownload,
   setDownloadingFiles,
   updateDOpenMenus,
-} from '../../../redux/reducers/mainPageSlice/mainPageSlice'
+} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import {
   clearSelectedList as clearSelectedListUpload,
   clearUploadingState,
   selectAll as selectAllUpload,
-  setIsExifLoading,
   updateOpenMenus,
   updateUploadingFilesArr,
-} from '../../../redux/reducers/uploadSlice'
-import { fetchFullExif as fetchUploadPageFullExif } from '../../../redux/reducers/uploadSlice/thunks'
-import { fetchDuplicates } from '../../../redux/reducers/uploadSlice/thunks/fetchDuplicates'
-import { updateBlobName } from '../../../redux/reducers/uploadSlice/uploadSlice'
+} from 'src/redux/reducers/uploadSlice'
+import { fetchDuplicates } from 'src/redux/reducers/uploadSlice/thunks/fetchDuplicates'
+import { updateBlobName } from 'src/redux/reducers/uploadSlice/uploadSlice'
 import {
   allSameKeywords,
   currentFilesList,
-  currentFullExifFilesList,
   currentSelectedList,
-  isGlobalExifLoading,
   openMenusSelector,
   selectedDateList,
   selectedFilesList,
   uniqKeywords,
-} from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import type { AppThunk, RootState } from '../../../redux/store/types'
-import { PagePaths } from '../../../redux/types'
-import type {
-  BlobUpdateNamePayload, DownloadingObject, MainMenuKeys, UploadingObject,
-} from '../../../redux/types'
+} from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+import type { RootState } from 'src/redux/store/types'
+import { PagePaths } from 'src/redux/types'
+import type { BlobUpdateNamePayload, MainMenuKeys } from 'src/redux/types'
+
 import {
-  addKeywordsToAllFiles, getRenamedObjects, removeIntersectingKeywords, updateFilesArrayItems,
+  addKeywordsToAllFiles,
+  getRenamedObjects,
+  removeIntersectingKeywords,
+  updateFilesArrayItems,
 } from '../utils'
 
 const isEditNameOperation = (blobNameData: BlobUpdateNamePayload | false): blobNameData is BlobUpdateNamePayload => (
   blobNameData !== false && blobNameData.oldName !== blobNameData.newName
 )
 
-const prepareBlobUpdateNamePayload = (newFilesArr: UploadingObject[]) => (
-  ({ name, tempPath }: UploadingObject): BlobUpdateNamePayload | false => {
-    const updatedName = newFilesArr.find(newItem => newItem.tempPath === tempPath)?.name
+const prepareBlobUpdateNamePayload = (newFilesArr: Media[]) => (
+  ({ originalName, id }: Media): BlobUpdateNamePayload | false => {
+    const updatedName = newFilesArr.find(newItem => newItem.id === id)?.originalName
 
     return updatedName
       ? {
-        oldName: name,
+        oldName: originalName,
         newName: updatedName,
       }
       : false
@@ -137,12 +134,6 @@ export const useClearSelectedList = () => {
   return { clearSelectedList }
 }
 
-export const useIsExifLoading = () => {
-  const currentPage = useCurrentPage()
-
-  return useSelector((state: RootState) => isGlobalExifLoading(state, currentPage))
-}
-
 export const useRemoveKeyword = () => {
   const dispatch = useAppDispatch()
   const { filesArr } = useFilesList()
@@ -151,7 +142,7 @@ export const useRemoveKeyword = () => {
   const removeKeyword = useCallback(
     (keyword: string) => {
       const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], filesArr)
-      isMainPage && dispatch(setDownloadingFiles(filesArrWithoutKeyword as DownloadingObject[]))
+      isMainPage && dispatch(setDownloadingFiles(filesArrWithoutKeyword))
       isUploadingPage && dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))
     },
     [dispatch, filesArr, isMainPage, isUploadingPage],
@@ -195,77 +186,17 @@ export const useClearFilesArray = () => {
   return { clearFilesArr }
 }
 
-export const useUpdateFields = (filesArr: Array<UploadingObject | DownloadingObject>) => {
-  const dispatch = useAppDispatch()
-  const currentPage = useCurrentPage()
-  const fullExifFilesList = useSelector((state: RootState) => currentFullExifFilesList(state, currentPage))
-
-  const isExifExist = useCallback((tempPath: string): boolean => !!fullExifFilesList[tempPath], [fullExifFilesList])
-
-  const updateOne = useCallback(
-    (tempPath: string): Promise<void> | void | false => {
-      if (!isExifExist(tempPath) && currentPage.isMainPage) {
-        return dispatch(fetchMainPageFullExif([tempPath]))
-      }
-      if (!isExifExist(tempPath) && currentPage.isUploadingPage) {
-        return dispatch(fetchUploadPageFullExif([tempPath]))
-      }
-      return false
-    },
-    [currentPage.isMainPage, currentPage.isUploadingPage, dispatch, isExifExist],
-  )
-
-  const updateAll = useCallback((): Promise<void> | void | false => {
-    const tempPathArr = filesArr.map(({ tempPath }) => tempPath)
-      .filter(tempPath => !isExifExist(tempPath))
-
-    let fetchFullExif: ((tempPathArr: string[]) => AppThunk) | false = false
-
-    if (currentPage.isMainPage) {
-      fetchFullExif = fetchMainPageFullExif
-    }
-
-    if (currentPage.isUploadingPage) {
-      fetchFullExif = fetchUploadPageFullExif
-    }
-
-    if (!fetchFullExif) return false
-
-    return !!tempPathArr.length && dispatch(fetchFullExif(tempPathArr))
-  }, [currentPage.isMainPage, currentPage.isUploadingPage, dispatch, filesArr, isExifExist])
-
-  const load = useCallback(
-    (response: Promise<void>): void => {
-      dispatch(setIsExifLoading(true))
-      response.then(() => dispatch(setIsExifLoading(false)))
-    },
-    [dispatch],
-  )
-
-  const updateUploadingFiles = useCallback(
-    (tempPath: string, all = false): void => {
-      const response = all ? updateAll() : updateOne(tempPath)
-      response ? load(response) : Promise.resolve(true)
-    },
-    [load, updateAll, updateOne],
-  )
-
-  return {
-    updateUploadingFiles,
-  }
-}
-
 const addEditedFieldsToFileArr = (
-  filesArr: UploadingObject[],
-  editedFields: Partial<UploadingObject>,
-): UploadingObject[] => {
+  filesArr: Media[],
+  editedFields: Partial<Media>,
+): Media[] => {
   const keywords: string[] = editedFields?.keywords || []
   const updatedFileArr = isEmpty(keywords) ? filesArr : addKeywordsToAllFiles(keywords, filesArr)
   return updatedFileArr.map(item => ({ ...item, ...omit(['keywords'], editedFields) }))
 }
 
 interface UseEditFilesArrProps {
-  filesArr: UploadingObject[]
+  filesArr: Media[]
   isMainPage: boolean
   selectedList: number[]
   sameKeywords: string[]
@@ -280,22 +211,22 @@ export const useEditFilesArr = ({
   const dispatch = useAppDispatch()
   const updatingAction = useMemo(() => (isMainPage ? setDownloadingFiles : updateUploadingFilesArr), [isMainPage])
 
-  return useMemo(() => {
+  const editUploadingFiles = useMemo(() => {
     const selectedFilesArr = filesArr.filter((_, idx) => selectedList.includes(idx))
     const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFilesArr)
-    const AddEditedFieldsToFilteredFileArr: (editedFields: Partial<UploadingObject>) => UploadingObject[] = curry(
+    const AddEditedFieldsToFilteredFileArr: (editedFields: Partial<Media>) => Media[] = curry(
       addEditedFieldsToFileArr,
     )(selectedFilesWithoutSameKeywords)
-    const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)(isMainPage ? '_id' : 'tempPath', filesArr)
-    const updateFileBlobsNamesMiddleware = (newFilesArr: UploadingObject[]) => {
+    const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)('id', filesArr)
+    const updateFileBlobsNamesMiddleware = (newFilesArr: Media[]) => {
       filesArr
         .map(prepareBlobUpdateNamePayload(newFilesArr))
         .filter(isEditNameOperation)
         .forEach(compose(dispatch, updateBlobName))
       return newFilesArr
     }
-    const checkNameDuplicatesMiddleware = (newFilesArr: UploadingObject[]) => {
-      dispatch(fetchDuplicates(newFilesArr.map(({ name }) => name)))
+    const checkNameDuplicatesMiddleware = (newFilesArr: Media[]) => {
+      dispatch(fetchDuplicates(newFilesArr.map(({ originalName }) => originalName)))
       return newFilesArr
     }
 
@@ -308,5 +239,7 @@ export const useEditFilesArr = ({
       getRenamedObjects,
       AddEditedFieldsToFilteredFileArr,
     )
-  }, [filesArr, sameKeywords, isMainPage, dispatch, updatingAction, selectedList])
+  }, [filesArr, sameKeywords, dispatch, updatingAction, selectedList])
+
+  return { editUploadingFiles }
 }

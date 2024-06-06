@@ -3,7 +3,10 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 
 import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import duration from 'dayjs/plugin/duration'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import { createRoot } from 'react-dom/client'
 
 import App from './App'
@@ -14,6 +17,10 @@ import './styles/index.scss'
 import 'react-image-gallery/styles/scss/image-gallery.scss'
 
 dayjs.extend(duration)
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
+dayjs.tz.setDefault('UTC')
 
 const container = document.querySelector('#root')
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

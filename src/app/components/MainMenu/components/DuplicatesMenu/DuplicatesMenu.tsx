@@ -5,7 +5,8 @@ import { useSelector } from 'react-redux'
 import { Tooltip } from 'antd'
 import cn from 'classnames'
 
-import { previewDuplicates } from '../../../../../redux/selectors'
+import { previewDuplicates } from 'src/redux/selectors'
+
 import { GalleryMediaItem } from '../../../Gallery/components'
 
 import styles from './DuplicatesMenu.module.scss'
@@ -19,14 +20,13 @@ export const DuplicatesMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   return (
     <div>
       {previewDuplicatesArr.map(({
-        originalPath, originalName, preview, filePath, fullSizeJpgPath,
+        filePath, staticPath, mimetype, staticPreview,
       }) => (
         <div key={filePath} className={cn(styles.preview)} ref={videoPreviewRef}>
           <GalleryMediaItem
-            originalPath={fullSizeJpgPath || originalPath || ''}
-            preview={preview}
-            ext={originalName.split('.')
-              .at(-1)}
+            staticPath={staticPath}
+            staticPreview={staticPreview}
+            type={mimetype}
             muted
             usePlaceholder
           />

@@ -1,18 +1,20 @@
-import { mainApi } from '../../../../api/api'
-import { errorMessage } from '../../../../app/common/notifications'
-import { upload } from '../../../selectors'
-import type { AppThunk } from '../../../store/types'
-import { ExistedFile } from '../../../types'
+import { mainApi } from 'src/api/api'
+import type { Media } from 'src/api/models/media'
+import type { DuplicateFile } from 'src/api/types'
+import { errorMessage } from 'src/app/common/notifications'
+import { upload } from 'src/redux/selectors'
+import type { AppThunk } from 'src/redux/store/types'
+
 import { updateUploadingFilesArr } from '../uploadSlice'
 
-export const fetchDuplicates = (names: string[]): AppThunk => async (dispatch, getState) => {
+export const fetchDuplicates = (originalNameList: Media['originalName'][]): AppThunk => async (dispatch, getState) => {
   await mainApi
-    .checkDuplicates(names)
+    .checkDuplicates(originalNameList)
     .then(({ data }) => {
       const { uploadingFiles } = upload(getState())
-      const updatedUploadingFiles = uploadingFiles.map(file => {
-        const existedFilesArr: ExistedFile[] | undefined = data[file.name]
-        return { ...file, existedFilesArr: existedFilesArr || file.existedFilesArr }
+      const updatedUploadingFiles: Media[] = uploadingFiles.map(file => {
+        const existedFilesArr: DuplicateFile[] | undefined = data[file.originalName]
+        return { ...file, duplicates: existedFilesArr || file.duplicates }
       })
       dispatch(updateUploadingFilesArr(updatedUploadingFiles))
     })

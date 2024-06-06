@@ -1,49 +1,49 @@
-import { Sort, SortedFields } from '../../../types'
-import type { GallerySortingItem } from '../../../types'
+import { Sort } from 'src/redux/types'
+import type { GallerySortingItem } from 'src/redux/types'
 
 export const defaultGallerySortingList: GallerySortingItem[] = [
   {
-    id: SortedFields.MIMETYPE,
+    id: 'mimetype',
     label: 'File type',
     sort: null,
   },
   {
-    id: SortedFields.ORIGINAL_DATE,
+    id: 'originalDate',
     label: 'Original date',
     sort: Sort.DESC,
   },
   {
-    id: SortedFields.FILE_PATH,
+    id: 'filePath',
     label: 'File path',
     sort: Sort.ASC,
   },
   {
-    id: SortedFields.ID,
+    id: 'id',
     label: 'Last added',
     sort: null,
   },
   {
-    id: SortedFields.MEGAPIXELS,
+    id: 'megapixels',
     label: 'Megapixels',
     sort: null,
   },
   {
-    id: SortedFields.ORIGINAL_NAME,
+    id: 'originalName',
     label: 'Name',
     sort: null,
   },
   {
-    id: SortedFields.SIZE,
+    id: 'size',
     label: 'Size',
     sort: null,
   },
   {
-    id: SortedFields.RATING,
+    id: 'rating',
     label: 'Rating',
     sort: null,
   },
   {
-    id: SortedFields.DESCRIPTION,
+    id: 'description',
     label: 'Description',
     sort: null,
   },

@@ -1,5 +1,8 @@
 import { keys } from 'ramda'
 
+import { Media } from 'src/api/models/media'
+
+import { NameParts } from '../../../redux/types'
 import {
   addChildToTreeElem,
   addFolderToFolderTree,
@@ -11,7 +14,19 @@ import {
   expandedTreeKeyFromPath,
   getExpandedTreeKeys,
   getFolderPathFromTreeKey,
-} from '../../app/common/folderTree'
+} from '../folderTree'
+import {
+  foldersSliceFolderTree,
+  folderTreeForFilteredTreeKeysTest,
+  folderTreeForTest1,
+  folderTreeForTest2,
+  folderTreeForTest3,
+  folderTreeForTest4,
+  namePartsArrMock,
+  uploadingFilesMock,
+  uploadingFilesWithKeywordsMock,
+} from '../tests/mock'
+
 import {
   copyByJSON,
   getNameParts,
@@ -26,20 +41,7 @@ import {
   renameShortNames,
   getFilesWithUpdatedKeywords,
   getFilePathWithoutName,
-} from '../../app/common/utils'
-import { NameParts, UploadingObject } from '../../redux/types'
-
-import {
-  foldersSliceFolderTree,
-  folderTreeForFilteredTreeKeysTest,
-  folderTreeForTest1,
-  folderTreeForTest2,
-  folderTreeForTest3,
-  folderTreeForTest4,
-  namePartsArrMock,
-  uploadingFilesMock,
-  uploadingFilesWithKeywordsMock,
-} from './mock'
+} from './utils'
 
 describe('utils: ', () => {
   describe('getExpandedTree', () => {
@@ -313,13 +315,13 @@ describe('utils: ', () => {
     it('should return updated obj', () => {
       const originalObjArr = uploadingFilesMock
       const objectForUpdate = {
-        tempPath: 'temp/f3a168e5d6c61fd02b9b227219011462',
+        filePath: 'temp/f3a168e5d6c61fd02b9b227219011462',
         keywords: ['bom-bom'],
         megapixels: 24,
         originalDate: '12.12.2012',
       }
-      const updatedObjArr = updateFilesArrItemByField('tempPath', originalObjArr, objectForUpdate)
-      expect(updatedObjArr[1].name)
+      const updatedObjArr = updateFilesArrItemByField('filePath', originalObjArr, objectForUpdate)
+      expect(updatedObjArr[1].originalName)
         .toBe('IMG_20190624_110245.jpg')
       expect(updatedObjArr[1].keywords)
         .toHaveLength(1)
@@ -378,15 +380,15 @@ describe('utils: ', () => {
   })
   describe('getRenamedObjects: ', () => {
     it('should return array of objects with updated names', () => {
-      const filesArr: UploadingObject[] = uploadingFilesMock.map(item => ({ ...item, name: 'IMG_20190624_110245.jpg' }))
+      const filesArr: Media[] = uploadingFilesMock.map(item => ({ ...item, originalName: 'IMG_20190624_110245.jpg' }))
       const newNamesObjectArr = getRenamedObjects(filesArr)
       expect(newNamesObjectArr)
         .toHaveLength(3)
-      expect(newNamesObjectArr[0].name)
+      expect(newNamesObjectArr[0].originalName)
         .toBe('IMG_20190624_110245_001.jpg')
-      expect(newNamesObjectArr[1].name)
+      expect(newNamesObjectArr[1].originalName)
         .toBe('IMG_20190624_110245_002.jpg')
-      expect(newNamesObjectArr[2].name)
+      expect(newNamesObjectArr[2].originalName)
         .toBe('IMG_20190624_110245_003.jpg')
     })
   })
@@ -439,17 +441,17 @@ describe('utils: ', () => {
   })
   describe('updateFilesArrayItems: ', () => {
     it('should return updated filesArr', () => {
-      const originalFileArr: UploadingObject[] = copyByJSON(uploadingFilesWithKeywordsMock)
+      const originalFileArr: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
       const filteredFilesArr = originalFileArr.filter((_, i) => i !== 1)
       const changedFilteredArr = filteredFilesArr.map(item => ({ ...item, name: 'bom' }))
-      const updatedFilesArr = updateFilesArrayItems('tempPath', originalFileArr, changedFilteredArr)
+      const updatedFilesArr = updateFilesArrayItems('id', originalFileArr, changedFilteredArr)
       expect(updatedFilesArr)
         .toHaveLength(3)
-      expect(updatedFilesArr[0].name)
+      expect(updatedFilesArr[0].originalName)
         .toBe('bom')
-      expect(updatedFilesArr[1].name)
+      expect(updatedFilesArr[1].originalName)
         .toBe('IMG_20190624_110245.jpg')
-      expect(updatedFilesArr[2].name)
+      expect(updatedFilesArr[2].originalName)
         .toBe('bom')
     })
   })
