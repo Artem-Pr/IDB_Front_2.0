@@ -8,10 +8,10 @@ import {
 } from 'antd'
 import { keys } from 'ramda'
 
-import { initWebSocket } from '../../../../../api/api-websocket'
-import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types'
-import { pathsArrOptionsSelector } from '../../../../../redux/selectors'
-import { MimeTypes } from '../../../../../redux/types/MimeTypes'
+import { initWebSocket } from 'src/api/api-websocket'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types'
+import { pathsArrOptionsSelector } from 'src/redux/selectors'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import styles from './CreatePreviews.module.scss'
 

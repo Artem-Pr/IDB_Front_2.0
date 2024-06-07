@@ -1,9 +1,9 @@
-import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../../redux/reducers/mainPageSlice/helpers'
-import { initialState as mainPageInitialState } from '../../../redux/reducers/mainPageSlice/mainPageState'
-import { SearchMenu } from '../../../redux/reducers/mainPageSlice/types'
-import { initialState as settingsInitialState } from '../../../redux/reducers/settingsSlice/settingsSlice'
-import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../../redux/reducers/uploadSlice/helpers'
-import { GalleryPagination, GallerySortingItem, MainMenuKeys } from '../../../redux/types'
+import { defaultGallerySortingList as defaultGallerySortingListMainPage } from 'src/redux/reducers/mainPageSlice/helpers'
+import { initialState as mainPageInitialState } from 'src/redux/reducers/mainPageSlice/mainPageState'
+import { SearchMenu } from 'src/redux/reducers/mainPageSlice/types'
+import { initialState as settingsInitialState } from 'src/redux/reducers/settingsSlice/settingsSlice'
+import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from 'src/redux/reducers/uploadSlice/helpers'
+import { GalleryPagination, GallerySortingItem, MainMenuKeys } from 'src/redux/types'
 
 const safetyJSONParse = <T>(str: string | null) => {
   try {

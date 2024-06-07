@@ -3,10 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Modal, Tag } from 'antd'
 
+import { deleteConfirmation } from 'src/assets/config/moduleConfig'
 import { deleteUnusedKeyword, fetchUnusedKeywordsList } from 'src/redux/reducers/settingsSlice/thunks'
-
-import { deleteConfirmation } from '../../../../assets/config/moduleConfig'
-import { settings } from '../../../../redux/selectors'
+import { settings } from 'src/redux/selectors'
 
 export const UnusedKeywords = memo(() => {
   const dispatch = useDispatch<any>()

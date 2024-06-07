@@ -1,7 +1,7 @@
+import { foldersSliceFolderTree } from '../../app/common/tests/mock'
 import { setFolderTree, setCurrentFolderPath, setPathsArr } from '../../redux/reducers/foldersSlice/foldersSlice'
 import { pathsArr } from '../../redux/selectors'
 import store from '../../redux/store/store'
-import { foldersSliceFolderTree } from '../../app/common/tests/mock'
 
 describe('foldersSlice-reducer: ', () => {
   it('should set folderTree', async () => {

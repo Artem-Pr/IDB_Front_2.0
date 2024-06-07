@@ -7,10 +7,11 @@ import {
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import cn from 'classnames'
 
-import { refreshPreviewSize, setFitContain } from '../../../redux/reducers/sessionSlice/sessionSlice'
+import { refreshPreviewSize, setFitContain } from 'src/redux/reducers/sessionSlice/sessionSlice'
 import {
   dSelectedList, filesSizeSum, selectedList, session, settings,
-} from '../../../redux/selectors'
+} from 'src/redux/selectors'
+
 import { useCurrentPage } from '../../common/hooks'
 import { formatSize } from '../../common/utils'
 

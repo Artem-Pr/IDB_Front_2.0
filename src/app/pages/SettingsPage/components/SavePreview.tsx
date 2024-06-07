@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Checkbox } from 'antd'
 
-import { setSavePreview } from '../../../../redux/reducers/settingsSlice/settingsSlice'
-import { settings } from '../../../../redux/selectors'
+import { setSavePreview } from 'src/redux/reducers/settingsSlice/settingsSlice'
+import { settings } from 'src/redux/selectors'
 
 export const SavePreview = memo(() => {
   const dispatch = useDispatch()

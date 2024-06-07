@@ -5,17 +5,17 @@ import {
   Layout, Menu, Modal, Typography,
 } from 'antd'
 
+import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
-import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
-
-import { checkFolderConfirmation, deleteMessageConst } from '../../../assets/config/moduleConfig'
 import {
   setNumberOfFilesInDirectory,
   setNumberOfSubdirectories,
   setShowInfoModal,
-} from '../../../redux/reducers/foldersSlice/foldersSlice'
-import { curFolderInfo, pathsArr } from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
+} from 'src/redux/reducers/foldersSlice/foldersSlice'
+import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
+import { curFolderInfo, pathsArr } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+
 import { useCurrentPage } from '../../common/hooks'
 
 import { PageMenuItems } from './PageMenuItems'

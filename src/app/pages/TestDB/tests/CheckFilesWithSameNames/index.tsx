@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { AutoComplete, Button, Card } from 'antd'
 
-import { pathsArrOptionsSelector } from '../../../../../redux/selectors'
+import { pathsArrOptionsSelector } from 'src/redux/selectors'
 
 import styles from './index.module.scss'
 

@@ -8,11 +8,11 @@ import { Modal, Spin, Switch } from 'antd'
 import cn from 'classnames'
 
 import type { Media } from 'src/api/models/media'
+import { setPreviewPlaying } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { session } from 'src/redux/selectors'
+import type { ExifFilesList } from 'src/redux/types'
+import { MainMenuKeys } from 'src/redux/types'
 
-import { setPreviewPlaying } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { session } from '../../../redux/selectors'
-import type { ExifFilesList } from '../../../redux/types'
-import { MainMenuKeys } from '../../../redux/types'
 import { useSort } from '../../common/hooks/useSort'
 
 import { GalleryTile, ImageGalleryMenu } from './components'

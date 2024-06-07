@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux'
 
 import { Button, Card, Progress } from 'antd'
 
+import { refreshFirstTestPid } from 'src/redux/reducers/testsSlice/testsSlice'
 import { fetchFileTests } from 'src/redux/reducers/testsSlice/thunks'
+import { numberOfFilesChecking } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
 
-import { refreshFirstTestPid } from '../../../../../redux/reducers/testsSlice/testsSlice'
-import { numberOfFilesChecking } from '../../../../../redux/selectors'
-import { useAppDispatch } from '../../../../../redux/store/store'
 import TableCollapse from '../../gridItems/TableCollaps'
 import TableRow from '../../gridItems/TableRow'
 

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Select } from 'antd'
 import { sort } from 'ramda'
 
-import { setGalleryPagination } from '../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { pagination } from '../../../../redux/selectors'
+import { setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { pagination } from 'src/redux/selectors'
 
 const getFilteredOptions = (values: number[]) => ({ pageSizeOptions: sort((a, b) => a - b, values) })
 const pageSizeOptions = [

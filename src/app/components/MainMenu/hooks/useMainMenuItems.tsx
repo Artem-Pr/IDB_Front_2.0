@@ -15,9 +15,10 @@ import {
 import type { CollapseProps } from 'antd'
 import cn from 'classnames'
 
-import { previewDuplicates } from '../../../../redux/selectors'
-import { MainMenuKeys } from '../../../../redux/types'
-import { useCurrentPage } from '../../../common/hooks'
+import { useCurrentPage } from 'src/app/common/hooks'
+import { previewDuplicates } from 'src/redux/selectors'
+import { MainMenuKeys } from 'src/redux/types'
+
 import { EditMenu } from '../../EditMenu'
 import { Folders } from '../../Folders/Folders'
 import { PropertyMenu } from '../../PropertyMenu'

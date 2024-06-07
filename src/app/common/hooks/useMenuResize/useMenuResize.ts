@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 
 import throttle from 'lodash.throttle'
 
-import { setAsideMenuWidth } from '../../../../redux/reducers/sessionSlice/sessionSlice'
+import { setAsideMenuWidth } from 'src/redux/reducers/sessionSlice/sessionSlice'
 
 const MIN_ASIDE_WIDTH = 200
 const THROTTLE_TIME = 10

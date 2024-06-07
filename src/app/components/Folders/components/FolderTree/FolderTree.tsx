@@ -4,16 +4,16 @@ import { useSelector } from 'react-redux'
 import { Tree } from 'antd'
 import { compose, curry } from 'ramda'
 
+import { getFolderPathFromTreeKey } from 'src/app/common/folderTree'
 import {
   setCurrentFolderKey,
   setCurrentFolderPath,
   setExpandedKeys,
-} from '../../../../../redux/reducers/foldersSlice/foldersSlice'
-import { setGalleryPagination } from '../../../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { fetchPhotos } from '../../../../../redux/reducers/mainPageSlice/thunks'
-import { curFolderInfo, folderElement } from '../../../../../redux/selectors'
-import { useAppDispatch } from '../../../../../redux/store/store'
-import { getFolderPathFromTreeKey } from '../../../../common/folderTree'
+} from 'src/redux/reducers/foldersSlice/foldersSlice'
+import { setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { curFolderInfo, folderElement } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
 
 const { DirectoryTree } = Tree
 

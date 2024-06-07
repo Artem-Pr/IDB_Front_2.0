@@ -21,11 +21,12 @@ import {
   setRatingFilter,
   setSearchFileName,
   setSearchTags,
-} from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { fetchPhotos } from '../../../redux/reducers/mainPageSlice/thunks'
-import { folderElement, main, searchMenu } from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import { MimeTypes } from '../../../redux/types/MimeTypes'
+} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { folderElement, main, searchMenu } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+import { MimeTypes } from 'src/redux/types/MimeTypes'
+
 import { DATE_TIME_FORMAT } from '../../common/utils/date'
 
 import styles from './index.module.scss'

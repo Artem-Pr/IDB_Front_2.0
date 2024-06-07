@@ -1,8 +1,8 @@
 import { keys } from 'ramda'
 
 import { Media } from 'src/api/models/media'
+import { NameParts } from 'src/redux/types'
 
-import { NameParts } from '../../../redux/types'
 import {
   addChildToTreeElem,
   addFolderToFolderTree,

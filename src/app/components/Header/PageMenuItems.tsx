@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 
 import type { MenuProps } from 'antd'
 
-import { PagePaths } from '../../../redux/types'
+import { PagePaths } from 'src/redux/types'
 
 export const PageMenuItems: MenuProps['items'] = [
   {

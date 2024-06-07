@@ -5,11 +5,11 @@ import { Collapse, Layout } from 'antd'
 import { difference } from 'ramda'
 
 import { fetchKeywordsList } from 'src/redux/reducers/foldersSlice/thunks'
+import { setPreviewPlaying, stopVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { folderElement, session } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
+import { MainMenuKeys } from 'src/redux/types'
 
-import { setPreviewPlaying, stopVideoPreview } from '../../../redux/reducers/mainPageSlice/mainPageSlice'
-import { folderElement, session } from '../../../redux/selectors'
-import { useAppDispatch } from '../../../redux/store/store'
-import { MainMenuKeys } from '../../../redux/types'
 import { useClearSelectedList, useOpenMenus, useUpdateOpenMenus } from '../../common/hooks/hooks'
 
 import { useMainMenuItems } from './hooks'

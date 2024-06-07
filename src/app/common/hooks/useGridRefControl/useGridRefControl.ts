@@ -4,8 +4,9 @@ import {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { setPreviewSize } from '../../../../redux/reducers/sessionSlice/sessionSlice'
-import { main } from '../../../../redux/selectors'
+import { setPreviewSize } from 'src/redux/reducers/sessionSlice/sessionSlice'
+import { main } from 'src/redux/selectors'
+
 import { useSort } from '../useSort'
 
 export const useGridRefControl = () => {
