@@ -120,7 +120,7 @@ export const uploadingFilesMock: Media[] = [
     filePath: '/images/f3a168e5d6c61fd02b9b227219011462.jpg',
     imageSize: '300x300',
     changeDate: '2024-01-06T14:52:34.000Z',
-    keywords: [],
+    keywords: ['keyword1', 'keyword2'],
     megapixels: null,
     originalName: 'IMG_20190624_110245.jpg',
     originalDate: '-',

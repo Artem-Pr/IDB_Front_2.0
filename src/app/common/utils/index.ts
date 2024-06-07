@@ -10,7 +10,6 @@ export {
   getRenamedObjects,
   getSameKeywords,
   invokableCompose,
-  isExifExist,
   isMimeType,
   isValidResultStatus,
   isVideo,

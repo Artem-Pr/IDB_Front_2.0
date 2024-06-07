@@ -22,7 +22,6 @@ import {
 
 import type { Media } from 'src/api/models/media'
 import type {
-  ExifFilesList,
   Keywords,
   LoadingStatus,
   NameParts,
@@ -71,12 +70,10 @@ export const getNameParts = (fullName: string): NameParts => {
   return isValidName ? getNameObj(fullName) : { shortName: '-', ext: '' }
 }
 
-export const isExifExist = (exifList: ExifFilesList, tempPath: string): boolean => !!exifList[tempPath]
-
 export const updateFilesArrItemByField = (
   fieldName: keyof Media,
   filesArr: Media[],
-  updatingFieldsObj: { [key: string]: any },
+  updatingFieldsObj: Partial<Media>,
 ): Media[] => filesArr.map(item => {
   const isEqualFileName = item[fieldName] === updatingFieldsObj[fieldName]
   return isEqualFileName ? { ...item, ...updatingFieldsObj } : item
@@ -131,12 +128,14 @@ export const addKeywordsToAllFiles = <T extends { keywords: Keywords }>(newKeywo
   filesArr.map(item => ({ ...item, keywords: union(newKeywords, item.keywords || []) }))
 )
 
-export const updateFilesArrayItems = <T extends Record<string, any>>(
-  uniqField: keyof T,
-  originalFilesArr: T[],
-  newFilesArr: T[],
-): T[] => {
-  const findUpdatedObj = (originalUniqField: string) => newFilesArr.find(file => file[uniqField] === originalUniqField)
+export const updateFilesArrayItems = <T extends keyof Media>(
+  uniqField: T,
+  originalFilesArr: Media[],
+  newFilesArr: Media[],
+) => {
+  const findUpdatedObj = (originalUniqField: Media[T]) => (
+    newFilesArr.find(file => file[uniqField] === originalUniqField)
+  )
   return originalFilesArr.map(file => findUpdatedObj(file[uniqField]) || file)
 }
 

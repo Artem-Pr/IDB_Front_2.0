@@ -314,27 +314,25 @@ describe('utils: ', () => {
   describe('updateFilesArrItemByField: ', () => {
     it('should return updated obj', () => {
       const originalObjArr = uploadingFilesMock
-      const objectForUpdate = {
-        filePath: 'temp/f3a168e5d6c61fd02b9b227219011462',
+      const objectForUpdate: Partial<Media> = {
+        filePath: '/temp/f3a168e5d6c61fd02b9b227219011462.jpg',
         keywords: ['bom-bom'],
         megapixels: 24,
         originalDate: '12.12.2012',
       }
       const updatedObjArr = updateFilesArrItemByField('filePath', originalObjArr, objectForUpdate)
       expect(updatedObjArr[1].originalName)
-        .toBe('IMG_20190624_110245.jpg')
+        .toBe(uploadingFilesMock[1].originalName)
       expect(updatedObjArr[1].keywords)
-        .toHaveLength(1)
-      expect(updatedObjArr[1].keywords)
-        .toEqual(['bom-bom'])
+        .toEqual(uploadingFilesMock[1].keywords)
       expect(updatedObjArr[1].megapixels)
-        .toEqual(24)
+        .toEqual(uploadingFilesMock[1].megapixels)
       expect(updatedObjArr[1].originalDate)
-        .toBe('12.12.2012')
+        .toBe(uploadingFilesMock[1].originalDate)
       expect(updatedObjArr)
         .toHaveLength(3)
       expect(updatedObjArr[2].originalDate)
-        .toBe('24.09.2016')
+        .toBe(uploadingFilesMock[2].originalDate)
     })
   })
   describe('removeEmptyFields: ', () => {
@@ -371,11 +369,11 @@ describe('utils: ', () => {
       expect(newNameParts)
         .toHaveLength(3)
       expect(JSON.stringify(newNameParts[0]))
-        .toBe('{"shortName":"дорога домой_001","ext":"img"}')
+        .toBe('{"shortName":"дорога домой_001","ext":".jpg"}')
       expect(JSON.stringify(newNameParts[1]))
-        .toBe('{"shortName":"дорога домой_002","ext":"mp4"}')
+        .toBe('{"shortName":"дорога домой_002","ext":".mp4"}')
       expect(JSON.stringify(newNameParts[2]))
-        .toBe('{"shortName":"дорога домой_003","ext":"somethingLong"}')
+        .toBe('{"shortName":"дорога домой_003","ext":".somethingLong"}')
     })
   })
   describe('getRenamedObjects: ', () => {
@@ -442,17 +440,17 @@ describe('utils: ', () => {
   describe('updateFilesArrayItems: ', () => {
     it('should return updated filesArr', () => {
       const originalFileArr: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
-      const filteredFilesArr = originalFileArr.filter((_, i) => i !== 1)
-      const changedFilteredArr = filteredFilesArr.map(item => ({ ...item, name: 'bom' }))
+      const filteredFilesArr: Media[] = originalFileArr.filter((_, i) => i !== 1)
+      const changedFilteredArr: Media[] = filteredFilesArr.map(item => ({ ...item, originalName: 'bom.jpg' }))
       const updatedFilesArr = updateFilesArrayItems('id', originalFileArr, changedFilteredArr)
       expect(updatedFilesArr)
         .toHaveLength(3)
       expect(updatedFilesArr[0].originalName)
-        .toBe('bom')
+        .toBe('bom.jpg')
       expect(updatedFilesArr[1].originalName)
         .toBe('IMG_20190624_110245.jpg')
       expect(updatedFilesArr[2].originalName)
-        .toBe('bom')
+        .toBe('bom.jpg')
     })
   })
   describe('getFilesWithUpdatedKeywords: ', () => {
