@@ -60,7 +60,7 @@
     "build": "webpack --mode production -c webpack/config",
     "ts:check": "tsc --noEmit --project ./tsconfig.json",
     "ts:staged": "npx lint-staged",
-    "prepare": "npx husky-init && npm install && husky install"
+    "prepare": "husky install"
   },
   "browserslist": {
     "production": [
