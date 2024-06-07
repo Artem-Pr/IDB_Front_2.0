@@ -58,7 +58,9 @@
     "postversion": "git push",
     "serve": "webpack serve --mode development --progress -c webpack/config",
     "build": "webpack --mode production -c webpack/config",
-    "ts:check": "tsc --noEmit --project ./tsconfig.json"
+    "ts:check": "tsc --noEmit --project ./tsconfig.json",
+    "ts:staged": "npx lint-staged",
+    "prepare": "npx husky-init && npm install && husky install"
   },
   "browserslist": {
     "production": [
@@ -108,6 +110,7 @@
     "eslint-plugin-unicorn": "^50.0.1",
     "exiftool-vendored": "^26.0.0",
     "gh-pages": "^6.1.1",
+    "husky": "^8.0.0",
     "lint-staged": "^15.2.1",
     "sass": "^1.70.0",
     "sass-loader": "^14.1.0",
@@ -123,9 +126,8 @@
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx,vue,ts,tsx}": [
-      "npm run lint:write",
-      "git add"
+    "*.{js,jsx,ts,tsx}": [
+      "npm run ts:check"
     ]
   },
   "babel": {
