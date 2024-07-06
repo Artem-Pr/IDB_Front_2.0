@@ -2,15 +2,15 @@
   height: 30px;
   opacity: 1;
   transition: all 0.2s ease;
+}
 
-  &:global > .ant-alert-content {
-    flex: inherit;
-  }
+.alert :global(.ant-alert-content) {
+  flex: inherit;
+}
 
-  &:global.hide {
-    height: 0;
-    opacity: 0;
-    padding: 0 !important;
-    overflow: hidden;
-  }
+:global(.hide) {
+  height: 0;
+  opacity: 0;
+  padding: 0 !important;
+  overflow: hidden;
 }

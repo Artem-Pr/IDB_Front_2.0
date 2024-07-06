@@ -79,7 +79,7 @@
   border-radius: 5px;
   z-index: 1;
 
-  &:global.d-none + :local.imgPlaceholder {
+  &:global(.d-none) + :local(.imgPlaceholder) {
     position: absolute;
     display: block;
     width: 70%;

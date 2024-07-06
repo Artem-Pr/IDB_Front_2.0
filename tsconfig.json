@@ -49,12 +49,14 @@
     "preserveConstEnums": true,               /* Do not erase const enum declarations in generated code. */
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*",
     "src/**/*.json",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    "rspack.config.js",
   ],
   "exclude": [
     "**/build/**",

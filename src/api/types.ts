@@ -4,6 +4,22 @@ import { MimeTypes } from '../redux/types/MimeTypes'
 
 import type { Media } from './models/media'
 
+export enum HttpStatusCode {
+  OK = 200,
+  BadRequest = 400,
+  Unauthorized = 403,
+  NotFound = 404,
+  InternalServerError = 500,
+}
+
+// Not needed for now
+export interface ErrorResponse {
+  statusCode: HttpStatusCode
+  timestamp: string
+  path: string
+  message: string[]
+}
+
 export interface GetPhotosByTagsRequest {
   comparisonFolder?: string
   dontSavePreview?: boolean

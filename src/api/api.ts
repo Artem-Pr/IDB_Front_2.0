@@ -16,7 +16,7 @@ import type { GetPhotosByTagsRequest } from './types'
 
 export const mainApi = {
   savePhotosInDB(files: UpdatedFileAPIRequest[]) {
-    return instanceNewDB.post<QueryResponse>('/upload', files)
+    return instanceNewDB.post<QueryResponse>('/save-files', { files })
   },
 
   updatePhotos(files: UpdatedFileAPIRequest[]) {

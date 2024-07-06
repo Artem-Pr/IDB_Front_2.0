@@ -120,7 +120,9 @@ module.exports = {
 
     // Forbid the use of extraneous packages
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-extraneous-dependencies.md
-    'import/no-extraneous-dependencies': ['error', { devDependencies: ['**/*.test.{ts,tsx,js,jsx}', '**/*.stories.tsx'] }],
+    'import/no-extraneous-dependencies': [
+      'error', { devDependencies: true },
+    ],
 
     // When there is only a single export from a module, prefer using default export over named export.
     'import/prefer-default-export': 'off', // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/prefer-default-export.md
@@ -176,10 +178,12 @@ module.exports = {
     'dev-backend',
     'setupProxy.js',
     'jest.config.js',
+    'lint-staged.config.js',
     'coverage',
     'node_modules',
     'build',
     'webpack',
+    'rspack',
     'test',
   ],
 }

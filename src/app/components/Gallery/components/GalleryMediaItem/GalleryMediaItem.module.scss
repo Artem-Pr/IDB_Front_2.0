@@ -59,7 +59,7 @@
     opacity: 0.5;
   }
 
-  &:global.transparent + :local.loader {
+  &:global(.transparent) + :local(.loader) {
     display: flex;
     position: absolute;
     top: 0;

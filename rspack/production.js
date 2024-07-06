@@ -1,6 +1,4 @@
-const TerserPlugin = require('terser-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const rspack = require('@rspack/core')
 
 const {getBasicPlugins} = require('./base/basicPlugins.js');
 const {
@@ -11,6 +9,7 @@ const {
 
 module.exports = {
     mode: MODES.PROD,
+    devtool: false,
     output: {
         filename: '[name].[contenthash].js',
         path: paths.build,
@@ -18,7 +17,7 @@ module.exports = {
     },
     plugins: [
         ...getBasicPlugins(MODES.PROD),
-        new HtmlWebpackPlugin({
+        new rspack.HtmlRspackPlugin({
             title: 'IDB',
             minify: true,
             template: paths.html,
@@ -27,8 +26,13 @@ module.exports = {
     ],
     optimization: {
         minimizer: [
-            new TerserPlugin(),
-            new CssMinimizerPlugin(),
+            new rspack.SwcJsMinimizerRspackPlugin({
+                compress: true,
+                format: {
+                    comments: false
+                }
+            }),
+            new rspack.LightningCssMinimizerRspackPlugin(),
         ],
     },
 };

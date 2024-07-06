@@ -15,6 +15,8 @@ export const uploadFiles = (UploadingObjects: UpdatedFileAPIRequest[]): AppThunk
     })
     .catch(error => {
       dispatch(setUploadingStatus('error'))
-      console.error(`Error when getting Preview: ${error}`)
+      console.error(error)
+
+      errorMessage(error, 'Upload files error')
     })
 }

@@ -1,7 +1,8 @@
 .dropZone {
+  height: 200px;
   opacity: 1;
-  transition: all 0.2s ease !important;
   overflow: hidden;
+  transition: all 0.2s ease !important;
 
   &:global.active {
     height: 0 !important;
