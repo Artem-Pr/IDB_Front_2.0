@@ -5,14 +5,12 @@ import type { Media } from 'src/api/models/media'
 import type {
   BlobDispatchPayload,
   BlobUpdateNamePayload,
-  ExifFilesList,
   GallerySortingItem,
   LoadingStatus,
 } from '../../types'
 import { MainMenuKeys } from '../../types'
 
 import { defaultGallerySortingList } from './helpers'
-import type { FullExifPayload } from './types'
 import { initialState } from './uploadState'
 
 const uploadSlice = createSlice({
@@ -30,13 +28,6 @@ const uploadSlice = createSlice({
     },
     updateUploadingFilesArr(state, action: PayloadAction<Media[]>) {
       state.uploadingFiles = action.payload
-    },
-    addFullExifFile(state, action: PayloadAction<FullExifPayload>) {
-      const { tempPath, fullExifObj } = action.payload
-      state.fullExifFilesList[tempPath] = fullExifObj
-    },
-    updateFullExifFile(state, action: PayloadAction<ExifFilesList>) {
-      state.fullExifFilesList = { ...state.fullExifFilesList, ...action.payload }
     },
     addToSelectedList(state, action: PayloadAction<number[]>) {
       const updatedSelectedList = [...current(state).selectedList, ...action.payload]
@@ -65,7 +56,6 @@ const uploadSlice = createSlice({
     clearUploadingState(state) {
       state.uploadingFiles = initialState.uploadingFiles
       state.selectedList = initialState.selectedList
-      state.fullExifFilesList = initialState.fullExifFilesList
       state.checkForDuplicatesOnlyInCurrentFolder = initialState.checkForDuplicatesOnlyInCurrentFolder
       state.uploadingBlobs = initialState.uploadingBlobs
     },
@@ -95,7 +85,6 @@ const uploadSlice = createSlice({
 })
 
 export const {
-  addFullExifFile,
   addToSelectedList,
   clearSelectedList,
   clearUploadingState,
@@ -112,7 +101,6 @@ export const {
   setGroupedByDate,
   setUploadingStatus,
   updateBlobName,
-  updateFullExifFile,
   updateOpenMenus,
   updateUploadingFilesArr,
 } = uploadSlice.actions

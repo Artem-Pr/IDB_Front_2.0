@@ -7,43 +7,40 @@ import { useSelector } from 'react-redux'
 import { EnvironmentOutlined, FullscreenOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import cn from 'classnames'
+import type { Tags } from 'exiftool-vendored'
 
 import type { Media } from 'src/api/models/media'
 import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
 import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from 'src/redux/selectors'
 
-import { GetCoordinates } from '../../hooks/useGefFullExifList/useGetFullExifList'
+import { openGPSLocation, isGPSExist } from '../../helpers/getGPSCoordinates'
 
 import styles from './GalleryTile.module.scss'
 
 // eslint-disable-next-line init-declarations
 let timeout: NodeJS.Timeout
 
-interface Props {
-  mediaFile: Media
+export interface GalleryTileProps {
   fitContain: boolean
-  getGPSCoordinates: GetCoordinates
-  getExif: (id: Media['id']) => (e: MouseEvent) => void
   index: number
   isEditMode: boolean
   isMainPage: boolean | undefined
   isShiftHover: boolean
+  mediaFile: Media
   onFullScreenClick: (index: number) => void
   onImageClick: (i: number, preview?: Media) => void
   onImageOnLoad: (event: SyntheticEvent<HTMLImageElement, Event>) => void
   onImgRefAdd: (ref: HTMLDivElement | null, idx: number) => void
-  onLocationClick: (id: Media['id']) => void
   onMouseEnter: (index: number | null) => void
   previewSize: number
   selectedList: number[]
+  showExifList: (exif: Tags) => void
 }
 
 export const GalleryTile = memo(
   ({
     mediaFile,
     fitContain,
-    getGPSCoordinates,
-    getExif,
     index,
     isEditMode,
     isMainPage,
@@ -52,11 +49,11 @@ export const GalleryTile = memo(
     onImageClick,
     onImageOnLoad,
     onImgRefAdd,
-    onLocationClick,
     onMouseEnter,
     previewSize,
     selectedList,
-  }: Props) => {
+    showExifList,
+  }: GalleryTileProps) => {
     const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
     const duplicatesForAllFiles = useSelector(duplicateFilesArr)
     const { isLoading } = useSelector(session)
@@ -95,13 +92,18 @@ export const GalleryTile = memo(
 
     const handleLocationClick = (event: MouseEvent) => {
       event.stopPropagation()
-      onLocationClick(mediaFile.id)
+      openGPSLocation(mediaFile.exif)
     }
 
     const handleImageClick = (event: MouseEvent) => {
       event.stopPropagation()
       event.preventDefault()
       !isUploading && onImageClick(index, mediaFile)
+    }
+
+    const handleShowExifList = (event: MouseEvent): void => {
+      event.stopPropagation()
+      showExifList(mediaFile.exif)
     }
 
     return (
@@ -133,10 +135,10 @@ export const GalleryTile = memo(
               'position-absolute h-100 flex-column justify-content-between',
             )}
           >
-            <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={getExif(mediaFile.id)}>
+            <h4 className={cn(styles.itemMenuExif, 'w-100', 'pointer')} onClick={handleShowExifList}>
               Exif
             </h4>
-            {Boolean(getGPSCoordinates(mediaFile.id)) && (
+            {Boolean(isGPSExist(mediaFile.exif)) && (
               <EnvironmentOutlined
                 className={cn(styles.itemMenuIcon, 'pointer d-flex justify-content-center mb-auto')}
                 onClick={handleLocationClick}

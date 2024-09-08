@@ -1,67 +1,33 @@
-import {
-  MouseEvent, useCallback, useMemo, useState,
-} from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
-import type { Tags } from 'exiftool-vendored'
+import { Tags } from 'exiftool-vendored'
 
-import type { Media } from 'src/api/models/media'
-import type {
-  Defined,
-  ExifFilesList,
-  GPSCoordinates,
-} from 'src/redux/types'
+import type { GalleryTileProps } from '../../components/GalleryTile/GalleryTile'
 
 import { getExifListJSX } from './helpers'
 
-const isGPSExist = <T extends (Pick<Tags, 'GPSLatitude' | 'GPSLongitude'> | Tags | undefined)>(
-  GPS: T,
-): GPS is Defined<T> => Boolean(GPS?.GPSLatitude && GPS?.GPSLongitude)
-
-export type GetCoordinates = (id: Media['id']) => GPSCoordinates | undefined
-
-interface UseGetFullExifList {
-  fullExifFilesList: ExifFilesList
-}
-
-export const useGetFullExifList = ({ fullExifFilesList }: UseGetFullExifList) => {
-  const [currentId, setCurrentId] = useState<Media['id']>('')
-  const [showModal, setShowModal] = useState(false)
+export const useGetFullExifList = () => {
+  const [exif, setExif] = useState<Tags>()
+  const [showExifModal, setShowExifModal] = useState(false)
   const [isJSONMode, setIsJSONMode] = useState(false)
-  const exif = useMemo(
-    () => getExifListJSX(fullExifFilesList, currentId, isJSONMode),
-    [fullExifFilesList, currentId, isJSONMode],
-  )
-  const getGPSCoordinates: GetCoordinates = useCallback((id: Media['id']) => {
-    const exifObject = fullExifFilesList[id]
 
-    return isGPSExist(exifObject)
-      ? {
-        GPSLatitude: exifObject.GPSLatitude,
-        GPSLongitude: exifObject.GPSLongitude,
-      }
-      : undefined
-  }, [fullExifFilesList])
+  const renderedExif = useMemo(() => getExifListJSX(exif, isJSONMode), [exif, isJSONMode])
 
-  const getExif = useCallback(
-    (id: Media['id']) => (e: MouseEvent) => {
-      e.stopPropagation()
-      setCurrentId(id)
-      setShowModal(true)
-    },
-    [],
-  )
+  const showExifList: GalleryTileProps['showExifList'] = newExif => {
+    setExif(newExif)
+    setShowExifModal(true)
+  }
 
-  const handleShowModalClose = useCallback(() => {
-    setShowModal(false)
+  const handleCloseExifModal = useCallback(() => {
+    setShowExifModal(false)
   }, [])
 
   return {
-    exif,
-    getExif,
-    getGPSCoordinates,
-    handleShowModalClose,
+    handleCloseExifModal,
     isJSONMode,
+    renderedExif,
     setIsJSONMode,
-    showModal,
+    showExifList,
+    showExifModal,
   }
 }

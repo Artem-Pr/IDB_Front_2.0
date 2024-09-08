@@ -83,7 +83,7 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
 
     const getOneFieldObjData = (): Partial<FieldsLabels> => {
       const {
-        changeDate, originalDate, keywords, description, ...otherFields
+        exif: omittedExif, changeDate, originalDate, keywords, description, ...otherFields
       } = filesArr[selectedList[0]]
 
       return {

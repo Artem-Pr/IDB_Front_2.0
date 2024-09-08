@@ -121,7 +121,6 @@ export const selectedFilesList = createSelector(
 export const uploadPageGalleryPropsSelector = createSelector(
   upload,
   uploadState => ({
-    fullExifFilesList: uploadState.fullExifFilesList,
     imageArr: uploadState.uploadingFiles,
     openMenus: uploadState.openMenus,
     selectedList: uploadState.selectedList,
@@ -131,7 +130,6 @@ export const uploadPageGalleryPropsSelector = createSelector(
 export const dPageGalleryPropsSelector = createSelector(
   main,
   mainPageState => ({
-    fullExifFilesList: mainPageState.fullExifFilesList,
     imageArr: mainPageState.downloadingFiles,
     openMenus: mainPageState.dOpenMenus,
     selectedList: mainPageState.dSelectedList,
@@ -140,12 +138,12 @@ export const dPageGalleryPropsSelector = createSelector(
 
 export const allUploadKeywordsSelector = createSelector(uploadingFiles, uploadingFilesArr => compose(
   getUniqArr,
-  map((item: Media) => item.keywords),
+  map((item: Media) => item.keywords || []),
 )(uploadingFilesArr))
 
 export const allDownloadingKeywordsSelector = createSelector(downloadingFiles, downloadingFilesArr => compose(
   getUniqArr,
-  map((item: Media) => item.keywords),
+  map((item: Media) => item.keywords || []),
 )(downloadingFilesArr))
 
 export const uniqKeywords = createSelector(

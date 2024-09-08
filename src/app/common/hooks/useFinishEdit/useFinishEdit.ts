@@ -115,9 +115,9 @@ export const useFinishEdit = ({
           originalName: isName && !newNamesArr[idx].startsWith('-') ? newNamesArr[idx] as Media['originalName'] : undefined,
           originalDate: (isOriginalDate && getNewOriginalDate(idx)) || undefined,
           keywords: isKeywords ? newKeywordsArr[idx] : undefined,
-          filePath: isFilePath ? currentFilePath : undefined,
-          rating: isRating ? rating : undefined,
-          description: isDescription ? description : undefined,
+          filePath: isFilePath && currentFilePath ? currentFilePath : undefined,
+          rating: isRating && rating ? rating : undefined,
+          description: isDescription && description ? description : undefined,
           timeStamp: isTimeStamp ? timeStamp : undefined,
         }
       }
@@ -169,7 +169,7 @@ export const useFinishEdit = ({
           timeStamp: isTimeStamp ? timeStamp : undefined,
         }
 
-        const updatedKeywordsList = uniq([...keywordsList, ...flatten(keywords)])
+        const updatedKeywordsList = keywords ? uniq([...keywordsList, ...flatten(keywords)]) : keywordsList
         compose(dispatch, setKeywordsList)(updatedKeywordsList)
 
         const checkboxes: Checkboxes = {

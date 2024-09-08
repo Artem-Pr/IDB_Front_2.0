@@ -11,13 +11,13 @@ export const getFileAPIRequestFromMedia = (media: Media, updatedFolderPath?: str
   return {
     id: media.id,
     updatedFields: {
-      changeDate: media.changeDate,
-      description: media.description,
-      filePath: updatedFilePath,
-      keywords: media.keywords,
+      changeDate: media.changeDate || undefined,
+      description: media.description || undefined,
+      filePath: updatedFilePath || undefined,
+      keywords: media.keywords?.length ? media.keywords : undefined,
       originalDate: media.originalDate,
       originalName: media.originalName,
-      rating: media.rating,
+      rating: media.rating || undefined,
       timeStamp: media.timeStamp,
     },
   }

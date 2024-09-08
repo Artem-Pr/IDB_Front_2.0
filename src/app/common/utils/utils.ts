@@ -160,10 +160,10 @@ export const getSameKeywords = (
 
 export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
   filesArr: T[],
-  keywords: string[],
+  keywords: string[] | null | undefined,
 ): T[] => {
   const newFilesArr = copyByJSON(filesArr)
-  return isEmpty(keywords) ? newFilesArr : addKeywordsToAllFiles(keywords, newFilesArr)
+  return !keywords || isEmpty(keywords) ? newFilesArr : addKeywordsToAllFiles(keywords, newFilesArr)
 }
 
 export const getFilePathWithoutName = (fullPath: string): string => fullPath.split('/')

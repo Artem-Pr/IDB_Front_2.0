@@ -2,18 +2,13 @@ import React, { ReactNode } from 'react'
 
 import type { Tags } from 'exiftool-vendored'
 
-import type { Media } from 'src/api/models/media'
-import type { ExifFilesList } from 'src/redux/types'
-
 import { prepareExifDataRecursive } from './prepareExifDataRecursive'
 
-export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentId: Media['id'], isJSONMode: boolean) => {
-  const rawExif: Tags | undefined = fullExifFilesList[currentId] || undefined
-
-  const rawExifFieldNames = Object.keys(rawExif || {})
+export const getExifListJSX = (exif: Tags | undefined, isJSONMode: boolean): string | JSX.Element => {
+  const rawExifFieldNames = Object.keys(exif || {})
 
   const getExifItemValueJSX = (fieldName: keyof Tags): ReactNode => {
-    const exifItemValue = rawExif && rawExif[fieldName]
+    const exifItemValue = exif && exif[fieldName]
     return prepareExifDataRecursive(exifItemValue)
   }
 
@@ -26,7 +21,7 @@ export const getExifListJSX = (fullExifFilesList: ExifFilesList, currentId: Medi
 
   return isJSONMode
     ? (
-      JSON.stringify(rawExif, null, 2)
+      JSON.stringify(exif, null, 2)
     )
     : (
       <>

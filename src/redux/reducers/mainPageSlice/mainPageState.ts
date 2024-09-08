@@ -1,7 +1,6 @@
 import type { Media } from 'src/api/models/media'
 
 import type {
-  ExifFilesList,
   GalleryPagination,
   MainMenuKeys,
   Preview,
@@ -15,7 +14,6 @@ import type { SearchMenu } from './types'
 export interface State {
   rawFiles: Media[]
   downloadingFiles: Media[]
-  fullExifFilesList: ExifFilesList
   dSelectedList: number[]
   dOpenMenus: MainMenuKeys[]
   searchMenu: SearchMenu
@@ -31,7 +29,6 @@ export interface State {
 export const initialState: State = {
   rawFiles: [],
   downloadingFiles: [],
-  fullExifFilesList: {},
   dSelectedList: [],
   dOpenMenus: [],
   searchMenu: {

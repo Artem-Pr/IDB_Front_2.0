@@ -1,15 +1,12 @@
 import type { Media } from 'src/api/models/media'
 
-import type {
-  ExifFilesList, LoadingStatus, SortingData,
-} from '../../types'
+import type { LoadingStatus, SortingData } from '../../types'
 import { MainMenuKeys } from '../../types'
 
 import { defaultGallerySortingList } from './helpers'
 
 export interface State {
   checkForDuplicatesOnlyInCurrentFolder: boolean
-  fullExifFilesList: ExifFilesList
   openMenus: MainMenuKeys[]
   previewLoadingCount: number
   selectedList: number[]
@@ -21,7 +18,6 @@ export interface State {
 
 export const initialState: State = {
   checkForDuplicatesOnlyInCurrentFolder: false,
-  fullExifFilesList: {},
   openMenus: [MainMenuKeys.FOLDERS],
   previewLoadingCount: 0,
   selectedList: [],

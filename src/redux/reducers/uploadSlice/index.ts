@@ -1,5 +1,4 @@
 export {
-  addFullExifFile,
   addToSelectedList,
   clearSelectedList,
   clearUploadingState,
@@ -10,7 +9,6 @@ export {
   selectAll,
   setBlob,
   setUploadingStatus,
-  updateFullExifFile,
   updateOpenMenus,
   updateUploadingFilesArr,
   uploadPageReducer,

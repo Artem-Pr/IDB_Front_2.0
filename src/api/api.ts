@@ -1,7 +1,6 @@
 import type { RcFile } from 'antd/es/upload'
 
 import type {
-  ExifFilesList,
   FetchingGalleryContent,
   QueryResponse,
 } from 'src/redux/types'
@@ -27,7 +26,7 @@ export const mainApi = {
     const formData = new FormData()
     formData.append('filedata', file)
 
-    return instanceNewDB.post<UploadingFileAPIResponse>('/uploadItem', formData, {
+    return instanceNewDB.post<UploadingFileAPIResponse>('/upload-file', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -60,11 +59,6 @@ export const mainApi = {
     return instanceNewDB.get<CheckedDirectoryAPIResponse>('/check-directory', {
       params: { directory },
     })
-  },
-
-  getKeywordsFromPhoto(ids: string[]) {
-    // need to get something even if exif is not exist
-    return instance.post<ExifFilesList>('/image-exif', ids)
   },
 
   getPhotosByTags(params: GetPhotosByTagsRequest) {

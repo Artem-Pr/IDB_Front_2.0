@@ -1,10 +1,7 @@
-import type { Tags } from 'exiftool-vendored'
-
 import type { Media } from '../models/media'
 import type { DuplicateFile } from '../types'
 
 export interface UploadingFileAPIResponse {
-  exif: Tags;
   properties: Media;
 }
 

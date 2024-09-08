@@ -7,7 +7,7 @@ import { errorMessage } from 'src/app/common/notifications'
 import imagePlaceholderFailedUploading from 'src/assets/svg-icons-html/image-placeholder-failed-upload3.svg'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { decreaseCountOfPreviewLoading, updateFullExifFile } from '../uploadSlice'
+import { decreaseCountOfPreviewLoading } from '../uploadSlice'
 
 import { updateUploadingFile } from './updateUploadingFile'
 
@@ -16,7 +16,6 @@ export const fetchPhotosPreview = (file: RcFile): AppThunk => async dispatch => 
     .savePhotoInTempPool(file)
     .then(({ data }) => {
       dispatch(updateUploadingFile(data.properties, file))
-      dispatch(updateFullExifFile({ [data.properties.id]: data.exif }))
     })
     .catch(error => {
       errorMessage(error, 'Error when getting Preview: ')

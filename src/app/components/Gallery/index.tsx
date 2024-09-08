@@ -10,7 +10,6 @@ import cn from 'classnames'
 import type { Media } from 'src/api/models/media'
 import { setPreviewPlaying } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { session } from 'src/redux/selectors'
-import type { ExifFilesList } from 'src/redux/types'
 import { MainMenuKeys } from 'src/redux/types'
 
 import { useSort } from '../../common/hooks/useSort'
@@ -30,7 +29,6 @@ const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
 export interface GalleryProps {
   openMenus: string[]
   imageArr: Media[]
-  fullExifFilesList: ExifFilesList
   selectedList: number[]
   removeFromSelectedList: (index: number[]) => void
   addToSelectedList: (indexArr: number[]) => void
@@ -47,7 +45,6 @@ export interface GalleryProps {
 const Gallery = ({
   openMenus,
   imageArr,
-  fullExifFilesList,
   selectedList,
   addToSelectedList,
   removeFromSelectedList,
@@ -66,16 +63,13 @@ const Gallery = ({
   const isTemplateMenu = openMenus.includes(MainMenuKeys.EDIT_BULK)
   const isPropertiesMenu = openMenus.includes(MainMenuKeys.PROPERTIES)
   const {
-    exif,
-    getExif,
-    getGPSCoordinates,
-    handleShowModalClose,
+    handleCloseExifModal,
     isJSONMode,
+    renderedExif,
     setIsJSONMode,
-    showModal,
-  } = useGetFullExifList({
-    fullExifFilesList,
-  })
+    showExifList,
+    showExifModal,
+  } = useGetFullExifList()
   const {
     hoveredIndex, setHoveredIndex, isShiftPressed, isShiftHover, selectWithShift,
   } = useSelectWithShift({
@@ -157,14 +151,6 @@ const Gallery = ({
     setIsJSONMode(checked)
   }
 
-  const handleLocationClick = (tempPath: string) => {
-    const coordinates = getGPSCoordinates(tempPath)
-    if (coordinates) {
-      const { GPSLatitude, GPSLongitude } = coordinates
-      window.open(`https://www.google.com/maps/search/${GPSLatitude}+${GPSLongitude}/@${GPSLatitude},${GPSLongitude},858m/data=!3m1!1e3!5m1!1e4?entry=ttu`, '_blank')
-    }
-  }
-
   return (
     <Spin className={styles.spinner} spinning={isLoading} size="large">
       {groupedByDate
@@ -184,8 +170,6 @@ const Gallery = ({
                     mediaFileWithIndex => (
                       <GalleryTile
                         fitContain={fitContain}
-                        getExif={getExif}
-                        getGPSCoordinates={getGPSCoordinates}
                         // TODO: need to check index, probably I can use another index to fix problem with multiple select
                         index={mediaFileWithIndex.index}
                         isEditMode={isEditMode}
@@ -198,10 +182,10 @@ const Gallery = ({
                         onImageClick={handleImageClick}
                         onImageOnLoad={handleImageOnLoad}
                         onImgRefAdd={handleImgRefAdd}
-                        onLocationClick={handleLocationClick}
                         onMouseEnter={setHoveredIndex}
                         previewSize={previewSize}
                         selectedList={selectedList}
+                        showExifList={showExifList}
                       />
                     ),
                   )}
@@ -219,8 +203,6 @@ const Gallery = ({
               (mediaFile, idx) => (
                 <GalleryTile
                   fitContain={fitContain}
-                  getExif={getExif}
-                  getGPSCoordinates={getGPSCoordinates}
                   index={idx}
                   isEditMode={isEditMode}
                   isMainPage={isMainPage}
@@ -231,10 +213,10 @@ const Gallery = ({
                   onImageClick={handleImageClick}
                   onImageOnLoad={handleImageOnLoad}
                   onImgRefAdd={handleImgRefAdd}
-                  onLocationClick={handleLocationClick}
                   onMouseEnter={setHoveredIndex}
                   previewSize={previewSize}
                   selectedList={selectedList}
+                  showExifList={showExifList}
                 />
               ),
             )}
@@ -250,11 +232,11 @@ const Gallery = ({
           </>
         )}
         footer={null}
-        onCancel={handleShowModalClose}
-        open={showModal}
+        onCancel={handleCloseExifModal}
+        open={showExifModal}
         width="60%"
       >
-        <pre className="overflow-y-scroll">{exif}</pre>
+        <pre className="overflow-y-scroll">{renderedExif}</pre>
       </Modal>
 
       {isMainPage && galleryArr.length

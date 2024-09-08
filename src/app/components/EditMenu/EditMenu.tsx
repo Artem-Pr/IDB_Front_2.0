@@ -47,7 +47,7 @@ interface Props {
   isEditMany?: boolean
 }
 
-export interface InitialFormData extends Checkboxes, Omit<MediaChangeable, 'originalName' | 'filePath' | 'originalDate'> {
+export interface InitialFormData extends Checkboxes, Omit<MediaChangeable, 'originalName' | 'filePath' | 'originalDate' | 'exif'> {
   originalName: string
   filePath: string
   originalDate: Dayjs | null

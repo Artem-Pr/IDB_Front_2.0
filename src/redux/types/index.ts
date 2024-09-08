@@ -9,7 +9,7 @@ import { MimeTypes } from './MimeTypes'
 export type { Duration } from 'dayjs/plugin/duration'
 
 export type Defined<T> = Exclude<T, undefined>
-export type Keywords = string[] | null
+export type Keywords = string[] | null | undefined
 export type LoadingStatus = 'empty' | 'success' | 'error' | 'loading'
 export type CheckboxType =
   | 'isName'
@@ -63,8 +63,6 @@ export interface NameParts {
 }
 
 export type GPSCoordinates = Pick<Tags, 'GPSLatitude' | 'GPSLongitude'>
-
-export type ExifFilesList = Record<Media['id'], Tags>
 
 export interface FolderTreeItem {
   title: string

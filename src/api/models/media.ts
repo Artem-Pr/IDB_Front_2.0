@@ -61,28 +61,29 @@ export interface Media extends Omit<MediaInstance, 'properties'> {}
 export class MediaInstance {
   id: string // "665213e9d0b7bc53210da723"
   changeDate: string | null // "2024-01-06T14:52:34.000Z" (in the upload it should be null)
-  description: ExifDescription
+  description: ExifDescription | undefined
   filePath: DBFilePath | null // "/images/665213e9d0b7bc53210da723.jpg"
   imageSize: ExifImageSize // "4032x3024"
-  keywords: ExifKeywords // ["01Cnt-Испания", "02Cty-Барселона"]
+  keywords: ExifKeywords | null | undefined // ["01Cnt-Испания", "02Cty-Барселона"]
   megapixels: ExifMegapixels // 12.2
   mimetype: MimeTypes // "image/jpeg"
   originalDate: string // "2024-01-06T14:52:34.000Z"
   originalName: FileNameWithExt // "2024-01-06 14.52.34.jpg"
-  rating: ExifRating // 3
+  rating: ExifRating | undefined // 3
   size: number // 3016092
   staticPath: string // "http://localhost:3000/volumes/d7f3094b-5635-48c8-9688-4da526e6753f.jpg"
   staticPreview: string // "http://localhost:3000/temp/d7f3094b-5635-48c8-9688-4da526e6753f-preview.jpg"
   timeStamp: string // "00:00:00.000"
   duplicates: DuplicateFile[]
+  exif: Tags
 
   constructor(props: Partial<Media> & Pick<Media, 'mimetype' | 'originalName'>) {
     this.id = props.id || uuidV4()
     this.changeDate = props.changeDate || null
-    this.description = props.description || ''
+    this.description = props.description || null
     this.filePath = props.filePath || null
     this.imageSize = props.imageSize || null
-    this.keywords = props.keywords || []
+    this.keywords = props.keywords || null
     this.megapixels = props.megapixels || null
     this.mimetype = props.mimetype
     this.originalDate = props.originalDate || '-'
@@ -93,6 +94,7 @@ export class MediaInstance {
     this.staticPreview = props.staticPreview || ''
     this.timeStamp = props.timeStamp || DEFAULT_TIME_STAMP
     this.duplicates = props.duplicates || []
+    this.exif = props.exif || {}
   }
 
   get properties(): Media {
@@ -113,10 +115,11 @@ export class MediaInstance {
       staticPreview: this.staticPreview,
       timeStamp: this.timeStamp,
       duplicates: this.duplicates,
+      exif: this.exif,
     }
   }
 }
 
 export interface MediaChangeable extends Omit<
-Media, 'id' | 'duplicates' | 'staticPath' | 'staticPreview' | 'changeDate' | 'imageSize' | 'megapixels' | 'mimetype' | 'size'
+Media, 'id' | 'duplicates' | 'staticPath' | 'staticPreview' | 'changeDate' | 'imageSize' | 'megapixels' | 'mimetype' | 'size' | 'exif'
 > {}
