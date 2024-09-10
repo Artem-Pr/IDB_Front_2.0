@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { Button, Checkbox, Tooltip } from 'antd'
@@ -8,14 +8,20 @@ import { useClearFilesArray, useFilesList, useUpdateOpenMenus } from 'src/app/co
 import { capitalize } from 'src/app/common/utils'
 import { uploadFiles } from 'src/redux/reducers/uploadSlice/thunks'
 import { setCheckForDuplicatesOnlyInCurrentFolder } from 'src/redux/reducers/uploadSlice/uploadSlice'
-import { checkForDuplicatesOnlyInCurrentFolder, curFolderInfo, duplicateFilesArr } from 'src/redux/selectors'
+import {
+  checkForDuplicatesOnlyInCurrentFolder,
+  curFolderInfo,
+  duplicateFilesArr,
+  hasFailedUploadingFiles,
+} from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import { MainMenuKeys } from 'src/redux/types'
 
 const tooltipMessages = {
-  removeDuplicates: 'remove all duplicates before uploading',
-  nothingToUpload: 'add files to upload',
   addUploadingFolder: 'add a folder for uploading files',
+  nothingToUpload: 'add files to upload',
+  removeDuplicates: 'remove all duplicates before uploading',
+  removeFiledFiles: 'remove failed files',
 } as const
 
 const getTooltipMessage = (messagesObj: Record<keyof typeof tooltipMessages, boolean>): string | false => capitalize(Object
@@ -27,17 +33,20 @@ const getTooltipMessage = (messagesObj: Record<keyof typeof tooltipMessages, boo
 export const ButtonsMenu = () => {
   const dispatch = useAppDispatch()
   const { filesArr } = useFilesList()
+  const hasFailedFiles = useSelector(hasFailedUploadingFiles)
   const { currentFolderPath } = useSelector(curFolderInfo)
   const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
   const duplicates = useSelector(duplicateFilesArr)
   const { setOpenMenus } = useUpdateOpenMenus()
   const { clearFilesArr } = useClearFilesArray()
 
-  const tooltipMessage = getTooltipMessage({
+  const tooltipMessage = useMemo(() => getTooltipMessage({
     removeDuplicates: Boolean(duplicates.length),
     nothingToUpload: !filesArr.length,
     addUploadingFolder: !currentFolderPath,
-  })
+    removeFiledFiles: hasFailedFiles,
+  }), [duplicates.length, filesArr.length, currentFolderPath, hasFailedFiles])
+
   const showCheckForDuplicatesCheckbox = Boolean(duplicates.length) || watchForDuplicatesOnlyInCurrentFolder
 
   const handleUploadClick = () => {

@@ -83,6 +83,10 @@ export const openMenusSelector = createSelector(
   },
 )
 
+export const hasFailedUploadingFiles = createSelector(uploadingFiles, uploadingFilesArr => (
+  uploadingFilesArr.some(({ staticPath }) => !staticPath)
+))
+
 export const currentFilesList = createSelector(
   [
     uploadingFiles,
