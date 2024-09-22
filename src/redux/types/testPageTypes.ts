@@ -35,7 +35,3 @@ export interface MatchingVideoFilesTest extends QueryResponse, TestType {
   excessiveVideo__DBThumbnails_DiskThumbnails: string[]
   excessiveVideo__DBThumbnails_DB: string[]
 }
-
-export interface RebuildPathsConfigTest extends QueryResponse {
-  progress: number
-}

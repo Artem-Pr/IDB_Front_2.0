@@ -16,9 +16,8 @@ export const uploadFiles = (): AppThunk => (dispatch, getState) => {
 
   mainApi
     .savePhotosInDB(UploadingObjects)
-    .then(({ data: { success, error } }) => {
-      success && dispatch(setUploadingStatus('success'))
-      error && dispatch(setUploadingStatus('error')) && errorMessage(new Error(error), 'Upload files error', 0)
+    .then(() => {
+      dispatch(setUploadingStatus('success'))
     })
     .catch(error => {
       dispatch(setUploadingStatus('error'))

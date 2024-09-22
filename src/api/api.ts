@@ -11,11 +11,12 @@ import type { UpdatedFileAPIRequest } from './dto/request-types'
 import type {
   CheckedDirectoryAPIResponse, CheckOriginalNameDuplicatesAPIResponse, UpdatePhotosAPIResponse, UploadingFileAPIResponse,
 } from './dto/response-types'
+import type { Media } from './models/media'
 import type { GetPhotosByTagsRequest } from './types'
 
 export const mainApi = {
   savePhotosInDB(files: UpdatedFileAPIRequest[]) {
-    return instanceNewDB.post<QueryResponse>('/save-files', { files })
+    return instanceNewDB.post<Media[]>('/save-files', { files })
   },
 
   updatePhotos(files: UpdatedFileAPIRequest[]) {

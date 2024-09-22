@@ -32,7 +32,6 @@ export const isDeleteProcessing = (state: RootState) => state.mainPageReducer.is
 export const imagePreview = (state: RootState) => state.mainPageReducer.preview
 export const numberOfFilesChecking = (state: RootState) => state.testsReducer.firstTest
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest
-export const pathsConfigRebuildProgress = (state: RootState) => state.testsReducer.thirdTest.progress
 export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
 

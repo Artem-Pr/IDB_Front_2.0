@@ -1,11 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest, RebuildPathsConfigTest } from '../../types/testPageTypes'
+import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from '../../types/testPageTypes'
 
 export interface State {
   firstTest: MatchingNumberOfFilesTest
   secondTest: MatchingVideoFilesTest
-  thirdTest: RebuildPathsConfigTest
 }
 
 const initialState: State = {
@@ -42,9 +41,6 @@ const initialState: State = {
     progress: 0,
     pid: 0,
   },
-  thirdTest: {
-    progress: 0,
-  },
 }
 
 const testsSlice = createSlice({
@@ -56,9 +52,6 @@ const testsSlice = createSlice({
     },
     setVideoFiles(state, action: PayloadAction<MatchingVideoFilesTest>) {
       state.secondTest = action.payload
-    },
-    setThirdTestProgress(state, action: PayloadAction<number>) {
-      state.thirdTest.progress = action.payload
     },
     refreshFirstTestPid(state) {
       state.firstTest.pid = 0
@@ -74,7 +67,6 @@ export const {
   refreshFirstTestPid,
   refreshSecondTestPid,
   setVideoFiles,
-  setThirdTestProgress,
 } = testsSlice.actions
 
 export const testsSliceReducer = testsSlice.reducer
