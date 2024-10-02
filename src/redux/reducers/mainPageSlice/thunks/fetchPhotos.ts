@@ -51,26 +51,36 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
   dispatch(setDGalleryLoading(true))
   mainApi
     .getPhotosByTags({
-      page: currentPage,
-      sorting: prepareSortingList(gallerySortingList),
-      perPage: nPerPage,
-      ...(rating && { rating }),
-      ...(fileName && { fileName }),
-      ...(includeAllSearchTags && { includeAllSearchTags }),
-      ...(!isEmpty(searchTags) && { searchTags }),
-      ...(!isEmpty(excludeTags) && { excludeTags }),
-      ...(!isEmpty(mimetypes) && { mimetypes }),
-      ...(dateRange && { dateRange }),
-      ...(anyDescription && { anyDescription }),
-      ...(description && !anyDescription && { description }),
-      ...(folderPath && { folderPath }),
-      ...(comparisonFolder && { comparisonFolder }),
-      ...(isNameComparison && { isNameComparison }),
-      ...(showSubfolders && { showSubfolders }),
-      ...(isFullSizePreview && { isFullSizePreview }),
-      ...(!savePreview && { dontSavePreview: !savePreview }),
-      ...(randomSort && { randomSort }),
-      ...(isDynamicFolders && { isDynamicFolders }),
+      filters: {
+        ...(rating && { rating }),
+        ...(fileName && { fileName }),
+        ...(includeAllSearchTags && { includeAllSearchTags }),
+        ...(!isEmpty(searchTags) && { searchTags }),
+        ...(!isEmpty(excludeTags) && { excludeTags }),
+        ...(!isEmpty(mimetypes) && { mimetypes }),
+        ...(dateRange && { dateRange }),
+        ...(anyDescription && { anyDescription }),
+        ...(description && !anyDescription && { description }),
+      },
+      sorting: {
+        sort: prepareSortingList(gallerySortingList),
+        ...(randomSort && { randomSort }),
+      },
+      folders: {
+        ...(folderPath && { folderPath }),
+        ...(showSubfolders && { showSubfolders }),
+        ...(isDynamicFolders && { isDynamicFolders }),
+      },
+      pagination: {
+        page: currentPage,
+        perPage: nPerPage,
+      },
+      settings: {
+        ...(comparisonFolder && { comparisonFolder }),
+        ...(!savePreview && { dontSavePreview: !savePreview }),
+        ...(isFullSizePreview && { isFullSizePreview }),
+        ...(isNameComparison && { isNameComparison }),
+      },
     })
     .then(({
       data: {

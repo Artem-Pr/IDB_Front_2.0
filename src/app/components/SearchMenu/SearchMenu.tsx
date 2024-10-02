@@ -27,7 +27,7 @@ import { folderElement, main, searchMenu } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 
-import { DATE_TIME_FORMAT } from '../../common/utils/date'
+import { DATE_TIME_FORMAT, getISOStringWithUTC } from '../../common/utils/date'
 
 import styles from './index.module.scss'
 
@@ -80,9 +80,7 @@ export const SearchMenu = () => {
 
   const handleRangePickerChange = (dayJsRangeValue: RangePickerProps['value']) => {
     const dateRangeValue: [string, string] | null = dayJsRangeValue
-      ? [dayjs(dayJsRangeValue[0])
-        ?.format(), dayjs(dayJsRangeValue[1])
-        ?.format()]
+      ? [getISOStringWithUTC(dayJsRangeValue[0]), getISOStringWithUTC(dayJsRangeValue[1])]
       : null
     dispatch(setDateRange(dateRangeValue))
   }

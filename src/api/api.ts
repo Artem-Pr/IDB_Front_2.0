@@ -7,12 +7,11 @@ import type {
 import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from 'src/redux/types/testPageTypes'
 
 import { instance, instanceNewDB } from './api-client'
-import type { UpdatedFileAPIRequest } from './dto/request-types'
+import type { GetPhotosByTagsAPIRequest, UpdatedFileAPIRequest } from './dto/request-types'
 import type {
   CheckedDirectoryAPIResponse, CheckOriginalNameDuplicatesAPIResponse, UpdatePhotosAPIResponse, UploadingFileAPIResponse,
 } from './dto/response-types'
 import type { Media } from './models/media'
-import type { GetPhotosByTagsRequest } from './types'
 
 export const mainApi = {
   savePhotosInDB(files: UpdatedFileAPIRequest[]) {
@@ -39,7 +38,7 @@ export const mainApi = {
   },
 
   getUnusedKeywordsList() {
-    return instance.get<string[]>('/unused-keywords')
+    return instanceNewDB.get<string[]>('/unused-keywords')
   },
 
   checkDuplicates(fileNameArr: string[]) {
@@ -49,7 +48,7 @@ export const mainApi = {
   },
 
   removeKeyword(keyword: string) {
-    return instance.delete(`/keyword/${keyword}`)
+    return instanceNewDB.delete(`/keyword/${keyword}`)
   },
 
   getPathsList() {
@@ -62,8 +61,8 @@ export const mainApi = {
     })
   },
 
-  getPhotosByTags(params: GetPhotosByTagsRequest) {
-    return instance.post<FetchingGalleryContent>('/filtered-photos', params)
+  getPhotosByTags(params: GetPhotosByTagsAPIRequest) {
+    return instanceNewDB.post<FetchingGalleryContent>('/filtered-photos', params)
   },
 
   deletePhoto(_id: string) {

@@ -1,5 +1,3 @@
-import type { SortingFields } from '../redux/types'
-import { Sort } from '../redux/types'
 import { MimeTypes } from '../redux/types/MimeTypes'
 
 import type { Media } from './models/media'
@@ -18,24 +16,6 @@ export interface ErrorResponse {
   timestamp: string
   path: string
   message: string[]
-}
-
-export interface GetPhotosByTagsRequest {
-  comparisonFolder?: string
-  dontSavePreview?: boolean
-  excludeTags?: string[]
-  fileName?: string
-  folderPath?: string
-  isDynamicFolders?: boolean
-  isFullSizePreview?: boolean
-  isNameComparison?: boolean
-  mimeTypes?: MimeTypes[]
-  page: number
-  perPage: number
-  randomSort?: boolean
-  searchTags?: string[]
-  showSubfolders?: boolean
-  sorting: Partial<Record<SortingFields, Sort>>
 }
 
 export enum ApiStatus {

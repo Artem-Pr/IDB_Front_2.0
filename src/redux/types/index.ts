@@ -43,7 +43,7 @@ export enum MainMenuKeys {
   DUPLICATES = 'duplicates',
 }
 
-export type SortingFields = Exclude<keyof Media, 'staticPath' | 'staticPreview' | 'timeStamp' | 'duplicates' | 'keywords' | 'imageSize' | 'changeDate'>
+export type SortingFields = Exclude<keyof Media, 'staticPath' | 'staticPreview' | 'timeStamp' | 'duplicates' | 'keywords' | 'imageSize' | 'changeDate' | 'exif'>
 
 export enum Sort {
   ASC = 1,
