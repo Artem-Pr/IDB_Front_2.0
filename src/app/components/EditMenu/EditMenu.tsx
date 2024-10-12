@@ -9,7 +9,7 @@ import {
 import cn from 'classnames'
 import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
-import { compose, identity, sortBy } from 'ramda'
+import { identity, sortBy } from 'ramda'
 
 import type { Media, MediaChangeable } from 'src/api/models/media'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
@@ -30,7 +30,7 @@ import {
   useSelectedList,
 } from '../../common/hooks/hooks'
 import {
-  getFilePathWithoutName, getLastItem, getNameParts, removeExtraFirstSlash,
+  getFilePathWithoutName, getLastItem, getNameParts,
   isVideoByExt,
 } from '../../common/utils'
 import { DATE_TIME_FORMAT } from '../../common/utils/date'
@@ -109,7 +109,7 @@ export const EditMenu = ({ isEditMany }: Props) => {
 
   const lastSelectedElemFilePath = useMemo(() => {
     const filePath = filesArr[getLastItem(selectedList)]?.filePath || ''
-    return compose(getFilePathWithoutName, removeExtraFirstSlash)(filePath)
+    return getFilePathWithoutName(filePath)
   }, [filesArr, selectedList])
 
   useEffect(() => {

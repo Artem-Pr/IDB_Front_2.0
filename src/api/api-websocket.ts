@@ -1,8 +1,8 @@
 import { errorMessage } from '../app/common/notifications'
 
 import { HOST } from './api-client'
-import type { WebSocketAPICallback, WebSocketAPIQuery, WebSocketAPIRequest } from './types'
-import { ApiStatus, WebSocketActions } from './types'
+import type { WebSocketAPICallback, WebSocketAPIQuery, WebSocketAPIRequest } from './types/types'
+import { ApiStatus, WebSocketActions } from './types/types'
 
 interface InitWebSocketCallback<T = undefined> {
   onMessage: (data: WebSocketAPICallback<T>) => void

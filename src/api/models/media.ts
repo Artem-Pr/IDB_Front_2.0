@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from 'uuid'
 import { DEFAULT_TIME_STAMP } from 'src/app/common/utils/date/dateFormats'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 
-import type { DuplicateFile } from '../types'
+import type { DuplicateFile } from '../types/types'
 
 type WithNullOnly<T> = Exclude<T, undefined> | null
 type ExifDescription = WithNullOnly<

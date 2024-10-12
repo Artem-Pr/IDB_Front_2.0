@@ -7,11 +7,15 @@ import type {
 import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from 'src/redux/types/testPageTypes'
 
 import { instance, instanceNewDB } from './api-client'
-import type { GetPhotosByTagsAPIRequest, UpdatedFileAPIRequest } from './dto/request-types'
-import type {
-  CheckedDirectoryAPIResponse, CheckOriginalNameDuplicatesAPIResponse, UpdatePhotosAPIResponse, UploadingFileAPIResponse,
-} from './dto/response-types'
 import type { Media } from './models/media'
+import type { GetPhotosByTagsAPIRequest, UpdatedFileAPIRequest } from './types/request-types'
+import type {
+  CheckedDirectoryAPIResponse,
+  CheckOriginalNameDuplicatesAPIResponse,
+  DeleteDirectoryApiResponse,
+  UpdatePhotosAPIResponse,
+  UploadingFileAPIResponse,
+} from './types/response-types'
 
 export const mainApi = {
   savePhotosInDB(files: UpdatedFileAPIRequest[]) {
@@ -70,8 +74,8 @@ export const mainApi = {
   },
 
   deleteDirectory(directory: string) {
-    return instance.delete<QueryResponse & { filePaths: string[] }>('/directory', {
-      params: { name: directory },
+    return instanceNewDB.delete<DeleteDirectoryApiResponse>('/directory', {
+      params: { directory },
     })
   },
 }

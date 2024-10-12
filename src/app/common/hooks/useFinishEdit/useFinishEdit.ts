@@ -6,8 +6,8 @@ import {
   compose, curry, flatten, identity, isEmpty, sortBy, uniq,
 } from 'ramda'
 
-import type { UpdatedFileAPIRequest } from 'src/api/dto/request-types'
 import type { Media, MediaChangeable } from 'src/api/models/media'
+import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
 import type { InitialFileObject } from 'src/app/components/EditMenu'
 import { duplicateConfig, emptyCheckboxesConfig, longProcessConfirmation } from 'src/assets/config/moduleConfig'
 import { setKeywordsList } from 'src/redux/reducers/foldersSlice/foldersSlice'

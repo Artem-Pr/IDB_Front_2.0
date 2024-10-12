@@ -1,7 +1,7 @@
 import { identity, sortBy } from 'ramda'
 
 import { mainApi } from 'src/api/api'
-import type { UpdatedFileAPIRequest } from 'src/api/dto/request-types'
+import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'

@@ -13,7 +13,9 @@ import {
   setShowInfoModal,
 } from 'src/redux/reducers/foldersSlice/foldersSlice'
 import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
-import { curFolderInfo, pathsArr } from 'src/redux/selectors'
+import {
+  folderInfoShowInfoModal, folderInfoNumberOfFiles, pathsArr, folderInfoNumberOfSubdirs,
+} from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { useCurrentPage } from '../../common/hooks'
@@ -33,7 +35,9 @@ const Header = () => {
   const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const directoriesArr = useSelector(pathsArr)
-  const { showInfoModal, numberOfFiles, numberOfSubdirectories } = useSelector(curFolderInfo)
+  const showInfoModal = useSelector(folderInfoShowInfoModal)
+  const numberOfFiles = useSelector(folderInfoNumberOfFiles)
+  const numberOfSubdirectories = useSelector(folderInfoNumberOfSubdirs)
   const { currentPageNumber } = useCurrentPage()
 
   const content = useMemo(

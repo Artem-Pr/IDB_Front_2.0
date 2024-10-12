@@ -9,6 +9,10 @@
     overflow: hidden;
     width: 100%;
 
+    &:not(.fullscreen) {
+      max-height: 85vh;
+    }
+
     & .image-gallery-slide-wrapper .image-gallery-swipe {
         height: 100%;
       }

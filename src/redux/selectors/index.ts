@@ -2,14 +2,21 @@ import { compose, map } from 'ramda'
 import { createSelector } from 'reselect'
 
 import type { Media } from 'src/api/models/media'
-import type { DuplicateFile } from 'src/api/types'
+import type { DuplicateFile } from 'src/api/types/types'
 
 import { getSameKeywords, getUniqArr } from '../../app/common/utils'
 import type { RootState } from '../store/types'
 import type { SortingData } from '../types'
 
 export const folderElement = (state: RootState) => state.folderReducer
-export const curFolderInfo = (state: RootState) => state.folderReducer.currentFolderInfo
+export const folderInfoShowInfoModal = (state: RootState) => state.folderReducer.currentFolderInfo.showInfoModal
+export const folderInfoNumberOfFiles = (state: RootState) => state.folderReducer.currentFolderInfo.numberOfFiles
+export const folderInfoNumberOfSubdirs = (state: RootState) => state.folderReducer.currentFolderInfo.numberOfSubdirectories
+export const folderInfoCurrentFolder = (state: RootState) => state.folderReducer.currentFolderInfo.currentFolderPath
+export const folderInfoShowSubfolders = (state: RootState) => state.folderReducer.currentFolderInfo.showSubfolders
+export const folderInfoIsDynamicFolders = (state: RootState) => state.folderReducer.currentFolderInfo.isDynamicFolders
+export const folderInfoCurrentFolderKey = (state: RootState) => state.folderReducer.currentFolderInfo.currentFolderKey
+export const folderInfoExpandedKeys = (state: RootState) => state.folderReducer.currentFolderInfo.expandedKeys
 export const pathsArr = (state: RootState) => state.folderReducer.pathsArr
 export const upload = (state: RootState) => state.uploadReducer
 export const openMenus = (state: RootState) => state.uploadReducer.openMenus
@@ -54,8 +61,8 @@ export const sort = createSelector(
 )
 
 export const duplicateFilesArr = createSelector(
-  [uploadingFiles, checkForDuplicatesOnlyInCurrentFolder, curFolderInfo],
-  (uploadingFilesArr, onlyDuplicatesInCurrentFolder, { currentFolderPath }) => uploadingFilesArr
+  [uploadingFiles, checkForDuplicatesOnlyInCurrentFolder, folderInfoCurrentFolder],
+  (uploadingFilesArr, onlyDuplicatesInCurrentFolder, currentFolderPath) => uploadingFilesArr
     .reduce<DuplicateFile[]>((accum, { duplicates = [] }) => [...accum, ...duplicates], [])
     .filter(({ filePath }) => (onlyDuplicatesInCurrentFolder ? filePath?.startsWith(`/${currentFolderPath}`) : true)),
 )

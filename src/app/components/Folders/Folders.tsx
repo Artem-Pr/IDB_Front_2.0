@@ -7,7 +7,9 @@ import {
 } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-import { addFolderToFolderTree, getExpandedTreeKeys } from 'src/app/common/folderTree'
+import {
+  addFolderToFolderTree, addNewPathToPathsArr, getExpandedTreeKeys,
+} from 'src/app/common/folderTree'
 import { useCurrentPage } from 'src/app/common/hooks'
 import { removeExtraSlash } from 'src/app/common/utils'
 import {
@@ -22,7 +24,12 @@ import {
 import { fetchPathsList, removeDirectoryIfExists } from 'src/redux/reducers/foldersSlice/thunks'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import {
-  curFolderInfo, folderElement, pathsArr, pathsArrOptionsSelector,
+  folderInfoCurrentFolder,
+  folderInfoIsDynamicFolders,
+  folderElement,
+  pathsArr,
+  pathsArrOptionsSelector,
+  folderInfoShowSubfolders,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
@@ -35,7 +42,10 @@ export const Folders = () => {
   const [modal, contextHolder] = Modal.useModal()
   const { folderTree } = useSelector(folderElement)
   const { isMainPage } = useCurrentPage()
-  const { currentFolderPath, showSubfolders, isDynamicFolders } = useSelector(curFolderInfo)
+  const currentFolderPath = useSelector(folderInfoCurrentFolder)
+  const showSubfolders = useSelector(folderInfoShowSubfolders)
+
+  const isDynamicFolders = useSelector(folderInfoIsDynamicFolders)
   const directoriesArr = useSelector(pathsArr)
   const options = useSelector(pathsArrOptionsSelector)
   const [autoExpandParent, setAutoExpandParent] = useState(true)
@@ -48,10 +58,8 @@ export const Folders = () => {
   }
 
   const setNewFolder = () => {
-    // TODO: fix behaviour:
-    // if you add main/stock/folder/subfolder it will add only main/stock/folder/subfolder
-    // but not main/stock/folder
-    dispatch(setPathsArr([...directoriesArr, cleanFolderPath]))
+    const updatedPathsArr = addNewPathToPathsArr(directoriesArr, cleanFolderPath)
+    dispatch(setPathsArr(updatedPathsArr))
     dispatch(setFolderTree(addFolderToFolderTree(cleanFolderPath, folderTree)))
   }
 

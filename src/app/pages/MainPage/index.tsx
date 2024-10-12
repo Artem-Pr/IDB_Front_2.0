@@ -15,7 +15,7 @@ import {
   CustomAlert, Gallery, GalleryTopMenu, MainMenu, ResizeDivider, PaginationMenu,
 } from '../../components'
 
-import { useGalleryProps, useMainMenuProps } from './hooks'
+import { useGalleryProps } from './hooks'
 
 const { Content } = Layout
 
@@ -27,7 +27,6 @@ const MainPage = () => {
     refs, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating,
   } = useGridRefControl()
   const dispatch = useAppDispatch()
-  const mainMenuProps = useMainMenuProps()
   const galleryProps = useGalleryProps()
   const location = useLocation()
   const [isFilesLoaded, setIsFilesLoaded] = useState(false)
@@ -52,7 +51,7 @@ const MainPage = () => {
 
   return (
     <Layout>
-      <MainMenu {...mainMenuProps} menuRef={menuRef} videoPreviewRef={videoPreviewRef} />
+      <MainMenu menuRef={menuRef} videoPreviewRef={videoPreviewRef} />
       <div style={{ height: 'calc(100vh - 64px)' }}>
         <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       </div>

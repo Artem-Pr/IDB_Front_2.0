@@ -20,6 +20,7 @@ export {
   removeIntersectingKeywords,
   renameEqualStrings,
   renameShortNames,
+  sanitizeDirectory,
   sortByFieldDescending,
   updateFilesArrItemByField,
   updateFilesArrayItems,

@@ -7,7 +7,7 @@ import {
 
 import { initWebSocket } from '../../../../../api/api-websocket'
 import type { FilesTestAPIData } from '../../../../../api/api-websocket'
-import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types/types'
 import TableCollapse from '../../gridItems/TableCollaps'
 import TableRow from '../../gridItems/TableRow'
 

@@ -1,5 +1,5 @@
-import type { UpdatedFileAPIRequest } from 'src/api/dto/request-types'
 import type { Media } from 'src/api/models/media'
+import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
 
 import { removeExtraFirstSlash } from '../utils'
 

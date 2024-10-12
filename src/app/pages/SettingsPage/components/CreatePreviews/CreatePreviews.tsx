@@ -9,7 +9,7 @@ import {
 import { keys } from 'ramda'
 
 import { initWebSocket } from 'src/api/api-websocket'
-import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types/types'
 import { pathsArrOptionsSelector } from 'src/redux/selectors'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 

@@ -12,7 +12,9 @@ import {
 } from 'src/redux/reducers/foldersSlice/foldersSlice'
 import { setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
-import { curFolderInfo, folderElement } from 'src/redux/selectors'
+import {
+  folderElement, folderInfoCurrentFolderKey, folderInfoExpandedKeys,
+} from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 const { DirectoryTree } = Tree
@@ -26,7 +28,8 @@ interface Props {
 export const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props) => {
   const dispatch = useAppDispatch()
   const { folderTree } = useSelector(folderElement)
-  const { currentFolderKey, expandedKeys } = useSelector(curFolderInfo)
+  const currentFolderKey = useSelector(folderInfoCurrentFolderKey)
+  const expandedKeys = useSelector(folderInfoExpandedKeys)
 
   const mainPageTreeProps = useMemo(
     () => (isMainPage

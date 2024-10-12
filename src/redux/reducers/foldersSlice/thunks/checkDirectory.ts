@@ -1,6 +1,6 @@
 import { mainApi } from 'src/api/api'
 import { errorMessage } from 'src/app/common/notifications'
-import { curFolderInfo } from 'src/redux/selectors'
+import { folderInfoCurrentFolder } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 import type { CheckedDirectoryRequest } from 'src/redux/types'
 
@@ -13,7 +13,7 @@ export const checkDirectory = (): AppThunk => (dispatch, getState) => {
     dispatch(setShowInfoModal(true))
   }
 
-  const { currentFolderPath } = curFolderInfo(getState())
+  const currentFolderPath = folderInfoCurrentFolder(getState())
   mainApi
     .checkDirectory(currentFolderPath)
     .then(({ data }) => {

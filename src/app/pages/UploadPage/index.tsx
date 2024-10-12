@@ -16,7 +16,7 @@ import {
 import {
   allSameKeywordsSelector,
   allUploadKeywordsSelector,
-  curFolderInfo,
+  folderInfoCurrentFolder,
   upload,
   uploadPageGalleryPropsSelector,
 } from 'src/redux/selectors'
@@ -46,7 +46,7 @@ const UploadPage = () => {
   const sameKeywords = useSelector(allSameKeywordsSelector)
   const mainGalleryProps = useSelector(uploadPageGalleryPropsSelector)
   const { openMenus, selectedList, imageArr } = mainGalleryProps
-  const { currentFolderPath } = useSelector(curFolderInfo)
+  const currentFolderPath = useSelector(folderInfoCurrentFolder)
   const showTopGalleryMenu = mainGalleryProps.imageArr.length !== 0
 
   const galleryProps = {

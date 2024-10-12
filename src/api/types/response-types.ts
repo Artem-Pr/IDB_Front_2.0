@@ -1,5 +1,6 @@
 import type { Media } from '../models/media'
-import type { DuplicateFile } from '../types/types'
+
+import type { DuplicateFile } from './types'
 
 export interface UploadingFileAPIResponse {
   properties: Media;
@@ -15,4 +16,9 @@ export interface CheckedDirectoryAPIResponse {
 export interface UpdatePhotosAPIResponse {
   files?: Media[]
   newFilePath?: string[]
+}
+
+export interface DeleteDirectoryApiResponse {
+  directoriesToRemove: string[];
+  mediaList: Media[];
 }

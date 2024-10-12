@@ -1,8 +1,10 @@
-import { flatten, reduce } from 'ramda'
+import { flatten, reduce, uniq } from 'ramda'
 
 import { FolderTreeItem } from 'src/redux/types'
 
-import { copyByJSON, removeExtraSlash } from './utils'
+import {
+  copyByJSON, removeExtraSlash, sanitizeDirectory,
+} from './utils'
 
 type KeyType = 'parent' | 'sibling'
 
@@ -114,4 +116,17 @@ export const getExpandedTreeKeys = (tree: FolderTreeItem[], treePath: string): E
     : expandedTreeKeyFromPath(tree, treePath)
 
   return { ...result, parentKeys: result.parentKeys.filter(Boolean) }
+}
+
+export const getDirAndSubfolders = (directory: string): string[] => sanitizeDirectory(directory)
+  .split('/')
+  .filter(Boolean)
+  .reduce<string[]>((accum, currentDir) => {
+  if (!accum.length) return [currentDir]
+  return [...accum, `${accum.at(-1)}/${currentDir}`]
+}, [])
+
+export const addNewPathToPathsArr = (pathsArr: string[], newPath: string): string[] => {
+  const newFolderWithSubDirectories = getDirAndSubfolders(newPath)
+  return uniq([...pathsArr, ...newFolderWithSubDirectories])
 }

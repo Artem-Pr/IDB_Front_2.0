@@ -16,7 +16,7 @@ import { wait, isMimeType } from 'src/app/common/utils'
 import { setIsLoading } from 'src/redux/reducers/sessionSlice/sessionSlice'
 import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from 'src/redux/reducers/uploadSlice'
 import { addUploadingFile, fetchPhotosPreview } from 'src/redux/reducers/uploadSlice/thunks'
-import { curFolderInfo, upload } from 'src/redux/selectors'
+import { folderInfoCurrentFolder, upload } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import { MainMenuKeys } from 'src/redux/types'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
@@ -45,7 +45,7 @@ interface Props {
 }
 
 const DropZone = ({ openMenus }: Props) => {
-  const { currentFolderPath } = useSelector(curFolderInfo)
+  const currentFolderPath = useSelector(folderInfoCurrentFolder)
   const { previewLoadingCount, uploadingBlobs, uploadingFiles } = useSelector(upload)
   const [finishedNumberOfFiles, setFinishedNumberOfFiles] = useState<number>(0)
   const dispatch = useAppDispatch()

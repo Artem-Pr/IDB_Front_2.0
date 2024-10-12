@@ -1,6 +1,5 @@
-import { MimeTypes } from '../redux/types/MimeTypes'
-
-import type { Media } from './models/media'
+import { MimeTypes } from '../../redux/types/MimeTypes'
+import type { Media } from '../models/media'
 
 export enum HttpStatusCode {
   OK = 200,
