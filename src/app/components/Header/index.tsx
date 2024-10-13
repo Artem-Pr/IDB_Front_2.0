@@ -5,6 +5,7 @@ import {
   Layout, Menu, Modal, Typography,
 } from 'antd'
 
+import { mainApi } from 'src/api/api'
 import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
 import {
@@ -50,6 +51,10 @@ const Header = () => {
     ),
     [numberOfFiles, numberOfSubdirectories],
   )
+
+  useEffect(() => {
+    mainApi.cleanTemp()
+  }, [])
 
   useEffect(() => {
     !directoriesArr.length && dispatch(fetchPathsList())

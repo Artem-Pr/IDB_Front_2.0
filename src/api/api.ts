@@ -78,6 +78,10 @@ export const mainApi = {
       params: { directory },
     })
   },
+
+  cleanTemp() {
+    return instanceNewDB.delete('/clean-temp')
+  },
 }
 
 export const testApi = {
