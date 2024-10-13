@@ -5,7 +5,7 @@ import { InboxOutlined, LoadingOutlined } from '@ant-design/icons'
 import {
   message, Progress, Upload, UploadProps,
 } from 'antd'
-import type { RcFile, UploadChangeParam } from 'antd/es/upload'
+import type { RcFile, UploadChangeParam, UploadFile } from 'antd/es/upload'
 import cn from 'classnames'
 import { compose } from 'ramda'
 
@@ -52,6 +52,25 @@ const DropZone = ({ openMenus }: Props) => {
   const isEditOne = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
   const isEditMany = useMemo(() => openMenus.includes(MainMenuKeys.EDIT_BULK), [openMenus])
 
+  const handleError = (notificationMessage: string, file: string | RcFile | Blob | UploadFile) => {
+    const uploadingError = new Error(`${isFile(file) ? file.name : '?'} ${notificationMessage}`)
+    errorMessage(uploadingError, 'File is not uploaded')
+    uploading.isProcessing = false
+  }
+
+  const isValidFile = (
+    fileFormQueue: string | Blob | RcFile | UploadFile,
+    showError: boolean = true,
+  ): fileFormQueue is ValidRcFile | UploadFile => {
+    const fileAlreadyExist = isFile(fileFormQueue) && isFileNameAlreadyExist(fileFormQueue, uploadingBlobs)
+    const isMimeTypeExist = isFile(fileFormQueue) && isMimeType(fileFormQueue.type)
+
+    showError && fileAlreadyExist && handleError('is already exist', fileFormQueue)
+    showError && !isMimeTypeExist && handleError('file type not supported', fileFormQueue)
+
+    return !fileAlreadyExist && isMimeTypeExist
+  }
+
   const props: UploadProps = {
     accept: `${MimeTypes.heic}, image/*, video/*`,
     className: cn(styles.dropZone, { active: isEditOne || isEditMany }),
@@ -78,22 +97,6 @@ const DropZone = ({ openMenus }: Props) => {
           dispatch(setUploadingStatus('empty'))
         }
         dispatchNewFile()
-      }
-
-      const handleError = (notificationMessage: string) => {
-        const uploadingError = new Error(`${isFile(file) ? file.name : '?'} ${notificationMessage}`)
-        errorMessage(uploadingError, 'File is not uploaded')
-        uploading.isProcessing = false
-      }
-
-      const isValidFile = (fileFormQueue: string | Blob | RcFile): fileFormQueue is ValidRcFile => {
-        const fileAlreadyExist = isFile(fileFormQueue) && isFileNameAlreadyExist(fileFormQueue, uploadingBlobs)
-        const isMimeTypeExist = isFile(fileFormQueue) && isMimeType(fileFormQueue.type)
-
-        fileAlreadyExist && handleError('is already exist')
-        !isMimeTypeExist && handleError('file type not supported')
-
-        return !fileAlreadyExist && isMimeTypeExist
       }
 
       const proceedUpload = async (counter: number = 0) => {
@@ -124,14 +127,22 @@ const DropZone = ({ openMenus }: Props) => {
 
         setFinishedNumberOfFiles(uploadingFiles.length)
         info.fileList.forEach(file => {
+          if (!isValidFile(file, false)) {
+            uploading.isBeforeProcessing = true
+            return
+          }
+
           const isFileAlreadyUploaded = uploadingBlobs[file.name]
           !isFileAlreadyUploaded && dispatch(addUploadingFile(new MediaInstance({
             mimetype: file.originFileObj?.type as MimeTypes,
             originalName: (file.originFileObj?.name as Media['originalName'] | undefined) || 'unknown_file.jpg',
           }).properties))
+
+          uploading.isBeforeProcessing = false
         })
+      } else {
+        uploading.isBeforeProcessing = false
       }
-      uploading.isBeforeProcessing = false
       const { status } = info.file
       status !== 'uploading' && console.info(info.file, info.fileList)
       status === 'done' && message.success(`${info.file.name} file uploaded successfully.`)

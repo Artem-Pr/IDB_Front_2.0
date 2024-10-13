@@ -44,7 +44,7 @@ export const sortByFieldDescending = <K extends Record<string, any>>(fieldName: 
   sortWith<K>([descend(compose(toLower, prop(String(fieldName))))])
 )
 export const typeIsMimeTypesKey = (type: string): type is keyof typeof MimeTypes => type.toLowerCase() in MimeTypes
-export const isMimeType = (type: string): type is MimeTypes => Object.values(MimeTypes)
+export const isMimeType = (type: string | undefined): type is MimeTypes => Object.values(MimeTypes)
   .includes(type as MimeTypes)
 export const isVideo = (contentType: MimeTypes) => contentType.startsWith('video')
 export const isVideoByExt = (fileExtension: string) => {
