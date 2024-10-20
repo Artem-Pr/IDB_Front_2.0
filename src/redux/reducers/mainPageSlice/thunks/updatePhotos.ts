@@ -30,7 +30,7 @@ export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk =
     .then(() => dispatch(fetchPhotos()))
     .catch(error => {
       console.error('error', error)
-      errorMessage(error.message, 'updating files error: ', 0)
+      errorMessage(error, 'updating files error: ', 0)
     })
     .finally(() => dispatch(setDGalleryLoading(false)))
 }

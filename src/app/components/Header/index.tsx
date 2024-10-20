@@ -6,6 +6,7 @@ import {
 } from 'antd'
 
 import { mainApi } from 'src/api/api'
+import { errorMessage } from 'src/app/common/notifications'
 import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
 import {
@@ -53,7 +54,12 @@ const Header = () => {
   )
 
   useEffect(() => {
-    mainApi.cleanTemp()
+    mainApi
+      .cleanTemp()
+      .catch(err => {
+        console.error(err)
+        errorMessage(err, 'cleaning temp error', 0)
+      })
   }, [])
 
   useEffect(() => {

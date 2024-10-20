@@ -2,7 +2,7 @@ import { notification } from 'antd'
 
 export const errorMessage = (error: Error, message: string, duration?: number) => {
   notification.error({
-    message,
+    message: `Error: ${message}`,
     description: error.message,
     duration: duration || 4.5,
   })

@@ -7,20 +7,19 @@ import { setIsDeleteProcessing } from '../mainPageSlice'
 
 import { fetchPhotos } from './fetchPhotos'
 
-export const removeCurrentPhoto = (): AppThunk => (dispatch, getState) => {
+export const removeSelectedFiles = (): AppThunk => (dispatch, getState) => {
   const { dSelectedList, downloadingFiles } = main(getState())
-  const currentPhotoId = downloadingFiles[dSelectedList[0]].id
+  const fileIdsList = dSelectedList.map(index => downloadingFiles[index].id)
   setIsDeleteProcessing(true)
   mainApi
-    .deletePhoto(currentPhotoId)
-    .then(({ data: { success, error } }) => {
-      success && successMessage('File deleted successfully')
-      success && dispatch(fetchPhotos())
-      error && errorMessage(new Error(error), 'Deleting file error: ', 0)
+    .deleteFiles(fileIdsList)
+    .then(() => {
+      successMessage('File deleted successfully')
+      dispatch(fetchPhotos())
     })
     .catch(error => {
       console.error('error', error)
-      errorMessage(error.message, 'Deleting file error: ', 0)
+      errorMessage(error, 'Deleting file error: ', 0)
     })
     .finally(() => setIsDeleteProcessing(false))
 }

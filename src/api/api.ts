@@ -69,8 +69,8 @@ export const mainApi = {
     return instanceNewDB.post<FetchingGalleryContent>('/filtered-photos', params)
   },
 
-  deletePhoto(_id: string) {
-    return instance.delete<QueryResponse>(`/photo/${_id}`)
+  deleteFiles(ids: string[]) {
+    return instanceNewDB.post<undefined>('/delete-files', { ids })
   },
 
   deleteDirectory(directory: string) {

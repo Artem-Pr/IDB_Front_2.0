@@ -13,8 +13,8 @@ import { identity, sortBy } from 'ramda'
 
 import type { Media, MediaChangeable } from 'src/api/models/media'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
-import { removeCurrentPhoto } from 'src/redux/reducers/mainPageSlice/thunks'
-import { removeFileFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
+import { removeSelectedFiles } from 'src/redux/reducers/mainPageSlice/thunks'
+import { removeFilesFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
 import {
   folderElement, isDeleteProcessing, main, pathsArrOptionsSelector,
 } from 'src/redux/selectors'
@@ -158,14 +158,15 @@ export const EditMenu = ({ isEditMany }: Props) => {
     setIsSelectAllBtn(!isSelectAllBtn)
   }, [clearSelectedList, isSelectAllBtn, selectAll])
 
-  const isDeleteBtn = !(isMainPage && isEditMany)
   const showTimeStamp = isMainPage && isVideoFile && !isEditMany
 
   const refreshTimeStamp = () => form.setFieldsValue({ timeStamp: DEFAULT_TIME_STAMP })
 
   const handleDelete = () => {
     const onOk = () => {
-      isMainPage ? dispatch(removeCurrentPhoto()) : dispatch(removeFileFromUploadState())
+      isMainPage
+        ? dispatch(removeSelectedFiles())
+        : dispatch(removeFilesFromUploadState())
     }
     modal.confirm(deleteConfirmation({ onOk, type: 'file' }))
   }
@@ -314,13 +315,17 @@ export const EditMenu = ({ isEditMany }: Props) => {
           )}
         </div>
 
-        {isDeleteBtn && (
-          <Form.Item className={styles.deleteButton}>
-            <Button className="w-100" type="primary" loading={isDeleting} onClick={handleDelete} danger>
-                Delete
-            </Button>
-          </Form.Item>
-        )}
+        <Form.Item className={styles.deleteButton}>
+          <Button
+            className="w-100"
+            type="primary"
+            loading={isDeleting}
+            onClick={handleDelete}
+            danger
+          >
+            Delete
+          </Button>
+        </Form.Item>
       </Form>
       {contextHolder}
     </div>

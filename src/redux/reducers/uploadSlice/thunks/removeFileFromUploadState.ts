@@ -1,8 +1,9 @@
-import { upload } from '../../../selectors'
-import type { AppThunk } from '../../../store/types'
+import { upload } from 'src/redux/selectors'
+import type { AppThunk } from 'src/redux/store/types'
+
 import { clearSelectedList, removeBlob, updateUploadingFilesArr } from '../uploadSlice'
 
-export const removeFileFromUploadState = (): AppThunk => (dispatch, getState) => {
+export const removeFilesFromUploadState = (): AppThunk => (dispatch, getState) => {
   const removeBlobPreview = () => (
     uploadingFiles.forEach(({ originalName }, idx) => selectedList.includes(idx) && dispatch(removeBlob(originalName)))
   )
