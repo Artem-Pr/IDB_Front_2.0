@@ -13,11 +13,6 @@ export interface CheckedDirectoryAPIResponse {
   numberOfSubdirectories: number
 }
 
-export interface UpdatePhotosAPIResponse {
-  files?: Media[]
-  newFilePath?: string[]
-}
-
 export interface DeleteDirectoryApiResponse {
   directoriesToRemove: string[];
   mediaList: Media[];

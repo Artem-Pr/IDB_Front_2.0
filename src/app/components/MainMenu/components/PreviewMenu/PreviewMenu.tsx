@@ -19,7 +19,7 @@ export interface PreviewMenuProps {
 export const PreviewMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   const dispatch = useAppDispatch()
   const {
-    previewType, staticPath: originalPath, originalName, staticPreview: preview, playing, stop,
+    previewType, staticPath, originalName, staticPreview, staticVideoFullSize, playing, stop,
   } = useSelector(imagePreview)
 
   const handleSetPlaying = (value: boolean) => {
@@ -35,11 +35,12 @@ export const PreviewMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   return (
     <div className={cn(styles.preview, { [styles.notPlayingVideo]: !isPlayingVideo })} ref={videoPreviewRef}>
       <GalleryMediaItem
-        staticPath={originalPath || ''}
         playing={playing}
-        staticPreview={preview}
         setPlaying={handleSetPlaying}
         setStop={handleStart}
+        staticPath={staticPath}
+        staticPreview={staticPreview}
+        staticVideoFullSize={staticVideoFullSize}
         stop={stop}
         type={previewType}
         muted

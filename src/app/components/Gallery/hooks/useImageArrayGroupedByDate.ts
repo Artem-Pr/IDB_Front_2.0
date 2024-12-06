@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import dayjs from 'dayjs'
 
 import type { Media } from 'src/api/models/media'
-import { DATE_FORMAT } from 'src/app/common/utils/date'
+import { DATE_FORMAT } from 'src/constants/dateConstants'
 
 export const useImageArrayGroupedByDate = (imageArr: Media[]) => {
   const imageArrayGroupedByDate = useMemo(

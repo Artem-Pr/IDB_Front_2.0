@@ -2,15 +2,12 @@ import { ResultStatusType } from 'antd/es/result'
 import {
   addIndex,
   compose,
-  dec,
   descend,
   filter,
-  inc,
   includes,
   intersection,
   isEmpty,
   map,
-  mapAccumRight,
   prop,
   reject,
   sortBy,
@@ -34,7 +31,6 @@ export const copyByJSON = <T>(obj: T): T => JSON.parse(JSON.stringify(obj))
 export const removeExtraSlash = (value: string): string => (value.endsWith('/') ? value.slice(0, -1) : value)
 export const sanitizeDirectory = <T extends string>(value: T): T => value.replace(/^\/+|\/+$/g, '') as T
 export const removeExtraFirstSlash = (value: string): string => (value.startsWith('/') ? value.slice(1) : value)
-// Todo: use R.last instead
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = <T extends Record<string, any>>(obj: T): Partial<T> => reject(field => !field)(obj)
 export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) => (
@@ -79,46 +75,6 @@ export const updateFilesArrItemByField = (
   const isEqualFileName = item[fieldName] === updatingFieldsObj[fieldName]
   return isEqualFileName ? { ...item, ...updatingFieldsObj } : item
 })
-
-export const renameEqualStrings = (strArr: string[]) => {
-  const count = (accum: Record<string, number>, curValue: string) => {
-    const numberOf = accum[curValue] ? inc(accum[curValue]) : 1
-    return { ...copyByJSON(accum), [curValue]: numberOf }
-  }
-
-  const arrCreator = (accum: Record<string, number>, curValue: string): [Record<string, number>, string] => {
-    const newValue = accum[curValue] ? dec(accum[curValue]) : Number(curValue)
-    const newAccum = { ...copyByJSON(accum), [curValue]: newValue }
-    const additionalNumber = accum[curValue]
-      ? `_${accum[curValue].toString()
-        .padStart(3, '0')}`
-      : ''
-    return [newAccum, `${curValue}${additionalNumber}`]
-  }
-
-  const isUniq = (numberOf: number): boolean => numberOf === 1
-
-  const countSrtObj = strArr.reduce(count, {})
-  const countSrtObjWithoutUniqWords = reject(isUniq, countSrtObj)
-  const newStrArr = mapAccumRight(arrCreator, countSrtObjWithoutUniqWords, strArr)
-  return newStrArr[1]
-}
-
-export const renameShortNames = (namePartArr: NameParts[]): NameParts[] => {
-  const shortNames = namePartArr.map(({ shortName }) => shortName)
-  const renamedShortNames = renameEqualStrings(shortNames)
-  return renamedShortNames.map((item, i) => ({ shortName: item, ext: namePartArr[i].ext }))
-}
-
-export const getRenamedObjects = <T extends { originalName: Media['originalName'] | '-' }>(filesArr: T[]): T[] => {
-  const newFilesArr = copyByJSON(filesArr)
-  const fileNameParts: NameParts[] = newFilesArr.map(({ originalName }) => getNameParts(originalName))
-  const renamedNameParts = renameShortNames(fileNameParts)
-  return newFilesArr.map((item, i) => {
-    const { shortName, ext } = renamedNameParts[i]
-    return { ...item, originalName: shortName + ext }
-  })
-}
 
 export const removeIntersectingKeywords = <T extends { keywords: Keywords }>(
   sameKeywords: string[],
@@ -167,6 +123,7 @@ export const getFilesWithUpdatedKeywords = <T extends { keywords: Keywords }>(
   return !keywords || isEmpty(keywords) ? newFilesArr : addKeywordsToAllFiles(keywords, newFilesArr)
 }
 
+// leading slash will be removed
 export const getFilePathWithoutName = (fullPath: string): string => fullPath.split('/')
   .filter(Boolean)
   .slice(0, -1)

@@ -11,9 +11,9 @@ import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 
 import type { Media } from 'src/api/models/media'
-import { DATE_TIME_FORMAT } from 'src/app/common/utils/date'
 import { CopyToClipboard } from 'src/app/components/CopyToClipboard'
 import { UIKitBtn } from 'src/app/components/UIKit'
+import { DATE_TIME_FORMAT } from 'src/constants/dateConstants'
 
 import type { TimeDiff, TimeDiffConfig } from '../TDModalMapper/TDModalMapper'
 import { TimeDifference } from '../TimeDifference'

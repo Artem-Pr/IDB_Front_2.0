@@ -20,12 +20,13 @@ export const DuplicatesMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   return (
     <div>
       {previewDuplicatesArr.map(({
-        filePath, staticPath, mimetype, staticPreview,
+        filePath, staticPath, mimetype, staticPreview, staticVideoFullSize,
       }) => (
         <div key={filePath} className={cn(styles.preview)} ref={videoPreviewRef}>
           <GalleryMediaItem
             staticPath={staticPath}
             staticPreview={staticPreview}
+            staticVideoFullSize={staticVideoFullSize}
             type={mimetype}
             muted
             usePlaceholder

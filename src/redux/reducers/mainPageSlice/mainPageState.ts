@@ -58,6 +58,7 @@ export const initialState: State = {
     staticPath: '',
     playing: false,
     staticPreview: '',
+    staticVideoFullSize: null,
     previewType: MimeTypes.jpeg,
     stop: false,
   },

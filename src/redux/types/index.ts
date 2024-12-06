@@ -110,6 +110,7 @@ export interface Preview {
   previewType: MimeTypes
   staticPath: Media['staticPath']
   staticPreview: Media['staticPreview']
+  staticVideoFullSize: Media['staticVideoFullSize']
   stop?: boolean
 }
 

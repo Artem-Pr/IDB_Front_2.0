@@ -69,9 +69,9 @@ export const useImageClick = ({
         && updatePreview({
           previewType: rawPreview.mimetype,
           originalName: rawPreview.originalName,
-          // TODO: use Blob if staticPath is too slow
           staticPath: rawPreview.staticPath || blobFiles[rawPreview.originalName],
           staticPreview: rawPreview.staticPreview,
+          staticVideoFullSize: rawPreview.staticVideoFullSize,
         })
     },
     [

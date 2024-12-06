@@ -23,16 +23,6 @@ export const emptyCheckboxesConfig = {
   content: 'Please check one of the checkboxes',
 }
 
-export const longProcessConfirmation = ({ onOk, onCancel, fileSize }: Confirmation & { fileSize: string }) => ({
-  title: 'The procedure can take a long time',
-  content: `Files for editing have a total size of ${fileSize}, 
-    the procedure may take a long time. Are you sure you want to start?`,
-  okText: 'Yes',
-  cancelText: 'No',
-  onOk,
-  onCancel,
-})
-
 export const deleteConfirmation = ({ onOk, onCancel, type }: Confirmation & { type: DeleteConfirmationType }) => ({
   title: 'Delete confirmation',
   content: deleteMessageConst[type],

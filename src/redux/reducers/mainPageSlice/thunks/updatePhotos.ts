@@ -1,9 +1,12 @@
-import { identity, sortBy } from 'ramda'
+import { AxiosError, HttpStatusCode } from 'axios'
 
 import { mainApi } from 'src/api/api'
 import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
+import type { CheckOriginalNameDuplicatesAPIResponse } from 'src/api/types/response-types'
+import type { ErrorResponse } from 'src/api/types/types'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
+import { updatedPathsArrFromMediaList } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
 import { setFolderTree, setPathsArr } from '../../foldersSlice/foldersSlice'
@@ -12,25 +15,34 @@ import { setDGalleryLoading } from '../mainPageSlice'
 
 import { fetchPhotos } from './fetchPhotos'
 
-export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk => dispatch => {
-  const addNewPathsArr = (newPathsArr: string[]) => {
-    dispatch(setPathsArr(sortBy(identity, newPathsArr)))
-    dispatch(setFolderTree(createFolderTree(newPathsArr)))
-  }
+const DUPLICATE_FILE_ERROR_MESSAGE = 'File name already exists:'
+const UPLOADING_ERROR_MESSAGE = 'updating files error'
 
+export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk => (dispatch, getState) => {
   dispatch(setDGalleryLoading(true))
   dispatch(setIsTimeDifferenceApplied(false))
   mainApi
     .updatePhotos(updatedObjArr)
-    .then(response => {
-      const { files, newFilePath } = response.data
-      files && newFilePath && successMessage('Files updated successfully')
-      newFilePath?.length && addNewPathsArr(newFilePath)
+    .then(({ data }) => {
+      const updatedPathsArr = updatedPathsArrFromMediaList(getState(), data)
+      const updatedFolderTree = createFolderTree(updatedPathsArr)
+      dispatch(setPathsArr(updatedPathsArr))
+      dispatch(setFolderTree(updatedFolderTree))
+
+      successMessage('Files updated successfully')
     })
     .then(() => dispatch(fetchPhotos()))
-    .catch(error => {
+    .catch((error: AxiosError<ErrorResponse<CheckOriginalNameDuplicatesAPIResponse>>) => {
       console.error('error', error)
-      errorMessage(error, 'updating files error: ', 0)
+
+      if (error.response?.status === HttpStatusCode.Conflict) {
+        const duplicateFilesErrorMessage = `${DUPLICATE_FILE_ERROR_MESSAGE} ${Object
+          .keys(error.response.data.cause)
+          .join(', ')}`
+        errorMessage(new Error(duplicateFilesErrorMessage), UPLOADING_ERROR_MESSAGE, 100)
+      } else {
+        errorMessage(new Error(error.response?.data.message), UPLOADING_ERROR_MESSAGE, 100)
+      }
     })
     .finally(() => dispatch(setDGalleryLoading(false)))
 }

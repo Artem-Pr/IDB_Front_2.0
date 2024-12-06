@@ -17,23 +17,31 @@ export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): Us
   const [playing, setPlaying] = useState(true)
 
   useEffect(() => {
-    const renderMediaItem = (staticPath: string, staticPreview: string, mimetype: MimeTypes) => () => (
+    const renderMediaItem = (
+      staticPath: string,
+      staticPreview: string,
+      staticVideoFullSize: string | null,
+      mimetype: MimeTypes,
+    ) => () => (
       <GalleryMediaItem
         height="92%"
         playing={playing}
         setPlaying={setPlaying}
         staticPath={staticPath}
         staticPreview={staticPreview}
+        staticVideoFullSize={staticVideoFullSize}
         type={mimetype}
       />
     )
 
     isMainPage
       && setGalleryArr(
-        imageArr.map(({ staticPath, staticPreview, mimetype }) => ({
+        imageArr.map(({
+          staticPath, staticPreview, staticVideoFullSize, mimetype,
+        }) => ({
           thumbnail: staticPreview,
           original: staticPath,
-          renderItem: renderMediaItem(staticPath, staticPreview, mimetype),
+          renderItem: renderMediaItem(staticPath, staticPreview, staticVideoFullSize, mimetype),
         })),
       )
   }, [imageArr, isMainPage, playing])

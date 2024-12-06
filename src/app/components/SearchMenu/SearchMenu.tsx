@@ -10,6 +10,7 @@ import cn from 'classnames'
 import dayjs from 'dayjs'
 import { difference, keys } from 'ramda'
 
+import { DATE_TIME_FORMAT } from 'src/constants/dateConstants'
 import {
   resetSearchMenu,
   setDateRange,
@@ -27,7 +28,7 @@ import { folderElement, main, searchMenu } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 
-import { DATE_TIME_FORMAT, getISOStringWithUTC } from '../../common/utils/date'
+import { getISOStringWithUTC } from '../../common/utils/date'
 
 import styles from './index.module.scss'
 

@@ -8,11 +8,12 @@ import {
 } from 'antd'
 import cn from 'classnames'
 import type { Dayjs } from 'dayjs'
-import dayjs from 'dayjs'
 import { identity, sortBy } from 'ramda'
 
 import type { Media, MediaChangeable } from 'src/api/models/media'
+import { dayjsWithoutTimezone } from 'src/app/common/utils/date'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
+import { DATE_TIME_FORMAT_WITH_MS, DEFAULT_TIME_STAMP } from 'src/constants/dateConstants'
 import { removeSelectedFiles } from 'src/redux/reducers/mainPageSlice/thunks'
 import { removeFilesFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
 import {
@@ -33,8 +34,6 @@ import {
   getFilePathWithoutName, getLastItem, getNameParts,
   isVideoByExt,
 } from '../../common/utils'
-import { DATE_TIME_FORMAT } from '../../common/utils/date'
-import { DEFAULT_TIME_STAMP } from '../../common/utils/date/dateFormats'
 
 import { mediaFields } from './EditMenuConfig'
 import { TimeDifferenceModal } from './components'
@@ -84,7 +83,7 @@ export const EditMenu = ({ isEditMany }: Props) => {
   const isDeleting = useSelector(isDeleteProcessing)
   const { isGalleryLoading } = useSelector(main)
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
-  const { isMainPage } = useCurrentPage()
+  const { isMainPage, isUploadingPage } = useCurrentPage()
 
   const {
     originalName, originalDate, rating, description, timeStamp,
@@ -96,14 +95,14 @@ export const EditMenu = ({ isEditMany }: Props) => {
   const { shortName, ext, extWithoutDot } = useMemo(() => getNameParts(originalName), [originalName])
   const keywordsOptions = useMemo(() => allKeywords.map(keyword => ({ value: keyword, label: keyword })), [allKeywords])
   const { onFinish } = useFinishEdit({
+    ext,
     filesArr,
+    isMainPage,
+    isUploadingPage,
+    modal,
+    originalName,
     sameKeywords,
     selectedList,
-    ext,
-    originalName,
-    isMainPage,
-    isEditMany,
-    modal,
   })
   const isVideoFile = useMemo(() => isVideoByExt(extWithoutDot || ''), [extWithoutDot])
 
@@ -128,7 +127,9 @@ export const EditMenu = ({ isEditMany }: Props) => {
       rating,
       description,
       originalName: shortName,
-      originalDate: dayjs(originalDate, DATE_TIME_FORMAT),
+      originalDate: originalDate
+        ? dayjsWithoutTimezone(originalDate)
+        : null,
       timeStamp: isVideoFile ? timeStamp || DEFAULT_TIME_STAMP : undefined,
       keywords: sortBy(identity, sameKeywords || []),
       isName: false,
@@ -212,7 +213,7 @@ export const EditMenu = ({ isEditMany }: Props) => {
           <Form.Item className={styles.inputField} name={mediaFields.originalDate.name}>
             <DatePicker
               className="w-100"
-              format={DATE_TIME_FORMAT}
+              format={DATE_TIME_FORMAT_WITH_MS}
               placeholder={mediaFields.originalDate.placeholder}
               showTime
             />
@@ -296,7 +297,12 @@ export const EditMenu = ({ isEditMany }: Props) => {
 
         <div className={cn(styles.buttonsWrapper, 'd-flex')}>
           <Form.Item className={styles.button}>
-            <Button className="w-100" type="primary" htmlType="submit" loading={isGalleryLoading}>
+            <Button
+              className="w-100"
+              htmlType="submit"
+              loading={isGalleryLoading}
+              type="primary"
+            >
                 Edit
             </Button>
           </Form.Item>

@@ -1,10 +1,10 @@
-import type { Media } from 'src/api/models/media'
+import type { NullableMedia } from 'src/api/models/media'
 import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
 
 import { removeExtraFirstSlash } from '../utils'
 
-export const getFileAPIRequestFromMedia = (media: Media, updatedFolderPath?: string): UpdatedFileAPIRequest => {
-  const updatedFilePath: Media['filePath'] = updatedFolderPath
+export const getFileAPIRequestFromMedia = (media: NullableMedia, updatedFolderPath?: string): UpdatedFileAPIRequest => {
+  const updatedFilePath: NullableMedia['filePath'] = updatedFolderPath && media.originalName
     ? `/${removeExtraFirstSlash(updatedFolderPath)}/${media.originalName}`
     : media.filePath
 
@@ -13,16 +13,19 @@ export const getFileAPIRequestFromMedia = (media: Media, updatedFolderPath?: str
     updatedFields: {
       changeDate: media.changeDate || undefined,
       description: media.description || undefined,
-      filePath: updatedFilePath || undefined,
+      filePath: updatedFilePath || media.filePath || undefined,
       keywords: media.keywords?.length ? media.keywords : undefined,
-      originalDate: media.originalDate,
-      originalName: media.originalName,
+      originalDate: media.originalDate || undefined,
+      originalName: media.originalName || undefined,
       rating: media.rating || undefined,
-      timeStamp: media.timeStamp,
+      timeStamp: media.timeStamp || undefined,
     },
   }
 }
 
-export const getFileAPIRequestFromMediaList = (mediaList: Media[], updatedFolderPath?: string): UpdatedFileAPIRequest[] => (
-  mediaList.map((media: Media) => getFileAPIRequestFromMedia(media, updatedFolderPath))
+export const getFileAPIRequestFromMediaList = (
+  mediaList: NullableMedia[],
+  updatedFolderPath?: string,
+): UpdatedFileAPIRequest[] => (
+  mediaList.map(media => getFileAPIRequestFromMedia(media, updatedFolderPath))
 )

@@ -26,6 +26,7 @@ export interface Props {
   setStop?: (value: boolean) => void
   staticPath: string
   staticPreview: string
+  staticVideoFullSize?: string | null
   stop?: boolean
   type?: MimeTypes
   usePlaceholder?: boolean
@@ -36,11 +37,12 @@ export const GalleryMediaItem = React.memo(
     ext,
     height = '100%',
     muted,
-    staticPath,
     playing,
-    staticPreview,
     setPlaying,
     setStop,
+    staticPath,
+    staticPreview,
+    staticVideoFullSize,
     stop,
     type,
     usePlaceholder,
@@ -77,7 +79,6 @@ export const GalleryMediaItem = React.memo(
               onPause={handlePause}
               onPlay={handlePlay}
               playing={playing}
-              style={{ position: 'absolute', top: 0, left: 0 }}
               url={staticPath}
               width="100%"
               controls
@@ -93,7 +94,7 @@ export const GalleryMediaItem = React.memo(
               className={cn(styles.videoPreview, { [styles.placeholder]: showPlaceholder }, 'transparent parent-size')}
               onError={handleImageOnLoad}
               onLoad={handleImageOnLoad}
-              src={staticPreview}
+              src={staticVideoFullSize || staticPreview}
             />
             {Loader}
           </div>

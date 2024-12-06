@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
+import { getUpdatedPathsArrFromMediaList } from 'src/app/common/folderTree'
 
 import { getSameKeywords, getUniqArr } from '../../app/common/utils'
 import type { RootState } from '../store/types'
@@ -41,6 +42,13 @@ export const numberOfFilesChecking = (state: RootState) => state.testsReducer.fi
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest
 export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
+
+export const updatedPathsArrFromMediaList = createSelector([
+  pathsArr,
+  (_state: RootState, mediaList: Media[]) => mediaList,
+], (actualPathsArr, mediaList) => (
+  getUpdatedPathsArrFromMediaList(mediaList, actualPathsArr)
+))
 
 export const pathsArrOptionsSelector = createSelector(pathsArr, pathsArrSelector => (
   pathsArrSelector

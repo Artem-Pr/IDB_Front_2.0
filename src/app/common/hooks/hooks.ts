@@ -3,11 +3,6 @@ import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
 import {
-  compose, curry, isEmpty, omit,
-} from 'ramda'
-
-import type { Media } from 'src/api/models/media'
-import {
   clearDownloadingState,
   clearDSelectedList as clearSelectedListDownload,
   selectAllD as selectAllDownload,
@@ -21,8 +16,6 @@ import {
   updateOpenMenus,
   updateUploadingFilesArr,
 } from 'src/redux/reducers/uploadSlice'
-import { fetchDuplicates } from 'src/redux/reducers/uploadSlice/thunks/fetchDuplicates'
-import { updateBlobName } from 'src/redux/reducers/uploadSlice/uploadSlice'
 import {
   allSameKeywords,
   currentFilesList,
@@ -35,31 +28,9 @@ import {
 import { useAppDispatch } from 'src/redux/store/store'
 import type { RootState } from 'src/redux/store/types'
 import { PagePaths } from 'src/redux/types'
-import type { BlobUpdateNamePayload, MainMenuKeys } from 'src/redux/types'
+import type { MainMenuKeys } from 'src/redux/types'
 
-import {
-  addKeywordsToAllFiles,
-  getRenamedObjects,
-  removeIntersectingKeywords,
-  updateFilesArrayItems,
-} from '../utils'
-
-const isEditNameOperation = (blobNameData: BlobUpdateNamePayload | false): blobNameData is BlobUpdateNamePayload => (
-  blobNameData !== false && blobNameData.oldName !== blobNameData.newName
-)
-
-const prepareBlobUpdateNamePayload = (newFilesArr: Media[]) => (
-  ({ originalName, id }: Media): BlobUpdateNamePayload | false => {
-    const updatedName = newFilesArr.find(newItem => newItem.id === id)?.originalName
-
-    return updatedName
-      ? {
-        oldName: originalName,
-        newName: updatedName,
-      }
-      : false
-  }
-)
+import { removeIntersectingKeywords } from '../utils'
 
 export const useCurrentPage = () => {
   const { pathname, search } = useLocation()
@@ -184,62 +155,4 @@ export const useClearFilesArray = () => {
   }, [dispatch, isMainPage, isUploadingPage])
 
   return { clearFilesArr }
-}
-
-const addEditedFieldsToFileArr = (
-  filesArr: Media[],
-  editedFields: Partial<Media>,
-): Media[] => {
-  const keywords: string[] = editedFields?.keywords || []
-  const updatedFileArr = isEmpty(keywords) ? filesArr : addKeywordsToAllFiles(keywords, filesArr)
-  return updatedFileArr.map(item => ({ ...item, ...omit(['keywords'], editedFields) }))
-}
-
-interface UseEditFilesArrProps {
-  filesArr: Media[]
-  isMainPage: boolean
-  selectedList: number[]
-  sameKeywords: string[]
-}
-
-export const useEditFilesArr = ({
-  filesArr,
-  isMainPage,
-  selectedList,
-  sameKeywords = [],
-}: UseEditFilesArrProps) => {
-  const dispatch = useAppDispatch()
-  const updatingAction = useMemo(() => (isMainPage ? setDownloadingFiles : updateUploadingFilesArr), [isMainPage])
-
-  const editUploadingFiles = useMemo(() => {
-    const selectedFilesArr = filesArr.filter((_, idx) => selectedList.includes(idx))
-    const selectedFilesWithoutSameKeywords = removeIntersectingKeywords(sameKeywords, selectedFilesArr)
-    const AddEditedFieldsToFilteredFileArr: (editedFields: Partial<Media>) => Media[] = curry(
-      addEditedFieldsToFileArr,
-    )(selectedFilesWithoutSameKeywords)
-    const mixUpdatedFilesItemsWithOriginalOnes = curry(updateFilesArrayItems)('id', filesArr)
-    const updateFileBlobsNamesMiddleware = (newFilesArr: Media[]) => {
-      filesArr
-        .map(prepareBlobUpdateNamePayload(newFilesArr))
-        .filter(isEditNameOperation)
-        .forEach(compose(dispatch, updateBlobName))
-      return newFilesArr
-    }
-    const checkNameDuplicatesMiddleware = (newFilesArr: Media[]) => {
-      dispatch(fetchDuplicates(newFilesArr.map(({ originalName }) => originalName)))
-      return newFilesArr
-    }
-
-    return compose(
-      dispatch,
-      <any>updatingAction,
-      mixUpdatedFilesItemsWithOriginalOnes,
-      updateFileBlobsNamesMiddleware,
-      checkNameDuplicatesMiddleware,
-      getRenamedObjects,
-      AddEditedFieldsToFilteredFileArr,
-    )
-  }, [filesArr, sameKeywords, dispatch, updatingAction, selectedList])
-
-  return { editUploadingFiles }
 }

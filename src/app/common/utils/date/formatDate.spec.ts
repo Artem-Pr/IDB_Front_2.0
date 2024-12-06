@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 
-import { EXIF_DATE_TIME_FORMAT, DATE_TIME_FORMAT } from './dateFormats'
+import { DATE_TIME_FORMAT } from 'src/constants/dateConstants'
+
 import { formatDate } from './formatDate'
 
 describe('formatDate', () => {
@@ -16,6 +17,7 @@ describe('formatDate', () => {
   it('formats a Date object correctly', () => {
     const date = new Date(2021, 11, 25, 0, 0, 0)
     const expected = dayjs(date)
+      .utc(false)
       .format(DATE_TIME_FORMAT)
     const result = formatDate(date)
     expect(result)
@@ -34,7 +36,7 @@ describe('formatDate', () => {
 
   it('parses and formats according to the given output format', () => {
     const dateString = '2021:12:25 15:30:34'
-    const inputFormat = EXIF_DATE_TIME_FORMAT
+    const inputFormat = DATE_TIME_FORMAT
     const outputFormat = 'DD/MM/YYYY'
     const expected = dayjs(dateString, inputFormat)
       .format(outputFormat)

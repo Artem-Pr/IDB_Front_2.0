@@ -1,9 +1,10 @@
 import { flatten, reduce, uniq } from 'ramda'
 
+import type { Media } from 'src/api/models/media'
 import { FolderTreeItem } from 'src/redux/types'
 
 import {
-  copyByJSON, removeExtraSlash, sanitizeDirectory,
+  copyByJSON, getFilePathWithoutName, removeExtraSlash, sanitizeDirectory,
 } from './utils'
 
 type KeyType = 'parent' | 'sibling'
@@ -130,3 +131,8 @@ export const addNewPathToPathsArr = (pathsArr: string[], newPath: string): strin
   const newFolderWithSubDirectories = getDirAndSubfolders(newPath)
   return uniq([...pathsArr, ...newFolderWithSubDirectories])
 }
+
+export const getUpdatedPathsArrFromMediaList = (mediaList: Media[], actualPathsArr: string[]) => mediaList
+  .filter((media): media is Media & { filePath: string } => Boolean(media.filePath))
+  .map(({ filePath }) => getFilePathWithoutName(filePath))
+  .reduce<string[]>((accum, currentPath) => addNewPathToPathsArr(accum, currentPath), actualPathsArr)

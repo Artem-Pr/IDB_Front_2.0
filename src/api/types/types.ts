@@ -1,20 +1,14 @@
+import { HttpStatusCode } from 'axios'
+
 import { MimeTypes } from '../../redux/types/MimeTypes'
 import type { Media } from '../models/media'
 
-export enum HttpStatusCode {
-  OK = 200,
-  BadRequest = 400,
-  Unauthorized = 403,
-  NotFound = 404,
-  InternalServerError = 500,
-}
-
-// Not needed for now
-export interface ErrorResponse {
+export interface ErrorResponse<T extends unknown = unknown> {
+  cause?: T
+  message: string
+  path: string
   statusCode: HttpStatusCode
   timestamp: string
-  path: string
-  message: string[]
 }
 
 export enum ApiStatus {
@@ -58,6 +52,7 @@ export interface WebSocketAPIQuery {
 interface StaticPaths {
   staticPath: string;
   staticPreview: string;
+  staticVideoFullSize?: string | null;
 }
 
 export interface DuplicateFile extends StaticPaths, Pick<Media, 'filePath' | 'originalName' | 'mimetype'> {}

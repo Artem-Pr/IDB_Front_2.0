@@ -2,9 +2,9 @@ import type { SortingFields } from 'src/redux/types'
 import { Sort } from 'src/redux/types'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 
-import type { Media } from '../models/media'
+import type { Media, NullableMedia } from '../models/media'
 
-interface UpdatedFields extends NonNullableFields<Pick<Media,
+interface UpdatedFields extends NonNullableFields<Pick<NullableMedia,
 'originalName' | 'filePath' | 'originalDate' | 'keywords' | 'rating' | 'description' | 'timeStamp' | 'changeDate'>> {}
 
 export interface UpdatedFileAPIRequest {
