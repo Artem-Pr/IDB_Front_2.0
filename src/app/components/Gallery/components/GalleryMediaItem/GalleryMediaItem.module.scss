@@ -1,5 +1,12 @@
 .reactPlayerWrapper {
   position: relative;
+
+}
+
+.rotate180 {
+  video {
+    transform: rotate(180deg);
+  }
 }
 
 .videoPreviewWrapper {

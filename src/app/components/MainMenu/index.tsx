@@ -5,7 +5,7 @@ import { Collapse, Layout } from 'antd'
 import { difference } from 'ramda'
 
 import { fetchKeywordsList } from 'src/redux/reducers/foldersSlice/thunks'
-import { setPreviewPlaying, stopVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { stopVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { folderElement, session } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import { MainMenuKeys } from 'src/redux/types'
@@ -62,7 +62,6 @@ const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
     clearSelectedListWhenCloseEditors()
     setOpenMenus(Array.from(openKeysSet))
     setTimeout(() => {
-      dispatch(setPreviewPlaying(false))
       dispatch(stopVideoPreview())
     }, 300) // Wait for collapse animation
   }

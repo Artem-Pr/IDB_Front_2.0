@@ -55,4 +55,4 @@ interface StaticPaths {
   staticVideoFullSize?: string | null;
 }
 
-export interface DuplicateFile extends StaticPaths, Pick<Media, 'filePath' | 'originalName' | 'mimetype'> {}
+export interface DuplicateFile extends StaticPaths, Pick<Media, 'filePath' | 'originalName' | 'mimetype' | 'exif'> {}

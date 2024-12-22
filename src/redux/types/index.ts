@@ -105,6 +105,8 @@ export interface DirectoryInfo extends CheckedDirectoryRequest {
 }
 
 export interface Preview {
+  exif?: Media['exif']
+  muted?: boolean
   originalName: Media['originalName'] | ''
   playing?: boolean
   previewType: MimeTypes

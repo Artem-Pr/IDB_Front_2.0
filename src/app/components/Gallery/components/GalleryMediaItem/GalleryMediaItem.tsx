@@ -1,15 +1,26 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { SyntheticEvent, useState } from 'react'
+import React, {
+  SyntheticEvent, useCallback,
+} from 'react'
 
 import { Spin } from 'antd'
 import cn from 'classnames'
-import ReactPlayer from 'react-player/lazy'
 
+import type { Media } from 'src/api/models/media'
 import { isVideo, isVideoByExt } from 'src/app/common/utils'
 import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 
+import type { Player } from './VideoJS'
+import { VideoJS } from './VideoJS'
+
 import styles from './GalleryMediaItem.module.scss'
+
+const IPHONE_ROTATION_IDENTIFIER = Object.freeze({
+  Make: 'Apple',
+  CompressorName: 'HEVC',
+  Rotation: 90,
+})
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('transparent')
@@ -17,86 +28,65 @@ const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
 
 const Loader = <Spin className={styles.loader} size="large" spinning />
 
-export interface Props {
+export interface GalleryMediaItemProps {
+  exif?: Media['exif']
   ext?: string
-  height?: string
+  idx?: number
   muted?: boolean
-  playing?: boolean
-  setPlaying?: (value: boolean) => void
-  setStop?: (value: boolean) => void
+  onReady?: (player: Player, idx?: number) => void
   staticPath: string
   staticPreview: string
   staticVideoFullSize?: string | null
-  stop?: boolean
   type?: MimeTypes
   usePlaceholder?: boolean
 }
 
 export const GalleryMediaItem = React.memo(
   ({
+    exif,
     ext,
-    height = '100%',
+    idx,
     muted,
-    playing,
-    setPlaying,
-    setStop,
+    onReady,
     staticPath,
     staticPreview,
     staticVideoFullSize,
-    stop,
     type,
     usePlaceholder,
-  }: Props) => {
-    const [showVideo, setShowVideo] = useState(false)
-
+  }: GalleryMediaItemProps) => {
     const isVideoPreview = (type && isVideo(type)) || (ext && isVideoByExt(ext)) || false
     const showPlaceholder = usePlaceholder && !staticPath && !staticPreview
-    const showVideoPlayer = showVideo && isVideoPreview && !stop
-    const showVideoPreview = (!showVideo || stop) && isVideoPreview
     const showImage = !isVideoPreview
 
-    const handleStart = () => {
-      setShowVideo(true)
-      setStop && setStop(false)
-      setPlaying && setPlaying(true)
+    const handlePlayerReady = useCallback((player: Player) => {
+      onReady && onReady(player, idx)
+    }, [idx, onReady])
+
+    const videoJsOptions = {
+      autoplay: false,
+      controls: true,
+      fluid: true,
+      poster: staticVideoFullSize,
+      muted,
+      responsive: true,
+      sources: [{
+        src: staticPath,
+        type: 'video/mp4',
+      }],
     }
 
-    const handlePlay = () => {
-      setPlaying && setPlaying(true)
-    }
-
-    const handlePause = () => {
-      setPlaying && setPlaying(false)
-    }
+    const needRotateIphoneVideo = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
+    && exif?.Make === IPHONE_ROTATION_IDENTIFIER.Make
+    && exif?.Rotation === IPHONE_ROTATION_IDENTIFIER.Rotation
 
     return (
       <>
-        {showVideoPlayer && (
-          <div className={cn(styles.reactPlayerWrapper, 'h-100')}>
-            <ReactPlayer
-              height={height}
-              muted={muted}
-              onPause={handlePause}
-              onPlay={handlePlay}
-              playing={playing}
-              url={staticPath}
-              width="100%"
-              controls
-              loop
+        {!showImage && (
+          <div className={cn({ [styles.rotate180]: needRotateIphoneVideo }, styles.reactPlayerWrapper, 'h-100 d-flex')}>
+            <VideoJS
+              onReady={handlePlayerReady}
+              options={videoJsOptions}
             />
-          </div>
-        )}
-        {showVideoPreview && (
-          <div className={cn(styles.videoPreviewWrapper, 'parent-size')}>
-            <div className={styles.playButton} onClick={handleStart} />
-            <img
-              alt="video-preview"
-              className={cn(styles.videoPreview, { [styles.placeholder]: showPlaceholder }, 'transparent parent-size')}
-              onError={handleImageOnLoad}
-              onLoad={handleImageOnLoad}
-              src={staticVideoFullSize || staticPreview}
-            />
-            {Loader}
           </div>
         )}
         {showImage && (

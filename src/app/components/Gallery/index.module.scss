@@ -6,3 +6,13 @@
   gap: 10px;
   margin: 10px;
 }
+
+.imageGallery {
+  :global .image-gallery-slide-wrapper:has(.image-gallery-center .video-js.vjs-has-started) {
+    .image-gallery-play-button,
+    .show-preview-button,
+    .image-gallery-fullscreen-button {
+      margin-bottom: 30px;
+    }
+  }
+}

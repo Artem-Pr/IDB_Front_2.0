@@ -1,32 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import type { ReactImageGalleryItem } from 'react-image-gallery'
 
 import type { Media } from 'src/api/models/media'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import { GalleryMediaItem } from '../components'
+import { GalleryMediaItemProps } from '../components/GalleryMediaItem/GalleryMediaItem'
+import type { Player } from '../components/GalleryMediaItem/VideoJS'
 
 interface UseImageGalleryDataProps {
   galleryArr: ReactImageGalleryItem[];
-  playing: boolean;
-  setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  stopPlayer: () => void
 }
 
 export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): UseImageGalleryDataProps => {
   const [galleryArr, setGalleryArr] = useState<ReactImageGalleryItem[]>([])
-  const [playing, setPlaying] = useState(true)
+  const playersRef = React.useRef<Record<number, Player | null>>({})
+
+  const stopPlayer = useCallback(() => {
+    Object.values(playersRef.current)
+      .forEach(player => {
+        player?.played() && player?.pause()
+      })
+  }, [])
 
   useEffect(() => {
-    const renderMediaItem = (
-      staticPath: string,
-      staticPreview: string,
-      staticVideoFullSize: string | null,
-      mimetype: MimeTypes,
-    ) => () => (
+    const handlePlayerReady: GalleryMediaItemProps['onReady'] = (player, idx) => {
+      if (idx != null) {
+        playersRef.current[idx] = player
+      }
+    }
+
+    const renderMediaItem = ({
+      exif, staticPath, staticPreview, staticVideoFullSize, mimetype,
+    }: Media, idx: number) => () => (
       <GalleryMediaItem
-        height="92%"
-        playing={playing}
-        setPlaying={setPlaying}
+        idx={idx}
+        exif={exif}
+        onReady={handlePlayerReady}
         staticPath={staticPath}
         staticPreview={staticPreview}
         staticVideoFullSize={staticVideoFullSize}
@@ -36,19 +46,16 @@ export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): Us
 
     isMainPage
       && setGalleryArr(
-        imageArr.map(({
-          staticPath, staticPreview, staticVideoFullSize, mimetype,
-        }) => ({
-          thumbnail: staticPreview,
-          original: staticPath,
-          renderItem: renderMediaItem(staticPath, staticPreview, staticVideoFullSize, mimetype),
+        imageArr.map((media, idx) => ({
+          thumbnail: media.staticPreview,
+          original: media.staticPath,
+          renderItem: renderMediaItem(media, idx),
         })),
       )
-  }, [imageArr, isMainPage, playing])
+  }, [imageArr, isMainPage])
 
   return {
     galleryArr,
-    playing,
-    setPlaying,
+    stopPlayer,
   }
 }

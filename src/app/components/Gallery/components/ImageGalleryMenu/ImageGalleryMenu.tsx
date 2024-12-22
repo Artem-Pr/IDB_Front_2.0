@@ -20,7 +20,7 @@ export const ImageGalleryMenu = ({
     <button
       onClick={onShowPreviewClick}
       type="button"
-      className={cn(styles.showPreviewButton, { [styles.hidePreview]: !showPreview }, 'image-gallery-icon')}
+      className={cn(styles.showPreviewButton, { [styles.hidePreview]: !showPreview }, 'image-gallery-icon show-preview-button')}
       aria-label="Next Slide"
     >
       <svg

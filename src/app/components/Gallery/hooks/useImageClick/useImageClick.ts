@@ -72,6 +72,7 @@ export const useImageClick = ({
           staticPath: rawPreview.staticPath || blobFiles[rawPreview.originalName],
           staticPreview: rawPreview.staticPreview,
           staticVideoFullSize: rawPreview.staticVideoFullSize,
+          exif: rawPreview.exif,
         })
     },
     [

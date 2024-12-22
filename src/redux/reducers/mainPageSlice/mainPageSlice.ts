@@ -106,11 +106,11 @@ const mainPageSlice = createSlice({
     setFilesSizeSum(state, action: PayloadAction<number>) {
       state.filesSizeSum = action.payload
     },
-    setPreview(state, action: PayloadAction<Preview>) {
-      state.preview = action.payload
-    },
-    setPreviewPlaying(state, action: PayloadAction<boolean>) {
-      state.preview.playing = action.payload
+    setPreview(state, action: PayloadAction<Partial<Preview>>) {
+      state.preview = {
+        ...current(state).preview,
+        ...action.payload,
+      }
     },
     stopVideoPreview(state) {
       state.preview.stop = true
@@ -148,7 +148,6 @@ export const {
   setIsDeleteProcessing,
   setMimeTypes,
   setPreview,
-  setPreviewPlaying,
   setRandomSort,
   setRatingFilter,
   setRawFiles,

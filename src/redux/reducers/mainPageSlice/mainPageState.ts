@@ -54,12 +54,12 @@ export const initialState: State = {
   isGalleryLoading: false,
   isDeleteProcessing: false,
   preview: {
+    muted: true,
     originalName: '',
+    previewType: MimeTypes.jpeg,
     staticPath: '',
-    playing: false,
     staticPreview: '',
     staticVideoFullSize: null,
-    previewType: MimeTypes.jpeg,
     stop: false,
   },
   sort: {

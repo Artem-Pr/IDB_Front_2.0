@@ -2,13 +2,12 @@ import React, {
   Fragment, MutableRefObject, SyntheticEvent, useCallback, useState,
 } from 'react'
 import ImageGallery from 'react-image-gallery'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { Modal, Spin, Switch } from 'antd'
 import cn from 'classnames'
 
 import type { Media } from 'src/api/models/media'
-import { setPreviewPlaying } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { session } from 'src/redux/selectors'
 import { MainMenuKeys } from 'src/redux/types'
 
@@ -53,7 +52,6 @@ const Gallery = ({
   isMainPage,
   refs: { gridRef, imgRef, imgFirstGroupNameRef },
 }: GalleryProps) => {
-  const dispatch = useDispatch()
   const { fitContain, previewSize } = useSelector(session)
   const { groupedByDate } = useSort()
   const [showImageModal, setShowImageModal] = useState(false)
@@ -78,7 +76,7 @@ const Gallery = ({
     addToSelectedList,
     removeFromSelectedList,
   })
-  const { galleryArr, playing, setPlaying } = useImageGalleryData(imageArr, isMainPage)
+  const { galleryArr, stopPlayer } = useImageGalleryData(imageArr, isMainPage)
 
   const { imageArrayGroupedByDate } = useImageArrayGroupedByDate(imageArr)
 
@@ -111,25 +109,20 @@ const Gallery = ({
 
   const handleSlide = (currentIndex: number) => {
     setCurrentImage(currentIndex)
-    setPlaying(false)
+    stopPlayer()
   }
 
   const handleImageModalClose = () => {
-    const stopVideoAndCloseModal = () => {
-      setPlaying(false)
-      setTimeout(() => setShowImageModal(false), 100)
-    }
-
-    playing ? stopVideoAndCloseModal() : setShowImageModal(false)
+    stopPlayer()
+    setTimeout(() => setShowImageModal(false), 100)
   }
 
   const handleFullScreenClick = useCallback(
     (i: number) => {
       setShowImageModal(true)
       setCurrentImage(i)
-      dispatch(setPreviewPlaying(false))
     },
-    [dispatch],
+    [],
   )
 
   const handleImgRefAdd = useCallback(
@@ -251,6 +244,7 @@ const Gallery = ({
             wrapClassName="image-modal"
           >
             <ImageGallery
+              additionalClass={styles.imageGallery}
               infinite={false}
               items={galleryArr}
               onSlide={handleSlide}
