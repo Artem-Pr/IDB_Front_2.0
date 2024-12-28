@@ -5,7 +5,7 @@ interface TestType {
   pid: number
 }
 
-export interface MatchingNumberOfFilesTest extends QueryResponse, TestType {
+export interface MatchingNumberOfFilesTest extends TestType {
   foldersInConfig: number
   excessiveFolders__Config_DB: string[]
   excessiveFolders__Config_Disk: string[]

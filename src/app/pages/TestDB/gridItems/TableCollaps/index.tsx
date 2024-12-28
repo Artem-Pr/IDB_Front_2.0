@@ -4,8 +4,6 @@ import { Card, Collapse } from 'antd'
 
 import styles from './index.module.scss'
 
-const { Panel } = Collapse
-
 interface Props {
   title: string
   value?: string[]
@@ -13,13 +11,18 @@ interface Props {
 
 const TableCollapse = ({ title, value }: Props) => (
   <Card.Grid hoverable={false} className={styles.collapseCardGrid}>
-    <Collapse collapsible={value?.length ? 'header' : 'disabled'}>
-      <Panel header={title} key="1">
-        {value?.map(folder => (
-          <p key={folder}>{folder}</p>
-        ))}
-      </Panel>
-    </Collapse>
+    <Collapse
+      collapsible={value?.length ? 'header' : 'disabled'}
+      items={[
+        {
+          key: '1',
+          label: title,
+          children: value?.map(folder => (
+            <p key={folder}>{folder}</p>
+          )),
+        },
+      ]}
+    />
   </Card.Grid>
 )
 

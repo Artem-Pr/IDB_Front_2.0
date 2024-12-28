@@ -85,7 +85,7 @@ export const mainApi = {
 
 export const testApi = {
   matchNumberOfFiles(pid: number) {
-    return instance.post<MatchingNumberOfFilesTest>('/test/matching-files', { pid })
+    return instanceNewDB.get<MatchingNumberOfFilesTest>('test-system/matching-files', { params: { pid } })
   },
   matchVideoFiles(pid: number) {
     return instance.post<MatchingVideoFilesTest>('/test/matching-videos', { pid })
