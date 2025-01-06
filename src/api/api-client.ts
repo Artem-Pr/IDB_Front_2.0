@@ -12,14 +12,10 @@ interface Aborter {
 
 let cancelController: Aborter = {}
 
-const exceptionUrlList = ['/uploadItem']
+const exceptionUrlList = ['/upload-file']
 
-export const instance = axios.create({
+export const axiosInstance = axios.create({
   baseURL: HOST.HTTP,
-})
-
-export const instanceNewDB = axios.create({
-  baseURL: 'http://localhost:3000',
 })
 
 const cancelAborterItem = (url: string) => {
@@ -52,5 +48,5 @@ const resetAbortController = (response: AxiosResponse) => {
   return response
 }
 
-instance.interceptors.request.use(setAbortController)
-instance.interceptors.response.use(resetAbortController)
+axiosInstance.interceptors.request.use(setAbortController)
+axiosInstance.interceptors.response.use(resetAbortController)

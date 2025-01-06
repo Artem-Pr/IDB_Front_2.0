@@ -6,7 +6,7 @@ import type {
 } from 'src/redux/types'
 import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from 'src/redux/types/testPageTypes'
 
-import { instance, instanceNewDB } from './api-client'
+import { axiosInstance } from './api-client'
 import type { Media } from './models/media'
 import type { GetPhotosByTagsAPIRequest, UpdatedFileAPIRequest } from './types/request-types'
 import type {
@@ -18,18 +18,18 @@ import type {
 
 export const mainApi = {
   savePhotosInDB(files: UpdatedFileAPIRequest[]) {
-    return instanceNewDB.post<Media[]>('/save-files', { files })
+    return axiosInstance.post<Media[]>('/save-files', { files })
   },
 
   updatePhotos(files: UpdatedFileAPIRequest[]) {
-    return instanceNewDB.put<Media[]>('/update-files', { files })
+    return axiosInstance.put<Media[]>('/update-files', { files })
   },
 
   savePhotoInTempPool(file: string | Blob | RcFile) {
     const formData = new FormData()
     formData.append('filedata', file)
 
-    return instanceNewDB.post<UploadingFileAPIResponse>('/upload-file', formData, {
+    return axiosInstance.post<UploadingFileAPIResponse>('/upload-file', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -37,60 +37,60 @@ export const mainApi = {
   },
 
   getKeywordsList() {
-    return instanceNewDB.get<string[]>('/keywords')
+    return axiosInstance.get<string[]>('/keywords')
   },
 
   getUnusedKeywordsList() {
-    return instanceNewDB.get<string[]>('/unused-keywords')
+    return axiosInstance.get<string[]>('/unused-keywords')
   },
 
   checkDuplicates(fileNameArr: string[]) {
-    return instanceNewDB.get<CheckOriginalNameDuplicatesAPIResponse>('check-duplicates', {
+    return axiosInstance.get<CheckOriginalNameDuplicatesAPIResponse>('check-duplicates', {
       params: { originalNames: fileNameArr },
     })
   },
 
   removeKeyword(keyword: string) {
-    return instanceNewDB.delete(`/keyword/${keyword}`)
+    return axiosInstance.delete(`/keyword/${keyword}`)
   },
 
   getPathsList() {
-    return instanceNewDB.get<string[]>('/paths')
+    return axiosInstance.get<string[]>('/paths')
   },
 
   checkDirectory(directory: string) {
-    return instanceNewDB.get<CheckedDirectoryAPIResponse>('/check-directory', {
+    return axiosInstance.get<CheckedDirectoryAPIResponse>('/check-directory', {
       params: { directory },
     })
   },
 
   getPhotosByTags(params: GetPhotosByTagsAPIRequest) {
-    return instanceNewDB.post<FetchingGalleryContent>('/filtered-photos', params)
+    return axiosInstance.post<FetchingGalleryContent>('/filtered-photos', params)
   },
 
   deleteFiles(ids: string[]) {
-    return instanceNewDB.post<undefined>('/delete-files', { ids })
+    return axiosInstance.post<undefined>('/delete-files', { ids })
   },
 
   deleteDirectory(directory: string) {
-    return instanceNewDB.delete<DeleteDirectoryApiResponse>('/directory', {
+    return axiosInstance.delete<DeleteDirectoryApiResponse>('/directory', {
       params: { directory },
     })
   },
 
   cleanTemp() {
-    return instanceNewDB.delete('/clean-temp')
+    return axiosInstance.delete('/clean-temp')
   },
 }
 
 export const testApi = {
   matchNumberOfFiles(pid: number) {
-    return instanceNewDB.get<MatchingNumberOfFilesTest>('test-system/matching-files', { params: { pid } })
+    return axiosInstance.get<MatchingNumberOfFilesTest>('test-system/matching-files', { params: { pid } })
   },
   matchVideoFiles(pid: number) {
-    return instance.post<MatchingVideoFilesTest>('/test/matching-videos', { pid })
+    return axiosInstance.post<MatchingVideoFilesTest>('/test/matching-videos', { pid })
   },
   rebuildFoldersConfig() {
-    return instance.get<QueryResponse>('/rebuild-paths-config')
+    return axiosInstance.get<QueryResponse>('/rebuild-paths-config')
   },
 }

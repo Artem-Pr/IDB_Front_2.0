@@ -1,7 +1,14 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+/* eslint-disable react/no-unused-class-component-methods */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-multi-assign */
+import React, {
+  useCallback, useEffect, useRef,
+} from 'react'
 
 import cn from 'classnames'
 import videojs from 'video.js'
+
+import { addRotateButton } from './RotateButton'
 
 import styles from './VideoJS.module.scss'
 import 'video.js/dist/video-js.css'
@@ -15,6 +22,17 @@ interface VideoPlayerOptions {
   controls: Parameters<Player['controls']>[0],
   fluid: Parameters<Player['fluid']>[0],
   responsive: Parameters<Player['responsive']>[0],
+  controlBar?: {
+    [key: string]: any
+    skipButtons?: {
+      forward: number,
+      backward: number,
+    }
+  }
+  poster?: string,
+  muted?: boolean,
+  aspectRatio?: string,
+  playbackRates?: number[],
   sources: {
     src: string,
     type: string,
@@ -22,10 +40,12 @@ interface VideoPlayerOptions {
 }
 
 export interface VideoPlayerProps {
-  options: VideoPlayerOptions;
-  onPlay?: Player['play'];
+  defaultRotation?: number;
   onPause?: Player['pause'];
+  onPlay?: Player['play'];
   onReady?: (player: Player) => void;
+  onRotate?: (rotateAngle?: number) => void;
+  options: Partial<VideoPlayerOptions>;
 }
 
 const initialOptions: VideoPlayerOptions = {
@@ -37,13 +57,17 @@ const initialOptions: VideoPlayerOptions = {
 }
 
 export const VideoJS = ({
-  options, onPlay, onPause, onReady,
+  defaultRotation,
+  onPause,
+  onPlay,
+  onReady,
+  onRotate,
+  options,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<Player | null>()
 
   const handlePlayerReady = useCallback((player: Player) => {
-    // You can handle player events here, for example:
     player.on('waiting', () => {
       videojs.log('player is waiting')
     })
@@ -73,12 +97,14 @@ export const VideoJS = ({
     if (!playerRef.current || playerRef.current.isDisposed()) {
       videoRef?.current?.appendChild(videoElement)
 
-      // eslint-disable-next-line no-multi-assign
       const player: Player = playerRef.current = videojs(videoElement, {
         ...initialOptions,
         ...options,
       }, () => {
         videojs.log('player is ready')
+
+        addRotateButton(player, defaultRotation, onRotate)
+
         handlePlayerReady(player)
         onReady && onReady(player)
       })

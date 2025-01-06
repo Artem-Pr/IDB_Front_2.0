@@ -3,4 +3,8 @@
     display: flex;
     position: static;
   }
+  
+  :global(.vjs-rotate-btn) {
+    cursor: pointer;
+  }
 }

@@ -77,6 +77,9 @@ module.exports = {
     // Disallow the use of console https://eslint.org/docs/rules/no-console
     'no-console': ['error', { allow: ['warn', 'error', 'info'] }],
 
+    // Disallow nested ternary expressions https://eslint.org/docs/rules/no-nested-ternary
+    'no-nested-ternary': 'off',
+
     // Prevent usage of Array index in keys https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-array-index-key.md
     'react/no-array-index-key': 'off',
 

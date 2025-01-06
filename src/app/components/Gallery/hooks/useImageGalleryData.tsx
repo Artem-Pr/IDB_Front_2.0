@@ -3,9 +3,9 @@ import type { ReactImageGalleryItem } from 'react-image-gallery'
 
 import type { Media } from 'src/api/models/media'
 
+import type { Player } from '../../UIKit/VideoPlayer/VideoJS'
 import { GalleryMediaItem } from '../components'
 import { GalleryMediaItemProps } from '../components/GalleryMediaItem/GalleryMediaItem'
-import type { Player } from '../components/GalleryMediaItem/VideoJS'
 
 interface UseImageGalleryDataProps {
   galleryArr: ReactImageGalleryItem[];
@@ -19,7 +19,9 @@ export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): Us
   const stopPlayer = useCallback(() => {
     Object.values(playersRef.current)
       .forEach(player => {
-        player?.played() && player?.pause()
+        // many conditions because player?.played() was not enough (received error: cannot read property 'played' of null)
+        // player && player?.played && player?.played?.() && player?.pause()
+        setTimeout(() => player?.played() && player?.pause())
       })
   }, [])
 
@@ -41,6 +43,8 @@ export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): Us
         staticPreview={staticPreview}
         staticVideoFullSize={staticVideoFullSize}
         type={mimetype}
+        showSkipButtons
+        showPlaybackRates
       />
     )
 

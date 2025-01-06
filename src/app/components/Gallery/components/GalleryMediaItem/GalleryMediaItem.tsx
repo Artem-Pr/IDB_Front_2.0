@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, {
-  SyntheticEvent, useCallback,
+  SyntheticEvent,
+  useCallback,
 } from 'react'
 
 import { Spin } from 'antd'
@@ -8,11 +9,10 @@ import cn from 'classnames'
 
 import type { Media } from 'src/api/models/media'
 import { isVideo, isVideoByExt } from 'src/app/common/utils'
+import type { Player, VideoPlayerProps } from 'src/app/components/UIKit/VideoPlayer/VideoJS'
+import { VideoJS } from 'src/app/components/UIKit/VideoPlayer/VideoJS'
 import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
-
-import type { Player } from './VideoJS'
-import { VideoJS } from './VideoJS'
 
 import styles from './GalleryMediaItem.module.scss'
 
@@ -21,6 +21,22 @@ const IPHONE_ROTATION_IDENTIFIER = Object.freeze({
   CompressorName: 'HEVC',
   Rotation: 90,
 })
+
+const IPHONE_DEFAULT_ROTATION = Object.freeze({
+  [IPHONE_ROTATION_IDENTIFIER.Rotation]: 180,
+})
+
+const DEFAULT_SKIP_DURATION = 5
+
+const needRotateIphoneVideo = (exif?: Media['exif']) => {
+  const iphoneRotation = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
+&& exif.Make === IPHONE_ROTATION_IDENTIFIER.Make
+&& exif.Rotation === IPHONE_ROTATION_IDENTIFIER.Rotation
+&& Boolean(IPHONE_DEFAULT_ROTATION[exif.Rotation])
+&& IPHONE_DEFAULT_ROTATION[exif.Rotation]
+
+  return iphoneRotation || undefined
+}
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
   event.currentTarget.classList.remove('transparent')
@@ -34,6 +50,8 @@ export interface GalleryMediaItemProps {
   idx?: number
   muted?: boolean
   onReady?: (player: Player, idx?: number) => void
+  showPlaybackRates?: boolean
+  showSkipButtons?: boolean
   staticPath: string
   staticPreview: string
   staticVideoFullSize?: string | null
@@ -48,6 +66,8 @@ export const GalleryMediaItem = React.memo(
     idx,
     muted,
     onReady,
+    showPlaybackRates,
+    showSkipButtons,
     staticPath,
     staticPreview,
     staticVideoFullSize,
@@ -62,30 +82,27 @@ export const GalleryMediaItem = React.memo(
       onReady && onReady(player, idx)
     }, [idx, onReady])
 
-    const videoJsOptions = {
-      autoplay: false,
-      controls: true,
-      fluid: true,
-      poster: staticVideoFullSize,
+    const videoJsOptions: VideoPlayerProps['options'] = {
+      poster: staticVideoFullSize || staticPreview,
       muted,
-      responsive: true,
       sources: [{
         src: staticPath,
         type: 'video/mp4',
       }],
+      controlBar: {
+        ...(showSkipButtons && { skipButtons: { forward: DEFAULT_SKIP_DURATION, backward: DEFAULT_SKIP_DURATION } }),
+      },
+      ...(showPlaybackRates && { playbackRates: [1, 1.2, 1.5, 1.8, 2] }),
     }
-
-    const needRotateIphoneVideo = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
-    && exif?.Make === IPHONE_ROTATION_IDENTIFIER.Make
-    && exif?.Rotation === IPHONE_ROTATION_IDENTIFIER.Rotation
 
     return (
       <>
-        {!showImage && (
-          <div className={cn({ [styles.rotate180]: needRotateIphoneVideo }, styles.reactPlayerWrapper, 'h-100 d-flex')}>
+        {isVideoPreview && (
+          <div className={cn({ [styles.rotate180]: false }, styles.reactPlayerWrapper, 'h-100 d-flex')}>
             <VideoJS
               onReady={handlePlayerReady}
               options={videoJsOptions}
+              defaultRotation={needRotateIphoneVideo(exif)}
             />
           </div>
         )}

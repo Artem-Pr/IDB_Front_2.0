@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import cn from 'classnames'
 
 import { isVideo } from 'src/app/common/utils'
-import type { Player } from 'src/app/components/Gallery/components/GalleryMediaItem/VideoJS'
+import type { Player } from 'src/app/components/UIKit/VideoPlayer/VideoJS'
 import { startVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { imagePreview } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
