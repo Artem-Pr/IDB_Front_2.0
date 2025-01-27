@@ -22,13 +22,13 @@ export const SyncPreviews = memo(() => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
   const [showMessageList, setShowMessageList] = useState(false)
-  const [status, setStatus] = useState<ApiStatus>(ApiStatus.DEFAULT)
+  const [status, setStatus] = useState<ApiStatus>(ApiStatus.READY)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
 
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(ApiStatus.DEFAULT)
+    setStatus(ApiStatus.READY)
   }, [webSocket])
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const SyncPreviews = memo(() => {
         action.message,
         ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
-      setProgress(action.progress)
+      action.progress && setProgress(action.progress)
       setStatus(action.status)
     }
 

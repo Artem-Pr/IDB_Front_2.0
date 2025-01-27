@@ -121,11 +121,15 @@ describe('utils: ', () => {
       }
       const cleanObj = removeEmptyFields(textOpj)
       expect(keys(cleanObj))
-        .toHaveLength(2)
+        .toHaveLength(3)
       expect(cleanObj.tempPath)
         .toBe('temp/f3a168e5d6c61fd02b9b227219011462')
       expect(cleanObj.originalDate)
         .toBe('12.12.2012')
+      expect(cleanObj.keywords)
+        .toBe('')
+      expect(cleanObj.megapixels)
+        .toBeUndefined()
     })
   })
   describe('removeIntersectingKeywords: ', () => {

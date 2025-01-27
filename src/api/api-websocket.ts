@@ -34,7 +34,7 @@ export const initWebSocket = <T = undefined>(
   { onMessage, data }: InitWebSocketCallback<T>,
 ) => {
   const errorHandler = (errorTitle: string, error: Error, response?: WebSocketAPIRequest<T>) => {
-    console.error(error)
+    console.error(error, response?.data.data)
     errorMessage(new Error(error.message), errorTitle, 100)
     response && onMessage(response.data)
   }

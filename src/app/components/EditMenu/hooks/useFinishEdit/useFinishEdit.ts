@@ -79,13 +79,13 @@ export const useFinishEdit = ({
       const updateValues = () => {
         const getFilePath = curry(getNewFilePath)(isName, currentName, originalName)
         const preparedValue: Partial<MediaChangeable> = {
-          rating: (isRating && rating) || undefined,
-          description: (isDescription && description) || undefined,
+          rating: isRating ? rating : undefined,
+          description: isDescription ? description : undefined,
           originalName: isName && newName ? currentName || undefined : undefined,
           originalDate: isOriginalDate ? originalDateISOString || undefined : undefined,
           keywords: isKeywords ? keywords : undefined,
           filePath: isFilePath && filePath ? getFilePath(filePath) : undefined,
-          timeStamp: isTimeStamp ? timeStamp : undefined,
+          timeStamp: isTimeStamp ? timeStamp || undefined : undefined,
         }
 
         const updatedKeywordsList = keywords ? uniq([...keywordsList, ...flatten(keywords)]) : keywordsList

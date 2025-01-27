@@ -8,6 +8,14 @@ export const errorMessage = (error: Error, message: string, duration?: number) =
   })
 }
 
+export const warningMessage = (error: Error, message: string, duration?: number) => {
+  notification.warning({
+    message: `Warning: ${message}`,
+    description: error.message,
+    duration: duration || 4.5,
+  })
+}
+
 export const successMessage = (description: string) => {
   notification.success({
     message: 'Success',

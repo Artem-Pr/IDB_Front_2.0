@@ -19,11 +19,13 @@ const { Option } = Select
 const fileTypes = keys(MimeTypes)
 
 const MESSAGE_LIST_LIMIT = 1000
-const isProcessing = (status: ApiStatus) => status === ApiStatus.PENDING || status === ApiStatus.INIT
+const isProcessing = (status: ApiStatus) => status === ApiStatus.PENDING
+ || status === ApiStatus.INIT
+ || status === ApiStatus.PENDING_ERROR
+ || status === ApiStatus.PENDING_SUCCESS
 const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
   || status === ApiStatus.DONE
   || status === ApiStatus.ERROR
-  || status === ApiStatus.PENDING_ERROR
 
 export const CreatePreviews = memo(() => {
   const options = useSelector(pathsArrOptionsSelector)
@@ -32,7 +34,7 @@ export const CreatePreviews = memo(() => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
   const [showMessageList, setShowMessageList] = useState(false)
-  const [status, setStatus] = useState<ApiStatus>(ApiStatus.DEFAULT)
+  const [status, setStatus] = useState<ApiStatus>(ApiStatus.READY)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
 
   const processing = isProcessing(status)
@@ -40,7 +42,7 @@ export const CreatePreviews = memo(() => {
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(ApiStatus.DEFAULT)
+    setStatus(ApiStatus.READY)
   }, [webSocket])
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export const CreatePreviews = memo(() => {
         action.message,
         ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
-      setProgress(action.progress)
+      action.progress && setProgress(action.progress)
       setStatus(action.status)
     }
 

@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import type { ReactImageGalleryItem } from 'react-image-gallery'
 
+import { isEmpty } from 'ramda'
+
 import type { Media } from 'src/api/models/media'
 
 import type { Player } from '../../UIKit/VideoPlayer/VideoJS'
@@ -17,11 +19,13 @@ export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): Us
   const playersRef = React.useRef<Record<number, Player | null>>({})
 
   const stopPlayer = useCallback(() => {
-    Object.values(playersRef.current)
-      .forEach(player => {
-        // many conditions because player?.played() was not enough (received error: cannot read property 'played' of null)
-        // player && player?.played && player?.played?.() && player?.pause()
-        setTimeout(() => player?.played() && player?.pause())
+    if (isEmpty(playersRef.current)) return
+
+    Object
+      .keys(playersRef.current)
+      .forEach(playerIdx => {
+        const player = playersRef.current[playerIdx]
+        player?.pause()
       })
   }, [])
 

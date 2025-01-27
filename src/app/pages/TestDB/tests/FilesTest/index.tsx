@@ -22,7 +22,7 @@ const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
 export const FilesTest = () => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
-  const [status, setStatus] = useState<ApiStatus>(ApiStatus.DEFAULT)
+  const [status, setStatus] = useState<ApiStatus>(ApiStatus.READY)
   const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
   const [testData, setTestData] = useState<FilesTestAPIData>()
   const [showExcessiveFolders_config, setShowExcessiveFolders_config] = useState(false)
@@ -51,7 +51,7 @@ export const FilesTest = () => {
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(ApiStatus.DEFAULT)
+    setStatus(ApiStatus.READY)
   }, [webSocket])
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export const FilesTest = () => {
         ...(prevMessages.length === MESSAGE_LIST_LIMIT ? prevMessages.slice(0, -1) : prevMessages),
       ])
       setTestData(data)
-      setProgress(newProgress)
+      newProgress && setProgress(newProgress)
       setStatus(newStatus)
     }
 

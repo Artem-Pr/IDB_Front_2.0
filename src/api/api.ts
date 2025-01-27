@@ -13,6 +13,7 @@ import type {
   CheckedDirectoryAPIResponse,
   CheckOriginalNameDuplicatesAPIResponse,
   DeleteDirectoryApiResponse,
+  UpdatedFileAPIResponse,
   UploadingFileAPIResponse,
 } from './types/response-types'
 
@@ -22,7 +23,7 @@ export const mainApi = {
   },
 
   updatePhotos(files: UpdatedFileAPIRequest[]) {
-    return axiosInstance.put<Media[]>('/update-files', { files })
+    return axiosInstance.put<UpdatedFileAPIResponse>('/update-files', { files })
   },
 
   savePhotoInTempPool(file: string | Blob | RcFile) {

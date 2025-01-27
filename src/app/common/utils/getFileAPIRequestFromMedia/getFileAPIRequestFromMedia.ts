@@ -12,12 +12,12 @@ export const getFileAPIRequestFromMedia = (media: NullableMedia, updatedFolderPa
     id: media.id,
     updatedFields: {
       changeDate: media.changeDate || undefined,
-      description: media.description || undefined,
+      description: media.description ?? undefined,
       filePath: updatedFilePath || media.filePath || undefined,
-      keywords: media.keywords?.length ? media.keywords : undefined,
+      keywords: media.keywords || undefined,
       originalDate: media.originalDate || undefined,
       originalName: media.originalName || undefined,
-      rating: media.rating || undefined,
+      rating: media.rating ?? undefined,
       timeStamp: media.timeStamp || undefined,
     },
   }

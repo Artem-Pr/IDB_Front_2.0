@@ -32,7 +32,12 @@ export const removeExtraSlash = (value: string): string => (value.endsWith('/') 
 export const sanitizeDirectory = <T extends string>(value: T): T => value.replace(/^\/+|\/+$/g, '') as T
 export const removeExtraFirstSlash = (value: string): string => (value.startsWith('/') ? value.slice(1) : value)
 export const getLastItem = (list: number[]): number => list[list.length - 1]
-export const removeEmptyFields = <T extends Record<string, any>>(obj: T): Partial<T> => reject(field => !field)(obj)
+export const removeEmptyFields = <T extends Record<string, any>>(obj: T): Partial<T> => reject(field => {
+  if (field === '') {
+    return false
+  }
+  return !(field != null)
+})(obj)
 export const sortByField = <K extends Record<string, any>>(fieldName: keyof K) => (
   sortBy<K>(compose(toLower, prop(String(fieldName))))
 )
@@ -42,7 +47,7 @@ export const sortByFieldDescending = <K extends Record<string, any>>(fieldName: 
 export const typeIsMimeTypesKey = (type: string): type is keyof typeof MimeTypes => type.toLowerCase() in MimeTypes
 export const isMimeType = (type: string | undefined): type is MimeTypes => Object.values(MimeTypes)
   .includes(type as MimeTypes)
-export const isVideo = (contentType: MimeTypes) => contentType.startsWith('video')
+export const isVideo = (contentType: MimeTypes | undefined) => Boolean(contentType?.startsWith('video'))
 export const isVideoByExt = (fileExtension: string) => {
   const lowerCaseExt = fileExtension.toLowerCase()
   return typeIsMimeTypesKey(lowerCaseExt) ? isVideo(MimeTypes[lowerCaseExt]) : false

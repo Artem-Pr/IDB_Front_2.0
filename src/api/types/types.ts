@@ -12,7 +12,7 @@ export interface ErrorResponse<T extends unknown = unknown> {
 }
 
 export enum ApiStatus {
-  DEFAULT = 'default',
+  READY = 'ready',
   INIT = 'init',
   PENDING = 'pending',
   PENDING_SUCCESS = 'pending-success',
@@ -27,13 +27,14 @@ export enum WebSocketActions {
   CREATE_PREVIEWS = 'CREATE_PREVIEWS',
   CREATE_PREVIEWS_STOP = 'CREATE_PREVIEWS_STOP',
   FILES_TEST = 'FILES_TEST',
+  UNKNOWN_ACTION = 'UNKNOWN_ACTION',
 }
 
 export interface WebSocketAPICallback<T = undefined> {
-  progress: number
+  progress?: number
   message: string
   status: ApiStatus
-  data: T
+  data?: T
 }
 
 export interface WebSocketAPIRequest<T = undefined> {

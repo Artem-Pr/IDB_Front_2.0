@@ -5,7 +5,7 @@ import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
 import type { CheckOriginalNameDuplicatesAPIResponse } from 'src/api/types/response-types'
 import type { ErrorResponse } from 'src/api/types/types'
 import { createFolderTree } from 'src/app/common/folderTree'
-import { errorMessage, successMessage } from 'src/app/common/notifications'
+import { errorMessage, successMessage, warningMessage } from 'src/app/common/notifications'
 import { updatedPathsArrFromMediaList } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
@@ -24,12 +24,16 @@ export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk =
   mainApi
     .updatePhotos(updatedObjArr)
     .then(({ data }) => {
-      const updatedPathsArr = updatedPathsArrFromMediaList(getState(), data)
+      const updatedPathsArr = updatedPathsArrFromMediaList(getState(), data.response)
       const updatedFolderTree = createFolderTree(updatedPathsArr)
       dispatch(setPathsArr(updatedPathsArr))
       dispatch(setFolderTree(updatedFolderTree))
 
       successMessage('Files updated successfully')
+
+      if (data.errors.length) {
+        warningMessage(new Error(data.errors.join(', ')), UPLOADING_ERROR_MESSAGE, 100)
+      }
     })
     .then(() => dispatch(fetchPhotos()))
     .catch((error: AxiosError<ErrorResponse<CheckOriginalNameDuplicatesAPIResponse>>) => {
