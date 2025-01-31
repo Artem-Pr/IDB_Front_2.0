@@ -27,11 +27,10 @@ const IPHONE_DEFAULT_ROTATION = Object.freeze({
 })
 
 const DEFAULT_SKIP_DURATION = 5
-
 const needRotateIphoneVideo = (exif?: Media['exif']) => {
-  const iphoneRotation = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
-&& exif.Make === IPHONE_ROTATION_IDENTIFIER.Make
-&& exif.Rotation === IPHONE_ROTATION_IDENTIFIER.Rotation
+//   const iphoneRotation = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
+// && exif.Make === IPHONE_ROTATION_IDENTIFIER.Make
+  const iphoneRotation = exif?.Rotation === IPHONE_ROTATION_IDENTIFIER.Rotation
 && Boolean(IPHONE_DEFAULT_ROTATION[exif.Rotation])
 && IPHONE_DEFAULT_ROTATION[exif.Rotation]
 

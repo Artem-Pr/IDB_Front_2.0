@@ -17,7 +17,8 @@
     column-gap: 10px
   }
 
-  .syncPreviewsRow {
+  .syncPreviewsRow,
+  .updateExifRow {
     grid-template-columns: minmax(150px, auto) 1fr;
   }
 }

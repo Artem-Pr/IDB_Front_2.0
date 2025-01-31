@@ -1,0 +1,1 @@
+export { UpdateExif } from './UpdateExif'

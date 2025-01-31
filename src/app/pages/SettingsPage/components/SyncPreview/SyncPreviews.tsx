@@ -7,8 +7,8 @@ import React, {
 
 import { Button, List, Progress } from 'antd'
 
-import { initWebSocket } from '../../../../../api/api-websocket'
-import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types/types'
+import { initWebSocket } from 'src/api/api-websocket'
+import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types/types'
 
 import styles from './SyncPreviews.module.scss'
 

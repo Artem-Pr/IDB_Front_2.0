@@ -4,15 +4,14 @@ import { Divider } from 'antd'
 import cn from 'classnames'
 
 import {
-  FullSizePreview,
+  CreatePreviews,
   MaxImageSlideLimit,
   MinImageSlideLimit,
   PaginationOptions,
-  SavePreview,
   SyncPreviews,
   UnusedKeywords,
+  UpdateExif,
 } from './components'
-import { CreatePreviews } from './components/CreatePreviews'
 
 import styles from './SettingsPage.module.scss'
 
@@ -26,45 +25,41 @@ interface SettingItem {
 const settingsList: SettingItem[] = [
   {
     key: '0',
-    label: 'Full size preview',
-    component: <FullSizePreview />,
-  },
-  {
-    key: '1',
-    label: 'Save preview',
-    component: <SavePreview />,
-  },
-  {
-    key: '2',
     label: 'Min image slide limit',
     component: <MinImageSlideLimit />,
   },
   {
-    key: '3',
+    key: '1',
     label: 'Max image slide limit',
     component: <MaxImageSlideLimit />,
   },
   {
-    key: '4',
+    key: '2',
     label: 'Pagination options',
     component: <PaginationOptions />,
   },
   {
-    key: '5',
+    key: '3',
     label: 'Unused keywords',
     component: <UnusedKeywords />,
   },
   {
-    key: '6',
+    key: '4',
     label: 'Sync previews',
     component: <SyncPreviews />,
     className: styles.syncPreviewsRow,
   },
   {
-    key: '7',
+    key: '5',
     label: 'Create previews',
     component: <CreatePreviews />,
     className: styles.syncPreviewsRow,
+  },
+  {
+    key: '6',
+    label: 'Update EXIF',
+    component: <UpdateExif />,
+    className: styles.updateExifRow,
   },
 ]
 
