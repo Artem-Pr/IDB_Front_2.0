@@ -9,7 +9,7 @@ import type { AppThunk } from 'src/redux/store/types'
 
 import { setFolderTree, setPathsArr } from '../../foldersSlice/foldersSlice'
 import {
-  clearDSelectedList,
+  clearDownloadingState,
   setDGalleryLoading,
   setDownloadingFiles,
   setFilesSizeSum,
@@ -90,7 +90,7 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
       const mediaFiles: Media[] = files || []
       dynamicFolders && dynamicFolders.length && dispatch(setPathsArr(dynamicFolders))
       dynamicFolders && dynamicFolders.length && dispatch(setFolderTree(createFolderTree(dynamicFolders)))
-      dispatch(clearDSelectedList())
+      dispatch(clearDownloadingState())
       dispatch(setRawFiles(mediaFiles)) // TODO: check setRawFiles if it's needed
       dispatch(setDownloadingFiles(mediaFiles))
       dispatch(setGalleryPagination(searchPagination))

@@ -141,4 +141,12 @@ export const localStorageAPI = {
     const expandedKeysJSON = localStorage.getItem('expandedKeys')
     return expandedKeysJSON ? JSON.parse(expandedKeysJSON) : []
   },
+
+  // isVideoPreviewMuted
+  set isVideoPreviewMuted(isVideoPreviewMuted: boolean) {
+    localStorage.setItem('isVideoPreviewMuted', String(Number(isVideoPreviewMuted)))
+  },
+  get isVideoPreviewMuted() {
+    return Boolean(Number(localStorage.getItem('isVideoPreviewMuted')))
+  },
 }

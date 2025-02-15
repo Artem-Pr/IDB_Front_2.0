@@ -3,14 +3,17 @@ import React, {
 } from 'react'
 import { useSelector } from 'react-redux'
 
+import { CopyOutlined, DiffFilled, DiffOutlined } from '@ant-design/icons'
 import {
   AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select, DatePicker,
+  Tooltip,
 } from 'antd'
 import cn from 'classnames'
 import type { Dayjs } from 'dayjs'
 import { identity, sortBy } from 'ramda'
 
 import type { Media, MediaChangeable } from 'src/api/models/media'
+import { warningMessage } from 'src/app/common/notifications'
 import { dayjsWithoutTimezone } from 'src/app/common/utils/date'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
 import { DATE_TIME_FORMAT_WITH_MS, DEFAULT_TIME_STAMP } from 'src/constants/dateConstants'
@@ -31,6 +34,7 @@ import {
   useSelectedList,
 } from '../../common/hooks/hooks'
 import {
+  copyToClipboard,
   getFilePathWithoutName, getLastItem, getNameParts,
   isVideoByExt,
 } from '../../common/utils'
@@ -41,6 +45,7 @@ import { TimeDifferenceModal } from './components'
 import styles from './EditMenu.module.scss'
 
 const { TextArea } = Input
+const CLIPBOARD_TEXT_SPLITTER = ', '
 
 interface Props {
   isEditMany?: boolean
@@ -172,6 +177,32 @@ export const EditMenu = ({ isEditMany }: Props) => {
     modal.confirm(deleteConfirmation({ onOk, type: 'file' }))
   }
 
+  const handleCopyKeywords = () => {
+    const keywords = form.getFieldValue('keywords') as Array<string>
+    if (!keywords.length) return
+    copyToClipboard(keywords.join(CLIPBOARD_TEXT_SPLITTER))
+  }
+
+  const handlePastKeywords = async () => {
+    const text = await navigator.clipboard.readText()
+    const splittedText = text.split(CLIPBOARD_TEXT_SPLITTER)
+    if (!splittedText.length) {
+      warningMessage(new Error(), 'Clipboard is empty')
+    }
+    const originalKeywords = form.getFieldValue('keywords') as Array<string>
+    const uniqueKeywords = Array.from(new Set([...originalKeywords, ...splittedText]))
+    form.setFieldsValue({ keywords: uniqueKeywords })
+  }
+
+  const handleReplaceKeywords = async () => {
+    const text = await navigator.clipboard.readText()
+    const splittedText = text.split(CLIPBOARD_TEXT_SPLITTER)
+    if (!splittedText.length) {
+      warningMessage(new Error(), 'Clipboard is empty')
+    }
+    form.setFieldsValue({ keywords: splittedText })
+  }
+
   return (
     <div>
       <Form form={form} onFinish={handleFinish} disabled={disabledInputs}>
@@ -242,13 +273,39 @@ export const EditMenu = ({ isEditMany }: Props) => {
         )}
 
         <div className="d-flex">
-          <Form.Item
-            className={styles.checkbox}
-            name={mediaFields.keywords.checkboxName}
-            valuePropName="checked"
-          >
-            <Checkbox>{mediaFields.keywords.label}</Checkbox>
-          </Form.Item>
+          <div className={styles.keywords}>
+            <Form.Item
+              className={styles.checkbox}
+              name={mediaFields.keywords.checkboxName}
+              valuePropName="checked"
+            >
+              <Checkbox>{mediaFields.keywords.label}</Checkbox>
+            </Form.Item>
+            <Tooltip className="margin-left-20" title="Copy keywords">
+              <Button
+                icon={<CopyOutlined />}
+                onClick={handleCopyKeywords}
+                size="small"
+                type="primary"
+              />
+            </Tooltip>
+            <Tooltip className="margin-left-10" title="Add copied keywords">
+              <Button
+                icon={<DiffOutlined />}
+                onClick={handlePastKeywords}
+                size="small"
+                type="primary"
+              />
+            </Tooltip>
+            <Tooltip className="margin-left-10" title="Paste and replace keywords">
+              <Button
+                icon={<DiffFilled />}
+                onClick={handleReplaceKeywords}
+                size="small"
+                type="primary"
+              />
+            </Tooltip>
+          </div>
           <Form.Item className={styles.inputField} name={mediaFields.keywords.name}>
             <Select
               mode="tags"

@@ -37,6 +37,9 @@ const fieldLabels: Partial<PropertiesFieldNames> = {
   filePath: 'File path',
   size: 'Size',
   imageSize: 'Image size',
+  videoDuration: 'Duration',
+  videoFrameRate: 'FPS',
+  avgBitRate: 'AvgBitrate',
   megapixels: 'Megapixels',
   mimetype: 'Type',
   keywords: 'Keywords',
@@ -57,6 +60,7 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
       const sumFieldsObjData = selectedFiles.reduce<FieldsLabelsWithArrayDescription>(
         (accum, {
           rating, description, originalName, originalDate, changeDate, size, imageSize, megapixels, mimetype, keywords,
+          exif: { Duration, VideoFrameRate, AvgBitrate },
         }): FieldsLabelsWithArrayDescription => ({
           changeDate: accum.changeDate === changeDate && typeof changeDate === 'string' ? formatDate(new Date(changeDate)) : '...',
           description: getDescriptionList(accum, description),
@@ -69,6 +73,9 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
           originalName: getBulkValue(accum, { originalName }),
           rating: getBulkValue(accum, { rating }),
           size: (accum.size || 0) + (size || 0),
+          videoDuration: (accum.videoDuration || 0) + (Duration || 0),
+          videoFrameRate: getBulkValue(accum, { videoFrameRate: VideoFrameRate }),
+          avgBitRate: getBulkValue(accum, { avgBitRate: AvgBitrate }),
         }),
         {},
       )
@@ -83,7 +90,7 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
 
     const getOneFieldObjData = (): Partial<FieldsLabels> => {
       const {
-        exif: omittedExif, changeDate, originalDate, keywords, description, ...otherFields
+        exif: { Duration, VideoFrameRate, AvgBitrate }, changeDate, originalDate, keywords, description, ...otherFields
       } = filesArr[selectedList[0]]
 
       return {
@@ -92,6 +99,9 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
         description: description || undefined,
         keywords: createKeywordsList(keywords),
         originalDate: originalDate ? formatDate(originalDate) : undefined,
+        videoDuration: Duration || undefined,
+        videoFrameRate: VideoFrameRate || undefined,
+        avgBitRate: AvgBitrate || undefined,
       }
     }
 

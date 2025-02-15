@@ -1,1 +1,1 @@
-export { CopyToClipboard } from './CopyToClipboard'
+export { CopyDateToClipboard } from './CopyDateToClipboard'

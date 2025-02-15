@@ -5,6 +5,7 @@ import cn from 'classnames'
 
 import {
   CreatePreviews,
+  IsVideoPreviewMuted,
   MaxImageSlideLimit,
   MinImageSlideLimit,
   PaginationOptions,
@@ -24,44 +25,41 @@ interface SettingItem {
 
 const settingsList: SettingItem[] = [
   {
-    key: '0',
+    label: 'Is video preview muted',
+    component: <IsVideoPreviewMuted />,
+  },
+  {
     label: 'Min image slide limit',
     component: <MinImageSlideLimit />,
   },
   {
-    key: '1',
     label: 'Max image slide limit',
     component: <MaxImageSlideLimit />,
   },
   {
-    key: '2',
     label: 'Pagination options',
     component: <PaginationOptions />,
   },
   {
-    key: '3',
     label: 'Unused keywords',
     component: <UnusedKeywords />,
   },
   {
-    key: '4',
     label: 'Sync previews',
     component: <SyncPreviews />,
     className: styles.syncPreviewsRow,
   },
   {
-    key: '5',
     label: 'Create previews',
     component: <CreatePreviews />,
     className: styles.syncPreviewsRow,
   },
   {
-    key: '6',
     label: 'Update EXIF',
     component: <UpdateExif />,
     className: styles.updateExifRow,
   },
-]
+].map((item, key) => ({ ...item, key }))
 
 export const SettingsPage = () => (
   <div className={styles.wrapper}>

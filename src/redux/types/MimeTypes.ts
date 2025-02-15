@@ -5,6 +5,7 @@ export enum MimeTypes {
   dng = 'image/x-adobe-dng',
   gif = 'image/gif',
   avi = 'video/x-msvideo',
+  avi_old = 'video/avi',
   flv = 'video/x-flv',
   mkv = 'video/x-matroska',
   mov = 'video/quicktime',

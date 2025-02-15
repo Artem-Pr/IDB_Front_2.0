@@ -11,7 +11,7 @@ import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
 
 import type { Media } from 'src/api/models/media'
-import { CopyToClipboard } from 'src/app/components/CopyToClipboard'
+import { CopyDateToClipboard } from 'src/app/components/CopyToClipboard'
 import { UIKitBtn } from 'src/app/components/UIKit'
 import { DATE_TIME_FORMAT } from 'src/constants/dateConstants'
 
@@ -143,7 +143,7 @@ export const TDModalItem = memo(
               <Form.Item label="Change date" className="margin-bottom-10 form-label-nowrap">
                 <DatePicker format={DATE_TIME_FORMAT} value={dayjs(changeDate)} showTime disabled />
               </Form.Item>
-              <CopyToClipboard text={changeDate} />
+              <CopyDateToClipboard text={changeDate} />
               <UIKitBtn
                 className="margin-left-20"
                 icon={<RightOutlined />}
@@ -156,7 +156,7 @@ export const TDModalItem = memo(
               <Form.Item className="margin-bottom-0 form-label-nowrap" label="Original date">
                 <DatePicker format={DATE_TIME_FORMAT} value={dayjs(originalDate)} showTime disabled />
               </Form.Item>
-              <CopyToClipboard text={originalDate} />
+              <CopyDateToClipboard text={originalDate} />
               <UIKitBtn
                 className="margin-left-20"
                 icon={<RightOutlined />}
@@ -174,7 +174,7 @@ export const TDModalItem = memo(
               >
                 <DatePicker format={DATE_TIME_FORMAT} value={currentDate} onChange={setDayjsDate} showTime />
               </Form.Item>
-              <CopyToClipboard
+              <CopyDateToClipboard
                 text={dayjs(currentDate)
                   .format(DATE_TIME_FORMAT)}
                 disabled={!currentDate}

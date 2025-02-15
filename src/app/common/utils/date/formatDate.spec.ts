@@ -35,7 +35,7 @@ describe('formatDate', () => {
   })
 
   it('parses and formats according to the given output format', () => {
-    const dateString = '2021:12:25 15:30:34'
+    const dateString = '2021:12:25 15:30:34:567'
     const inputFormat = DATE_TIME_FORMAT
     const outputFormat = 'DD/MM/YYYY'
     const expected = dayjs(dateString, inputFormat)

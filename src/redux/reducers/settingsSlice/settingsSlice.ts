@@ -3,24 +3,26 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 export interface State {
   globalLoader: boolean
-  isFullSizePreview: boolean
-  savePreview: boolean
-  unusedKeywords: string[]
   imagePreviewSlideLimits: {
     min: number
     max: number
   }
+  isFullSizePreview: boolean
+  isVideoPreviewMuted: boolean
+  savePreview: boolean
+  unusedKeywords: string[]
 }
 
 export const initialState: State = {
   globalLoader: false,
-  isFullSizePreview: false,
-  savePreview: true,
-  unusedKeywords: [],
   imagePreviewSlideLimits: {
-    min: 20,
+    min: 50,
     max: 300,
   },
+  isFullSizePreview: false,
+  isVideoPreviewMuted: true,
+  savePreview: true,
+  unusedKeywords: [],
 }
 
 const settingsSlice = createSlice({
@@ -45,6 +47,9 @@ const settingsSlice = createSlice({
     setUnusedKeywords(state, action: PayloadAction<string[]>) {
       state.unusedKeywords = action.payload
     },
+    setIsVideoPreviewMuted(state, action: PayloadAction<boolean>) {
+      state.isVideoPreviewMuted = action.payload
+    },
     deleteUnusedKeywordFromState(state, action: PayloadAction<string>) {
       state.unusedKeywords = current(state).unusedKeywords.filter(keyword => keyword !== action.payload)
     },
@@ -52,13 +57,14 @@ const settingsSlice = createSlice({
 })
 
 export const {
+  deleteUnusedKeywordFromState,
   setGlobalLoader,
-  setSavePreview,
   setIsFullSizePreview,
+  setIsVideoPreviewMuted,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,
+  setSavePreview,
   setUnusedKeywords,
-  deleteUnusedKeywordFromState,
 } = settingsSlice.actions
 
 export const settingsSliceReducer = settingsSlice.reducer

@@ -7,7 +7,7 @@ import cn from 'classnames'
 import { isVideo } from 'src/app/common/utils'
 import type { Player } from 'src/app/components/UIKit/VideoPlayer/VideoJS'
 import { startVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
-import { imagePreview } from 'src/redux/selectors'
+import { imagePreview, settings } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { GalleryMediaItem } from '../../../Gallery/components'
@@ -20,13 +20,19 @@ export interface PreviewMenuProps {
 export const PreviewMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
   const dispatch = useAppDispatch()
   const {
-    previewType, staticPath, originalName, staticPreview, staticVideoFullSize, playing, stop, exif, muted,
+    previewType, staticPath, originalName, staticPreview, staticVideoFullSize, playing, stop, exif,
   } = useSelector(imagePreview)
+  const { isVideoPreviewMuted: muted } = useSelector(settings)
   const playerRef = useRef<Player | null>(null)
 
   useEffect(() => {
     if (stop) {
-      playerRef.current?.pause()
+      try {
+        if (playerRef.current?.isDisposed()) return
+        playerRef.current?.pause()
+      } catch (error) {
+        console.error('🚀 ~ PreviewMenu ~ error:', error)
+      }
       dispatch(startVideoPreview())
     }
   }, [dispatch, stop])

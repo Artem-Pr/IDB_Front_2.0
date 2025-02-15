@@ -13,7 +13,7 @@ interface CopyToClipboardProps {
   disabled?: boolean
 }
 
-export const CopyToClipboard = ({ text, disabled }: CopyToClipboardProps) => {
+export const CopyDateToClipboard = ({ text, disabled }: CopyToClipboardProps) => {
   const copy = () => {
     if (text === null) return
 

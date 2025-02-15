@@ -29,6 +29,7 @@ import {
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 import {
   setIsFullSizePreview,
+  setIsVideoPreviewMuted,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,
   setSavePreview,
@@ -232,6 +233,13 @@ listenerMiddleware.startListening({
   actionCreator: setIsDynamicFolders,
   effect: action => {
     localStorageAPI.isDynamicFolders = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setIsVideoPreviewMuted,
+  effect: action => {
+    localStorageAPI.isVideoPreviewMuted = action.payload
   },
 })
 

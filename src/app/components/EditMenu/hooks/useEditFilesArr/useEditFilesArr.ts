@@ -9,6 +9,7 @@ import { errorMessage } from 'src/app/common/notifications'
 import {
   copyByJSON, getFilePathWithoutName, removeIntersectingKeywords, updateFilesArrayItems,
 } from 'src/app/common/utils'
+import { getISOStringWithUTC } from 'src/app/common/utils/date'
 import { applyOldNamesIfDuplicates, renameOriginalNameIfNeeded } from 'src/app/common/utils/duplicatesHelper'
 import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIRequestFromMedia'
 import { updatePhotos } from 'src/redux/reducers/mainPageSlice/thunks'
@@ -48,7 +49,9 @@ export const useEditFilesArr = ({
 
     const timeDifferenceApplyMiddleware = (updatedFilesArr: Media[]): Media[] => {
       if (isTimesDifferenceApplied) {
-        return updatedFilesArr.map((item, idx) => ({ ...item, originalDate: selectedFilesArr[idx].originalDate }))
+        return updatedFilesArr.map((item, idx) => (
+          { ...item, originalDate: getISOStringWithUTC(selectedFilesArr[idx].originalDate) }
+        ))
       }
       return updatedFilesArr
     }

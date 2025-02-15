@@ -9,15 +9,15 @@ import MainPage from './app/pages/MainPage'
 import { SettingsPage } from './app/pages/SettingsPage'
 import TestDB from './app/pages/TestDB'
 import UploadPage from './app/pages/UploadPage'
-import { settings } from './redux/selectors'
+import { globalLoader } from './redux/selectors'
 
 const App = () => {
-  const { globalLoader } = useSelector(settings)
+  const loading = useSelector(globalLoader)
 
   return (
     <Layout>
       <Header />
-      <Spin spinning={globalLoader}>
+      <Spin spinning={loading}>
         <Switch>
           <Route exact path="/upload" component={UploadPage} />
           <Route exact path="/settings" component={SettingsPage} />

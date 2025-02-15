@@ -23,6 +23,7 @@ import {
 } from '../reducers/mainPageSlice/mainPageSlice'
 import {
   setIsFullSizePreview,
+  setIsVideoPreviewMuted,
   setMaxImagePreviewSlideLimit,
   setMinImagePreviewSlideLimit,
   setSavePreview,
@@ -70,4 +71,5 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setCurrentFolderKey(localStorageAPI.currentFolderKey))
   dispatch(setExpandedKeys(localStorageAPI.expandedKeys))
   dispatch(setIsDynamicFolders(localStorageAPI.isDynamicFolders))
+  dispatch(setIsVideoPreviewMuted(localStorageAPI.isVideoPreviewMuted))
 }

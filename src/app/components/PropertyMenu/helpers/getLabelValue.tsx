@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react'
 import { Rate, Tag, Input } from 'antd'
 
 import { formatSize } from 'src/app/common/utils'
+import { getDurationString } from 'src/app/common/utils/date'
 
 import type { FieldsLabels } from '../types'
 
@@ -24,6 +25,8 @@ export const getLabelValue = (fieldName: keyof FieldsLabels, fieldsObj: Partial<
         )
     case 'description':
       return <TextArea style={{ resize: 'vertical' }} value={fieldsObj[fieldName]} disabled />
+    case 'videoDuration':
+      return getDurationString(fieldsObj[fieldName])
     default:
       return fieldsObj[fieldName]
   }

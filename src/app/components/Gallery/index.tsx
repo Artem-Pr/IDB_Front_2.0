@@ -145,7 +145,7 @@ const Gallery = ({
   }
 
   return (
-    <Spin className={styles.spinner} spinning={isLoading} size="large">
+    <Spin spinning={isLoading} size="large">
       {groupedByDate
         ? (
           Object.keys(imageArrayGroupedByDate)

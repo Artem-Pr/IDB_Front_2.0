@@ -25,7 +25,12 @@ export const useImageGalleryData = (imageArr: Media[], isMainPage?: boolean): Us
       .keys(playersRef.current)
       .forEach(playerIdx => {
         const player = playersRef.current[playerIdx]
-        player?.pause()
+        try {
+          if (player?.isDisposed()) return
+          player?.pause()
+        } catch (error) {
+          console.error('🚀 ~ stopPlayer ~ error:', error)
+        }
       })
   }, [])
 

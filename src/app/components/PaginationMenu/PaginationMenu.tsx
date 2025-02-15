@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { Pagination } from 'antd'
 
-import { clearDownloadingState, setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import { pagination } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
@@ -19,7 +19,6 @@ export const PaginationMenu = () => {
       currentPage: pageSize === nPerPage ? page : 1,
       ...(pageSize && { nPerPage: pageSize }),
     }
-    dispatch(clearDownloadingState())
     dispatch(setGalleryPagination(paginationObj))
     dispatch(fetchPhotos())
   }

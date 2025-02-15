@@ -54,7 +54,6 @@ export const initialState: State = {
   isGalleryLoading: false,
   isDeleteProcessing: false,
   preview: {
-    muted: true,
     originalName: '',
     previewType: MimeTypes.jpeg,
     staticPath: '',

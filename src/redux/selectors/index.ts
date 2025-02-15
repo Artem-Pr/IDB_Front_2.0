@@ -42,6 +42,7 @@ export const numberOfFilesChecking = (state: RootState) => state.testsReducer.fi
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest
 export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
+export const globalLoader = (state: RootState) => state.settingSlice.globalLoader
 
 export const updatedPathsArrFromMediaList = createSelector([
   pathsArr,
