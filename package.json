@@ -1,7 +1,7 @@
 {
   "homepage": "https://artem-pr.github.io/IDB_Front_2.0/",
   "name": "idb_front_2.0",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "private": true,
   "license": "ISC",
   "dependencies": {
