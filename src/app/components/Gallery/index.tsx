@@ -8,10 +8,8 @@ import { Modal, Spin, Switch } from 'antd'
 import cn from 'classnames'
 
 import type { Media } from 'src/api/models/media'
-import { session } from 'src/redux/selectors'
-import { MainMenuKeys } from 'src/redux/types'
-
-import { useSort } from '../../common/hooks/useSort'
+import { MainMenuKeys } from 'src/common/constants'
+import { session, sort } from 'src/redux/selectors'
 
 import { GalleryTile, ImageGalleryMenu } from './components'
 import {
@@ -53,7 +51,7 @@ const Gallery = ({
   refs: { gridRef, imgRef, imgFirstGroupNameRef },
 }: GalleryProps) => {
   const { fitContain, previewSize } = useSelector(session)
-  const { groupedByDate } = useSort()
+  const { groupedByDate } = useSelector(sort)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [showPreviewList, setShowPreviewList] = useState(true)

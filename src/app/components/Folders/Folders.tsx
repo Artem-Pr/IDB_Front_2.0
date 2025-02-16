@@ -10,7 +10,6 @@ import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 import {
   addFolderToFolderTree, addNewPathToPathsArr, getExpandedTreeKeys,
 } from 'src/app/common/folderTree'
-import { useCurrentPage } from 'src/app/common/hooks'
 import { removeExtraSlash } from 'src/app/common/utils'
 import {
   setCurrentFolderKey,
@@ -30,6 +29,7 @@ import {
   pathsArr,
   pathsArrOptionsSelector,
   folderInfoShowSubfolders,
+  getIsCurrentPage,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
@@ -41,7 +41,7 @@ export const Folders = () => {
   const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const { folderTree } = useSelector(folderElement)
-  const { isMainPage } = useCurrentPage()
+  const { isMainPage } = useSelector(getIsCurrentPage)
   const currentFolderPath = useSelector(folderInfoCurrentFolder)
   const showSubfolders = useSelector(folderInfoShowSubfolders)
 

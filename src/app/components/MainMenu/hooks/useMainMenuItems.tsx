@@ -15,9 +15,8 @@ import {
 import type { CollapseProps } from 'antd'
 import cn from 'classnames'
 
-import { useCurrentPage } from 'src/app/common/hooks'
-import { previewDuplicates } from 'src/redux/selectors'
-import { MainMenuKeys } from 'src/redux/types'
+import { MainMenuKeys } from 'src/common/constants'
+import { getIsCurrentPage, previewDuplicates } from 'src/redux/selectors'
 
 import { EditMenu } from '../../EditMenu'
 import { Folders } from '../../Folders/Folders'
@@ -107,12 +106,6 @@ const buttonsMenu = {
 
 const excludedMainPageMenuItems = [MainMenuKeys.BUTTONS_MENU, MainMenuKeys.DUPLICATES]
 const excludedUploadingPageMenuItems = [MainMenuKeys.FILTER, MainMenuKeys.DUPLICATES]
-const excludedComparisonPageMenuItems = [
-  MainMenuKeys.FILTER,
-  MainMenuKeys.FOLDERS,
-  MainMenuKeys.BUTTONS_MENU,
-  MainMenuKeys.DUPLICATES,
-]
 
 const PanelHeaderStyles = {
   display: 'flex',
@@ -133,15 +126,14 @@ interface MenuItemReturningValue {
 }
 
 export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivElement | null>): MenuItemReturningValue => {
-  const { isMainPage, isUploadingPage, isComparisonPage } = useCurrentPage()
+  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
   const previewDuplicatesArr = useSelector(previewDuplicates)
 
   return useMemo(() => {
     const menuItemsFilter = ({ key }: { key: MainMenuKeys }) => (
       (isMainPage && !excludedMainPageMenuItems.includes(key))
-        || (isUploadingPage && !excludedUploadingPageMenuItems.includes(key))
-        || (isUploadingPage && previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES)
-        || (isComparisonPage && !excludedComparisonPageMenuItems.includes(key))
+        || (isUploadPage && !excludedUploadingPageMenuItems.includes(key))
+        || (isUploadPage && previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES)
     )
 
     return {
@@ -164,5 +156,5 @@ export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivEleme
           }
         }),
     }
-  }, [isComparisonPage, isMainPage, isUploadingPage, previewDuplicatesArr.length, videoPreviewRef])
+  }, [isMainPage, isUploadPage, previewDuplicatesArr.length, videoPreviewRef])
 }

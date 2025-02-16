@@ -1,6 +1,6 @@
 import type { Media } from 'src/api/models/media'
+import { Sort } from 'src/common/constants'
 import type { GallerySortingItem } from 'src/redux/types'
-import { Sort } from 'src/redux/types'
 
 export const customSortingComparator = (defaultGallerySortingList: GallerySortingItem[]) => (
   (a: Media, b: Media): number => {

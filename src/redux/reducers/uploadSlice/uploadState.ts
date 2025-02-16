@@ -1,7 +1,7 @@
 import type { Media } from 'src/api/models/media'
+import { MainMenuKeys } from 'src/common/constants'
 
 import type { LoadingStatus, SortingData } from '../../types'
-import { MainMenuKeys } from '../../types'
 
 import { defaultGallerySortingList } from './helpers'
 

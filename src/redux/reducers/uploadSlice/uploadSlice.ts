@@ -1,6 +1,7 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 import type { Media } from 'src/api/models/media'
+import { MainMenuKeys } from 'src/common/constants'
 
 import type {
   BlobDispatchPayload,
@@ -8,7 +9,6 @@ import type {
   GallerySortingItem,
   LoadingStatus,
 } from '../../types'
-import { MainMenuKeys } from '../../types'
 
 import { defaultGallerySortingList } from './helpers'
 import { initialState } from './uploadState'

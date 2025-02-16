@@ -1,10 +1,8 @@
 export {
   useClearFilesArray,
-  useCurrentPage,
-  useFilesList,
+  useClearSelectedList,
   useRemoveKeyword,
-  useSelectedList,
-  useUniqKeywords,
+  useSelectAll,
   useUpdateOpenMenus,
 } from './hooks'
 export { useFinishEdit } from '../../components/EditMenu/hooks/useFinishEdit'

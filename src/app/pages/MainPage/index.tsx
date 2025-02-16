@@ -5,10 +5,11 @@ import { useLocation } from 'react-router-dom'
 import { Layout } from 'antd'
 import { isEmpty } from 'ramda'
 
+import { MainMenuKeys, PagePaths } from 'src/common/constants'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { setCurrentPage } from 'src/redux/reducers/sessionSlice'
 import { dPageGalleryPropsSelector } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-import { MainMenuKeys } from 'src/redux/types'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import {
@@ -36,6 +37,14 @@ const MainPage = () => {
   const query = new URLSearchParams(location.search)
   const isComparisonPage = Boolean(query.get('comparison'))
   const folderParam = query.get('folder') || undefined
+
+  useEffect(() => {
+    dispatch(setCurrentPage(PagePaths.MAIN))
+
+    return () => {
+      dispatch(setCurrentPage(null))
+    }
+  }, [dispatch])
 
   useEffect(() => {
     isEmpty(imageArr)

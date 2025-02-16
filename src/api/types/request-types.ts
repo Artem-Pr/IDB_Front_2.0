@@ -1,5 +1,5 @@
+import type { Sort } from 'src/common/constants'
 import type { SortingFields } from 'src/redux/types'
-import { Sort } from 'src/redux/types'
 import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import type { Media, NullableMedia } from '../models/media'

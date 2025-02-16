@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import { Empty, Spin } from 'antd'
 import cn from 'classnames'
 
-import { useCurrentPage } from '../../../../common/hooks'
-import { useRemoveKeyword, useUniqKeywords } from '../../../../common/hooks/hooks'
-import KeywordsMenu from '../../../KeywordsMenu'
+import { useRemoveKeyword } from 'src/app/common/hooks'
+import KeywordsMenu from 'src/app/components/KeywordsMenu'
+import { getIsCurrentPage, uniqKeywords } from 'src/redux/selectors'
 
 import styles from '../../index.module.scss'
 
 export const KeywordsMenuWrapper = () => {
+  const { isUploadPage } = useSelector(getIsCurrentPage)
+  const uniqKeywordsList = useSelector(uniqKeywords)
   const [isKeywordsMenuLoading] = useState(false)
-  const { isUploadingPage } = useCurrentPage()
   const { removeKeyword } = useRemoveKeyword()
-  const { uniqKeywords } = useUniqKeywords()
 
   return (
     <div className={cn(styles.keywordsMenuWrapper, 'd-flex justify-content-center')}>
@@ -22,9 +23,9 @@ export const KeywordsMenuWrapper = () => {
           <Spin tip="Loading..." />
         )
         : (
-          <KeywordsMenu keywords={uniqKeywords} removeKeyword={removeKeyword} isUploadingPage={isUploadingPage} />
+          <KeywordsMenu keywords={uniqKeywordsList} removeKeyword={removeKeyword} isUploadingPage={isUploadPage} />
         )}
-      {!isKeywordsMenuLoading && !uniqKeywords.length ? <Empty /> : ''}
+      {!isKeywordsMenuLoading && !uniqKeywordsList.length ? <Empty /> : ''}
     </div>
   )
 }

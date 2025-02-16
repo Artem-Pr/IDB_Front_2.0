@@ -5,9 +5,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 
 import { setPreviewSize } from 'src/redux/reducers/sessionSlice/sessionSlice'
-import { main } from 'src/redux/selectors'
-
-import { useSort } from '../useSort'
+import { main, sort } from 'src/redux/selectors'
 
 export const useGridRefControl = () => {
   const gridRef = useRef<(HTMLDivElement | null)[]>([])
@@ -15,7 +13,7 @@ export const useGridRefControl = () => {
   const imgFirstGroupNameRef = useRef<HTMLDivElement | null>(null)
   const dispatch = useDispatch()
   const { isGalleryLoading } = useSelector(main)
-  const { groupedByDate } = useSort()
+  const { groupedByDate } = useSelector(sort)
   const [scrollUpWhenUpdating, setScrollUpWhenUpdating] = useState(true)
 
   const refs = useMemo(

@@ -4,18 +4,19 @@ import { useSelector } from 'react-redux'
 import { Button, Checkbox, Tooltip } from 'antd'
 import type { CheckboxProps } from 'antd'
 
-import { useClearFilesArray, useFilesList, useUpdateOpenMenus } from 'src/app/common/hooks'
+import { useClearFilesArray, useUpdateOpenMenus } from 'src/app/common/hooks'
 import { capitalize } from 'src/app/common/utils'
+import { MainMenuKeys } from 'src/common/constants'
 import { uploadFiles } from 'src/redux/reducers/uploadSlice/thunks'
 import { setCheckForDuplicatesOnlyInCurrentFolder } from 'src/redux/reducers/uploadSlice/uploadSlice'
 import {
   checkForDuplicatesOnlyInCurrentFolder,
+  currentFilesList,
   duplicateFilesArr,
   folderInfoCurrentFolder,
   hasFailedUploadingFiles,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-import { MainMenuKeys } from 'src/redux/types'
 
 const tooltipMessages = {
   addUploadingFolder: 'add a folder for uploading files',
@@ -32,7 +33,7 @@ const getTooltipMessage = (messagesObj: Record<keyof typeof tooltipMessages, boo
 
 export const ButtonsMenu = () => {
   const dispatch = useAppDispatch()
-  const { filesArr } = useFilesList()
+  const filesArr = useSelector(currentFilesList)
   const hasFailedFiles = useSelector(hasFailedUploadingFiles)
   const currentFolderPath = useSelector(folderInfoCurrentFolder)
   const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)

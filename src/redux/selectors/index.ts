@@ -4,6 +4,7 @@ import { createSelector } from 'reselect'
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
 import { getUpdatedPathsArrFromMediaList } from 'src/app/common/folderTree'
+import { MainMenuKeys, PagePaths } from 'src/common/constants'
 
 import { getSameKeywords, getUniqArr } from '../../app/common/utils'
 import type { RootState } from '../store/types'
@@ -43,6 +44,15 @@ export const videoFilesChecking = (state: RootState) => state.testsReducer.secon
 export const session = (state: RootState) => state.sessionSlice
 export const settings = (state: RootState) => state.settingSlice
 export const globalLoader = (state: RootState) => state.settingSlice.globalLoader
+export const currentPage = (state: RootState) => state.sessionSlice.currentPage
+
+export const getIsCurrentPage = createSelector(
+  currentPage,
+  currentPageName => ({
+    isMainPage: currentPageName === PagePaths.MAIN,
+    isUploadPage: currentPageName === PagePaths.UPLOAD,
+  }),
+)
 
 export const updatedPathsArrFromMediaList = createSelector([
   pathsArr,
@@ -60,11 +70,11 @@ export const sort = createSelector(
   [
     uploadPageSort,
     mainPageSort,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+    currentPage,
   ],
-  (uploadPageSortingData, mainPageSortingData, { isMainPage, isUploadingPage }): SortingData => {
-    if (isMainPage) return mainPageSortingData
-    if (isUploadingPage) return uploadPageSortingData
+  (uploadPageSortingData, mainPageSortingData, currentPageName): SortingData => {
+    if (currentPageName === PagePaths.MAIN) return mainPageSortingData
+    if (currentPageName === PagePaths.UPLOAD) return uploadPageSortingData
     return { gallerySortingList: [], groupedByDate: false }
   },
 )
@@ -86,15 +96,12 @@ export const openMenusSelector = createSelector(
   [
     openMenus,
     dOpenMenus,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+    currentPage,
   ],
-  (openMenuKeys, downloadPageOpenMenus, { isMainPage, isUploadingPage }) => {
-    const mainPageOpenMenus = isMainPage && downloadPageOpenMenus
-    const uploadPageOpenMenus = isUploadingPage && openMenuKeys
-
-    return {
-      openMenuKeys: mainPageOpenMenus || uploadPageOpenMenus || [],
-    }
+  (uploadOpenMenuKeys, downloadPageOpenMenus, currentPageName): MainMenuKeys[] => {
+    if (currentPageName === PagePaths.MAIN) return downloadPageOpenMenus
+    if (currentPageName === PagePaths.UPLOAD) return uploadOpenMenuKeys
+    return []
   },
 )
 
@@ -106,13 +113,12 @@ export const currentFilesList = createSelector(
   [
     uploadingFiles,
     downloadingFiles,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+    currentPage,
   ],
-  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadingPage }): Media[] => {
-    const mainPageFilesArr = isMainPage && downloadingFilesArr
-    const uploadingPageFilesArr = isUploadingPage && uploadingFilesArr
-
-    return mainPageFilesArr || uploadingPageFilesArr || []
+  (uploadingFilesArr, downloadingFilesArr, currentPageName): Media[] => {
+    if (currentPageName === PagePaths.MAIN) return downloadingFilesArr
+    if (currentPageName === PagePaths.UPLOAD) return uploadingFilesArr
+    return []
   },
 )
 
@@ -120,21 +126,18 @@ export const currentSelectedList = createSelector(
   [
     selectedList,
     dSelectedList,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+    currentPage,
   ],
-  (uploadedSelectedList, downloadedSelectedList, { isMainPage, isUploadingPage }) => {
-    const mainPageSelectedList = isMainPage && downloadedSelectedList
-    const uploadingPageSelectedList = isUploadingPage && uploadedSelectedList
-
-    return mainPageSelectedList || uploadingPageSelectedList || []
+  (uploadedSelectedList, downloadedSelectedList, currentPageName): number[] => {
+    if (currentPageName === PagePaths.MAIN) return downloadedSelectedList
+    if (currentPageName === PagePaths.UPLOAD) return uploadedSelectedList
+    return []
   },
 )
 
 export const selectedFilesList = createSelector(
   [currentFilesList, currentSelectedList],
-  (currentFiles, currentSelectedArr) => ({
-    selectedFiles: currentSelectedArr.map(index => currentFiles[index]),
-  }),
+  (currentFiles, currentSelectedArr): Media[] => currentSelectedArr.map(index => currentFiles[index]),
 )
 
 export const uploadPageGalleryPropsSelector = createSelector(
@@ -169,11 +172,11 @@ export const uniqKeywords = createSelector(
   [
     allDownloadingKeywordsSelector,
     allUploadKeywordsSelector,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+    currentPage,
   ],
-  (allDownloadingKeywords, allUploadKeywords, { isMainPage, isUploadingPage }) => {
-    if (isMainPage) return allDownloadingKeywords
-    if (isUploadingPage) return allUploadKeywords
+  (allDownloadingKeywords, allUploadKeywords, currentPageName): string[] => {
+    if (currentPageName === PagePaths.MAIN) return allDownloadingKeywords
+    if (currentPageName === PagePaths.UPLOAD) return allUploadKeywords
     return []
   },
 )
@@ -193,11 +196,11 @@ export const allSameKeywords = createSelector(
   [
     allSameKeywordsSelector,
     dAllSameKeywordsSelector,
-    (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+    currentPage,
   ],
-  (allSameKeywordsUpload, allSameKeywordsDownload, { isMainPage, isUploadingPage }) => {
-    if (isMainPage) return allSameKeywordsDownload
-    if (isUploadingPage) return allSameKeywordsUpload
+  (allSameKeywordsUpload, allSameKeywordsDownload, currentPageName): string[] => {
+    if (currentPageName === PagePaths.MAIN) return allSameKeywordsDownload
+    if (currentPageName === PagePaths.UPLOAD) return allSameKeywordsUpload
     return []
   },
 )
@@ -207,14 +210,17 @@ export const selectedDateList = createSelector(
   downloadingFiles,
   selectedList,
   dSelectedList,
-  (_state: RootState, currentPage: { isMainPage: boolean; isUploadingPage: boolean }) => currentPage,
+  currentPage,
   (
     uploadingFilesArr,
     downloadingFilesArr,
     uploadingSelectedList,
     downloadingSelectedList,
-    { isMainPage, isUploadingPage },
-  ) => {
+    currentPageName,
+  ): {
+    originalDate: string
+    changeDate: string | null
+  }[] => {
     const getDownloadingDateList = () => downloadingSelectedList.map(selectedItem => ({
       originalDate: downloadingFilesArr[selectedItem].originalDate,
       changeDate: downloadingFilesArr[selectedItem].changeDate,
@@ -225,9 +231,8 @@ export const selectedDateList = createSelector(
       changeDate: uploadingFilesArr[selectedItem].changeDate,
     }))
 
-    const mainPageDateList = isMainPage && getDownloadingDateList()
-    const uploadPageList = isUploadingPage && getUploadingDateList()
-
-    return mainPageDateList || uploadPageList || []
+    if (currentPageName === PagePaths.MAIN) return getDownloadingDateList()
+    if (currentPageName === PagePaths.UPLOAD) return getUploadingDateList()
+    return []
   },
 )

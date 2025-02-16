@@ -1,8 +1,8 @@
 import type { Media } from 'src/api/models/media'
+import { MainMenuKeys } from 'src/common/constants'
 
 import type {
   GalleryPagination,
-  MainMenuKeys,
   Preview,
   SortingData,
 } from '../../types'

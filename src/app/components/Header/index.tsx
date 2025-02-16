@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 import {
   Layout, Menu, Modal, Typography,
@@ -9,6 +10,7 @@ import { mainApi } from 'src/api/api'
 import { errorMessage } from 'src/app/common/notifications'
 import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
+import { PagePaths } from 'src/common/constants'
 import {
   setNumberOfFilesInDirectory,
   setNumberOfSubdirectories,
@@ -19,8 +21,6 @@ import {
   folderInfoShowInfoModal, folderInfoNumberOfFiles, pathsArr, folderInfoNumberOfSubdirs,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-
-import { useCurrentPage } from '../../common/hooks'
 
 import { PageMenuItems } from './PageMenuItems'
 
@@ -34,13 +34,13 @@ function getRandomBackgroundPosition() {
 }
 
 const Header = () => {
+  const { pathname } = useLocation() as { pathname: PagePaths }
   const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const directoriesArr = useSelector(pathsArr)
   const showInfoModal = useSelector(folderInfoShowInfoModal)
   const numberOfFiles = useSelector(folderInfoNumberOfFiles)
   const numberOfSubdirectories = useSelector(folderInfoNumberOfSubdirs)
-  const { currentPageNumber } = useCurrentPage()
 
   const content = useMemo(
     () => (
@@ -96,7 +96,7 @@ const Header = () => {
         style={{ width: 400 }}
         theme="dark"
         mode="horizontal"
-        defaultSelectedKeys={[currentPageNumber]}
+        defaultSelectedKeys={[pathname]}
         items={PageMenuItems}
       />
       {contextHolder}

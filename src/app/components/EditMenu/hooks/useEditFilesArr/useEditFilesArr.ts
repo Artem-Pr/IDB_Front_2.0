@@ -22,7 +22,6 @@ import { addEditedFieldsToFileArr, isEditNameOperation, prepareBlobUpdateNamePay
 
 interface UseEditFilesArrProps {
   filesArr: Media[]
-  isMainPage: boolean
   selectedList: number[]
   sameKeywords: string[]
 }

@@ -9,10 +9,9 @@ import cn from 'classnames'
 
 import { refreshPreviewSize, setFitContain } from 'src/redux/reducers/sessionSlice/sessionSlice'
 import {
-  dSelectedList, filesSizeSum, selectedList, session, settings,
+  dSelectedList, filesSizeSum, getIsCurrentPage, selectedList, session, settings,
 } from 'src/redux/selectors'
 
-import { useCurrentPage } from '../../common/hooks'
 import { formatSize } from '../../common/utils'
 
 import styles from './GalleryTopMenu.module.scss'
@@ -31,7 +30,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
   const { imagePreviewSlideLimits } = useSelector(settings)
   const [showSlider, setShowSlider] = useState<boolean>(true)
   const filesSizeTotal = useSelector(filesSizeSum)
-  const { isMainPage } = useCurrentPage()
+  const { isMainPage } = useSelector(getIsCurrentPage)
   const { fitContain } = useSelector(session)
 
   const selectedListLength = useMemo(

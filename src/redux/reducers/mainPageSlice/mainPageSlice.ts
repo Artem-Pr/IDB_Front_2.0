@@ -1,13 +1,13 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 import type { Media } from 'src/api/models/media'
+import { MainMenuKeys } from 'src/common/constants'
 
 import type {
   GalleryPagination,
   GallerySortingItem,
   Preview,
 } from '../../types'
-import { MainMenuKeys } from '../../types'
 import { MimeTypes } from '../../types/MimeTypes'
 
 import { defaultGallerySortingList } from './helpers'

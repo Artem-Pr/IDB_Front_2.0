@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { LoadingOutlined } from '@ant-design/icons'
 import { Layout, Result } from 'antd'
 
+import { MainMenuKeys, PagePaths } from 'src/common/constants'
+import { setCurrentPage } from 'src/redux/reducers/sessionSlice'
 import {
   addToSelectedList,
   clearSelectedList,
@@ -20,7 +22,7 @@ import {
   upload,
   uploadPageGalleryPropsSelector,
 } from 'src/redux/selectors'
-import { LoadingStatus, MainMenuKeys } from 'src/redux/types'
+import { LoadingStatus } from 'src/redux/types'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
@@ -48,6 +50,14 @@ const UploadPage = () => {
   const { openMenus, selectedList, imageArr } = mainGalleryProps
   const currentFolderPath = useSelector(folderInfoCurrentFolder)
   const showTopGalleryMenu = mainGalleryProps.imageArr.length !== 0
+
+  useEffect(() => {
+    dispatch(setCurrentPage(PagePaths.UPLOAD))
+
+    return () => {
+      dispatch(setCurrentPage(null))
+    }
+  }, [dispatch])
 
   const galleryProps = {
     ...mainGalleryProps,

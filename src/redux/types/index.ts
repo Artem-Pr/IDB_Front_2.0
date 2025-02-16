@@ -3,6 +3,7 @@ import type { Key } from 'react'
 import type { Tags } from 'exiftool-vendored'
 
 import type { Media, SupportedExt } from 'src/api/models/media'
+import type { Sort } from 'src/common/constants'
 
 import { MimeTypes } from './MimeTypes'
 
@@ -21,35 +22,7 @@ export type CheckboxType =
   | 'isTimeStamp'
 export type Checkboxes = Record<CheckboxType, boolean>
 export type DeleteConfirmationType = 'file' | 'directory' | 'keyword'
-
-export enum PagePaths {
-  DEFAULT = '/IDB_Front_2.0',
-  MAIN = '/',
-  UPLOAD = '/upload',
-  SETTINGS = '/settings',
-  TEST_DB = '/test-db',
-}
-
-export enum MainMenuKeys {
-  SORT = 'sort',
-  FILTER = 'filter',
-  FOLDERS = 'folders',
-  PROPERTIES = 'properties',
-  EDIT = 'edit',
-  EDIT_BULK = 'edit-bulk',
-  KEYWORDS = 'keywords',
-  PREVIEW = 'preview',
-  BUTTONS_MENU = 'buttons-menu',
-  DUPLICATES = 'duplicates',
-}
-
 export type SortingFields = Exclude<keyof Media, 'staticPath' | 'staticPreview' | 'timeStamp' | 'duplicates' | 'keywords' | 'imageSize' | 'changeDate' | 'exif'>
-
-export enum Sort {
-  ASC = 1,
-  DESC = -1,
-}
-
 export interface GallerySortingItem {
   id: SortingFields
   label: string

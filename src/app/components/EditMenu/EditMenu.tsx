@@ -5,8 +5,7 @@ import { useSelector } from 'react-redux'
 
 import { CopyOutlined, DiffFilled, DiffOutlined } from '@ant-design/icons'
 import {
-  AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select, DatePicker,
-  Tooltip,
+  AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select, DatePicker, Tooltip,
 } from 'antd'
 import cn from 'classnames'
 import type { Dayjs } from 'dayjs'
@@ -20,22 +19,28 @@ import { DATE_TIME_FORMAT_WITH_MS, DEFAULT_TIME_STAMP } from 'src/constants/date
 import { removeSelectedFiles } from 'src/redux/reducers/mainPageSlice/thunks'
 import { removeFilesFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
 import {
-  folderElement, isDeleteProcessing, main, pathsArrOptionsSelector,
+  allSameKeywords,
+  currentFilesList,
+  currentSelectedList,
+  folderElement,
+  getIsCurrentPage,
+  isDeleteProcessing,
+  main,
+  pathsArrOptionsSelector,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { Checkboxes } from 'src/redux/types'
 
-import { useCurrentPage, useFinishEdit } from '../../common/hooks'
 import {
   useClearSelectedList,
-  useFilesList,
-  useSameKeywords,
+  useFinishEdit,
   useSelectAll,
-  useSelectedList,
-} from '../../common/hooks/hooks'
+} from '../../common/hooks'
 import {
   copyToClipboard,
-  getFilePathWithoutName, getLastItem, getNameParts,
+  getFilePathWithoutName,
+  getLastItem,
+  getNameParts,
   isVideoByExt,
 } from '../../common/utils'
 
@@ -78,17 +83,17 @@ export const EditMenu = ({ isEditMany }: Props) => {
   const dispatch = useAppDispatch()
   const { selectAll } = useSelectAll()
   const { clearSelectedList } = useClearSelectedList()
-  const { sameKeywords } = useSameKeywords()
+  const sameKeywords = useSelector(allSameKeywords)
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const [form] = Form.useForm<InitialFormData>()
   const [modal, contextHolder] = Modal.useModal()
-  const { filesArr } = useFilesList()
-  const { selectedList } = useSelectedList()
+  const filesArr = useSelector(currentFilesList)
+  const selectedList = useSelector(currentSelectedList)
   const pathsListOptions = useSelector(pathsArrOptionsSelector)
   const isDeleting = useSelector(isDeleteProcessing)
   const { isGalleryLoading } = useSelector(main)
+  const { isMainPage } = useSelector(getIsCurrentPage)
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
-  const { isMainPage, isUploadingPage } = useCurrentPage()
 
   const {
     originalName, originalDate, rating, description, timeStamp,
@@ -102,8 +107,6 @@ export const EditMenu = ({ isEditMany }: Props) => {
   const { onFinish } = useFinishEdit({
     ext,
     filesArr,
-    isMainPage,
-    isUploadingPage,
     modal,
     originalName,
     sameKeywords,

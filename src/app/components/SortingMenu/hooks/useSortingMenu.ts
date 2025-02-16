@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
+import { useSelector } from 'react-redux'
 
-import { useCurrentPage } from 'src/app/common/hooks'
-import { useSort } from 'src/app/common/hooks/useSort'
 import {
   resetSort as resetSortMainPage,
   setGallerySortingList as setGallerySortingListMainPage,
@@ -13,26 +12,27 @@ import {
   setGallerySortingList as setGallerySortingListUploadingPage,
   setGroupedByDate as setGroupedByDateUploadingPage,
 } from 'src/redux/reducers/uploadSlice/uploadSlice'
+import { getIsCurrentPage, sort } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { GallerySortingItem } from 'src/redux/types'
 
 export const useSortingMenu = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadingPage } = useCurrentPage()
-  const { gallerySortingList, groupedByDate, randomSort } = useSort()
+  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const { gallerySortingList, groupedByDate, randomSort } = useSelector(sort)
 
   const setSortingList = useCallback(
     (updatedList: GallerySortingItem[]) => {
       isMainPage && dispatch(setGallerySortingListMainPage(updatedList))
-      isUploadingPage && dispatch(setGallerySortingListUploadingPage(updatedList))
+      isUploadPage && dispatch(setGallerySortingListUploadingPage(updatedList))
     },
-    [dispatch, isMainPage, isUploadingPage],
+    [dispatch, isMainPage, isUploadPage],
   )
 
   const resetSort = useCallback(() => {
     isMainPage && dispatch(resetSortMainPage())
-    isUploadingPage && dispatch(resetSortUploadingPage())
-  }, [dispatch, isMainPage, isUploadingPage])
+    isUploadPage && dispatch(resetSortUploadingPage())
+  }, [dispatch, isMainPage, isUploadPage])
 
   const setRandomSort = useCallback(
     (isRandomSort: boolean) => {
@@ -44,9 +44,9 @@ export const useSortingMenu = () => {
   const setGroupedByDate = useCallback(
     (isGroupedByDate: boolean) => {
       isMainPage && dispatch(setGroupedByDateMainPage(isGroupedByDate))
-      isUploadingPage && dispatch(setGroupedByDateUploadingPage(isGroupedByDate))
+      isUploadPage && dispatch(setGroupedByDateUploadingPage(isGroupedByDate))
     },
-    [dispatch, isMainPage, isUploadingPage],
+    [dispatch, isMainPage, isUploadPage],
   )
 
   return {

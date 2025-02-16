@@ -1,5 +1,6 @@
+import { Sort } from 'src/common/constants'
+
 import type { GallerySortingItem } from '../../../types'
-import { Sort } from '../../../types'
 
 export const defaultGallerySortingList: GallerySortingItem[] = [
   {

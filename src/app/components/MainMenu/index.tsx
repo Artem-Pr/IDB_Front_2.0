@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux'
 import { Collapse, Layout } from 'antd'
 import { difference } from 'ramda'
 
+import { MainMenuKeys } from 'src/common/constants'
 import { fetchKeywordsList } from 'src/redux/reducers/foldersSlice/thunks'
 import { stopVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
-import { folderElement, session } from 'src/redux/selectors'
+import { folderElement, openMenusSelector, session } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-import { MainMenuKeys } from 'src/redux/types'
 
-import { useClearSelectedList, useOpenMenus, useUpdateOpenMenus } from '../../common/hooks/hooks'
+import { useClearSelectedList, useUpdateOpenMenus } from '../../common/hooks'
 
 import { useMainMenuItems } from './hooks'
 
@@ -31,7 +31,7 @@ const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
   const { collapseMenu, extraMenu } = useMainMenuItems(videoPreviewRef)
   const { setOpenMenus } = useUpdateOpenMenus()
   const { clearSelectedList } = useClearSelectedList()
-  const { openMenuKeys } = useOpenMenus()
+  const openMenuKeys = useSelector(openMenusSelector)
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())

@@ -7,65 +7,61 @@ import {
 } from 'ramda'
 
 import type { Media, MediaChangeable } from 'src/api/models/media'
+import { removeEmptyFields } from 'src/app/common/utils'
+import { getISOStringWithUTC } from 'src/app/common/utils/date'
 import type { InitialFormData } from 'src/app/components/EditMenu'
 import { duplicateConfig, emptyCheckboxesConfig } from 'src/assets/config/moduleConfig'
 import { setKeywordsList } from 'src/redux/reducers/foldersSlice/foldersSlice'
-import { folderElement } from 'src/redux/selectors'
+import { folderElement, getIsCurrentPage } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { NameParts } from 'src/redux/types'
 
-import { removeEmptyFields } from '../../../../common/utils'
-import { getISOStringWithUTC } from '../../../../common/utils/date'
 import { useEditFilesArr } from '../useEditFilesArr'
 
 import { getNewFilePath } from './helpers'
 
 interface Props {
+  ext: NameParts['ext']
   filesArr: Media[]
+  modal: Omit<ModalStaticFunctions, 'warn'>
+  originalName: string
   sameKeywords: string[]
   selectedList: number[]
-  ext: NameParts['ext']
-  originalName: string
-  modal: Omit<ModalStaticFunctions, 'warn'>
-  isMainPage: boolean
-  isUploadingPage: boolean
 }
 
 export const useFinishEdit = ({
+  ext,
   filesArr,
+  modal,
+  originalName,
   sameKeywords,
   selectedList,
-  ext,
-  originalName,
-  isMainPage,
-  isUploadingPage,
-  modal,
 }: Props) => {
   const dispatch = useAppDispatch()
   const { keywordsList } = useSelector(folderElement)
+  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
   const { editUploadingFiles, editMainPageFiles } = useEditFilesArr({
     filesArr,
-    isMainPage,
-    selectedList,
     sameKeywords,
+    selectedList,
   })
 
   const onFinish = useCallback(
     ({
-      rating,
       description,
-      originalName: newName,
-      originalDate: newOriginalDate,
-      timeStamp,
-      keywords,
-      isName,
       filePath,
-      isOriginalDate,
-      isKeywords,
-      isFilePath,
-      isRating,
       isDescription,
+      isFilePath,
+      isKeywords,
+      isName,
+      isOriginalDate,
+      isRating,
       isTimeStamp,
+      keywords,
+      originalDate: newOriginalDate,
+      originalName: newName,
+      rating,
+      timeStamp,
     }: InitialFormData) => {
       const currentName = newName ? `${newName}${ext}` as Media['originalName'] : ''
       const originalDateISOString = newOriginalDate
@@ -79,12 +75,12 @@ export const useFinishEdit = ({
       const updateValues = () => {
         const getFilePath = curry(getNewFilePath)(isName, currentName, originalName)
         const preparedValue: Partial<MediaChangeable> = {
-          rating: isRating ? rating : undefined,
           description: isDescription ? description : undefined,
-          originalName: isName && newName ? currentName || undefined : undefined,
-          originalDate: isOriginalDate ? originalDateISOString || undefined : undefined,
-          keywords: isKeywords ? keywords : undefined,
           filePath: isFilePath && filePath ? getFilePath(filePath) : undefined,
+          keywords: isKeywords ? keywords : undefined,
+          originalDate: isOriginalDate ? originalDateISOString || undefined : undefined,
+          originalName: isName && newName ? currentName || undefined : undefined,
+          rating: isRating ? rating : undefined,
           timeStamp: isTimeStamp ? timeStamp || undefined : undefined,
         }
 
@@ -93,7 +89,7 @@ export const useFinishEdit = ({
 
         const editedFields = removeEmptyFields(preparedValue)
         if (!isEmpty(editedFields)) {
-          isUploadingPage && editUploadingFiles(editedFields)
+          isUploadPage && editUploadingFiles(editedFields)
           isMainPage && editMainPageFiles(editedFields)
         }
       }
@@ -101,11 +97,11 @@ export const useFinishEdit = ({
       const needModalIsDuplicate = isName && isDuplicateName(currentName)
       const isEmptyCheckboxes = !(
         isName
-        || isOriginalDate
-        || isKeywords
-        || isFilePath
-        || isRating
         || isDescription
+        || isFilePath
+        || isKeywords
+        || isOriginalDate
+        || isRating
         || isTimeStamp
       )
 
@@ -121,7 +117,7 @@ export const useFinishEdit = ({
       ext,
       filesArr,
       isMainPage,
-      isUploadingPage,
+      isUploadPage,
       keywordsList,
       modal,
       originalName,

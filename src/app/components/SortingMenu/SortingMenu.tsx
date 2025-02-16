@@ -1,17 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
 import { DownCircleTwoTone, UpCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons'
 import { Button, Checkbox, Segmented } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import cn from 'classnames'
 
+import { Sort } from 'src/common/constants'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import { applySorting } from 'src/redux/reducers/uploadSlice/thunks/applySorting'
+import { getIsCurrentPage } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-import { Sort } from 'src/redux/types'
 import type { GallerySortingItem, SortingFields } from 'src/redux/types'
-
-import { useCurrentPage } from '../../common/hooks'
 
 import { SortableList } from './components'
 import { DragHandle, SortableItem } from './components/SortableList/components'
@@ -39,7 +39,7 @@ const switcherOptions = [
 
 export const SortingMenu = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadingPage } = useCurrentPage()
+  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
   const {
     gallerySortingList, randomSort, groupedByDate, setSortingList, resetSort, setRandomSort, setGroupedByDate,
   } = useSortingMenu()
@@ -57,7 +57,7 @@ export const SortingMenu = () => {
 
   const handleApply = () => {
     isMainPage && dispatch(fetchPhotos())
-    isUploadingPage && dispatch(applySorting())
+    isUploadPage && dispatch(applySorting())
   }
 
   const handleReset = () => {
@@ -111,7 +111,7 @@ export const SortingMenu = () => {
 
         <Button type="primary" onClick={handleApply}>
           {isMainPage && 'Reload data'}
-          {isUploadingPage && 'Apply sorting'}
+          {isUploadPage && 'Apply sorting'}
         </Button>
       </div>
     </div>
