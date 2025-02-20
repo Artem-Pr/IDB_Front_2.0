@@ -1,5 +1,7 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
 
+import { setIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
+
 import { localStorageAPI } from '../../../app/common/utils/localStorageAPI'
 import {
   setCurrentFolderKey,
@@ -240,6 +242,13 @@ listenerMiddleware.startListening({
   actionCreator: setIsVideoPreviewMuted,
   effect: action => {
     localStorageAPI.isVideoPreviewMuted = action.payload
+  },
+})
+
+listenerMiddleware.startListening({
+  actionCreator: setIsDuplicatesChecking,
+  effect: action => {
+    localStorageAPI.isDuplicatesChecking = action.payload
   },
 })
 

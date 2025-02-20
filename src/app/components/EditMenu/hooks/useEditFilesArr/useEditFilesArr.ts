@@ -15,7 +15,7 @@ import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIR
 import { updatePhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import { fetchUploadDuplicates } from 'src/redux/reducers/uploadSlice/thunks'
 import { updateBlobName, updateUploadingFilesArr } from 'src/redux/reducers/uploadSlice/uploadSlice'
-import { session } from 'src/redux/selectors'
+import { sessionIsTimesDifferenceApplied } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { addEditedFieldsToFileArr, isEditNameOperation, prepareBlobUpdateNamePayload } from './helpers'
@@ -32,7 +32,7 @@ export const useEditFilesArr = ({
   sameKeywords = [],
 }: UseEditFilesArrProps) => {
   const dispatch = useAppDispatch()
-  const { isTimesDifferenceApplied } = useSelector(session)
+  const isTimesDifferenceApplied = useSelector(sessionIsTimesDifferenceApplied)
 
   const editMainPageFiles = useMemo(() => {
     let updatedFieldNames: (keyof Media)[] = []

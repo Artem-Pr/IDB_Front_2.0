@@ -2,9 +2,10 @@ export {
   refreshPreviewSize,
   sessionSliceReducer,
   setAsideMenuWidth,
+  setCurrentPage,
   setFitContain,
+  setIsDuplicatesChecking,
   setIsLoading,
   setIsTimeDifferenceApplied,
-  setCurrentPage,
   setPreviewSize,
 } from './sessionSlice'

@@ -150,4 +150,12 @@ export const localStorageAPI = {
   get isVideoPreviewMuted() {
     return Boolean(Number(localStorage.getItem('isVideoPreviewMuted')))
   },
+
+  // isDuplicatesChecking
+  set isDuplicatesChecking(isDuplicatesChecking: boolean) {
+    localStorage.setItem('isDuplicatesChecking', String(Number(isDuplicatesChecking)))
+  },
+  get isDuplicatesChecking() {
+    return Boolean(Number(localStorage.getItem('isDuplicatesChecking')))
+  },
 }

@@ -2,12 +2,14 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import {
+  clearDSelectedList,
   resetSort as resetSortMainPage,
   setGallerySortingList as setGallerySortingListMainPage,
   setGroupedByDate as setGroupedByDateMainPage,
   setRandomSort as setRandomSortMainPage,
 } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import {
+  clearSelectedList,
   resetSort as resetSortUploadingPage,
   setGallerySortingList as setGallerySortingListUploadingPage,
   setGroupedByDate as setGroupedByDateUploadingPage,
@@ -43,8 +45,14 @@ export const useSortingMenu = () => {
 
   const setGroupedByDate = useCallback(
     (isGroupedByDate: boolean) => {
-      isMainPage && dispatch(setGroupedByDateMainPage(isGroupedByDate))
-      isUploadPage && dispatch(setGroupedByDateUploadingPage(isGroupedByDate))
+      if (isMainPage) {
+        dispatch(setGroupedByDateMainPage(isGroupedByDate))
+        dispatch(clearDSelectedList())
+      }
+      if (isUploadPage) {
+        dispatch(setGroupedByDateUploadingPage(isGroupedByDate))
+        dispatch(clearSelectedList())
+      }
     },
     [dispatch, isMainPage, isUploadPage],
   )

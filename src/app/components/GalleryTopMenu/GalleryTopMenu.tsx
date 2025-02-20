@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import {
   Button, Checkbox, Col, Popover, Row, Slider,
@@ -7,10 +7,20 @@ import {
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import cn from 'classnames'
 
-import { refreshPreviewSize, setFitContain } from 'src/redux/reducers/sessionSlice/sessionSlice'
+import { fetchMainPageDuplicates } from 'src/redux/reducers/mainPageSlice/thunks'
+import { refreshPreviewSize, setFitContain, setIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
 import {
-  dSelectedList, filesSizeSum, getIsCurrentPage, selectedList, session, settings,
+  dSelectedList,
+  downloadingFiles,
+  filesSizeSum,
+  getIsCurrentPage,
+  selectedList,
+  sessionFitContain,
+  sessionIsDuplicatesChecking,
+  sessionPreviewSize,
+  settings,
 } from 'src/redux/selectors'
+import { useAppDispatch } from 'src/redux/store/store'
 
 import { formatSize } from '../../common/utils'
 
@@ -23,15 +33,17 @@ interface Props {
 }
 
 export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpWhenUpdating }: Props) => {
-  const dispatch = useDispatch()
-  const { previewSize } = useSelector(session)
+  const dispatch = useAppDispatch()
+  const previewSize = useSelector(sessionPreviewSize)
+  const mediaFiles = useSelector(downloadingFiles)
   const uploadSelectedList = useSelector(selectedList)
   const downloadSelectedList = useSelector(dSelectedList)
   const { imagePreviewSlideLimits } = useSelector(settings)
-  const [showSlider, setShowSlider] = useState<boolean>(true)
   const filesSizeTotal = useSelector(filesSizeSum)
   const { isMainPage } = useSelector(getIsCurrentPage)
-  const { fitContain } = useSelector(session)
+  const fitContain = useSelector(sessionFitContain)
+  const isDuplicatesChecking = useSelector(sessionIsDuplicatesChecking)
+  const [showSlider, setShowSlider] = useState<boolean>(true)
 
   const selectedListLength = useMemo(
     () => (isMainPage ? downloadSelectedList.length : uploadSelectedList.length),
@@ -54,6 +66,11 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
     setScrollUpWhenUpdating && setScrollUpWhenUpdating(prev => !prev)
   }
 
+  const handleSetIsDuplicatesChecking = () => {
+    dispatch(setIsDuplicatesChecking(!isDuplicatesChecking))
+    !isDuplicatesChecking && dispatch(fetchMainPageDuplicates(mediaFiles))
+  }
+
   return (
     <Row gutter={10} className={cn(styles.row, 'd-flex align-items-center')}>
       {Boolean(isMainPage && filesSizeTotal) && (
@@ -67,11 +84,18 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
         </Checkbox>
       </Col>
       {isMainPage && (
-        <Col>
-          <Checkbox defaultChecked onChange={handleSetScrollUpWhenUpdating}>
+        <>
+          <Col>
+            <Checkbox defaultChecked onChange={handleSetScrollUpWhenUpdating}>
             Scroll up when updating
-          </Checkbox>
-        </Col>
+            </Checkbox>
+          </Col>
+          <Col>
+            <Checkbox checked={isDuplicatesChecking} onChange={handleSetIsDuplicatesChecking}>
+            Check duplicates
+            </Checkbox>
+          </Col>
+        </>
       )}
       <Col>
         {showSlider && (

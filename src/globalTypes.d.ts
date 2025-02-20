@@ -1,3 +1,7 @@
+type NonFalsy<T> = T extends false | 0 | '' | null | undefined | 0n
+  ? never
+  : T
+
 declare global {
   interface ObjectConstructor {
     keys<T>(obj: T): Array<keyof T>
@@ -8,8 +12,9 @@ declare global {
   }
 
   interface Array<T> {
-    filter<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
-    filter<S extends T>(predicate: (value: T, index: number, array: T[]) => boolean): S[];
+    // filter<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
+    // filter<S extends T>(predicate: (value: T, index: number, array: T[]) => boolean): S[];
+    filter<S extends T>(predicate: BooleanConstructor, thisArg?: any): NonFalsy<S>[];
   }
 
   type WidenLiteral<T> = T extends string

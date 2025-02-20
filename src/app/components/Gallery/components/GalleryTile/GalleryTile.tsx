@@ -11,7 +11,9 @@ import type { Tags } from 'exiftool-vendored'
 
 import type { Media } from 'src/api/models/media'
 import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
-import { checkForDuplicatesOnlyInCurrentFolder, duplicateFilesArr, session } from 'src/redux/selectors'
+import {
+  checkForDuplicatesOnlyInCurrentFolder, uploadDuplicateFilesArr, sessionIsLoading, sessionIsDuplicatesChecking,
+} from 'src/redux/selectors'
 
 import { openGPSLocation, isGPSExist } from '../../helpers/getGPSCoordinates'
 
@@ -55,8 +57,9 @@ export const GalleryTile = memo(
     showExifList,
   }: GalleryTileProps) => {
     const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
-    const duplicatesForAllFiles = useSelector(duplicateFilesArr)
-    const { isLoading } = useSelector(session)
+    const duplicatesForAllFiles = useSelector(uploadDuplicateFilesArr)
+    const isLoading = useSelector(sessionIsLoading)
+    const isDuplicatesChecking = useSelector(sessionIsDuplicatesChecking)
 
     const extensionTypeTouple = mediaFile.mimetype.split('/')
     const extensionType = extensionTypeTouple[0]
@@ -68,8 +71,13 @@ export const GalleryTile = memo(
       mediaFile.duplicates.length && watchForDuplicatesOnlyInCurrentFolder
         ? duplicatesForAllFiles
           .some(({ originalName }) => mediaFile.duplicates[0].originalName === originalName)
-        : Boolean(mediaFile.duplicates.length)
-    ), [duplicatesForAllFiles, mediaFile.duplicates, watchForDuplicatesOnlyInCurrentFolder])
+        : isDuplicatesChecking && Boolean(mediaFile.duplicates.length)
+    ), [
+      duplicatesForAllFiles,
+      isDuplicatesChecking,
+      mediaFile.duplicates,
+      watchForDuplicatesOnlyInCurrentFolder,
+    ])
 
     const handleMouseEnter = () => {
       clearTimeout(timeout)

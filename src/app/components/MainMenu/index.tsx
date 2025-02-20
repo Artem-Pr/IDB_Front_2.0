@@ -7,7 +7,7 @@ import { difference } from 'ramda'
 import { MainMenuKeys } from 'src/common/constants'
 import { fetchKeywordsList } from 'src/redux/reducers/foldersSlice/thunks'
 import { stopVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
-import { folderElement, openMenusSelector, session } from 'src/redux/selectors'
+import { folderElement, openMenusSelector, sessionAsideMenuWidth } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { useClearSelectedList, useUpdateOpenMenus } from '../../common/hooks'
@@ -26,7 +26,7 @@ interface Props {
 
 const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
   const dispatch = useAppDispatch()
-  const { asideMenuWidth: defaultMenuWidth } = useSelector(session)
+  const defaultMenuWidth = useSelector(sessionAsideMenuWidth)
   const { keywordsList: allKeywords } = useSelector(folderElement)
   const { collapseMenu, extraMenu } = useMainMenuItems(videoPreviewRef)
   const { setOpenMenus } = useUpdateOpenMenus()

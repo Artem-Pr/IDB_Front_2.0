@@ -17,6 +17,8 @@ import {
   setRawFiles,
 } from '../mainPageSlice'
 
+import { fetchMainPageDuplicates } from './fetchMainPageDuplicates'
+
 interface FetchPhotos {
   isNameComparison?: boolean
   comparisonFolder?: string
@@ -29,6 +31,7 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
     mainPageReducer,
     folderReducer: { currentFolderInfo },
     settingSlice: { isFullSizePreview, savePreview },
+    sessionSlice: { isDuplicatesChecking },
   } = getState()
   const {
     searchMenu: {
@@ -95,6 +98,9 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
       dispatch(setDownloadingFiles(mediaFiles))
       dispatch(setGalleryPagination(searchPagination))
       dispatch(setFilesSizeSum(filesSizeSum))
+
+      mediaFiles.length && isDuplicatesChecking && dispatch(fetchMainPageDuplicates(mediaFiles))
+
       dispatch(setDGalleryLoading(false))
     })
     .catch(error => {

@@ -6,20 +6,22 @@ export const DEFAULT_PREVIEW_SIZE = 150
 
 export interface State {
   asideMenuWidth: number
-  fitContain: boolean
-  previewSize: number
-  isTimesDifferenceApplied: boolean
-  isLoading: boolean
   currentPage: PagePaths.MAIN | PagePaths.UPLOAD | null
+  fitContain: boolean
+  isDuplicatesChecking: boolean
+  isLoading: boolean
+  isTimesDifferenceApplied: boolean
+  previewSize: number
 }
 
 const initialState: State = {
   asideMenuWidth: 400,
-  fitContain: false,
-  previewSize: DEFAULT_PREVIEW_SIZE,
-  isTimesDifferenceApplied: false,
-  isLoading: false,
   currentPage: null,
+  fitContain: false,
+  isDuplicatesChecking: false,
+  isLoading: false,
+  isTimesDifferenceApplied: false,
+  previewSize: DEFAULT_PREVIEW_SIZE,
 }
 
 const sessionSlice = createSlice({
@@ -32,17 +34,20 @@ const sessionSlice = createSlice({
     setAsideMenuWidth(state, action: PayloadAction<number>) {
       state.asideMenuWidth = action.payload
     },
+    setCurrentPage(state, action: PayloadAction<PagePaths.MAIN | PagePaths.UPLOAD | null>) {
+      state.currentPage = action.payload
+    },
     setFitContain(state, action: PayloadAction<boolean>) {
       state.fitContain = action.payload
+    },
+    setIsDuplicatesChecking(state, action: PayloadAction<boolean>) {
+      state.isDuplicatesChecking = action.payload
     },
     setIsLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload
     },
     setIsTimeDifferenceApplied(state, action: PayloadAction<boolean>) {
       state.isTimesDifferenceApplied = action.payload
-    },
-    setCurrentPage(state, action: PayloadAction<PagePaths.MAIN | PagePaths.UPLOAD | null>) {
-      state.currentPage = action.payload
     },
     setPreviewSize(state, action: PayloadAction<number>) {
       state.previewSize = action.payload
@@ -53,10 +58,11 @@ const sessionSlice = createSlice({
 export const {
   refreshPreviewSize,
   setAsideMenuWidth,
+  setCurrentPage,
   setFitContain,
+  setIsDuplicatesChecking,
   setIsLoading,
   setIsTimeDifferenceApplied,
-  setCurrentPage,
   setPreviewSize,
 } = sessionSlice.actions
 

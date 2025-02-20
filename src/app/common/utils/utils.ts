@@ -30,7 +30,12 @@ export const filterIndexed = addIndex(filter)
 export const copyByJSON = <T>(obj: T): T => JSON.parse(JSON.stringify(obj))
 export const removeExtraSlash = (value: string): string => (value.endsWith('/') ? value.slice(0, -1) : value)
 export const sanitizeDirectory = <T extends string>(value: T): T => value.replace(/^\/+|\/+$/g, '') as T
-export const removeExtraFirstSlash = (value: string): string => (value.startsWith('/') ? value.slice(1) : value)
+export const removeExtraFirstSlash = <T extends string>(
+  value: T,
+) => {
+  const result = value.startsWith('/') ? value.slice(1) : value
+  return result as T extends `/${infer P}` ? P : T
+}
 export const getLastItem = (list: number[]): number => list[list.length - 1]
 export const removeEmptyFields = <T extends Record<string, any>>(obj: T): Partial<T> => reject(field => {
   if (field === '') {

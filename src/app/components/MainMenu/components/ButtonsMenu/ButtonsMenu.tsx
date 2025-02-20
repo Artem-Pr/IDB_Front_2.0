@@ -11,10 +11,10 @@ import { uploadFiles } from 'src/redux/reducers/uploadSlice/thunks'
 import { setCheckForDuplicatesOnlyInCurrentFolder } from 'src/redux/reducers/uploadSlice/uploadSlice'
 import {
   checkForDuplicatesOnlyInCurrentFolder,
-  currentFilesList,
-  duplicateFilesArr,
+  uploadDuplicateFilesArr,
   folderInfoCurrentFolder,
   hasFailedUploadingFiles,
+  currentFilesList,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
@@ -37,7 +37,7 @@ export const ButtonsMenu = () => {
   const hasFailedFiles = useSelector(hasFailedUploadingFiles)
   const currentFolderPath = useSelector(folderInfoCurrentFolder)
   const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
-  const duplicates = useSelector(duplicateFilesArr)
+  const duplicates = useSelector(uploadDuplicateFilesArr)
   const { setOpenMenus } = useUpdateOpenMenus()
   const { clearFilesArr } = useClearFilesArray()
 

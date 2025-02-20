@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 import { CopyOutlined, DiffFilled, DiffOutlined } from '@ant-design/icons'
 import {
-  AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select, DatePicker, Tooltip,
+  AutoComplete, Button, Checkbox, Form, Input, Modal, Rate, Select, DatePicker,
 } from 'antd'
 import cn from 'classnames'
 import type { Dayjs } from 'dayjs'
@@ -43,6 +43,7 @@ import {
   getNameParts,
   isVideoByExt,
 } from '../../common/utils'
+import { UIKitBtn } from '../UIKit'
 
 import { mediaFields } from './EditMenuConfig'
 import { TimeDifferenceModal } from './components'
@@ -284,30 +285,30 @@ export const EditMenu = ({ isEditMany }: Props) => {
             >
               <Checkbox>{mediaFields.keywords.label}</Checkbox>
             </Form.Item>
-            <Tooltip className="margin-left-20" title="Copy keywords">
-              <Button
-                icon={<CopyOutlined />}
-                onClick={handleCopyKeywords}
-                size="small"
-                type="primary"
-              />
-            </Tooltip>
-            <Tooltip className="margin-left-10" title="Add copied keywords">
-              <Button
-                icon={<DiffOutlined />}
-                onClick={handlePastKeywords}
-                size="small"
-                type="primary"
-              />
-            </Tooltip>
-            <Tooltip className="margin-left-10" title="Paste and replace keywords">
-              <Button
-                icon={<DiffFilled />}
-                onClick={handleReplaceKeywords}
-                size="small"
-                type="primary"
-              />
-            </Tooltip>
+            <UIKitBtn
+              className="margin-left-20"
+              icon={<CopyOutlined />}
+              onClick={handleCopyKeywords}
+              size="small"
+              tooltip="Copy keywords"
+              type="primary"
+            />
+            <UIKitBtn
+              className="margin-left-10"
+              icon={<DiffOutlined />}
+              onClick={handlePastKeywords}
+              size="small"
+              tooltip="Add copied keywords"
+              type="primary"
+            />
+            <UIKitBtn
+              className="margin-left-10"
+              icon={<DiffFilled />}
+              onClick={handleReplaceKeywords}
+              size="small"
+              tooltip="Paste and replace keywords"
+              type="primary"
+            />
           </div>
           <Form.Item className={styles.inputField} name={mediaFields.keywords.name}>
             <Select

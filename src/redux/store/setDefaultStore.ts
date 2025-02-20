@@ -21,6 +21,7 @@ import {
   setSearchTags,
   updateDOpenMenus,
 } from '../reducers/mainPageSlice/mainPageSlice'
+import { setIsDuplicatesChecking } from '../reducers/sessionSlice'
 import {
   setIsFullSizePreview,
   setIsVideoPreviewMuted,
@@ -72,4 +73,6 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setExpandedKeys(localStorageAPI.expandedKeys))
   dispatch(setIsDynamicFolders(localStorageAPI.isDynamicFolders))
   dispatch(setIsVideoPreviewMuted(localStorageAPI.isVideoPreviewMuted))
+
+  dispatch(setIsDuplicatesChecking(localStorageAPI.isDuplicatesChecking))
 }

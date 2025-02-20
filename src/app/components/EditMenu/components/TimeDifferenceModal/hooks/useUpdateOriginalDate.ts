@@ -5,14 +5,14 @@ import type { Media } from 'src/api/models/media'
 import { setDownloadingFiles } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
 import { setIsTimeDifferenceApplied } from 'src/redux/reducers/sessionSlice/sessionSlice'
 import { updateUploadingFilesArr } from 'src/redux/reducers/uploadSlice'
-import { currentFilesList, getIsCurrentPage, session } from 'src/redux/selectors'
+import { currentFilesList, getIsCurrentPage, sessionIsTimesDifferenceApplied } from 'src/redux/selectors'
 
 type FormattedOriginalDate = string
 export type OriginalDates = Record<Media['id'], FormattedOriginalDate | null>
 
 export const useUpdateOriginalDate = () => {
   const dispatch = useDispatch()
-  const { isTimesDifferenceApplied } = useSelector(session)
+  const isTimesDifferenceApplied = useSelector(sessionIsTimesDifferenceApplied)
   const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
   const filesArr = useSelector(currentFilesList)
   const [originalDatesObj, setOriginalDatesObj] = useState<OriginalDates>({})

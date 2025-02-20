@@ -2,27 +2,26 @@ import { mainApi } from 'src/api/api'
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
 import { errorMessage } from 'src/app/common/notifications'
-import { downloadingFiles } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
 import { setDownloadingFiles } from '../mainPageSlice'
 
 export const fetchMainPageDuplicates = (
-  originalNameList: Media['originalName'][],
+  mediaFiles: Media[],
   callback?: (mediaListWithDuplicates: Media[]) => void,
-): AppThunk => async (dispatch, getState) => {
+): AppThunk => async dispatch => {
   await mainApi
-    .checkDuplicates(originalNameList)
+    .checkDuplicates(mediaFiles.map(({ originalName }) => originalName))
     .then(({ data }) => {
-      const downloadingFilesArr = downloadingFiles(getState())
-      const updatedDownloadingFiles: Media[] = downloadingFilesArr.map(file => {
-        const existedFilesArr: DuplicateFile[] | undefined = data[file.originalName]
+      const updatedDownloadingFiles: Media[] = mediaFiles.map(file => {
+        const existedFilesArr = data[file.originalName] as DuplicateFile[] | undefined
 
-        if (!existedFilesArr?.length) {
-          return file
+        if (existedFilesArr && existedFilesArr?.length > 1) {
+          const duplicates = existedFilesArr.filter(({ filePath }) => filePath !== file.filePath)
+          return { ...file, duplicates }
         }
 
-        return { ...file, duplicates: existedFilesArr }
+        return file
       })
       dispatch(setDownloadingFiles(updatedDownloadingFiles))
 

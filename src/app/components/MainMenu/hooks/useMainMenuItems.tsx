@@ -133,7 +133,7 @@ export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivEleme
     const menuItemsFilter = ({ key }: { key: MainMenuKeys }) => (
       (isMainPage && !excludedMainPageMenuItems.includes(key))
         || (isUploadPage && !excludedUploadingPageMenuItems.includes(key))
-        || (isUploadPage && previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES)
+        || (previewDuplicatesArr.length > 0 && key === MainMenuKeys.DUPLICATES)
     )
 
     return {

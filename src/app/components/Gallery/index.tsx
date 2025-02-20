@@ -9,7 +9,7 @@ import cn from 'classnames'
 
 import type { Media } from 'src/api/models/media'
 import { MainMenuKeys } from 'src/common/constants'
-import { session, sort } from 'src/redux/selectors'
+import { sessionFitContain, sessionPreviewSize, sort } from 'src/redux/selectors'
 
 import { GalleryTile, ImageGalleryMenu } from './components'
 import {
@@ -50,7 +50,8 @@ const Gallery = ({
   isMainPage,
   refs: { gridRef, imgRef, imgFirstGroupNameRef },
 }: GalleryProps) => {
-  const { fitContain, previewSize } = useSelector(session)
+  const previewSize = useSelector(sessionPreviewSize)
+  const fitContain = useSelector(sessionFitContain)
   const { groupedByDate } = useSelector(sort)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)

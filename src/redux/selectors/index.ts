@@ -20,6 +20,7 @@ export const folderInfoIsDynamicFolders = (state: RootState) => state.folderRedu
 export const folderInfoCurrentFolderKey = (state: RootState) => state.folderReducer.currentFolderInfo.currentFolderKey
 export const folderInfoExpandedKeys = (state: RootState) => state.folderReducer.currentFolderInfo.expandedKeys
 export const pathsArr = (state: RootState) => state.folderReducer.pathsArr
+
 export const upload = (state: RootState) => state.uploadReducer
 export const openMenus = (state: RootState) => state.uploadReducer.openMenus
 export const uploadingFiles = (state: RootState) => state.uploadReducer.uploadingFiles
@@ -39,15 +40,23 @@ export const pagination = (state: RootState) => state.mainPageReducer.galleryPag
 export const filesSizeSum = (state: RootState) => state.mainPageReducer.filesSizeSum
 export const isDeleteProcessing = (state: RootState) => state.mainPageReducer.isDeleteProcessing
 export const imagePreview = (state: RootState) => state.mainPageReducer.preview
+
 export const numberOfFilesChecking = (state: RootState) => state.testsReducer.firstTest
 export const videoFilesChecking = (state: RootState) => state.testsReducer.secondTest
-export const session = (state: RootState) => state.sessionSlice
+
+export const sessionFitContain = (state: RootState) => state.sessionSlice.fitContain
+export const sessionPreviewSize = (state: RootState) => state.sessionSlice.previewSize
+export const sessionIsTimesDifferenceApplied = (state: RootState) => state.sessionSlice.isTimesDifferenceApplied
+export const sessionIsLoading = (state: RootState) => state.sessionSlice.isLoading
+export const sessionAsideMenuWidth = (state: RootState) => state.sessionSlice.asideMenuWidth
+export const sessionCurrentPage = (state: RootState) => state.sessionSlice.currentPage
+export const sessionIsDuplicatesChecking = (state: RootState) => state.sessionSlice.isDuplicatesChecking
+
 export const settings = (state: RootState) => state.settingSlice
 export const globalLoader = (state: RootState) => state.settingSlice.globalLoader
-export const currentPage = (state: RootState) => state.sessionSlice.currentPage
 
 export const getIsCurrentPage = createSelector(
-  currentPage,
+  sessionCurrentPage,
   currentPageName => ({
     isMainPage: currentPageName === PagePaths.MAIN,
     isUploadPage: currentPageName === PagePaths.UPLOAD,
@@ -70,37 +79,58 @@ export const sort = createSelector(
   [
     uploadPageSort,
     mainPageSort,
-    currentPage,
+    getIsCurrentPage,
   ],
-  (uploadPageSortingData, mainPageSortingData, currentPageName): SortingData => {
-    if (currentPageName === PagePaths.MAIN) return mainPageSortingData
-    if (currentPageName === PagePaths.UPLOAD) return uploadPageSortingData
+  (uploadPageSortingData, mainPageSortingData, { isMainPage, isUploadPage }): SortingData => {
+    if (isMainPage) return mainPageSortingData
+    if (isUploadPage) return uploadPageSortingData
     return { gallerySortingList: [], groupedByDate: false }
   },
 )
 
-export const duplicateFilesArr = createSelector(
+export const uploadDuplicateFilesArr = createSelector(
   [uploadingFiles, checkForDuplicatesOnlyInCurrentFolder, folderInfoCurrentFolder],
-  (uploadingFilesArr, onlyDuplicatesInCurrentFolder, currentFolderPath) => uploadingFilesArr
+  (uploadingFilesArr, onlyDuplicatesInCurrentFolder, currentFolderPath): DuplicateFile[] => uploadingFilesArr
     .reduce<DuplicateFile[]>((accum, { duplicates = [] }) => [...accum, ...duplicates], [])
     .filter(({ filePath }) => (onlyDuplicatesInCurrentFolder ? filePath?.startsWith(`/${currentFolderPath}`) : true)),
 )
 
-export const previewDuplicates = createSelector(
-  [duplicateFilesArr, imagePreview],
-  (duplicates, preview) => (
+export const downloadDuplicateFilesArr = createSelector(
+  downloadingFiles,
+  (downloadingFilesArr): DuplicateFile[] => downloadingFilesArr
+    .reduce<DuplicateFile[]>((accum, { duplicates = [] }) => [...accum, ...duplicates], []),
+)
+
+export const uploadPreviewDuplicates = createSelector(
+  [uploadDuplicateFilesArr, imagePreview],
+  (duplicates, preview): DuplicateFile[] => (
     duplicates.filter(({ originalName }) => originalName === preview.originalName)),
+)
+
+export const downloadPreviewDuplicates = createSelector(
+  [downloadDuplicateFilesArr, imagePreview],
+  (duplicates, preview): DuplicateFile[] => (
+    duplicates.filter(({ originalName }) => originalName === preview.originalName)),
+)
+
+export const previewDuplicates = createSelector(
+  [uploadPreviewDuplicates, downloadPreviewDuplicates, getIsCurrentPage],
+  (uploadDuplicates, downloadDuplicates, { isMainPage, isUploadPage }): DuplicateFile[] => {
+    if (isMainPage) return downloadDuplicates
+    if (isUploadPage) return uploadDuplicates
+    return []
+  },
 )
 
 export const openMenusSelector = createSelector(
   [
     openMenus,
     dOpenMenus,
-    currentPage,
+    getIsCurrentPage,
   ],
-  (uploadOpenMenuKeys, downloadPageOpenMenus, currentPageName): MainMenuKeys[] => {
-    if (currentPageName === PagePaths.MAIN) return downloadPageOpenMenus
-    if (currentPageName === PagePaths.UPLOAD) return uploadOpenMenuKeys
+  (uploadOpenMenuKeys, downloadPageOpenMenus, { isMainPage, isUploadPage }): MainMenuKeys[] => {
+    if (isMainPage) return downloadPageOpenMenus
+    if (isUploadPage) return uploadOpenMenuKeys
     return []
   },
 )
@@ -113,11 +143,11 @@ export const currentFilesList = createSelector(
   [
     uploadingFiles,
     downloadingFiles,
-    currentPage,
+    getIsCurrentPage,
   ],
-  (uploadingFilesArr, downloadingFilesArr, currentPageName): Media[] => {
-    if (currentPageName === PagePaths.MAIN) return downloadingFilesArr
-    if (currentPageName === PagePaths.UPLOAD) return uploadingFilesArr
+  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadPage }): Media[] => {
+    if (isMainPage) return downloadingFilesArr
+    if (isUploadPage) return uploadingFilesArr
     return []
   },
 )
@@ -126,11 +156,11 @@ export const currentSelectedList = createSelector(
   [
     selectedList,
     dSelectedList,
-    currentPage,
+    getIsCurrentPage,
   ],
-  (uploadedSelectedList, downloadedSelectedList, currentPageName): number[] => {
-    if (currentPageName === PagePaths.MAIN) return downloadedSelectedList
-    if (currentPageName === PagePaths.UPLOAD) return uploadedSelectedList
+  (uploadedSelectedList, downloadedSelectedList, { isMainPage, isUploadPage }): number[] => {
+    if (isMainPage) return downloadedSelectedList
+    if (isUploadPage) return uploadedSelectedList
     return []
   },
 )
@@ -172,11 +202,11 @@ export const uniqKeywords = createSelector(
   [
     allDownloadingKeywordsSelector,
     allUploadKeywordsSelector,
-    currentPage,
+    getIsCurrentPage,
   ],
-  (allDownloadingKeywords, allUploadKeywords, currentPageName): string[] => {
-    if (currentPageName === PagePaths.MAIN) return allDownloadingKeywords
-    if (currentPageName === PagePaths.UPLOAD) return allUploadKeywords
+  (allDownloadingKeywords, allUploadKeywords, { isMainPage, isUploadPage }): string[] => {
+    if (isMainPage) return allDownloadingKeywords
+    if (isUploadPage) return allUploadKeywords
     return []
   },
 )
@@ -196,11 +226,11 @@ export const allSameKeywords = createSelector(
   [
     allSameKeywordsSelector,
     dAllSameKeywordsSelector,
-    currentPage,
+    getIsCurrentPage,
   ],
-  (allSameKeywordsUpload, allSameKeywordsDownload, currentPageName): string[] => {
-    if (currentPageName === PagePaths.MAIN) return allSameKeywordsDownload
-    if (currentPageName === PagePaths.UPLOAD) return allSameKeywordsUpload
+  (allSameKeywordsUpload, allSameKeywordsDownload, { isMainPage, isUploadPage }): string[] => {
+    if (isMainPage) return allSameKeywordsDownload
+    if (isUploadPage) return allSameKeywordsUpload
     return []
   },
 )
@@ -210,13 +240,13 @@ export const selectedDateList = createSelector(
   downloadingFiles,
   selectedList,
   dSelectedList,
-  currentPage,
+  getIsCurrentPage,
   (
     uploadingFilesArr,
     downloadingFilesArr,
     uploadingSelectedList,
     downloadingSelectedList,
-    currentPageName,
+    { isMainPage, isUploadPage },
   ): {
     originalDate: string
     changeDate: string | null
@@ -231,8 +261,8 @@ export const selectedDateList = createSelector(
       changeDate: uploadingFilesArr[selectedItem].changeDate,
     }))
 
-    if (currentPageName === PagePaths.MAIN) return getDownloadingDateList()
-    if (currentPageName === PagePaths.UPLOAD) return getUploadingDateList()
+    if (isMainPage) return getDownloadingDateList()
+    if (isUploadPage) return getUploadingDateList()
     return []
   },
 )
