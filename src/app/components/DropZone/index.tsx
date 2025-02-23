@@ -13,13 +13,15 @@ import type { Media } from 'src/api/models/media'
 import { MediaInstance } from 'src/api/models/media'
 import { errorMessage } from 'src/app/common/notifications'
 import { wait, isMimeType } from 'src/app/common/utils'
-import { MainMenuKeys } from 'src/common/constants'
-import { setIsLoading } from 'src/redux/reducers/sessionSlice/sessionSlice'
-import { increaseCountOfPreviewLoading, setBlob, setUploadingStatus } from 'src/redux/reducers/uploadSlice'
+import { MainMenuKeys, MimeTypes } from 'src/common/constants'
+import { getFolderReducerFolderInfoCurrentFolder } from 'src/redux/reducers/foldersSlice/selectors'
+import { sessionReducerSetIsLoading } from 'src/redux/reducers/sessionSlice'
+import { uploadReducerIncreaseCountOfPreviewLoading, uploadReducerSetBlob, uploadReducerSetUploadingStatus } from 'src/redux/reducers/uploadSlice'
+import {
+  getUploadReducerBlobs, getUploadReducerFilesArr, getUploadReducerPreviewLoadingCount,
+} from 'src/redux/reducers/uploadSlice/selectors'
 import { addUploadingFile, fetchPhotosPreview } from 'src/redux/reducers/uploadSlice/thunks'
-import { folderInfoCurrentFolder, upload } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import {
   getDispatchObjFromBlob, isFile, isFileNameAlreadyExist,
@@ -45,8 +47,10 @@ interface Props {
 }
 
 const DropZone = ({ openMenus }: Props) => {
-  const currentFolderPath = useSelector(folderInfoCurrentFolder)
-  const { previewLoadingCount, uploadingBlobs, uploadingFiles } = useSelector(upload)
+  const currentFolderPath = useSelector(getFolderReducerFolderInfoCurrentFolder)
+  const previewLoadingCount = useSelector(getUploadReducerPreviewLoadingCount)
+  const uploadingBlobs = useSelector(getUploadReducerBlobs)
+  const uploadingFiles = useSelector(getUploadReducerFilesArr)
   const [finishedNumberOfFiles, setFinishedNumberOfFiles] = useState<number>(0)
   const dispatch = useAppDispatch()
   const isEditOne = useMemo(() => openMenus.includes(MainMenuKeys.EDIT), [openMenus])
@@ -83,18 +87,18 @@ const DropZone = ({ openMenus }: Props) => {
       'Content-Type': 'application/json',
     },
     async customRequest({ file }) {
-      dispatch(setIsLoading(true))
+      dispatch(sessionReducerSetIsLoading(true))
       const uploadFile = async (fileFormQueue: RcFile) => {
         const dispatchNewFile = async () => {
           uploading.isProcessing = true
-          dispatch(increaseCountOfPreviewLoading())
-          isFile(fileFormQueue) && compose(dispatch, setBlob, getDispatchObjFromBlob)(fileFormQueue)
+          dispatch(uploadReducerIncreaseCountOfPreviewLoading())
+          isFile(fileFormQueue) && compose(dispatch, uploadReducerSetBlob, getDispatchObjFromBlob)(fileFormQueue)
           dispatch<any>(fetchPhotosPreview(fileFormQueue))
             .then(() => {
               uploading.isProcessing = false
               setFinishedNumberOfFiles(prevState => prevState + 1)
             })
-          dispatch(setUploadingStatus('empty'))
+          dispatch(uploadReducerSetUploadingStatus('empty'))
         }
         dispatchNewFile()
       }

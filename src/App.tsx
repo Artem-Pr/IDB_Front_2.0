@@ -9,10 +9,10 @@ import MainPage from './app/pages/MainPage'
 import { SettingsPage } from './app/pages/SettingsPage'
 import TestDB from './app/pages/TestDB'
 import UploadPage from './app/pages/UploadPage'
-import { globalLoader } from './redux/selectors'
+import { getSettingsReducerGlobalLoader } from './redux/reducers/settingsSlice/selectors'
 
 const App = () => {
-  const loading = useSelector(globalLoader)
+  const loading = useSelector(getSettingsReducerGlobalLoader)
 
   return (
     <Layout>

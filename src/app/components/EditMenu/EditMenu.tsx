@@ -16,17 +16,15 @@ import { warningMessage } from 'src/app/common/notifications'
 import { dayjsWithoutTimezone } from 'src/app/common/utils/date'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
 import { DATE_TIME_FORMAT_WITH_MS, DEFAULT_TIME_STAMP } from 'src/constants/dateConstants'
+import { getFolderReducerKeywordsList, getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
+import { getMainPageReducerIsDeleteProcessing, getMainPageReducerIsGalleryLoading } from 'src/redux/reducers/mainPageSlice/selectors'
 import { removeSelectedFiles } from 'src/redux/reducers/mainPageSlice/thunks'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { removeFilesFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
 import {
-  allSameKeywords,
-  currentFilesList,
-  currentSelectedList,
-  folderElement,
-  getIsCurrentPage,
-  isDeleteProcessing,
-  main,
-  pathsArrOptionsSelector,
+  getSameKeywords,
+  getCurrentFilesArr,
+  getCurrentSelectedList,
 } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { Checkboxes } from 'src/redux/types'
@@ -84,16 +82,16 @@ export const EditMenu = ({ isEditMany }: Props) => {
   const dispatch = useAppDispatch()
   const { selectAll } = useSelectAll()
   const { clearSelectedList } = useClearSelectedList()
-  const sameKeywords = useSelector(allSameKeywords)
-  const { keywordsList: allKeywords } = useSelector(folderElement)
+  const sameKeywords = useSelector(getSameKeywords)
+  const allKeywords = useSelector(getFolderReducerKeywordsList)
   const [form] = Form.useForm<InitialFormData>()
   const [modal, contextHolder] = Modal.useModal()
-  const filesArr = useSelector(currentFilesList)
-  const selectedList = useSelector(currentSelectedList)
-  const pathsListOptions = useSelector(pathsArrOptionsSelector)
-  const isDeleting = useSelector(isDeleteProcessing)
-  const { isGalleryLoading } = useSelector(main)
-  const { isMainPage } = useSelector(getIsCurrentPage)
+  const filesArr = useSelector(getCurrentFilesArr)
+  const selectedList = useSelector(getCurrentSelectedList)
+  const pathsListOptions = useSelector(getFolderReducerPathsArrOptionsSelector)
+  const isDeleting = useSelector(getMainPageReducerIsDeleteProcessing)
+  const isGalleryLoading = useSelector(getMainPageReducerIsGalleryLoading)
+  const { isMainPage } = useSelector(getSessionReducerIsCurrentPage)
   const [isSelectAllBtn, setIsSelectAllBtn] = useState(true)
 
   const {

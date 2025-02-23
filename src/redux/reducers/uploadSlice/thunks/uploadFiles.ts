@@ -2,33 +2,32 @@ import { mainApi } from 'src/api/api'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIRequestFromMedia'
-import {
-  folderInfoCurrentFolder, updatedPathsArrFromMediaList, uploadingFiles,
-} from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
+import { uploadReducerSetUploadingStatus } from '..'
 import { setFolderTree, setPathsArr } from '../../foldersSlice'
-import { setUploadingStatus } from '../uploadSlice'
+import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerUpdatedPathsArrFromMediaList } from '../../foldersSlice/selectors'
+import { getUploadReducerFilesArr } from '../selectors'
 
 export const uploadFiles = (): AppThunk => (dispatch, getState) => {
-  dispatch(setUploadingStatus('loading'))
+  dispatch(uploadReducerSetUploadingStatus('loading'))
 
-  const filesToUpload = uploadingFiles(getState())
-  const currentFolderPath = folderInfoCurrentFolder(getState())
+  const filesToUpload = getUploadReducerFilesArr(getState())
+  const currentFolderPath = getFolderReducerFolderInfoCurrentFolder(getState())
   const UploadingObjects = getFileAPIRequestFromMediaList(filesToUpload, currentFolderPath)
 
   mainApi
     .savePhotosInDB(UploadingObjects)
     .then(({ data }) => {
-      const updatedPathsArr = updatedPathsArrFromMediaList(getState(), data)
+      const updatedPathsArr = getFolderReducerUpdatedPathsArrFromMediaList(getState(), data)
       const updatedFolderTree = createFolderTree(updatedPathsArr)
 
       dispatch(setPathsArr(updatedPathsArr))
       dispatch(setFolderTree(updatedFolderTree))
-      dispatch(setUploadingStatus('success'))
+      dispatch(uploadReducerSetUploadingStatus('success'))
     })
     .catch(error => {
-      dispatch(setUploadingStatus('error'))
+      dispatch(uploadReducerSetUploadingStatus('error'))
       console.error(error)
 
       errorMessage(error, 'Upload files error')

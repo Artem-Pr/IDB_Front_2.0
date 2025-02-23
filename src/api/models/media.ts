@@ -1,8 +1,8 @@
 import type { Tags } from 'exiftool-vendored'
 import { v4 as uuidV4 } from 'uuid'
 
+import { MimeTypes } from 'src/common/constants'
 import { DEFAULT_TIME_STAMP } from 'src/constants/dateConstants'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import type { DuplicateFile } from '../types/types'
 
@@ -18,6 +18,7 @@ type ExifRating = WithNullOnly<Tags['Rating']>
 enum SupportedImageExtensions {
   jpg = 'jpg',
   jpeg = 'jpeg',
+  webp = 'webp',
   png = 'png',
   heic = 'heic',
   gif = 'gif',

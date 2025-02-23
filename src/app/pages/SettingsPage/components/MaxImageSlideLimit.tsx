@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { Input } from 'antd'
 
-import { setMaxImagePreviewSlideLimit } from 'src/redux/reducers/settingsSlice/settingsSlice'
-import { settings } from 'src/redux/selectors'
+import { settingsReducerSetMaxPreviewSlideLimit } from 'src/redux/reducers/settingsSlice'
+import { getSettingsReducerImagePreviewSlideLimits } from 'src/redux/reducers/settingsSlice/selectors'
 
 export const MaxImageSlideLimit = memo(() => {
   const dispatch = useDispatch()
-  const { imagePreviewSlideLimits } = useSelector(settings)
+  const imagePreviewSlideLimits = useSelector(getSettingsReducerImagePreviewSlideLimits)
 
   const handleSetMaxImageSlideLimit = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setMaxImagePreviewSlideLimit(Number(e.target.value)))
+    dispatch(settingsReducerSetMaxPreviewSlideLimit(Number(e.target.value)))
   }
 
   return <Input value={imagePreviewSlideLimits.max} onChange={handleSetMaxImageSlideLimit} placeholder="max limit" />

@@ -1,88 +1,72 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit'
 
-import { setIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
+import { localStorageAPI } from 'src/common/localStorageAPI'
+import { getMainPageReducerGalleryPagination } from 'src/redux/reducers/mainPageSlice/selectors'
+import { sessionReducerSetIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
 
-import { localStorageAPI } from '../../../app/common/utils/localStorageAPI'
 import {
   setCurrentFolderKey,
   setCurrentFolderPath,
   setExpandedKeys,
   setIsDynamicFolders,
-} from '../../reducers/foldersSlice/foldersSlice'
-import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../reducers/mainPageSlice/helpers'
+} from '../../reducers/foldersSlice'
 import {
-  resetSearchMenu,
-  resetSort as resetSortMainPage,
-  setDateRange,
-  setDescriptionFilter,
-  setExcludeTags,
-  setGalleryPagination,
-  setGallerySortingList as setGallerySortingListMainPage,
-  setGroupedByDate as setGroupedByDateMainPage,
-  setIncludeAllSearchTags,
-  setIsAnyDescriptionFilter,
-  setMimeTypes,
-  setRandomSort,
-  setRatingFilter,
-  setSearchFileName,
-  setSearchTags,
-  updateDOpenMenus,
-} from '../../reducers/mainPageSlice/mainPageSlice'
+  mainPageReducerResetSearchMenu,
+  mainPageReducerResetSort as resetSortMainPage,
+  mainPageReducerSetDateRange,
+  mainPageReducerSetDescriptionFilter,
+  mainPageReducerSetExcludeTags,
+  mainPageReducerSetGalleryPagination,
+  mainPageReducerSetGallerySortingList as setGallerySortingListMainPage,
+  mainPageReducerSetGroupedByDate as setGroupedByDateMainPage,
+  mainPageReducerSetIncludeAllSearchTags,
+  mainPageReducerSetIsAnyDescriptionFilter,
+  mainPageReducerSetMimeTypes,
+  mainPageReducerSetRandomSort,
+  mainPageReducerSetRatingFilter,
+  mainPageReducerSetSearchFileName,
+  mainPageReducerSetSearchTags,
+  mainPageReducerSetOpenMenus,
+} from '../../reducers/mainPageSlice'
+import { defaultGallerySortingList as defaultGallerySortingListMainPage } from '../../reducers/mainPageSlice/helpers'
 import { initialState } from '../../reducers/mainPageSlice/mainPageState'
 import {
-  setIsFullSizePreview,
-  setIsVideoPreviewMuted,
-  setMaxImagePreviewSlideLimit,
-  setMinImagePreviewSlideLimit,
-  setSavePreview,
-} from '../../reducers/settingsSlice/settingsSlice'
-import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../reducers/uploadSlice/helpers'
+  settingsReducerSetIsVideoPreviewMuted,
+  settingsReducerSetMaxPreviewSlideLimit,
+  settingsReducerSetMinPreviewSlideLimit,
+} from '../../reducers/settingsSlice'
 import {
-  resetSort as resetSortUploadPage,
-  setGallerySortingList as setGallerySortingListUploadPage,
-} from '../../reducers/uploadSlice/uploadSlice'
-import { main } from '../../selectors'
+  uploadReducerResetSort as resetSortUploadPage,
+  uploadReducerSetGallerySortingList as setGallerySortingListUploadPage,
+} from '../../reducers/uploadSlice'
+import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from '../../reducers/uploadSlice/helpers'
 import type { RootState } from '../types'
 
 export const listenerMiddleware = createListenerMiddleware<RootState>()
 
 listenerMiddleware.startListening({
-  actionCreator: setSavePreview,
-  effect: action => {
-    localStorageAPI.savePreview = action.payload
-  },
-})
-
-listenerMiddleware.startListening({
-  actionCreator: setIsFullSizePreview,
-  effect: action => {
-    localStorageAPI.fullSizePreview = action.payload
-  },
-})
-
-listenerMiddleware.startListening({
-  actionCreator: setMaxImagePreviewSlideLimit,
+  actionCreator: settingsReducerSetMaxPreviewSlideLimit,
   effect: action => {
     localStorageAPI.maxImagePreviewLimit = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setMinImagePreviewSlideLimit,
+  actionCreator: settingsReducerSetMinPreviewSlideLimit,
   effect: action => {
     localStorageAPI.minImagePreviewLimit = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: updateDOpenMenus,
+  actionCreator: mainPageReducerSetOpenMenus,
   effect: action => {
     localStorageAPI.DOpenMenus = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setRatingFilter,
+  actionCreator: mainPageReducerSetRatingFilter,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, rating: action.payload }
@@ -90,7 +74,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setSearchFileName,
+  actionCreator: mainPageReducerSetSearchFileName,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, fileName: action.payload }
@@ -98,7 +82,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setIncludeAllSearchTags,
+  actionCreator: mainPageReducerSetIncludeAllSearchTags,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, includeAllSearchTags: action.payload }
@@ -106,7 +90,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setSearchTags,
+  actionCreator: mainPageReducerSetSearchTags,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, searchTags: action.payload }
@@ -114,7 +98,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setExcludeTags,
+  actionCreator: mainPageReducerSetExcludeTags,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, excludeTags: action.payload }
@@ -122,7 +106,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setMimeTypes,
+  actionCreator: mainPageReducerSetMimeTypes,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, mimetypes: action.payload }
@@ -130,7 +114,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setDateRange,
+  actionCreator: mainPageReducerSetDateRange,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, dateRange: action.payload }
@@ -138,7 +122,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setIsAnyDescriptionFilter,
+  actionCreator: mainPageReducerSetIsAnyDescriptionFilter,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, anyDescription: action.payload }
@@ -146,7 +130,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setDescriptionFilter,
+  actionCreator: mainPageReducerSetDescriptionFilter,
   effect: action => {
     const { searchMenu } = localStorageAPI
     localStorageAPI.searchMenu = { ...searchMenu, description: action.payload }
@@ -154,16 +138,16 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: resetSearchMenu,
+  actionCreator: mainPageReducerResetSearchMenu,
   effect: () => {
     localStorageAPI.searchMenu = initialState.searchMenu
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setGalleryPagination,
+  actionCreator: mainPageReducerSetGalleryPagination,
   effect: (action, state) => {
-    const { galleryPagination } = main(state.getState())
+    const galleryPagination = getMainPageReducerGalleryPagination(state.getState())
     localStorageAPI.galleryPagination = { ...galleryPagination, ...action.payload }
   },
 })
@@ -197,7 +181,7 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setRandomSort,
+  actionCreator: mainPageReducerSetRandomSort,
   effect: action => {
     localStorageAPI.randomSort = action.payload
   },
@@ -239,14 +223,14 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setIsVideoPreviewMuted,
+  actionCreator: settingsReducerSetIsVideoPreviewMuted,
   effect: action => {
     localStorageAPI.isVideoPreviewMuted = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setIsDuplicatesChecking,
+  actionCreator: sessionReducerSetIsDuplicatesChecking,
   effect: action => {
     localStorageAPI.isDuplicatesChecking = action.payload
   },

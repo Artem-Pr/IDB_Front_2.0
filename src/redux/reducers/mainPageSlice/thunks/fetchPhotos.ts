@@ -7,31 +7,23 @@ import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setFolderTree, setPathsArr } from '../../foldersSlice/foldersSlice'
 import {
-  clearDownloadingState,
-  setDGalleryLoading,
-  setDownloadingFiles,
-  setFilesSizeSum,
-  setGalleryPagination,
-  setRawFiles,
-} from '../mainPageSlice'
+  mainPageReducerClearState,
+  mainPageReducerSetIsGalleryLoading,
+  mainPageReducerSetFilesArr,
+  mainPageReducerSetFilesSizeSum,
+  mainPageReducerSetGalleryPagination,
+  mainPageReducerSetRawFiles,
+} from '..'
+import { setFolderTree, setPathsArr } from '../../foldersSlice'
 
 import { fetchMainPageDuplicates } from './fetchMainPageDuplicates'
 
-interface FetchPhotos {
-  isNameComparison?: boolean
-  comparisonFolder?: string
-}
-
-export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getState) => {
-  const isNameComparison = settings?.isNameComparison || false
-  const comparisonFolder = settings?.comparisonFolder
+export const fetchPhotos = (): AppThunk => (dispatch, getState) => {
   const {
-    mainPageReducer,
-    folderReducer: { currentFolderInfo },
-    settingSlice: { isFullSizePreview, savePreview },
-    sessionSlice: { isDuplicatesChecking },
+    mainPageSliceReducer: mainPageReducer,
+    foldersSliceReducer: { currentFolderInfo },
+    sessionSliceReducer: { isDuplicatesChecking },
   } = getState()
   const {
     searchMenu: {
@@ -49,9 +41,9 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
     sort: { gallerySortingList, randomSort },
   } = mainPageReducer
   const { currentPage, nPerPage } = galleryPagination
-  const folderPath = isNameComparison ? '' : currentFolderInfo.currentFolderPath
+  const folderPath = currentFolderInfo.currentFolderPath
   const { showSubfolders, isDynamicFolders } = currentFolderInfo
-  dispatch(setDGalleryLoading(true))
+  dispatch(mainPageReducerSetIsGalleryLoading(true))
   mainApi
     .getPhotosByTags({
       filters: {
@@ -78,12 +70,6 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
         page: currentPage,
         perPage: nPerPage,
       },
-      settings: {
-        ...(comparisonFolder && { comparisonFolder }),
-        ...(!savePreview && { dontSavePreview: !savePreview }),
-        ...(isFullSizePreview && { isFullSizePreview }),
-        ...(isNameComparison && { isNameComparison }),
-      },
     })
     .then(({
       data: {
@@ -93,20 +79,20 @@ export const fetchPhotos = (settings?: FetchPhotos): AppThunk => (dispatch, getS
       const mediaFiles: Media[] = files || []
       dynamicFolders && dynamicFolders.length && dispatch(setPathsArr(dynamicFolders))
       dynamicFolders && dynamicFolders.length && dispatch(setFolderTree(createFolderTree(dynamicFolders)))
-      dispatch(clearDownloadingState())
-      dispatch(setRawFiles(mediaFiles)) // TODO: check setRawFiles if it's needed
-      dispatch(setDownloadingFiles(mediaFiles))
-      dispatch(setGalleryPagination(searchPagination))
-      dispatch(setFilesSizeSum(filesSizeSum))
+      dispatch(mainPageReducerClearState())
+      dispatch(mainPageReducerSetRawFiles(mediaFiles)) // TODO: check setRawFiles if it's needed
+      dispatch(mainPageReducerSetFilesArr(mediaFiles))
+      dispatch(mainPageReducerSetGalleryPagination(searchPagination))
+      dispatch(mainPageReducerSetFilesSizeSum(filesSizeSum))
 
       mediaFiles.length && isDuplicatesChecking && dispatch(fetchMainPageDuplicates(mediaFiles))
 
-      dispatch(setDGalleryLoading(false))
+      dispatch(mainPageReducerSetIsGalleryLoading(false))
     })
     .catch(error => {
       const showError = () => {
         errorMessage(error, 'downloading files error: ')
-        dispatch(setDGalleryLoading(false))
+        dispatch(mainPageReducerSetIsGalleryLoading(false))
       }
       error.message !== 'canceled' && showError()
     })

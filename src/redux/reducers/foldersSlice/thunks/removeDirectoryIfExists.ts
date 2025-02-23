@@ -4,16 +4,16 @@ import { mainApi } from 'src/api/api'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
-import { folderElement, folderInfoCurrentFolder } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../foldersSlice'
+import { setCurrentFolderPath, setFolderTree, setPathsArr } from '..'
+import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerFolderPathsArr } from '../selectors'
 
 import { checkDirectory } from './checkDirectory'
 
 export const removeDirectoryIfExists = (confirm: HookAPI['confirm']): AppThunk => (dispatch, getState) => {
-  const currentFolderPath = folderInfoCurrentFolder(getState())
-  const { pathsArr } = folderElement(getState())
+  const currentFolderPath = getFolderReducerFolderInfoCurrentFolder(getState())
+  const pathsArr = getFolderReducerFolderPathsArr(getState())
 
   const onOk = () => {
     dispatch(checkDirectory())

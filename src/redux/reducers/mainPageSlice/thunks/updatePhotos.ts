@@ -6,12 +6,12 @@ import type { CheckOriginalNameDuplicatesAPIResponse } from 'src/api/types/respo
 import type { ErrorResponse } from 'src/api/types/types'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage, successMessage, warningMessage } from 'src/app/common/notifications'
-import { updatedPathsArrFromMediaList } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setFolderTree, setPathsArr } from '../../foldersSlice/foldersSlice'
-import { setIsTimeDifferenceApplied } from '../../sessionSlice/sessionSlice'
-import { setDGalleryLoading } from '../mainPageSlice'
+import { mainPageReducerSetIsGalleryLoading } from '..'
+import { setFolderTree, setPathsArr } from '../../foldersSlice'
+import { getFolderReducerUpdatedPathsArrFromMediaList } from '../../foldersSlice/selectors'
+import { sessionReducerSetIsTimeDifferenceApplied } from '../../sessionSlice'
 
 import { fetchPhotos } from './fetchPhotos'
 
@@ -19,12 +19,12 @@ const DUPLICATE_FILE_ERROR_MESSAGE = 'File name already exists:'
 const UPLOADING_ERROR_MESSAGE = 'updating files error'
 
 export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk => (dispatch, getState) => {
-  dispatch(setDGalleryLoading(true))
-  dispatch(setIsTimeDifferenceApplied(false))
+  dispatch(mainPageReducerSetIsGalleryLoading(true))
+  dispatch(sessionReducerSetIsTimeDifferenceApplied(false))
   mainApi
     .updatePhotos(updatedObjArr)
     .then(({ data }) => {
-      const updatedPathsArr = updatedPathsArrFromMediaList(getState(), data.response)
+      const updatedPathsArr = getFolderReducerUpdatedPathsArrFromMediaList(getState(), data.response)
       const updatedFolderTree = createFolderTree(updatedPathsArr)
       dispatch(setPathsArr(updatedPathsArr))
       dispatch(setFolderTree(updatedFolderTree))
@@ -48,5 +48,5 @@ export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk =
         errorMessage(new Error(error.response?.data.message), UPLOADING_ERROR_MESSAGE, 100)
       }
     })
-    .finally(() => dispatch(setDGalleryLoading(false)))
+    .finally(() => dispatch(mainPageReducerSetIsGalleryLoading(false)))
 }

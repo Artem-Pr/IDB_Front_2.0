@@ -13,9 +13,9 @@ import { getISOStringWithUTC } from 'src/app/common/utils/date'
 import { applyOldNamesIfDuplicates, renameOriginalNameIfNeeded } from 'src/app/common/utils/duplicatesHelper'
 import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIRequestFromMedia'
 import { updatePhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { getSessionReducerIsTimesDifferenceApplied } from 'src/redux/reducers/sessionSlice/selectors'
+import { uploadReducerUpdateBlobName, uploadReducerSetFilesArr } from 'src/redux/reducers/uploadSlice'
 import { fetchUploadDuplicates } from 'src/redux/reducers/uploadSlice/thunks'
-import { updateBlobName, updateUploadingFilesArr } from 'src/redux/reducers/uploadSlice/uploadSlice'
-import { sessionIsTimesDifferenceApplied } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { addEditedFieldsToFileArr, isEditNameOperation, prepareBlobUpdateNamePayload } from './helpers'
@@ -32,7 +32,7 @@ export const useEditFilesArr = ({
   sameKeywords = [],
 }: UseEditFilesArrProps) => {
   const dispatch = useAppDispatch()
-  const isTimesDifferenceApplied = useSelector(sessionIsTimesDifferenceApplied)
+  const isTimesDifferenceApplied = useSelector(getSessionReducerIsTimesDifferenceApplied)
 
   const editMainPageFiles = useMemo(() => {
     let updatedFieldNames: (keyof Media)[] = []
@@ -113,7 +113,7 @@ export const useEditFilesArr = ({
       filesArr
         .map(prepareBlobUpdateNamePayload(newFilesArr))
         .filter(isEditNameOperation)
-        .forEach(compose(dispatch, updateBlobName))
+        .forEach(compose(dispatch, uploadReducerUpdateBlobName))
       return newFilesArr
     }
     const checkNameDuplicatesMiddleware = (newFilesArr: Media[]) => {
@@ -133,7 +133,7 @@ export const useEditFilesArr = ({
 
     return compose(
       dispatch,
-      updateUploadingFilesArr,
+      uploadReducerSetFilesArr,
       mixUpdatedFilesItemsWithOriginalOnes,
       updateFileBlobsNamesMiddleware,
       checkNameDuplicatesMiddleware,

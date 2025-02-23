@@ -1,6 +1,7 @@
 import { HttpStatusCode } from 'axios'
 
-import { MimeTypes } from '../../redux/types/MimeTypes'
+import { MimeTypes } from 'src/common/constants'
+
 import type { Media } from '../models/media'
 
 export interface ErrorResponse<T extends unknown = unknown> {

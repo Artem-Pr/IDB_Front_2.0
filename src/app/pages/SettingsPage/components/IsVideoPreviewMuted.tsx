@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Checkbox } from 'antd'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-import { setIsVideoPreviewMuted } from 'src/redux/reducers/settingsSlice/settingsSlice'
-import { settings } from 'src/redux/selectors'
+import { settingsReducerSetIsVideoPreviewMuted } from 'src/redux/reducers/settingsSlice'
+import { getSettingsReducerIsVideoPreviewMuted } from 'src/redux/reducers/settingsSlice/selectors'
 
 export const IsVideoPreviewMuted = memo(() => {
   const dispatch = useDispatch()
-  const { isVideoPreviewMuted } = useSelector(settings)
+  const isVideoPreviewMuted = useSelector(getSettingsReducerIsVideoPreviewMuted)
 
   const handleSetIsVideoPreviewMuted = (e: CheckboxChangeEvent) => {
-    dispatch(setIsVideoPreviewMuted(e.target.checked))
+    dispatch(settingsReducerSetIsVideoPreviewMuted(e.target.checked))
   }
 
   return (

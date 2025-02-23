@@ -3,9 +3,7 @@ import type { Key } from 'react'
 import type { Tags } from 'exiftool-vendored'
 
 import type { Media, SupportedExt } from 'src/api/models/media'
-import type { Sort } from 'src/common/constants'
-
-import { MimeTypes } from './MimeTypes'
+import type { MimeTypes, Sort } from 'src/common/constants'
 
 export type { Duration } from 'dayjs/plugin/duration'
 

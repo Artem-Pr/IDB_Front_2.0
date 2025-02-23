@@ -7,7 +7,7 @@ import { errorMessage } from 'src/app/common/notifications'
 import imagePlaceholderFailedUploading from 'src/assets/svg-icons-html/image-placeholder-failed-upload3.svg'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { decreaseCountOfPreviewLoading } from '../uploadSlice'
+import { uploadReducerDecreaseCountOfPreviewLoading } from '..'
 
 import { updateUploadingFile } from './updateUploadingFile'
 
@@ -27,5 +27,5 @@ export const fetchPhotosPreview = (file: RcFile): AppThunk => async dispatch => 
         size: file.size,
       }).properties, file))
     })
-    .finally(() => dispatch(decreaseCountOfPreviewLoading()))
+    .finally(() => dispatch(uploadReducerDecreaseCountOfPreviewLoading()))
 }

@@ -1,6 +1,6 @@
 import type { Sort } from 'src/common/constants'
+import { MimeTypes } from 'src/common/constants'
 import type { SortingFields } from 'src/redux/types'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import type { Media, NullableMedia } from '../models/media'
 
@@ -36,11 +36,5 @@ export interface GetPhotosByTagsAPIRequest {
   pagination: {
     page: number
     perPage: number
-  }
-  settings: {
-    comparisonFolder?: string
-    dontSavePreview?: boolean // TODO remove that field and related logic
-    isFullSizePreview?: boolean
-    isNameComparison?: boolean
   }
 }

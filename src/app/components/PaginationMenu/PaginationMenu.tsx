@@ -3,23 +3,23 @@ import { useSelector } from 'react-redux'
 
 import { Pagination } from 'antd'
 
-import { setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+import { mainPageReducerSetGalleryPagination } from 'src/redux/reducers/mainPageSlice'
+import { getMainPageReducerGalleryPagination } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
-import { pagination } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 export const PaginationMenu = () => {
   const dispatch = useAppDispatch()
   const {
     currentPage, resultsCount, nPerPage, pageSizeOptions,
-  } = useSelector(pagination)
+  } = useSelector(getMainPageReducerGalleryPagination)
 
   const handleChange = (page: number, pageSize?: number) => {
     const paginationObj = {
       currentPage: pageSize === nPerPage ? page : 1,
       ...(pageSize && { nPerPage: pageSize }),
     }
-    dispatch(setGalleryPagination(paginationObj))
+    dispatch(mainPageReducerSetGalleryPagination(paginationObj))
     dispatch(fetchPhotos())
   }
 

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 
 import throttle from 'lodash.throttle'
 
-import { setAsideMenuWidth } from 'src/redux/reducers/sessionSlice/sessionSlice'
+import { sessionReducerSetAsideMenuWidth } from 'src/redux/reducers/sessionSlice'
 
 const MIN_ASIDE_WIDTH = 200
 const THROTTLE_TIME = 10
@@ -20,9 +20,13 @@ interface ApplyNewWidthProps extends Omit<UpdateWithProps, 'oldWidth'> {
   oldWidthNumber: number
 }
 
+// let xMovement = 0
+
 const applyNewWidth = ({
   oldWidthNumber, moveX, menuRef, videoPreviewRef,
 }: ApplyNewWidthProps) => {
+  // console.log('🚀 ~ moveX:', moveX)
+  // const newWidth = `${xMovement}px`
   const newWidth = `${oldWidthNumber + moveX}px`
   menuRef.current && (menuRef.current.style.width = newWidth)
   menuRef.current && (menuRef.current.style.flexBasis = newWidth)
@@ -51,10 +55,24 @@ export const useMenuResize = () => {
       })
     }, THROTTLE_TIME),
   ).current
+  // const handleDividerMove = useRef(
+  //   (x: number) => {
+  //     xMovement += x
+  //     // console.log('🚀 ~ throttle ~ width:', xMovement)
+
+  //     return throttle(() => {
+  //       const width = menuRef.current?.style.width
+  //       console.log('🚀 ~ throttle ~ width:', width)
+  //       width && updateWidth({
+  //         oldWidth: width, moveX: xMovement, menuRef, videoPreviewRef,
+  //       })
+  //     }, THROTTLE_TIME)()
+  //   },
+  // ).current
   const dispatch = useDispatch()
 
   const handleFinishResize = useCallback(() => {
-    dispatch(setAsideMenuWidth(parseInt(menuRef.current?.style.width || '0', 10)))
+    dispatch(sessionReducerSetAsideMenuWidth(parseInt(menuRef.current?.style.width || '0', 10)))
   }, [dispatch])
 
   return {

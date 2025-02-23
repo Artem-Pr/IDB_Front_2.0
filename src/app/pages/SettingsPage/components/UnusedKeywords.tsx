@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Button, Modal, Tag } from 'antd'
 
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
+import { getSettingsReducerUnusedKeywords } from 'src/redux/reducers/settingsSlice/selectors'
 import { deleteUnusedKeyword, fetchUnusedKeywordsList } from 'src/redux/reducers/settingsSlice/thunks'
-import { settings } from 'src/redux/selectors'
 
 export const UnusedKeywords = memo(() => {
   const dispatch = useDispatch<any>()
   const [modal, contextHolder] = Modal.useModal()
-  const { unusedKeywords } = useSelector(settings)
+  const unusedKeywords = useSelector(getSettingsReducerUnusedKeywords)
   const [isUnusedKeywordsLoaded, setIsUnusedKeywordsLoaded] = useState(false)
   const [unusedKeywordsLoading, setUnusedKeywordsLoading] = useState(false)
 

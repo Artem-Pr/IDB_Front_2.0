@@ -1,4 +1,4 @@
-import { MimeTypes } from '../../types/MimeTypes'
+import { MimeTypes } from 'src/common/constants'
 
 export interface SearchMenu {
   rating: number

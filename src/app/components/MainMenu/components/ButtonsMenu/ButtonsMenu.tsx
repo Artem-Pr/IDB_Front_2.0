@@ -7,15 +7,11 @@ import type { CheckboxProps } from 'antd'
 import { useClearFilesArray, useUpdateOpenMenus } from 'src/app/common/hooks'
 import { capitalize } from 'src/app/common/utils'
 import { MainMenuKeys } from 'src/common/constants'
+import { getFolderReducerFolderInfoCurrentFolder } from 'src/redux/reducers/foldersSlice/selectors'
+import { uploadReducerSetCheckDuplicatesInCurrentDir } from 'src/redux/reducers/uploadSlice'
+import { getUploadReducerCheckDuplicatesInCurrentDir, getUploadReducerHasFailedUploadingFiles } from 'src/redux/reducers/uploadSlice/selectors'
 import { uploadFiles } from 'src/redux/reducers/uploadSlice/thunks'
-import { setCheckForDuplicatesOnlyInCurrentFolder } from 'src/redux/reducers/uploadSlice/uploadSlice'
-import {
-  checkForDuplicatesOnlyInCurrentFolder,
-  uploadDuplicateFilesArr,
-  folderInfoCurrentFolder,
-  hasFailedUploadingFiles,
-  currentFilesList,
-} from 'src/redux/selectors'
+import { getUploadDuplicateFilesArr, getCurrentFilesArr } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 const tooltipMessages = {
@@ -33,11 +29,11 @@ const getTooltipMessage = (messagesObj: Record<keyof typeof tooltipMessages, boo
 
 export const ButtonsMenu = () => {
   const dispatch = useAppDispatch()
-  const filesArr = useSelector(currentFilesList)
-  const hasFailedFiles = useSelector(hasFailedUploadingFiles)
-  const currentFolderPath = useSelector(folderInfoCurrentFolder)
-  const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
-  const duplicates = useSelector(uploadDuplicateFilesArr)
+  const filesArr = useSelector(getCurrentFilesArr)
+  const hasFailedFiles = useSelector(getUploadReducerHasFailedUploadingFiles)
+  const currentFolderPath = useSelector(getFolderReducerFolderInfoCurrentFolder)
+  const watchForDuplicatesOnlyInCurrentFolder = useSelector(getUploadReducerCheckDuplicatesInCurrentDir)
+  const duplicates = useSelector(getUploadDuplicateFilesArr)
   const { setOpenMenus } = useUpdateOpenMenus()
   const { clearFilesArr } = useClearFilesArray()
 
@@ -57,7 +53,7 @@ export const ButtonsMenu = () => {
   }
 
   const handleChangeWatchingDuplicates: CheckboxProps['onChange'] = event => {
-    dispatch(setCheckForDuplicatesOnlyInCurrentFolder(event.target.checked))
+    dispatch(uploadReducerSetCheckDuplicatesInCurrentDir(event.target.checked))
   }
 
   return (

@@ -2,10 +2,10 @@ import { mainApi } from 'src/api/api'
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
 import { errorMessage } from 'src/app/common/notifications'
-import { uploadingFiles } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { updateUploadingFilesArr } from '../uploadSlice'
+import { uploadReducerSetFilesArr } from '..'
+import { getUploadReducerFilesArr } from '../selectors'
 
 export const fetchUploadDuplicates = (
   originalNameList: Media['originalName'][],
@@ -13,7 +13,7 @@ export const fetchUploadDuplicates = (
   await mainApi
     .checkDuplicates(originalNameList)
     .then(({ data }) => {
-      const uploadingFilesArr = uploadingFiles(getState())
+      const uploadingFilesArr = getUploadReducerFilesArr(getState())
       const updatedUploadingFiles: Media[] = uploadingFilesArr.map(file => {
         const existedFilesArr = data[file.originalName] as DuplicateFile[] | undefined
 
@@ -22,7 +22,7 @@ export const fetchUploadDuplicates = (
         }
         return file
       })
-      dispatch(updateUploadingFilesArr(updatedUploadingFiles))
+      dispatch(uploadReducerSetFilesArr(updatedUploadingFiles))
     })
     .catch(error => {
       errorMessage(error, 'Error when getting files duplicates: ')

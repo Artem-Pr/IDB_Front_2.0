@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux'
 
 import { AutoComplete, Button, Card } from 'antd'
 
-import { pathsArrOptionsSelector } from 'src/redux/selectors'
+import { getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
 
 import styles from './index.module.scss'
 
 const CheckFilesWithSameNames = () => {
-  const pathsListOptions = useSelector(pathsArrOptionsSelector)
+  const pathsListOptions = useSelector(getFolderReducerPathsArrOptionsSelector)
   const [currentFilePath, setCurrentFilePath] = useState('')
 
   return (

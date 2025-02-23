@@ -3,7 +3,7 @@ import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setFolderTree, setPathsArr } from '../foldersSlice'
+import { setFolderTree, setPathsArr } from '..'
 
 export const fetchPathsList = (): AppThunk => dispatch => {
   mainApi

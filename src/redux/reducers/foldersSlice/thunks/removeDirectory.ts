@@ -3,15 +3,15 @@ import { difference } from 'ramda'
 import { mainApi } from 'src/api/api'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
-import { folderInfoCurrentFolder, pathsArr } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
+import { setFolderTree, setPathsArr } from '..'
 import { fetchPhotos } from '../../mainPageSlice/thunks'
-import { setFolderTree, setPathsArr } from '../foldersSlice'
+import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerFolderPathsArr } from '../selectors'
 
 export const removeDirectory = (): AppThunk => (dispatch, getState) => {
-  const currentFolderPath = folderInfoCurrentFolder(getState())
-  const paths = pathsArr(getState())
+  const currentFolderPath = getFolderReducerFolderInfoCurrentFolder(getState())
+  const paths = getFolderReducerFolderPathsArr(getState())
   const updateContent = (removedFilePaths: string[]) => {
     const updatedPaths = difference(paths, removedFilePaths)
 

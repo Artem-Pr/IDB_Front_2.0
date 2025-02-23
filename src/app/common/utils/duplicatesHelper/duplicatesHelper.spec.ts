@@ -1,6 +1,6 @@
 /* eslint-disable newline-per-chained-call */
 import { FileNameWithExt, Media, MediaInstance } from 'src/api/models/media'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
+import { MimeTypes } from 'src/common/constants'
 
 import { applyOldNamesIfDuplicates, renameOriginalNameIfNeeded } from './duplicatesHelper'
 

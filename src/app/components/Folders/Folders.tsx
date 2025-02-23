@@ -19,18 +19,18 @@ import {
   setIsDynamicFolders,
   setPathsArr,
   setShowSubfolders,
-} from 'src/redux/reducers/foldersSlice/foldersSlice'
+} from 'src/redux/reducers/foldersSlice'
+import {
+  getFolderReducerFolderInfoCurrentFolder,
+  getFolderReducerFolderInfoIsDynamicFolders,
+  getFolderReducerFolderInfoShowSubfolders,
+  getFolderReducerFolderPathsArr,
+  getFolderReducerFolderTree,
+  getFolderReducerPathsArrOptionsSelector,
+} from 'src/redux/reducers/foldersSlice/selectors'
 import { fetchPathsList, removeDirectoryIfExists } from 'src/redux/reducers/foldersSlice/thunks'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
-import {
-  folderInfoCurrentFolder,
-  folderInfoIsDynamicFolders,
-  folderElement,
-  pathsArr,
-  pathsArrOptionsSelector,
-  folderInfoShowSubfolders,
-  getIsCurrentPage,
-} from 'src/redux/selectors'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { FolderTree } from './components'
@@ -40,14 +40,13 @@ import styles from './Folders.module.scss'
 export const Folders = () => {
   const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
-  const { folderTree } = useSelector(folderElement)
-  const { isMainPage } = useSelector(getIsCurrentPage)
-  const currentFolderPath = useSelector(folderInfoCurrentFolder)
-  const showSubfolders = useSelector(folderInfoShowSubfolders)
-
-  const isDynamicFolders = useSelector(folderInfoIsDynamicFolders)
-  const directoriesArr = useSelector(pathsArr)
-  const options = useSelector(pathsArrOptionsSelector)
+  const folderTree = useSelector(getFolderReducerFolderTree)
+  const { isMainPage } = useSelector(getSessionReducerIsCurrentPage)
+  const currentFolderPath = useSelector(getFolderReducerFolderInfoCurrentFolder)
+  const showSubfolders = useSelector(getFolderReducerFolderInfoShowSubfolders)
+  const isDynamicFolders = useSelector(getFolderReducerFolderInfoIsDynamicFolders)
+  const directoriesArr = useSelector(getFolderReducerFolderPathsArr)
+  const options = useSelector(getFolderReducerPathsArrOptionsSelector)
   const [autoExpandParent, setAutoExpandParent] = useState(true)
 
   const cleanFolderPath = useMemo(() => removeExtraSlash(currentFolderPath), [currentFolderPath])

@@ -11,8 +11,9 @@ import { removeEmptyFields } from 'src/app/common/utils'
 import { getISOStringWithUTC } from 'src/app/common/utils/date'
 import type { InitialFormData } from 'src/app/components/EditMenu'
 import { duplicateConfig, emptyCheckboxesConfig } from 'src/assets/config/moduleConfig'
-import { setKeywordsList } from 'src/redux/reducers/foldersSlice/foldersSlice'
-import { folderElement, getIsCurrentPage } from 'src/redux/selectors'
+import { setKeywordsList } from 'src/redux/reducers/foldersSlice'
+import { getFolderReducerKeywordsList } from 'src/redux/reducers/foldersSlice/selectors'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { NameParts } from 'src/redux/types'
 
@@ -38,8 +39,8 @@ export const useFinishEdit = ({
   selectedList,
 }: Props) => {
   const dispatch = useAppDispatch()
-  const { keywordsList } = useSelector(folderElement)
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const keywordsList = useSelector(getFolderReducerKeywordsList)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
   const { editUploadingFiles, editMainPageFiles } = useEditFilesArr({
     filesArr,
     sameKeywords,

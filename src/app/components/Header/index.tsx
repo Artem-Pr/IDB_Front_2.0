@@ -15,32 +15,39 @@ import {
   setNumberOfFilesInDirectory,
   setNumberOfSubdirectories,
   setShowInfoModal,
-} from 'src/redux/reducers/foldersSlice/foldersSlice'
-import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
+} from 'src/redux/reducers/foldersSlice'
 import {
-  folderInfoShowInfoModal, folderInfoNumberOfFiles, pathsArr, folderInfoNumberOfSubdirs,
-} from 'src/redux/selectors'
+  getFolderReducerFolderInfoNumberOfFiles,
+  getFolderReducerFolderInfoNumberOfSubdirs,
+  getFolderReducerFolderInfoShowInfoModal,
+  getFolderReducerFolderPathsArr,
+} from 'src/redux/reducers/foldersSlice/selectors'
+import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { PageMenuItems } from './PageMenuItems'
 
 import styles from './index.module.scss'
 
-const { Header: HeaderLayout } = Layout
-const { Title } = Typography
-
 function getRandomBackgroundPosition() {
   return Math.floor(Math.random() * 50)
 }
+
+const { Header: HeaderLayout } = Layout
+const { Title } = Typography
+const menuStyle = { width: 400 }
+const imageStyle = { top: `-${getRandomBackgroundPosition()}%` }
 
 const Header = () => {
   const { pathname } = useLocation() as { pathname: PagePaths }
   const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
-  const directoriesArr = useSelector(pathsArr)
-  const showInfoModal = useSelector(folderInfoShowInfoModal)
-  const numberOfFiles = useSelector(folderInfoNumberOfFiles)
-  const numberOfSubdirectories = useSelector(folderInfoNumberOfSubdirs)
+  const directoriesArr = useSelector(getFolderReducerFolderPathsArr)
+  const showInfoModal = useSelector(getFolderReducerFolderInfoShowInfoModal)
+  const numberOfFiles = useSelector(getFolderReducerFolderInfoNumberOfFiles)
+  const numberOfSubdirectories = useSelector(getFolderReducerFolderInfoNumberOfSubdirs)
+
+  const defaultKeys = useMemo(() => [pathname], [pathname])
 
   const content = useMemo(
     () => (
@@ -87,16 +94,16 @@ const Header = () => {
     <HeaderLayout className="d-flex justify-content-between align-items-center">
       <img
         alt="header-background"
-        style={{ top: `-${getRandomBackgroundPosition()}%` }}
+        style={imageStyle}
         className={styles.backgroundImage}
         src={HeaderBackgroundImage}
       />
       <Title className={styles.title}>IDBase</Title>
       <Menu
-        style={{ width: 400 }}
+        style={menuStyle}
         theme="dark"
         mode="horizontal"
-        defaultSelectedKeys={[pathname]}
+        defaultSelectedKeys={defaultKeys}
         items={PageMenuItems}
       />
       {contextHolder}

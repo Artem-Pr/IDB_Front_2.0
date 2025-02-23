@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 
 import { Layout } from 'antd'
-import { isEmpty } from 'ramda'
 
 import { MainMenuKeys, PagePaths } from 'src/common/constants'
+import { getMainPageReducerFilesArr, getMainPageReducerOpenMenus } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
-import { setCurrentPage } from 'src/redux/reducers/sessionSlice'
-import { dPageGalleryPropsSelector } from 'src/redux/selectors'
+import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
@@ -29,34 +27,20 @@ const MainPage = () => {
   } = useGridRefControl()
   const dispatch = useAppDispatch()
   const galleryProps = useGalleryProps()
-  const location = useLocation()
-  const [isFilesLoaded, setIsFilesLoaded] = useState(false)
-  const mainGalleryProps = useSelector(dPageGalleryPropsSelector)
-  const { openMenus, imageArr } = mainGalleryProps
-
-  const query = new URLSearchParams(location.search)
-  const isComparisonPage = Boolean(query.get('comparison'))
-  const folderParam = query.get('folder') || undefined
+  const openMenus = useSelector(getMainPageReducerOpenMenus)
+  const imageArr = useSelector(getMainPageReducerFilesArr)
 
   useEffect(() => {
-    dispatch(setCurrentPage(PagePaths.MAIN))
+    dispatch(sessionReducerSetCurrentPage(PagePaths.MAIN))
 
     return () => {
-      dispatch(setCurrentPage(null))
+      dispatch(sessionReducerSetCurrentPage(null))
     }
   }, [dispatch])
 
   useEffect(() => {
-    isEmpty(imageArr)
-      && !isFilesLoaded
-      && dispatch(
-        fetchPhotos({
-          isNameComparison: isComparisonPage,
-          comparisonFolder: folderParam,
-        }),
-      )
-    setIsFilesLoaded(true)
-  }, [dispatch, folderParam, imageArr, isComparisonPage, isFilesLoaded])
+    !imageArr.length && dispatch(fetchPhotos())
+  }, [dispatch, imageArr.length])
 
   return (
     <Layout>
@@ -74,7 +58,7 @@ const MainPage = () => {
             setScrollUpWhenUpdating={setScrollUpWhenUpdating}
           />
           <Gallery {...galleryProps} refs={refs} />
-          {!isComparisonPage && <PaginationMenu />}
+          <PaginationMenu />
         </Content>
       </Layout>
     </Layout>

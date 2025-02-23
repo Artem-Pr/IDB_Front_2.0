@@ -11,9 +11,9 @@ import type { Tags } from 'exiftool-vendored'
 
 import type { Media } from 'src/api/models/media'
 import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
-import {
-  checkForDuplicatesOnlyInCurrentFolder, uploadDuplicateFilesArr, sessionIsLoading, sessionIsDuplicatesChecking,
-} from 'src/redux/selectors'
+import { getSessionReducerIsDuplicatesChecking, getSessionReducerIsLoading } from 'src/redux/reducers/sessionSlice/selectors'
+import { getUploadReducerCheckDuplicatesInCurrentDir } from 'src/redux/reducers/uploadSlice/selectors'
+import { getUploadDuplicateFilesArr } from 'src/redux/selectors'
 
 import { openGPSLocation, isGPSExist } from '../../helpers/getGPSCoordinates'
 
@@ -56,10 +56,10 @@ export const GalleryTile = memo(
     selectedList,
     showExifList,
   }: GalleryTileProps) => {
-    const watchForDuplicatesOnlyInCurrentFolder = useSelector(checkForDuplicatesOnlyInCurrentFolder)
-    const duplicatesForAllFiles = useSelector(uploadDuplicateFilesArr)
-    const isLoading = useSelector(sessionIsLoading)
-    const isDuplicatesChecking = useSelector(sessionIsDuplicatesChecking)
+    const watchForDuplicatesOnlyInCurrentFolder = useSelector(getUploadReducerCheckDuplicatesInCurrentDir)
+    const duplicatesForAllFiles = useSelector(getUploadDuplicateFilesArr)
+    const isLoading = useSelector(getSessionReducerIsLoading)
+    const isDuplicatesChecking = useSelector(getSessionReducerIsDuplicatesChecking)
 
     const extensionTypeTouple = mediaFile.mimetype.split('/')
     const extensionType = extensionTypeTouple[0]

@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import type { Media } from 'src/api/models/media'
 import { getLastItem } from 'src/app/common/utils'
-import { cleanPreview, setPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
-import { uploadingBlobs } from 'src/redux/selectors'
+import { mainPageReducerClearPreview, mainPageReducerSetPreview } from 'src/redux/reducers/mainPageSlice'
+import { getUploadReducerBlobs } from 'src/redux/reducers/uploadSlice/selectors'
 import type { Preview } from 'src/redux/types'
 
 interface UseImageClickProps {
@@ -33,13 +33,13 @@ export const useImageClick = ({
   selectedList,
 }: UseImageClickProps) => {
   const dispatch = useDispatch()
-  const blobFiles = useSelector(uploadingBlobs)
+  const blobFiles = useSelector(getUploadReducerBlobs)
 
   const updatePreview = useCallback(
     (newPreview: Preview) => {
-      dispatch(cleanPreview())
+      dispatch(mainPageReducerClearPreview())
       setTimeout(() => {
-        dispatch(setPreview(newPreview))
+        dispatch(mainPageReducerSetPreview(newPreview))
       })
     },
     [dispatch],

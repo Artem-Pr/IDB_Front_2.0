@@ -2,26 +2,27 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 import {
-  clearDSelectedList,
-  resetSort as resetSortMainPage,
-  setGallerySortingList as setGallerySortingListMainPage,
-  setGroupedByDate as setGroupedByDateMainPage,
-  setRandomSort as setRandomSortMainPage,
-} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+  mainPageReducerClearSelectedList,
+  mainPageReducerResetSort as resetSortMainPage,
+  mainPageReducerSetGallerySortingList as setGallerySortingListMainPage,
+  mainPageReducerSetGroupedByDate as setGroupedByDateMainPage,
+  mainPageReducerSetRandomSort as setRandomSortMainPage,
+} from 'src/redux/reducers/mainPageSlice'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import {
-  clearSelectedList,
-  resetSort as resetSortUploadingPage,
-  setGallerySortingList as setGallerySortingListUploadingPage,
-  setGroupedByDate as setGroupedByDateUploadingPage,
-} from 'src/redux/reducers/uploadSlice/uploadSlice'
-import { getIsCurrentPage, sort } from 'src/redux/selectors'
+  uploadReducerClearSelectedList,
+  uploadReducerResetSort as resetSortUploadingPage,
+  uploadReducerSetGallerySortingList as setGallerySortingListUploadingPage,
+  uploadReducerSetGroupedByDate as setGroupedByDateUploadingPage,
+} from 'src/redux/reducers/uploadSlice'
+import { getSort } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { GallerySortingItem } from 'src/redux/types'
 
 export const useSortingMenu = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
-  const { gallerySortingList, groupedByDate, randomSort } = useSelector(sort)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
+  const { gallerySortingList, groupedByDate, randomSort } = useSelector(getSort)
 
   const setSortingList = useCallback(
     (updatedList: GallerySortingItem[]) => {
@@ -47,11 +48,11 @@ export const useSortingMenu = () => {
     (isGroupedByDate: boolean) => {
       if (isMainPage) {
         dispatch(setGroupedByDateMainPage(isGroupedByDate))
-        dispatch(clearDSelectedList())
+        dispatch(mainPageReducerClearSelectedList())
       }
       if (isUploadPage) {
         dispatch(setGroupedByDateUploadingPage(isGroupedByDate))
-        dispatch(clearSelectedList())
+        dispatch(uploadReducerClearSelectedList())
       }
     },
     [dispatch, isMainPage, isUploadPage],

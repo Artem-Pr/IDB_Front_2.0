@@ -18,12 +18,12 @@ import {
 } from 'ramda'
 
 import type { Media } from 'src/api/models/media'
+import { MimeTypes } from 'src/common/constants'
 import type {
   Keywords,
   LoadingStatus,
   NameParts,
 } from 'src/redux/types'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 export const invokableCompose = <any>compose
 export const filterIndexed = addIndex(filter)

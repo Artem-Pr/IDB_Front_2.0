@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux'
 
 import { Button, Card, Progress } from 'antd'
 
-import { refreshFirstTestPid } from 'src/redux/reducers/testsSlice/testsSlice'
+import { testsReducerRefreshFirstTestPid } from 'src/redux/reducers/testsSlice'
+import { getTestReducerNumberOfFilesChecking } from 'src/redux/reducers/testsSlice/selectors'
 import { fetchFileTests } from 'src/redux/reducers/testsSlice/thunks'
-import { numberOfFilesChecking } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import TableCollapse from '../../gridItems/TableCollaps'
@@ -31,7 +31,7 @@ const MatchingNumberOfFiles = () => {
     excessiveFolders__Disk_DB,
     excessiveFiles__DB_Disk,
     excessiveFiles__Disk_DB,
-  } = useSelector(numberOfFilesChecking)
+  } = useSelector(getTestReducerNumberOfFilesChecking)
 
   const [showExcessiveFolders_config, setShowExcessiveFolders_config] = useState(false)
   const [showExcessiveFolders_DB, setShowExcessiveFolders_DB] = useState(false)
@@ -57,7 +57,7 @@ const MatchingNumberOfFiles = () => {
   }
 
   const handleCheckNumberOfFiles = useCallback(() => {
-    dispatch(refreshFirstTestPid())
+    dispatch(testsReducerRefreshFirstTestPid())
     dispatch(fetchFileTests())
   }, [dispatch])
 

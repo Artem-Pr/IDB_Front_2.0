@@ -4,7 +4,7 @@ import type {
   FetchingGalleryContent,
   QueryResponse,
 } from 'src/redux/types'
-import type { MatchingNumberOfFilesTest, MatchingVideoFilesTest } from 'src/redux/types/testPageTypes'
+import type { MatchingNumberOfFilesTest } from 'src/redux/types/testPageTypes'
 
 import { axiosInstance } from './api-client'
 import type { Media } from './models/media'
@@ -87,9 +87,6 @@ export const mainApi = {
 export const testApi = {
   matchNumberOfFiles(pid: number) {
     return axiosInstance.get<MatchingNumberOfFilesTest>('test-system/matching-files', { params: { pid } })
-  },
-  matchVideoFiles(pid: number) {
-    return axiosInstance.post<MatchingVideoFilesTest>('/test/matching-videos', { pid })
   },
   rebuildFoldersConfig() {
     return axiosInstance.get<QueryResponse>('/rebuild-paths-config')

@@ -11,7 +11,7 @@ export interface State {
   previewLoadingCount: number
   selectedList: number[]
   uploadingBlobs: Record<string, string>
-  uploadingFiles: Media[]
+  filesArr: Media[]
   uploadingStatus: LoadingStatus
   sort: SortingData
 }
@@ -22,7 +22,7 @@ export const initialState: State = {
   previewLoadingCount: 0,
   selectedList: [],
   uploadingBlobs: {},
-  uploadingFiles: [],
+  filesArr: [],
   uploadingStatus: 'empty',
   sort: {
     gallerySortingList: defaultGallerySortingList,

@@ -16,7 +16,8 @@ import type { CollapseProps } from 'antd'
 import cn from 'classnames'
 
 import { MainMenuKeys } from 'src/common/constants'
-import { getIsCurrentPage, previewDuplicates } from 'src/redux/selectors'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
+import { getPreviewDuplicates } from 'src/redux/selectors'
 
 import { EditMenu } from '../../EditMenu'
 import { Folders } from '../../Folders/Folders'
@@ -126,8 +127,8 @@ interface MenuItemReturningValue {
 }
 
 export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivElement | null>): MenuItemReturningValue => {
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
-  const previewDuplicatesArr = useSelector(previewDuplicates)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
+  const previewDuplicatesArr = useSelector(getPreviewDuplicates)
 
   return useMemo(() => {
     const menuItemsFilter = ({ key }: { key: MainMenuKeys }) => (

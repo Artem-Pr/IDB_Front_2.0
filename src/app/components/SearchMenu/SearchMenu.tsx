@@ -10,23 +10,24 @@ import cn from 'classnames'
 import dayjs from 'dayjs'
 import { difference, keys } from 'ramda'
 
+import { MimeTypes } from 'src/common/constants'
 import { DATE_TIME_FORMAT } from 'src/constants/dateConstants'
+import { getFolderReducerKeywordsList } from 'src/redux/reducers/foldersSlice/selectors'
 import {
-  resetSearchMenu,
-  setDateRange,
-  setDescriptionFilter,
-  setExcludeTags,
-  setIncludeAllSearchTags,
-  setIsAnyDescriptionFilter,
-  setMimeTypes,
-  setRatingFilter,
-  setSearchFileName,
-  setSearchTags,
-} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+  mainPageReducerResetSearchMenu,
+  mainPageReducerSetDateRange,
+  mainPageReducerSetDescriptionFilter,
+  mainPageReducerSetExcludeTags,
+  mainPageReducerSetIncludeAllSearchTags,
+  mainPageReducerSetIsAnyDescriptionFilter,
+  mainPageReducerSetMimeTypes,
+  mainPageReducerSetRatingFilter,
+  mainPageReducerSetSearchFileName,
+  mainPageReducerSetSearchTags,
+} from 'src/redux/reducers/mainPageSlice'
+import { getMainPageReducerSearchMenu, getMainPageReducerIsGalleryLoading } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
-import { folderElement, main, searchMenu } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
 
 import { getISOStringWithUTC } from '../../common/utils/date'
 
@@ -39,7 +40,7 @@ const fileTypes = keys(MimeTypes)
 
 export const SearchMenu = () => {
   const dispatch = useAppDispatch()
-  const { keywordsList } = useSelector(folderElement)
+  const keywordsList = useSelector(getFolderReducerKeywordsList)
   const {
     searchTags,
     excludeTags,
@@ -50,8 +51,8 @@ export const SearchMenu = () => {
     rating,
     anyDescription,
     description,
-  } = useSelector(searchMenu)
-  const { isGalleryLoading } = useSelector(main)
+  } = useSelector(getMainPageReducerSearchMenu)
+  const isGalleryLoading = useSelector(getMainPageReducerIsGalleryLoading)
   const searchKeywordsList = useMemo(() => difference(keywordsList, excludeTags), [excludeTags, keywordsList])
   const excludeKeywordsList = useMemo(() => difference(keywordsList, searchTags), [searchTags, keywordsList])
   const dayJsRange: RangePickerProps['value'] = useMemo(
@@ -60,15 +61,15 @@ export const SearchMenu = () => {
   )
 
   const handleSearchChange = (value: string[]) => {
-    dispatch(setSearchTags(value))
+    dispatch(mainPageReducerSetSearchTags(value))
   }
 
   const handleExcludeChange = (value: string[]) => {
-    dispatch(setExcludeTags(value))
+    dispatch(mainPageReducerSetExcludeTags(value))
   }
 
   const handleFileTypesChange = (value: MimeTypes[]) => {
-    dispatch(setMimeTypes(value))
+    dispatch(mainPageReducerSetMimeTypes(value))
   }
 
   const handleFetchGallery = () => {
@@ -76,34 +77,34 @@ export const SearchMenu = () => {
   }
 
   const handleResetFilters = () => {
-    dispatch(resetSearchMenu())
+    dispatch(mainPageReducerResetSearchMenu())
   }
 
   const handleRangePickerChange = (dayJsRangeValue: RangePickerProps['value']) => {
     const dateRangeValue: [string, string] | null = dayJsRangeValue
       ? [getISOStringWithUTC(dayJsRangeValue[0]), getISOStringWithUTC(dayJsRangeValue[1])]
       : null
-    dispatch(setDateRange(dateRangeValue))
+    dispatch(mainPageReducerSetDateRange(dateRangeValue))
   }
 
   const handleSearchingFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setSearchFileName(event.target.value.trim()))
+    dispatch(mainPageReducerSetSearchFileName(event.target.value.trim()))
   }
 
   const handleIncludeAllTagsChange = (e: CheckboxChangeEvent) => {
-    dispatch(setIncludeAllSearchTags(e.target.checked))
+    dispatch(mainPageReducerSetIncludeAllSearchTags(e.target.checked))
   }
 
   const handleRatingChange = (value: number) => {
-    dispatch(setRatingFilter(value))
+    dispatch(mainPageReducerSetRatingFilter(value))
   }
 
   const handleAnyDescriptionSwitch = (e: CheckboxChangeEvent) => {
-    dispatch(setIsAnyDescriptionFilter(e.target.checked))
+    dispatch(mainPageReducerSetIsAnyDescriptionFilter(e.target.checked))
   }
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setDescriptionFilter(e.target.value.trim()))
+    dispatch(mainPageReducerSetDescriptionFilter(e.target.value.trim()))
   }
 
   return (

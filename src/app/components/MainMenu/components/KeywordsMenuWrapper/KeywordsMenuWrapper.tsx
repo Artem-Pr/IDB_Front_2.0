@@ -6,13 +6,14 @@ import cn from 'classnames'
 
 import { useRemoveKeyword } from 'src/app/common/hooks'
 import KeywordsMenu from 'src/app/components/KeywordsMenu'
-import { getIsCurrentPage, uniqKeywords } from 'src/redux/selectors'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
+import { getUniqKeywords } from 'src/redux/selectors'
 
 import styles from '../../index.module.scss'
 
 export const KeywordsMenuWrapper = () => {
-  const { isUploadPage } = useSelector(getIsCurrentPage)
-  const uniqKeywordsList = useSelector(uniqKeywords)
+  const { isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
+  const uniqKeywordsList = useSelector(getUniqKeywords)
   const [isKeywordsMenuLoading] = useState(false)
   const { removeKeyword } = useRemoveKeyword()
 

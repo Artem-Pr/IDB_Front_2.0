@@ -1,5 +1,5 @@
 import { Media, MediaInstance } from 'src/api/models/media'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
+import { MimeTypes } from 'src/common/constants'
 
 import {
   addChildToTreeElem,

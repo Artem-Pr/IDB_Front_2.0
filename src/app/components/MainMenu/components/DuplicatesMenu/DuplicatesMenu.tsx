@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Tooltip } from 'antd'
 import cn from 'classnames'
 
-import { previewDuplicates } from 'src/redux/selectors'
+import { getPreviewDuplicates } from 'src/redux/selectors'
 
 import { GalleryMediaItem } from '../../../Gallery/components'
 
@@ -15,7 +15,7 @@ export interface PreviewMenuProps {
   videoPreviewRef?: MutableRefObject<HTMLDivElement | null>
 }
 export const DuplicatesMenu = ({ videoPreviewRef }: PreviewMenuProps) => {
-  const previewDuplicatesArr = useSelector(previewDuplicates)
+  const previewDuplicatesArr = useSelector(getPreviewDuplicates)
 
   return (
     <div>

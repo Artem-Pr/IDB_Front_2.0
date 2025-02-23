@@ -10,8 +10,8 @@ import { keys } from 'ramda'
 
 import { initWebSocket } from 'src/api/api-websocket'
 import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types/types'
-import { pathsArrOptionsSelector } from 'src/redux/selectors'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
+import { MimeTypes } from 'src/common/constants'
+import { getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
 
 import styles from './CreatePreviews.module.scss'
 
@@ -28,7 +28,7 @@ const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
   || status === ApiStatus.ERROR
 
 export const CreatePreviews = memo(() => {
-  const options = useSelector(pathsArrOptionsSelector)
+  const options = useSelector(getFolderReducerPathsArrOptionsSelector)
   const [mimeTypes, setMimeTypes] = useState<MimeTypes[]>([])
   const [folderPath, setFolderPath] = useState('')
   const [messages, setMessages] = useState<string[]>([])

@@ -8,7 +8,7 @@ import { Button, Divider, Spin } from 'antd'
 
 import type { Media } from 'src/api/models/media'
 import { successMessage } from 'src/app/common/notifications'
-import { selectedDateList, selectedFilesList } from 'src/redux/selectors'
+import { getSelectedDateList, getSelectedFilesArr } from 'src/redux/selectors'
 
 import type { OriginalDates } from '../../hooks/useUpdateOriginalDate'
 import { TDModalItem } from '../TDModalItem'
@@ -32,8 +32,8 @@ interface Props {
 }
 
 export const TDModalMapper = memo(({ setOriginalDatesObj }: Props) => {
-  const selectedDates = useSelector(selectedDateList)
-  const selectedFiles = useSelector(selectedFilesList)
+  const selectedDates = useSelector(getSelectedDateList)
+  const selectedFiles = useSelector(getSelectedFilesArr)
 
   const [loading, setLoading] = useState(false)
   const [applyAllDatesTrigger, setApplyAllDatesTrigger] = useState<DataType | null>(null)

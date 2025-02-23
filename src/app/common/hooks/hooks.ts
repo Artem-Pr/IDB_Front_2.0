@@ -4,20 +4,21 @@ import { useLocation } from 'react-router-dom'
 
 import { PagePaths, MainMenuKeys } from 'src/common/constants'
 import {
-  clearDownloadingState,
-  clearDSelectedList as clearSelectedListDownload,
-  selectAllD as selectAllDownload,
-  setDownloadingFiles,
-  updateDOpenMenus,
-} from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+  mainPageReducerClearState,
+  mainPageReducerClearSelectedList,
+  mainPageReducerSelectAll,
+  mainPageReducerSetFilesArr,
+  mainPageReducerSetOpenMenus,
+} from 'src/redux/reducers/mainPageSlice'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import {
-  clearSelectedList as clearSelectedListUpload,
-  clearUploadingState,
-  selectAll as selectAllUpload,
-  updateOpenMenus,
-  updateUploadingFilesArr,
+  uploadReducerClearSelectedList,
+  uploadReducerClearState,
+  uploadReducerSelectAll,
+  uploadReducerSetOpenMenus,
+  uploadReducerSetFilesArr,
 } from 'src/redux/reducers/uploadSlice'
-import { currentFilesList, getIsCurrentPage } from 'src/redux/selectors'
+import { getCurrentFilesArr } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { removeIntersectingKeywords } from '../utils'
@@ -30,11 +31,11 @@ export const useCurrentPage = () => {
 
 export const useSelectAll = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
 
   const selectAll = useCallback(() => {
-    isMainPage && dispatch(selectAllDownload())
-    isUploadPage && dispatch(selectAllUpload())
+    isMainPage && dispatch(mainPageReducerSelectAll())
+    isUploadPage && dispatch(uploadReducerSelectAll())
   }, [dispatch, isMainPage, isUploadPage])
 
   return { selectAll }
@@ -42,11 +43,11 @@ export const useSelectAll = () => {
 
 export const useClearSelectedList = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
 
   const clearSelectedList = useCallback(() => {
-    isMainPage && dispatch(clearSelectedListDownload())
-    isUploadPage && dispatch(clearSelectedListUpload())
+    isMainPage && dispatch(mainPageReducerClearSelectedList())
+    isUploadPage && dispatch(uploadReducerClearSelectedList())
   }, [dispatch, isMainPage, isUploadPage])
 
   return { clearSelectedList }
@@ -54,14 +55,14 @@ export const useClearSelectedList = () => {
 
 export const useRemoveKeyword = () => {
   const dispatch = useAppDispatch()
-  const filesArr = useSelector(currentFilesList)
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const filesArr = useSelector(getCurrentFilesArr)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
 
   const removeKeyword = useCallback(
     (keyword: string) => {
       const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], filesArr)
-      isMainPage && dispatch(setDownloadingFiles(filesArrWithoutKeyword))
-      isUploadPage && dispatch(updateUploadingFilesArr(filesArrWithoutKeyword))
+      isMainPage && dispatch(mainPageReducerSetFilesArr(filesArrWithoutKeyword))
+      isUploadPage && dispatch(uploadReducerSetFilesArr(filesArrWithoutKeyword))
     },
     [dispatch, filesArr, isMainPage, isUploadPage],
   )
@@ -71,12 +72,12 @@ export const useRemoveKeyword = () => {
 
 export const useUpdateOpenMenus = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
 
   const setOpenMenus = useCallback(
     (value: MainMenuKeys[]) => {
-      isMainPage && dispatch(updateDOpenMenus(value))
-      isUploadPage && dispatch(updateOpenMenus(value))
+      isMainPage && dispatch(mainPageReducerSetOpenMenus(value))
+      isUploadPage && dispatch(uploadReducerSetOpenMenus(value))
     },
     [dispatch, isMainPage, isUploadPage],
   )
@@ -86,11 +87,11 @@ export const useUpdateOpenMenus = () => {
 
 export const useClearFilesArray = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
 
   const clearFilesArr = useCallback(() => {
-    isMainPage && dispatch(clearDownloadingState())
-    isUploadPage && dispatch(clearUploadingState())
+    isMainPage && dispatch(mainPageReducerClearState())
+    isUploadPage && dispatch(uploadReducerClearState())
   }, [dispatch, isMainPage, isUploadPage])
 
   return { clearFilesArr }

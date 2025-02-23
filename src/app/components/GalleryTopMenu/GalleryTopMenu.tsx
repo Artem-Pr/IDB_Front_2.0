@@ -7,19 +7,17 @@ import {
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import cn from 'classnames'
 
+import { getMainPageReducerFilesArr, getMainPageReducerSelectedList, getMainPageReducerFilesSizeSum } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchMainPageDuplicates } from 'src/redux/reducers/mainPageSlice/thunks'
-import { refreshPreviewSize, setFitContain, setIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
+import { sessionReducerRefreshPreviewSize, sessionReducerSetFitContain, sessionReducerSetIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
 import {
-  dSelectedList,
-  downloadingFiles,
-  filesSizeSum,
-  getIsCurrentPage,
-  selectedList,
-  sessionFitContain,
-  sessionIsDuplicatesChecking,
-  sessionPreviewSize,
-  settings,
-} from 'src/redux/selectors'
+  getSessionReducerIsCurrentPage,
+  getSessionReducerFitContain,
+  getSessionReducerIsDuplicatesChecking,
+  getSessionReducerPreviewSize,
+} from 'src/redux/reducers/sessionSlice/selectors'
+import { getSettingsReducerImagePreviewSlideLimits } from 'src/redux/reducers/settingsSlice/selectors'
+import { getUploadReducerSelectedList } from 'src/redux/reducers/uploadSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { formatSize } from '../../common/utils'
@@ -34,15 +32,15 @@ interface Props {
 
 export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpWhenUpdating }: Props) => {
   const dispatch = useAppDispatch()
-  const previewSize = useSelector(sessionPreviewSize)
-  const mediaFiles = useSelector(downloadingFiles)
-  const uploadSelectedList = useSelector(selectedList)
-  const downloadSelectedList = useSelector(dSelectedList)
-  const { imagePreviewSlideLimits } = useSelector(settings)
-  const filesSizeTotal = useSelector(filesSizeSum)
-  const { isMainPage } = useSelector(getIsCurrentPage)
-  const fitContain = useSelector(sessionFitContain)
-  const isDuplicatesChecking = useSelector(sessionIsDuplicatesChecking)
+  const previewSize = useSelector(getSessionReducerPreviewSize)
+  const mediaFiles = useSelector(getMainPageReducerFilesArr)
+  const uploadSelectedList = useSelector(getUploadReducerSelectedList)
+  const downloadSelectedList = useSelector(getMainPageReducerSelectedList)
+  const imagePreviewSlideLimits = useSelector(getSettingsReducerImagePreviewSlideLimits)
+  const filesSizeTotal = useSelector(getMainPageReducerFilesSizeSum)
+  const { isMainPage } = useSelector(getSessionReducerIsCurrentPage)
+  const fitContain = useSelector(getSessionReducerFitContain)
+  const isDuplicatesChecking = useSelector(getSessionReducerIsDuplicatesChecking)
   const [showSlider, setShowSlider] = useState<boolean>(true)
 
   const selectedListLength = useMemo(
@@ -51,11 +49,11 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
   )
 
   const handleFitCoverClick = (e: CheckboxChangeEvent) => {
-    dispatch(setFitContain(e.target.checked))
+    dispatch(sessionReducerSetFitContain(e.target.checked))
   }
 
   const handleRefreshPreviewSize = () => {
-    dispatch(refreshPreviewSize())
+    dispatch(sessionReducerRefreshPreviewSize())
     setShowSlider(false)
     setTimeout(() => {
       setShowSlider(true)
@@ -67,7 +65,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
   }
 
   const handleSetIsDuplicatesChecking = () => {
-    dispatch(setIsDuplicatesChecking(!isDuplicatesChecking))
+    dispatch(sessionReducerSetIsDuplicatesChecking(!isDuplicatesChecking))
     !isDuplicatesChecking && dispatch(fetchMainPageDuplicates(mediaFiles))
   }
 

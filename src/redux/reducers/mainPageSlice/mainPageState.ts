@@ -1,21 +1,20 @@
 import type { Media } from 'src/api/models/media'
-import { MainMenuKeys } from 'src/common/constants'
+import { MainMenuKeys, MimeTypes } from 'src/common/constants'
 
 import type {
   GalleryPagination,
   Preview,
   SortingData,
 } from '../../types'
-import { MimeTypes } from '../../types/MimeTypes'
 
 import { defaultGallerySortingList } from './helpers'
 import type { SearchMenu } from './types'
 
 export interface State {
   rawFiles: Media[]
-  downloadingFiles: Media[]
-  dSelectedList: number[]
-  dOpenMenus: MainMenuKeys[]
+  filesArr: Media[]
+  selectedList: number[]
+  openMenus: MainMenuKeys[]
   searchMenu: SearchMenu
   galleryPagination: GalleryPagination
   filesSizeSum: number
@@ -28,9 +27,9 @@ export interface State {
 
 export const initialState: State = {
   rawFiles: [],
-  downloadingFiles: [],
-  dSelectedList: [],
-  dOpenMenus: [],
+  filesArr: [],
+  selectedList: [],
+  openMenus: [],
   searchMenu: {
     rating: 0,
     fileName: '',

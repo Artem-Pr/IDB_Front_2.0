@@ -4,7 +4,7 @@ import type { DuplicateFile } from 'src/api/types/types'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setDownloadingFiles } from '../mainPageSlice'
+import { mainPageReducerSetFilesArr } from '..'
 
 export const fetchMainPageDuplicates = (
   mediaFiles: Media[],
@@ -23,7 +23,7 @@ export const fetchMainPageDuplicates = (
 
         return file
       })
-      dispatch(setDownloadingFiles(updatedDownloadingFiles))
+      dispatch(mainPageReducerSetFilesArr(updatedDownloadingFiles))
 
       callback && callback(updatedDownloadingFiles)
     })

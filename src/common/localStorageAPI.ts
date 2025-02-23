@@ -2,7 +2,7 @@ import { MainMenuKeys } from 'src/common/constants'
 import { defaultGallerySortingList as defaultGallerySortingListMainPage } from 'src/redux/reducers/mainPageSlice/helpers'
 import { initialState as mainPageInitialState } from 'src/redux/reducers/mainPageSlice/mainPageState'
 import { SearchMenu } from 'src/redux/reducers/mainPageSlice/types'
-import { initialState as settingsInitialState } from 'src/redux/reducers/settingsSlice/settingsSlice'
+import { initialState as settingsInitialState } from 'src/redux/reducers/settingsSlice'
 import { defaultGallerySortingList as defaultGallerySortingListUploadPage } from 'src/redux/reducers/uploadSlice/helpers'
 import { GalleryPagination, GallerySortingItem } from 'src/redux/types'
 
@@ -21,21 +21,6 @@ export const localStorageAPI = {
   },
   get isDynamicFolders() {
     return Boolean(Number(localStorage.getItem('isDynamicFolders')))
-  },
-  // savePreview
-  set savePreview(savePreview: boolean) {
-    localStorage.setItem('savePreview', String(Number(savePreview)))
-  },
-  get savePreview() {
-    return Boolean(Number(localStorage.getItem('savePreview')))
-  },
-
-  // fullSizePreview
-  set fullSizePreview(fullSizePreview: boolean) {
-    localStorage.setItem('fullSizePreview', String(Number(fullSizePreview)))
-  },
-  get fullSizePreview() {
-    return Boolean(Number(localStorage.getItem('fullSizePreview')))
   },
 
   // maxImagePreviewLimit

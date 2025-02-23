@@ -8,8 +8,8 @@ import cn from 'classnames'
 
 import { Sort } from 'src/common/constants'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { applySorting } from 'src/redux/reducers/uploadSlice/thunks/applySorting'
-import { getIsCurrentPage } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 import type { GallerySortingItem, SortingFields } from 'src/redux/types'
 
@@ -39,7 +39,7 @@ const switcherOptions = [
 
 export const SortingMenu = () => {
   const dispatch = useAppDispatch()
-  const { isMainPage, isUploadPage } = useSelector(getIsCurrentPage)
+  const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
   const {
     gallerySortingList, randomSort, groupedByDate, setSortingList, resetSort, setRandomSort, setGroupedByDate,
   } = useSortingMenu()

@@ -3,13 +3,13 @@ import type { RcFile } from 'antd/es/upload'
 import type { Media } from 'src/api/models/media'
 import { getISOStringWithUTC } from 'src/app/common/utils/date'
 
-import { upload } from '../../../selectors'
+import { uploadReducerSetFilesArr } from '..'
 import type { AppThunk } from '../../../store/types'
-import { setIsLoading } from '../../sessionSlice/sessionSlice'
-import { updateUploadingFilesArr } from '../uploadSlice'
+import { sessionReducerSetIsLoading } from '../../sessionSlice'
+import { getUploadReducerFilesArr } from '../selectors'
 
 export const updateUploadingFile = (uploadingFile: Media, fileBlob: RcFile): AppThunk => (dispatch, getState) => {
-  const { uploadingFiles } = upload(getState())
+  const uploadingFiles = getUploadReducerFilesArr(getState())
   const updatedUploadingFiles = uploadingFiles.map(
     file => (file.originalName === uploadingFile.originalName
       ? {
@@ -18,8 +18,8 @@ export const updateUploadingFile = (uploadingFile: Media, fileBlob: RcFile): App
       }
       : file),
   )
-  dispatch(updateUploadingFilesArr(updatedUploadingFiles))
+  dispatch(uploadReducerSetFilesArr(updatedUploadingFiles))
 
   const isLastFile = updatedUploadingFiles.every(({ staticPreview }) => Boolean(staticPreview))
-  isLastFile && dispatch(setIsLoading(false))
+  isLastFile && dispatch(sessionReducerSetIsLoading(false))
 }

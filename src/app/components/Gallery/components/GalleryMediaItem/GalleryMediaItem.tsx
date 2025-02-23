@@ -12,7 +12,7 @@ import { isVideo, isVideoByExt } from 'src/app/common/utils'
 import type { Player, VideoPlayerProps } from 'src/app/components/UIKit/VideoPlayer/VideoJS'
 import { VideoJS } from 'src/app/components/UIKit/VideoPlayer/VideoJS'
 import imagePlaceholder from 'src/assets/svg-icons-html/image-placeholder3.svg'
-import { MimeTypes } from 'src/redux/types/MimeTypes'
+import { MimeTypes } from 'src/common/constants'
 
 import styles from './GalleryMediaItem.module.scss'
 

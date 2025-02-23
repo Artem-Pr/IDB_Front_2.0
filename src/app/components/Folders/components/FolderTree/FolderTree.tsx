@@ -9,13 +9,13 @@ import {
   setCurrentFolderKey,
   setCurrentFolderPath,
   setExpandedKeys,
-} from 'src/redux/reducers/foldersSlice/foldersSlice'
-import { setGalleryPagination } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
+} from 'src/redux/reducers/foldersSlice'
+import { getFolderReducerFolderInfoCurrentFolderKey, getFolderReducerFolderInfoExpandedKeys, getFolderReducerFolderTree } from 'src/redux/reducers/foldersSlice/selectors'
+import { mainPageReducerSetGalleryPagination } from 'src/redux/reducers/mainPageSlice'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
-import {
-  folderElement, folderInfoCurrentFolderKey, folderInfoExpandedKeys,
-} from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
+
+import styles from './FolderTree.module.scss'
 
 const { DirectoryTree } = Tree
 
@@ -27,9 +27,9 @@ interface Props {
 
 export const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }: Props) => {
   const dispatch = useAppDispatch()
-  const { folderTree } = useSelector(folderElement)
-  const currentFolderKey = useSelector(folderInfoCurrentFolderKey)
-  const expandedKeys = useSelector(folderInfoExpandedKeys)
+  const folderTree = useSelector(getFolderReducerFolderTree)
+  const currentFolderKey = useSelector(getFolderReducerFolderInfoCurrentFolderKey)
+  const expandedKeys = useSelector(getFolderReducerFolderInfoExpandedKeys)
 
   const mainPageTreeProps = useMemo(
     () => (isMainPage
@@ -47,7 +47,7 @@ export const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }
 
     const updateMainPage = () => {
       compose(dispatch, setCurrentFolderKey)(strKey)
-      compose(dispatch, setGalleryPagination)({ currentPage: 1 })
+      compose(dispatch, mainPageReducerSetGalleryPagination)({ currentPage: 1 })
       dispatch(fetchPhotos())
     }
 
@@ -64,6 +64,7 @@ export const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }
   return (
     <DirectoryTree
       {...mainPageTreeProps}
+      className={styles.wrapper}
       onSelect={handleSelect}
       onExpand={handleExpend}
       treeData={folderTree}

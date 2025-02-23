@@ -5,9 +5,11 @@ import { Collapse, Layout } from 'antd'
 import { difference } from 'ramda'
 
 import { MainMenuKeys } from 'src/common/constants'
+import { getFolderReducerKeywordsList } from 'src/redux/reducers/foldersSlice/selectors'
 import { fetchKeywordsList } from 'src/redux/reducers/foldersSlice/thunks'
-import { stopVideoPreview } from 'src/redux/reducers/mainPageSlice/mainPageSlice'
-import { folderElement, openMenusSelector, sessionAsideMenuWidth } from 'src/redux/selectors'
+import { mainPageReducerStopVideoPreview } from 'src/redux/reducers/mainPageSlice'
+import { getSessionReducerAsideMenuWidth } from 'src/redux/reducers/sessionSlice/selectors'
+import { getOpenMenus } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { useClearSelectedList, useUpdateOpenMenus } from '../../common/hooks'
@@ -26,12 +28,12 @@ interface Props {
 
 const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
   const dispatch = useAppDispatch()
-  const defaultMenuWidth = useSelector(sessionAsideMenuWidth)
-  const { keywordsList: allKeywords } = useSelector(folderElement)
+  const defaultMenuWidth = useSelector(getSessionReducerAsideMenuWidth)
+  const allKeywords = useSelector(getFolderReducerKeywordsList)
   const { collapseMenu, extraMenu } = useMainMenuItems(videoPreviewRef)
   const { setOpenMenus } = useUpdateOpenMenus()
   const { clearSelectedList } = useClearSelectedList()
-  const openMenuKeys = useSelector(openMenusSelector)
+  const openMenuKeys = useSelector(getOpenMenus)
 
   useEffect(() => {
     !allKeywords.length && dispatch(fetchKeywordsList())
@@ -62,7 +64,7 @@ const MainMenu = ({ menuRef, videoPreviewRef }: Props) => {
     clearSelectedListWhenCloseEditors()
     setOpenMenus(Array.from(openKeysSet))
     setTimeout(() => {
-      dispatch(stopVideoPreview())
+      dispatch(mainPageReducerStopVideoPreview())
     }, 300) // Wait for collapse animation
   }
 
