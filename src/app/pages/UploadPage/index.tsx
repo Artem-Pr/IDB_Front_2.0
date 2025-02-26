@@ -115,9 +115,7 @@ const UploadPage = () => {
   return (
     <Layout>
       <MainMenu {...mainMenuProps} menuRef={menuRef} />
-      <div style={{ height: 'calc(100vh - 64px)' }}>
-        <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
-      </div>
+      <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       <Layout>
         <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>
           <DropZone openMenus={openMenus} />

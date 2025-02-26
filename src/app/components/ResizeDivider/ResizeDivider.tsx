@@ -1,11 +1,14 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react'
 
 import { MoreOutlined } from '@ant-design/icons'
 
 import styles from './ResizeDivider.module.scss'
 
+export const RESIZE_DIVIDER_WIDTH = 10
+
 interface Props {
-  onDividerMove: (moveX: number) => void
+  onDividerMove: (pageX: number) => void
   onMouseUp: () => void
 }
 
@@ -15,8 +18,8 @@ export const ResizeDivider = ({ onDividerMove, onMouseUp }: Props) => {
     removeDividerListeners()
   }
 
-  const dividerMouseMove = ({ movementX }: MouseEvent) => {
-    onDividerMove(movementX)
+  const dividerMouseMove = (event: MouseEvent) => {
+    onDividerMove(event.pageX)
   }
 
   const removeDividerListeners = () => {
@@ -30,9 +33,10 @@ export const ResizeDivider = ({ onDividerMove, onMouseUp }: Props) => {
   }
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div className={styles.divider} onMouseDown={handleDividerMouseDown}>
-      <MoreOutlined className={styles.resizeIcon} />
+    <div className={styles.wrapper}>
+      <div className={styles.divider} onMouseDown={handleDividerMouseDown}>
+        <MoreOutlined className={styles.resizeIcon} style={{ width: RESIZE_DIVIDER_WIDTH }} />
+      </div>
     </div>
   )
 }
