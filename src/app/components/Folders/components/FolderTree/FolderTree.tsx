@@ -6,9 +6,9 @@ import { compose, curry } from 'ramda'
 
 import { getFolderPathFromTreeKey } from 'src/app/common/folderTree'
 import {
-  setCurrentFolderKey,
-  setCurrentFolderPath,
-  setExpandedKeys,
+  folderReducerSetCurrentFolderKey,
+  folderReducerSetCurrentFolderPath,
+  folderReducerSetExpandedKeys,
 } from 'src/redux/reducers/foldersSlice'
 import { getFolderReducerFolderInfoCurrentFolderKey, getFolderReducerFolderInfoExpandedKeys, getFolderReducerFolderTree } from 'src/redux/reducers/foldersSlice/selectors'
 import { mainPageReducerSetGalleryPagination } from 'src/redux/reducers/mainPageSlice'
@@ -46,18 +46,18 @@ export const FolderTree = ({ isMainPage, autoExpandParent, setAutoExpandParent }
     const strKey = String(key)
 
     const updateMainPage = () => {
-      compose(dispatch, setCurrentFolderKey)(strKey)
+      compose(dispatch, folderReducerSetCurrentFolderKey)(strKey)
       compose(dispatch, mainPageReducerSetGalleryPagination)({ currentPage: 1 })
       dispatch(fetchPhotos())
     }
 
     const getFolderPathFromTree = curry(getFolderPathFromTreeKey)(folderTree)
-    dispatch(setCurrentFolderPath(getFolderPathFromTree(strKey)))
+    dispatch(folderReducerSetCurrentFolderPath(getFolderPathFromTree(strKey)))
     isMainPage && updateMainPage()
   }
 
   const handleExpend = (expandedKeysValue: Key[]) => {
-    dispatch(setExpandedKeys(expandedKeysValue))
+    dispatch(folderReducerSetExpandedKeys(expandedKeysValue))
     setAutoExpandParent(false)
   }
 

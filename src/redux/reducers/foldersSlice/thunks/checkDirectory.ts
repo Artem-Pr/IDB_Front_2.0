@@ -3,14 +3,14 @@ import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
 import type { CheckedDirectoryRequest } from 'src/redux/types'
 
-import { setNumberOfFilesInDirectory, setNumberOfSubdirectories, setShowInfoModal } from '..'
+import { folderReducerSetNumberOfFilesInDirectory, folderReducerSetNumberOfSubdirectories, folderReducerSetShowInfoModal } from '..'
 import { getFolderReducerFolderInfoCurrentFolder } from '../selectors'
 
 export const checkDirectory = (): AppThunk => (dispatch, getState) => {
   const dispatchDirectoryInfo = ({ numberOfFiles, numberOfSubdirectories }: CheckedDirectoryRequest) => {
-    dispatch(setNumberOfFilesInDirectory(numberOfFiles))
-    dispatch(setNumberOfSubdirectories(numberOfSubdirectories))
-    dispatch(setShowInfoModal(true))
+    dispatch(folderReducerSetNumberOfFilesInDirectory(numberOfFiles))
+    dispatch(folderReducerSetNumberOfSubdirectories(numberOfSubdirectories))
+    dispatch(folderReducerSetShowInfoModal(true))
   }
 
   const currentFolderPath = getFolderReducerFolderInfoCurrentFolder(getState())

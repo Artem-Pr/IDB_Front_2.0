@@ -5,10 +5,10 @@ import { getMainPageReducerGalleryPagination } from 'src/redux/reducers/mainPage
 import { sessionReducerSetIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
 
 import {
-  setCurrentFolderKey,
-  setCurrentFolderPath,
-  setExpandedKeys,
-  setIsDynamicFolders,
+  folderReducerSetCurrentFolderKey,
+  folderReducerSetCurrentFolderPath,
+  folderReducerSetExpandedKeys,
+  folderReducerSetIsDynamicFolders,
 } from '../../reducers/foldersSlice'
 import {
   mainPageReducerResetSearchMenu,
@@ -195,28 +195,28 @@ listenerMiddleware.startListening({
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setCurrentFolderPath,
+  actionCreator: folderReducerSetCurrentFolderPath,
   effect: action => {
     localStorageAPI.currentFolderPath = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setCurrentFolderKey,
+  actionCreator: folderReducerSetCurrentFolderKey,
   effect: action => {
     localStorageAPI.currentFolderKey = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setExpandedKeys,
+  actionCreator: folderReducerSetExpandedKeys,
   effect: action => {
     localStorageAPI.expandedKeys = action.payload
   },
 })
 
 listenerMiddleware.startListening({
-  actionCreator: setIsDynamicFolders,
+  actionCreator: folderReducerSetIsDynamicFolders,
   effect: action => {
     localStorageAPI.isDynamicFolders = action.payload
   },

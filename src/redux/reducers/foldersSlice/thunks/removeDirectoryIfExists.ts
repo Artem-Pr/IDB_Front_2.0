@@ -6,7 +6,7 @@ import { errorMessage } from 'src/app/common/notifications'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setCurrentFolderPath, setFolderTree, setPathsArr } from '..'
+import { folderReducerSetCurrentFolderPath, folderReducerSetFolderTree, folderReducerSetPathsArr } from '..'
 import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerFolderPathsArr } from '../selectors'
 
 import { checkDirectory } from './checkDirectory'
@@ -25,9 +25,9 @@ export const removeDirectoryIfExists = (confirm: HookAPI['confirm']): AppThunk =
         confirm(deleteConfirmation({ onOk, type: 'directory' }))
       } else {
         const filteredPathsArr = pathsArr.filter(path => !path.startsWith(currentFolderPath))
-        dispatch(setPathsArr(filteredPathsArr))
-        dispatch(setFolderTree(createFolderTree(filteredPathsArr)))
-        filteredPathsArr.length && dispatch(setCurrentFolderPath(''))
+        dispatch(folderReducerSetPathsArr(filteredPathsArr))
+        dispatch(folderReducerSetFolderTree(createFolderTree(filteredPathsArr)))
+        filteredPathsArr.length && dispatch(folderReducerSetCurrentFolderPath(''))
       }
     })
     .catch(error => errorMessage(new Error(error), 'Directory checking ERROR: ', 0))

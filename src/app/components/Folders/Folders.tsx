@@ -12,13 +12,13 @@ import {
 } from 'src/app/common/folderTree'
 import { removeExtraSlash } from 'src/app/common/utils'
 import {
-  setCurrentFolderKey,
-  setCurrentFolderPath,
-  setExpandedKeys,
-  setFolderTree,
-  setIsDynamicFolders,
-  setPathsArr,
-  setShowSubfolders,
+  folderReducerSetCurrentFolderKey,
+  folderReducerSetCurrentFolderPath,
+  folderReducerSetExpandedKeys,
+  folderReducerSetFolderTree,
+  folderReducerSetIsDynamicFolders,
+  folderReducerSetPathsArr,
+  folderReducerSetShowSubfolders,
 } from 'src/redux/reducers/foldersSlice'
 import {
   getFolderReducerFolderInfoCurrentFolder,
@@ -53,13 +53,13 @@ export const Folders = () => {
   const isButtonAddDisabled = useMemo(() => directoriesArr.includes(cleanFolderPath), [cleanFolderPath, directoriesArr])
 
   const onChange = (newCurrentFolderPath: string) => {
-    dispatch(setCurrentFolderPath(newCurrentFolderPath))
+    dispatch(folderReducerSetCurrentFolderPath(newCurrentFolderPath))
   }
 
   const setNewFolder = () => {
     const updatedPathsArr = addNewPathToPathsArr(directoriesArr, cleanFolderPath)
-    dispatch(setPathsArr(updatedPathsArr))
-    dispatch(setFolderTree(addFolderToFolderTree(cleanFolderPath, folderTree)))
+    dispatch(folderReducerSetPathsArr(updatedPathsArr))
+    dispatch(folderReducerSetFolderTree(addFolderToFolderTree(cleanFolderPath, folderTree)))
   }
 
   const handleAddClick = () => {
@@ -74,28 +74,28 @@ export const Folders = () => {
   }
 
   const handleShowSubfoldersChange = (e: CheckboxChangeEvent) => {
-    dispatch(setShowSubfolders(e.target.checked))
+    dispatch(folderReducerSetShowSubfolders(e.target.checked))
   }
 
   const handleDynamicFolderClick = (e: CheckboxChangeEvent) => {
-    dispatch(setIsDynamicFolders(e.target.checked))
+    dispatch(folderReducerSetIsDynamicFolders(e.target.checked))
     !e.target.checked && dispatch(fetchPathsList())
   }
 
   const handleReset = () => {
-    dispatch(setCurrentFolderPath(''))
-    dispatch(setCurrentFolderKey(''))
+    dispatch(folderReducerSetCurrentFolderPath(''))
+    dispatch(folderReducerSetCurrentFolderKey(''))
     dispatch(fetchPhotos())
   }
 
   const handleFolderExpand = () => {
     const { parentKeys, elementKey } = getExpandedTreeKeys(folderTree, currentFolderPath)
     parentKeys
-      && dispatch(setExpandedKeys(parentKeys))
-      && dispatch(setCurrentFolderPath(currentFolderPath))
+      && dispatch(folderReducerSetExpandedKeys(parentKeys))
+      && dispatch(folderReducerSetCurrentFolderPath(currentFolderPath))
       && setAutoExpandParent(true)
 
-    dispatch(setCurrentFolderKey(elementKey))
+    dispatch(folderReducerSetCurrentFolderKey(elementKey))
   }
 
   return (

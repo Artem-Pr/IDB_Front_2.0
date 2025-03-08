@@ -1,10 +1,10 @@
 import { localStorageAPI } from 'src/common/localStorageAPI'
 
 import {
-  setCurrentFolderKey,
-  setCurrentFolderPath,
-  setExpandedKeys,
-  setIsDynamicFolders,
+  folderReducerSetCurrentFolderKey,
+  folderReducerSetCurrentFolderPath,
+  folderReducerSetExpandedKeys,
+  folderReducerSetIsDynamicFolders,
 } from '../reducers/foldersSlice'
 import {
   mainPageReducerSetDateRange,
@@ -65,10 +65,10 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(setGroupedByDateMainPage(localStorageAPI.groupedByDateMainPage))
   dispatch(mainPageReducerSetRandomSort(localStorageAPI.randomSort))
 
-  dispatch(setCurrentFolderPath(localStorageAPI.currentFolderPath))
-  dispatch(setCurrentFolderKey(localStorageAPI.currentFolderKey))
-  dispatch(setExpandedKeys(localStorageAPI.expandedKeys))
-  dispatch(setIsDynamicFolders(localStorageAPI.isDynamicFolders))
+  dispatch(folderReducerSetCurrentFolderPath(localStorageAPI.currentFolderPath))
+  dispatch(folderReducerSetCurrentFolderKey(localStorageAPI.currentFolderKey))
+  dispatch(folderReducerSetExpandedKeys(localStorageAPI.expandedKeys))
+  dispatch(folderReducerSetIsDynamicFolders(localStorageAPI.isDynamicFolders))
   dispatch(settingsReducerSetIsVideoPreviewMuted(localStorageAPI.isVideoPreviewMuted))
 
   dispatch(sessionReducerSetIsDuplicatesChecking(localStorageAPI.isDuplicatesChecking))

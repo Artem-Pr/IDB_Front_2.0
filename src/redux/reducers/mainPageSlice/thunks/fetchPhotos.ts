@@ -15,7 +15,7 @@ import {
   mainPageReducerSetGalleryPagination,
   mainPageReducerSetRawFiles,
 } from '..'
-import { setFolderTree, setPathsArr } from '../../foldersSlice'
+import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../foldersSlice'
 
 import { fetchMainPageDuplicates } from './fetchMainPageDuplicates'
 
@@ -77,8 +77,8 @@ export const fetchPhotos = (): AppThunk => (dispatch, getState) => {
       },
     }) => {
       const mediaFiles: Media[] = files || []
-      dynamicFolders && dynamicFolders.length && dispatch(setPathsArr(dynamicFolders))
-      dynamicFolders && dynamicFolders.length && dispatch(setFolderTree(createFolderTree(dynamicFolders)))
+      dynamicFolders && dynamicFolders.length && dispatch(folderReducerSetPathsArr(dynamicFolders))
+      dynamicFolders && dynamicFolders.length && dispatch(folderReducerSetFolderTree(createFolderTree(dynamicFolders)))
       dispatch(mainPageReducerClearState())
       dispatch(mainPageReducerSetRawFiles(mediaFiles)) // TODO: check setRawFiles if it's needed
       dispatch(mainPageReducerSetFilesArr(mediaFiles))

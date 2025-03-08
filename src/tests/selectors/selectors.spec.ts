@@ -5,7 +5,7 @@ import { getUploadReducerSameKeywords, getUploadReducerKeywords } from 'src/redu
 
 import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../../app/common/tests/mock'
 import { copyByJSON } from '../../app/common/utils'
-import { setCurrentFolderPath, setFolderTree, setPathsArr } from '../../redux/reducers/foldersSlice'
+import { folderReducerSetCurrentFolderPath, folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../redux/reducers/foldersSlice'
 import { uploadReducerSelectAll, uploadReducerSetFilesArr } from '../../redux/reducers/uploadSlice'
 import store from '../../redux/store/store'
 import type { RootState } from '../../redux/store/types'
@@ -16,9 +16,9 @@ describe('selectors: ', () => {
   beforeAll(() => {
     const uploadingFiles: Media[] = copyByJSON(uploadingFilesMock)
     store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
-    store.dispatch(setFolderTree(foldersSliceFolderTree))
-    store.dispatch(setCurrentFolderPath('home/path'))
-    store.dispatch(setPathsArr(['/', '/folder1/Bom-bom', '/folder2/Bom/sdf', '/home']))
+    store.dispatch(folderReducerSetFolderTree(foldersSliceFolderTree))
+    store.dispatch(folderReducerSetCurrentFolderPath('home/path'))
+    store.dispatch(folderReducerSetPathsArr(['/', '/folder1/Bom-bom', '/folder2/Bom/sdf', '/home']))
   })
 
   beforeEach(() => {

@@ -9,7 +9,7 @@ import { errorMessage, successMessage, warningMessage } from 'src/app/common/not
 import type { AppThunk } from 'src/redux/store/types'
 
 import { mainPageReducerSetIsGalleryLoading } from '..'
-import { setFolderTree, setPathsArr } from '../../foldersSlice'
+import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../foldersSlice'
 import { getFolderReducerUpdatedPathsArrFromMediaList } from '../../foldersSlice/selectors'
 import { sessionReducerSetIsTimeDifferenceApplied } from '../../sessionSlice'
 
@@ -26,8 +26,8 @@ export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk =
     .then(({ data }) => {
       const updatedPathsArr = getFolderReducerUpdatedPathsArrFromMediaList(getState(), data.response)
       const updatedFolderTree = createFolderTree(updatedPathsArr)
-      dispatch(setPathsArr(updatedPathsArr))
-      dispatch(setFolderTree(updatedFolderTree))
+      dispatch(folderReducerSetPathsArr(updatedPathsArr))
+      dispatch(folderReducerSetFolderTree(updatedFolderTree))
 
       successMessage('Files updated successfully')
 

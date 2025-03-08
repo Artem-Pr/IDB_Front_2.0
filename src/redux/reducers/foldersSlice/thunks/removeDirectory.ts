@@ -5,7 +5,7 @@ import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { setFolderTree, setPathsArr } from '..'
+import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '..'
 import { fetchPhotos } from '../../mainPageSlice/thunks'
 import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerFolderPathsArr } from '../selectors'
 
@@ -15,8 +15,8 @@ export const removeDirectory = (): AppThunk => (dispatch, getState) => {
   const updateContent = (removedFilePaths: string[]) => {
     const updatedPaths = difference(paths, removedFilePaths)
 
-    dispatch(setFolderTree(createFolderTree(updatedPaths)))
-    dispatch(setPathsArr(updatedPaths))
+    dispatch(folderReducerSetFolderTree(createFolderTree(updatedPaths)))
+    dispatch(folderReducerSetPathsArr(updatedPaths))
     dispatch(fetchPhotos())
     successMessage('Folder was deleted successfully!')
   }

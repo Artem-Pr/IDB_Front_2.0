@@ -5,7 +5,7 @@ import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIR
 import type { AppThunk } from 'src/redux/store/types'
 
 import { uploadReducerSetUploadingStatus } from '..'
-import { setFolderTree, setPathsArr } from '../../foldersSlice'
+import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../foldersSlice'
 import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerUpdatedPathsArrFromMediaList } from '../../foldersSlice/selectors'
 import { getUploadReducerFilesArr } from '../selectors'
 
@@ -22,8 +22,8 @@ export const uploadFiles = (): AppThunk => (dispatch, getState) => {
       const updatedPathsArr = getFolderReducerUpdatedPathsArrFromMediaList(getState(), data)
       const updatedFolderTree = createFolderTree(updatedPathsArr)
 
-      dispatch(setPathsArr(updatedPathsArr))
-      dispatch(setFolderTree(updatedFolderTree))
+      dispatch(folderReducerSetPathsArr(updatedPathsArr))
+      dispatch(folderReducerSetFolderTree(updatedFolderTree))
       dispatch(uploadReducerSetUploadingStatus('success'))
     })
     .catch(error => {

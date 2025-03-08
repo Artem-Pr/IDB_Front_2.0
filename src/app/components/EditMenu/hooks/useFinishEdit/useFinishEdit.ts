@@ -11,7 +11,7 @@ import { removeEmptyFields } from 'src/app/common/utils'
 import { getISOStringWithUTC } from 'src/app/common/utils/date'
 import type { InitialFormData } from 'src/app/components/EditMenu'
 import { duplicateConfig, emptyCheckboxesConfig } from 'src/assets/config/moduleConfig'
-import { setKeywordsList } from 'src/redux/reducers/foldersSlice'
+import { folderReducerSetKeywordsList } from 'src/redux/reducers/foldersSlice'
 import { getFolderReducerKeywordsList } from 'src/redux/reducers/foldersSlice/selectors'
 import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
@@ -86,7 +86,7 @@ export const useFinishEdit = ({
         }
 
         const updatedKeywordsList = keywords ? uniq([...keywordsList, ...flatten(keywords)]) : keywordsList
-        compose(dispatch, setKeywordsList)(updatedKeywordsList)
+        compose(dispatch, folderReducerSetKeywordsList)(updatedKeywordsList)
 
         const editedFields = removeEmptyFields(preparedValue)
         if (!isEmpty(editedFields)) {

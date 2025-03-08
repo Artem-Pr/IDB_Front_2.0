@@ -12,9 +12,9 @@ import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/m
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
 import { PagePaths } from 'src/common/constants'
 import {
-  setNumberOfFilesInDirectory,
-  setNumberOfSubdirectories,
-  setShowInfoModal,
+  folderReducerSetNumberOfFilesInDirectory,
+  folderReducerSetNumberOfSubdirectories,
+  folderReducerSetShowInfoModal,
 } from 'src/redux/reducers/foldersSlice'
 import {
   getFolderReducerFolderInfoNumberOfFiles,
@@ -75,8 +75,8 @@ const Header = () => {
 
   useEffect(() => {
     const cleanModalInfo = () => {
-      dispatch(setNumberOfFilesInDirectory(0))
-      dispatch(setNumberOfSubdirectories(0))
+      dispatch(folderReducerSetNumberOfFilesInDirectory(0))
+      dispatch(folderReducerSetNumberOfSubdirectories(0))
     }
     const onOk = () => {
       dispatch(removeDirectory())
@@ -84,7 +84,7 @@ const Header = () => {
     const onCancel = () => cleanModalInfo()
     const showModal = () => {
       modal.confirm(checkFolderConfirmation({ onOk, onCancel, content }))
-      dispatch(setShowInfoModal(false))
+      dispatch(folderReducerSetShowInfoModal(false))
     }
 
     showInfoModal && showModal()
