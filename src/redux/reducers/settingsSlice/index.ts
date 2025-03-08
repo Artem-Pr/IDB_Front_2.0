@@ -2,7 +2,6 @@ import { createSlice, current } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 export interface State {
-  globalLoader: boolean
   imagePreviewSlideLimits: {
     min: number
     max: number
@@ -12,7 +11,6 @@ export interface State {
 }
 
 export const initialState: State = {
-  globalLoader: false,
   imagePreviewSlideLimits: {
     min: 50,
     max: 300,
@@ -25,8 +23,8 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    settingsReducerSetGlobalLoader(state, action: PayloadAction<boolean>) {
-      state.globalLoader = action.payload
+    settingsReducerSetImagePreviewSlideLimits(state, action: PayloadAction<State['imagePreviewSlideLimits']>) {
+      state.imagePreviewSlideLimits = action.payload
     },
     settingsReducerSetMinPreviewSlideLimit(state, action: PayloadAction<number>) {
       state.imagePreviewSlideLimits.min = action.payload
@@ -48,7 +46,7 @@ const settingsSlice = createSlice({
 
 export const {
   settingsReducerDeleteUnusedKeyword,
-  settingsReducerSetGlobalLoader,
+  settingsReducerSetImagePreviewSlideLimits,
   settingsReducerSetIsVideoPreviewMuted,
   settingsReducerSetMaxPreviewSlideLimit,
   settingsReducerSetMinPreviewSlideLimit,

@@ -8,6 +8,7 @@ import type {
   BlobUpdateNamePayload,
   GallerySortingItem,
   LoadingStatus,
+  SortingData,
 } from '../../types'
 
 import { defaultGallerySortingList } from './helpers'
@@ -17,6 +18,12 @@ const uploadSlice = createSlice({
   name: 'uploadPage',
   initialState,
   reducers: {
+    uploadReducerSetSort(state, action: PayloadAction<Partial<SortingData>>) {
+      state.sort = {
+        ...current(state).sort,
+        ...action.payload,
+      }
+    },
     uploadReducerResetSort(state) {
       state.sort.gallerySortingList = defaultGallerySortingList
     },
@@ -97,12 +104,13 @@ export const {
   uploadReducerSelectAll,
   uploadReducerSetBlob,
   uploadReducerSetCheckDuplicatesInCurrentDir,
+  uploadReducerSetFilesArr,
   uploadReducerSetGallerySortingList,
   uploadReducerSetGroupedByDate,
+  uploadReducerSetOpenMenus,
+  uploadReducerSetSort,
   uploadReducerSetUploadingStatus,
   uploadReducerUpdateBlobName,
-  uploadReducerSetOpenMenus,
-  uploadReducerSetFilesArr,
 } = uploadSlice.actions
 
 export const uploadPageSliceReducer = uploadSlice.reducer

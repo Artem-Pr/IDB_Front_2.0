@@ -7,15 +7,23 @@ import type {
   GalleryPagination,
   GallerySortingItem,
   Preview,
+  SortingData,
 } from '../../types'
 
 import { defaultGallerySortingList } from './helpers'
 import { initialState } from './mainPageState'
+import type { SearchMenu } from './types'
 
 const mainPageSlice = createSlice({
   name: 'mainPage',
   initialState,
   reducers: {
+    mainPageReducerSetSort(state, action: PayloadAction<Partial<SortingData>>) {
+      state.sort = {
+        ...current(state).sort,
+        ...action.payload,
+      }
+    },
     mainPageReducerResetSort(state) {
       state.sort.gallerySortingList = defaultGallerySortingList
     },
@@ -52,6 +60,12 @@ const mainPageSlice = createSlice({
     },
     mainPageReducerSelectAll(state) {
       state.selectedList = state.filesArr.map((_, i) => i)
+    },
+    mainPageReducerSetSearchMenu(state, action: PayloadAction<Partial<SearchMenu>>) {
+      state.searchMenu = {
+        ...current(state).searchMenu,
+        ...action.payload,
+      }
     },
     mainPageReducerSetRatingFilter(state, action: PayloadAction<number>) {
       state.searchMenu.rating = action.payload
@@ -152,7 +166,9 @@ export const {
   mainPageReducerSetRatingFilter,
   mainPageReducerSetRawFiles,
   mainPageReducerSetSearchFileName,
+  mainPageReducerSetSearchMenu,
   mainPageReducerSetSearchTags,
+  mainPageReducerSetSort,
   mainPageReducerStartVideoPreview,
   mainPageReducerStopVideoPreview,
 } = mainPageSlice.actions

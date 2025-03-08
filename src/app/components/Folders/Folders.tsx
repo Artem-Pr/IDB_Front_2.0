@@ -29,6 +29,7 @@ import {
   getFolderReducerPathsArrOptionsSelector,
 } from 'src/redux/reducers/foldersSlice/selectors'
 import { fetchPathsList, removeDirectoryIfExists } from 'src/redux/reducers/foldersSlice/thunks'
+import { mainPageReducerSetGalleryPagination } from 'src/redux/reducers/mainPageSlice'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
@@ -96,6 +97,8 @@ export const Folders = () => {
       && setAutoExpandParent(true)
 
     dispatch(folderReducerSetCurrentFolderKey(elementKey))
+    dispatch(mainPageReducerSetGalleryPagination({ currentPage: 1 }))
+    dispatch(fetchPhotos())
   }
 
   return (
@@ -135,7 +138,7 @@ export const Folders = () => {
 
         {isMainPage && (
           <Button onClick={handleFolderExpand} type="primary" icon={<FolderOpenOutlined />}>
-            Expand
+            Apply
           </Button>
         )}
       </div>

@@ -91,13 +91,14 @@ const Header = () => {
   }, [content, dispatch, modal, numberOfFiles, numberOfSubdirectories, showInfoModal])
 
   return (
-    <HeaderLayout className="d-flex justify-content-between align-items-center">
-      <img
-        alt="header-background"
-        style={imageStyle}
-        className={styles.backgroundImage}
-        src={HeaderBackgroundImage}
-      />
+    <HeaderLayout className={styles.header}>
+      <div className={styles.backgroundImage}>
+        <img
+          alt="header-background"
+          style={imageStyle}
+          src={HeaderBackgroundImage}
+        />
+      </div>
       <Title className={styles.title}>IDBase</Title>
       <Menu
         style={menuStyle}

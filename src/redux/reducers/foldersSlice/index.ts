@@ -31,6 +31,12 @@ const folderSlice = createSlice({
   name: 'folder',
   initialState,
   reducers: {
+    folderReducerSetCurrentFolderInfo(state, action: PayloadAction<Partial<DirectoryInfo>>) {
+      state.currentFolderInfo = {
+        ...state.currentFolderInfo,
+        ...action.payload,
+      }
+    },
     folderReducerSetExpandedKeys(state, action: PayloadAction<Key[]>) {
       state.currentFolderInfo.expandedKeys = action.payload
     },
@@ -68,6 +74,7 @@ const folderSlice = createSlice({
 })
 
 export const {
+  folderReducerSetCurrentFolderInfo,
   folderReducerSetCurrentFolderKey,
   folderReducerSetCurrentFolderPath,
   folderReducerSetExpandedKeys,
