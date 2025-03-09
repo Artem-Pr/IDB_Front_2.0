@@ -1,8 +1,10 @@
+import dayjs from 'dayjs'
 import { createSelector } from 'reselect'
 
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
-import { MainMenuKeys } from 'src/common/constants'
+import { MainMenuKeys, Sort } from 'src/common/constants'
+import { DATE_FORMAT } from 'src/constants/dateConstants'
 
 import { getFolderReducerFolderInfoCurrentFolder } from '../reducers/foldersSlice/selectors'
 import {
@@ -25,7 +27,20 @@ import {
   getUploadReducerFilesArr,
   getUploadReducerSort,
 } from '../reducers/uploadSlice/selectors'
-import type { SortingData } from '../types'
+import type { GallerySortingItem, SortingData } from '../types'
+
+const sortByDate = (sort: GallerySortingItem['sort']) => (media1: Media, media2: Media): number => {
+  const media1OriginalDateWithoutTime = dayjs(media1.originalDate)
+    .startOf('day')
+    .format(DATE_FORMAT)
+  const media2OriginalDateWithoutTime = dayjs(media2.originalDate)
+    .startOf('day')
+    .format(DATE_FORMAT)
+
+  if (sort === Sort.ASC) return media1OriginalDateWithoutTime.localeCompare(media2OriginalDateWithoutTime)
+  if (sort === Sort.DESC) return media2OriginalDateWithoutTime.localeCompare(media1OriginalDateWithoutTime)
+  return media2OriginalDateWithoutTime.localeCompare(media1OriginalDateWithoutTime)
+}
 
 export const getSort = createSelector(
   [
@@ -88,12 +103,40 @@ export const getCurrentFilesArr = createSelector(
     getUploadReducerFilesArr,
     getMainPageReducerFilesArr,
     getSessionReducerIsCurrentPage,
+    getSort,
   ],
-  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadPage }): Media[] => {
-    if (isMainPage) return downloadingFilesArr
-    if (isUploadPage) return uploadingFilesArr
-    return []
+  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadPage }, { groupedByDate, gallerySortingList }): Media[] => {
+    const filesArr = isMainPage
+      ? downloadingFilesArr
+      : isUploadPage
+        ? uploadingFilesArr
+        : []
+
+    if (groupedByDate) {
+      const originalDateSort = gallerySortingList.find(({ id }) => id === 'originalDate')?.sort || null
+      return filesArr.toSorted(sortByDate(originalDateSort))
+    }
+
+    return filesArr
   },
+)
+
+export const getCurrentFilesArrGroupedByDate = createSelector(
+  getCurrentFilesArr,
+  (currentFilesArr): Record<string, Array<Media & { index: number }>> => currentFilesArr
+    .reduce<Record<string, Array<Media & { index: number }>>>((accum, file, idx) => {
+    const originalDateWithoutTime = dayjs(file.originalDate)
+      .startOf('day')
+      .format(DATE_FORMAT)
+    const fileWithIndex = { ...file, index: idx }
+
+    return {
+      ...accum,
+      [originalDateWithoutTime]: accum[originalDateWithoutTime]
+        ? [...accum[originalDateWithoutTime], fileWithIndex]
+        : [fileWithIndex],
+    }
+  }, {}),
 )
 
 export const getCurrentSelectedList = createSelector(

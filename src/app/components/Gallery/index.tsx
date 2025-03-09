@@ -10,11 +10,11 @@ import cn from 'classnames'
 import type { Media } from 'src/api/models/media'
 import { MainMenuKeys } from 'src/common/constants'
 import { getSessionReducerFitContain, getSessionReducerPreviewSize } from 'src/redux/reducers/sessionSlice/selectors'
-import { getSort } from 'src/redux/selectors'
+import { getCurrentFilesArrGroupedByDate, getSort } from 'src/redux/selectors'
 
 import { GalleryTile, ImageGalleryMenu } from './components'
 import {
-  useImageArrayGroupedByDate, useImageClick, useImageGalleryData, useSelectWithShift,
+  useImageClick, useImageGalleryData, useSelectWithShift,
 } from './hooks'
 import { useGetFullExifList } from './hooks/useGefFullExifList'
 
@@ -54,6 +54,7 @@ const Gallery = ({
   const previewSize = useSelector(getSessionReducerPreviewSize)
   const fitContain = useSelector(getSessionReducerFitContain)
   const { groupedByDate } = useSelector(getSort)
+  const imageArrayGroupedByDate = useSelector(getCurrentFilesArrGroupedByDate)
   const [showImageModal, setShowImageModal] = useState(false)
   const [currentImage, setCurrentImage] = useState<number>(0)
   const [showPreviewList, setShowPreviewList] = useState(true)
@@ -77,8 +78,6 @@ const Gallery = ({
     removeFromSelectedList,
   })
   const { galleryArr, stopPlayer } = useImageGalleryData(imageArr, isMainPage)
-
-  const { imageArrayGroupedByDate } = useImageArrayGroupedByDate(imageArr)
 
   const isEditMode = isEditMenu || isTemplateMenu || isPropertiesMenu
 
@@ -163,11 +162,9 @@ const Gallery = ({
                     mediaFileWithIndex => (
                       <GalleryTile
                         fitContain={fitContain}
-                        // TODO: need to check index, probably I can use another index to fix problem with multiple select
                         index={mediaFileWithIndex.index}
                         isEditMode={isEditMode}
                         isMainPage={isMainPage}
-                        // TODO: probably better to move index inside component, because we have index in mediaFile
                         isShiftHover={isShiftHover(mediaFileWithIndex.index)}
                         key={mediaFileWithIndex.id}
                         mediaFile={mediaFileWithIndex}
