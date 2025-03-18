@@ -138,7 +138,7 @@ export const Folders = () => {
 
         {isMainPage && (
           <Button onClick={handleFolderExpand} type="primary" icon={<FolderOpenOutlined />}>
-            Apply
+            Open
           </Button>
         )}
       </div>

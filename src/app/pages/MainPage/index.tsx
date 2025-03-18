@@ -22,9 +22,7 @@ const MainPage = () => {
   const {
     menuRef, videoPreviewRef, handleDividerMove, handleFinishResize,
   } = useMenuResize()
-  const {
-    refs, onSliderMove, finishPreviewResize, setScrollUpWhenUpdating,
-  } = useGridRefControl()
+  const { refs, onSliderMove, finishPreviewResize } = useGridRefControl()
   const dispatch = useAppDispatch()
   const galleryProps = useGalleryProps()
   const openMenus = useSelector(getMainPageReducerOpenMenus)
@@ -55,7 +53,6 @@ const MainPage = () => {
           <GalleryTopMenu
             finishPreviewResize={finishPreviewResize}
             onSliderMove={onSliderMove}
-            setScrollUpWhenUpdating={setScrollUpWhenUpdating}
           />
           <Gallery {...galleryProps} refs={refs} />
           <PaginationMenu />

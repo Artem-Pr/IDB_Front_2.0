@@ -1,4 +1,3 @@
-import { ResultStatusType } from 'antd/es/result'
 import {
   addIndex,
   compose,
@@ -21,7 +20,6 @@ import type { Media } from 'src/api/models/media'
 import { MimeTypes } from 'src/common/constants'
 import type {
   Keywords,
-  LoadingStatus,
   NameParts,
 } from 'src/redux/types'
 
@@ -105,10 +103,6 @@ export const updateFilesArrayItems = <T extends keyof Media>(
   )
   return originalFilesArr.map(file => findUpdatedObj(file[uniqField]) || file)
 }
-
-export const isValidResultStatus = (status: LoadingStatus): ResultStatusType | null => (
-  status !== 'empty' && status !== 'loading' ? status : null
-)
 
 export const getSameKeywords = (
   filesArr: Media[],

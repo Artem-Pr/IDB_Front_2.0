@@ -9,12 +9,18 @@ import cn from 'classnames'
 
 import { getMainPageReducerFilesArr, getMainPageReducerSelectedList, getMainPageReducerFilesSizeSum } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchMainPageDuplicates } from 'src/redux/reducers/mainPageSlice/thunks'
-import { sessionReducerRefreshPreviewSize, sessionReducerSetFitContain, sessionReducerSetIsDuplicatesChecking } from 'src/redux/reducers/sessionSlice'
+import {
+  sessionReducerRefreshPreviewSize,
+  sessionReducerSetFitContain,
+  sessionReducerSetIsDuplicatesChecking,
+  sessionReducerSetScrollUpWhenUpdating,
+} from 'src/redux/reducers/sessionSlice'
 import {
   getSessionReducerIsCurrentPage,
   getSessionReducerFitContain,
   getSessionReducerIsDuplicatesChecking,
   getSessionReducerPreviewSize,
+  getSessionReducerScrollUpWhenUpdating,
 } from 'src/redux/reducers/sessionSlice/selectors'
 import { getSettingsReducerImagePreviewSlideLimits } from 'src/redux/reducers/settingsSlice/selectors'
 import { getUploadReducerSelectedList } from 'src/redux/reducers/uploadSlice/selectors'
@@ -25,12 +31,14 @@ import { formatSize } from '../../common/utils'
 import styles from './GalleryTopMenu.module.scss'
 
 interface Props {
-  onSliderMove: (value: number) => void
   finishPreviewResize: (value: number) => void
-  setScrollUpWhenUpdating?: React.Dispatch<React.SetStateAction<boolean>>
+  onSliderMove: (value: number) => void
 }
 
-export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpWhenUpdating }: Props) => {
+export const GalleryTopMenu = ({
+  onSliderMove,
+  finishPreviewResize,
+}: Props) => {
   const dispatch = useAppDispatch()
   const previewSize = useSelector(getSessionReducerPreviewSize)
   const mediaFiles = useSelector(getMainPageReducerFilesArr)
@@ -41,6 +49,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
   const { isMainPage } = useSelector(getSessionReducerIsCurrentPage)
   const fitContain = useSelector(getSessionReducerFitContain)
   const isDuplicatesChecking = useSelector(getSessionReducerIsDuplicatesChecking)
+  const scrollUpWhenUpdating = useSelector(getSessionReducerScrollUpWhenUpdating)
   const [showSlider, setShowSlider] = useState<boolean>(true)
 
   const selectedListLength = useMemo(
@@ -61,7 +70,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
   }
 
   const handleSetScrollUpWhenUpdating = () => {
-    setScrollUpWhenUpdating && setScrollUpWhenUpdating(prev => !prev)
+    dispatch(sessionReducerSetScrollUpWhenUpdating(!scrollUpWhenUpdating))
   }
 
   const handleSetIsDuplicatesChecking = () => {
@@ -84,7 +93,7 @@ export const GalleryTopMenu = ({ onSliderMove, finishPreviewResize, setScrollUpW
       {isMainPage && (
         <>
           <Col>
-            <Checkbox defaultChecked onChange={handleSetScrollUpWhenUpdating}>
+            <Checkbox checked={scrollUpWhenUpdating} onChange={handleSetScrollUpWhenUpdating}>
             Scroll up when updating
             </Checkbox>
           </Col>

@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo } from 'react'
+import React, {
+  CSSProperties, memo, useEffect, useMemo,
+} from 'react'
 import { useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 
 import {
-  Layout, Menu, Modal, Typography,
+  Layout, Modal, Typography,
 } from 'antd'
 
 import { mainApi } from 'src/api/api'
 import { errorMessage } from 'src/app/common/notifications'
 import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
-import { PagePaths } from 'src/common/constants'
 import {
   folderReducerSetNumberOfFilesInDirectory,
   folderReducerSetNumberOfSubdirectories,
@@ -25,7 +25,7 @@ import {
 import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
 import { useAppDispatch } from 'src/redux/store/store'
 
-import { PageMenuItems } from './PageMenuItems'
+import { HeaderMenu } from './HeaderMenu'
 
 import styles from './index.module.scss'
 
@@ -35,19 +35,15 @@ function getRandomBackgroundPosition() {
 
 const { Header: HeaderLayout } = Layout
 const { Title } = Typography
-const menuStyle = { width: 400 }
-const imageStyle = { top: `-${getRandomBackgroundPosition()}%` }
+const imageStyle: CSSProperties = { top: `-${getRandomBackgroundPosition()}%` }
 
-const Header = () => {
-  const { pathname } = useLocation() as { pathname: PagePaths }
+export const Header = memo(() => {
   const dispatch = useAppDispatch()
   const [modal, contextHolder] = Modal.useModal()
   const directoriesArr = useSelector(getFolderReducerFolderPathsArr)
   const showInfoModal = useSelector(getFolderReducerFolderInfoShowInfoModal)
   const numberOfFiles = useSelector(getFolderReducerFolderInfoNumberOfFiles)
   const numberOfSubdirectories = useSelector(getFolderReducerFolderInfoNumberOfSubdirs)
-
-  const defaultKeys = useMemo(() => [pathname], [pathname])
 
   const content = useMemo(
     () => (
@@ -93,23 +89,17 @@ const Header = () => {
   return (
     <HeaderLayout className={styles.header}>
       <div className={styles.backgroundImage}>
-        <img
-          alt="header-background"
-          style={imageStyle}
-          src={HeaderBackgroundImage}
-        />
+        <div className="position-relative h-100 w-100">
+          <img
+            alt="header-background"
+            style={imageStyle}
+            src={HeaderBackgroundImage}
+          />
+        </div>
       </div>
       <Title className={styles.title}>IDBase</Title>
-      <Menu
-        style={menuStyle}
-        theme="dark"
-        mode="horizontal"
-        defaultSelectedKeys={defaultKeys}
-        items={PageMenuItems}
-      />
+      <HeaderMenu />
       {contextHolder}
     </HeaderLayout>
   )
-}
-
-export default Header
+})

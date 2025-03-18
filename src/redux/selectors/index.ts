@@ -105,7 +105,12 @@ export const getCurrentFilesArr = createSelector(
     getSessionReducerIsCurrentPage,
     getSort,
   ],
-  (uploadingFilesArr, downloadingFilesArr, { isMainPage, isUploadPage }, { groupedByDate, gallerySortingList }): Media[] => {
+  (
+    uploadingFilesArr,
+    downloadingFilesArr,
+    { isMainPage, isUploadPage },
+    { groupedByDate, gallerySortingList },
+  ): Array<Media | Media & { index: number }> => {
     const filesArr = isMainPage
       ? downloadingFilesArr
       : isUploadPage
@@ -114,7 +119,9 @@ export const getCurrentFilesArr = createSelector(
 
     if (groupedByDate) {
       const originalDateSort = gallerySortingList.find(({ id }) => id === 'originalDate')?.sort || null
-      return filesArr.toSorted(sortByDate(originalDateSort))
+      return filesArr
+        .toSorted(sortByDate(originalDateSort))
+        .map((file, idx) => ({ ...file, index: idx }))
     }
 
     return filesArr
@@ -124,11 +131,11 @@ export const getCurrentFilesArr = createSelector(
 export const getCurrentFilesArrGroupedByDate = createSelector(
   getCurrentFilesArr,
   (currentFilesArr): Record<string, Array<Media & { index: number }>> => currentFilesArr
-    .reduce<Record<string, Array<Media & { index: number }>>>((accum, file, idx) => {
+    .reduce<Record<string, Array<Media & { index: number }>>>((accum, file) => {
     const originalDateWithoutTime = dayjs(file.originalDate)
       .startOf('day')
       .format(DATE_FORMAT)
-    const fileWithIndex = { ...file, index: idx }
+    const fileWithIndex = file as Media & { index: number }
 
     return {
       ...accum,

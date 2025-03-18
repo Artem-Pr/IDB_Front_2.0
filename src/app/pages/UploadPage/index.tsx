@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { LoadingOutlined } from '@ant-design/icons'
 import { Layout, Result } from 'antd'
 
 import { MainMenuKeys, PagePaths } from 'src/common/constants'
@@ -24,22 +23,14 @@ import {
   getUploadReducerSelectedList,
   getUploadReducerUploadStatus,
 } from 'src/redux/reducers/uploadSlice/selectors'
-import { LoadingStatus } from 'src/redux/types'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
-import { isValidResultStatus, removeIntersectingKeywords } from '../../common/utils'
+import { removeIntersectingKeywords } from '../../common/utils'
 import {
   CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider,
 } from '../../components'
 
 const { Content } = Layout
-
-const statusMessage: Record<LoadingStatus, string> = {
-  success: 'Files have been successfully uploaded',
-  error: 'Sending failed',
-  loading: 'Loading...',
-  empty: '',
-}
 
 const UploadPage = () => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
@@ -89,37 +80,19 @@ const UploadPage = () => {
     removeFiles: () => dispatch(uploadReducerClearState()),
   }
 
-  const ResultComponent = useMemo(() => {
-    const validStatus = isValidResultStatus(uploadingStatus)
-    if (validStatus) {
-      return (
-        <Result
-          status={validStatus}
-          title={statusMessage[uploadingStatus]}
-        />
-      )
-    }
-
-    if (uploadingStatus === 'loading') {
-      return (
-        <Result
-          icon={<LoadingOutlined />}
-          title={statusMessage[uploadingStatus]}
-        />
-      )
-    }
-
-    return ''
-  }, [uploadingStatus])
-
   return (
     <Layout>
       <MainMenu {...mainMenuProps} menuRef={menuRef} />
       <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       <Layout>
         <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>
-          <DropZone openMenus={openMenus} />
-          {ResultComponent}
+          <DropZone loadingStatus={uploadingStatus} openMenus={openMenus} />
+          {uploadingStatus === 'success' && (
+            <Result
+              status="success"
+              title="Files have been successfully uploaded"
+            />
+          )}
           <CustomAlert message="Edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT)} type="info" />
           <CustomAlert message="Bulk edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT_BULK)} type="success" />
           {showTopGalleryMenu && (

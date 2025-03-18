@@ -48,7 +48,6 @@ export const ButtonsMenu = () => {
 
   const handleUploadClick = () => {
     dispatch(uploadFiles())
-    clearFilesArr()
     setOpenMenus([MainMenuKeys.FOLDERS])
   }
 

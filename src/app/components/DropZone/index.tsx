@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { InboxOutlined, LoadingOutlined } from '@ant-design/icons'
 import {
-  message, Progress, Upload, UploadProps,
+  message, Progress, Result, Upload, UploadProps,
 } from 'antd'
 import type { RcFile, UploadChangeParam, UploadFile } from 'antd/es/upload'
 import cn from 'classnames'
@@ -22,6 +22,7 @@ import {
 } from 'src/redux/reducers/uploadSlice/selectors'
 import { addUploadingFile, fetchPhotosPreview } from 'src/redux/reducers/uploadSlice/thunks'
 import { useAppDispatch } from 'src/redux/store/store'
+import type { LoadingStatus } from 'src/redux/types'
 
 import {
   getDispatchObjFromBlob, isFile, isFileNameAlreadyExist,
@@ -44,9 +45,10 @@ interface ValidRcFile extends RcFile {
 
 interface Props {
   openMenus: string[]
+  loadingStatus: LoadingStatus
 }
 
-const DropZone = ({ openMenus }: Props) => {
+const DropZone = ({ openMenus, loadingStatus }: Props) => {
   const currentFolderPath = useSelector(getFolderReducerFolderInfoCurrentFolder)
   const previewLoadingCount = useSelector(getUploadReducerPreviewLoadingCount)
   const uploadingBlobs = useSelector(getUploadReducerBlobs)
@@ -173,12 +175,18 @@ const DropZone = ({ openMenus }: Props) => {
 
   return (
     <Dragger {...props}>
-      <p className="ant-upload-drag-icon">
-        {finishedNumberOfFiles || previewLoadingCount ? <LoadingOutlined /> : <InboxOutlined />}
-      </p>
-      {progress && <Progress percent={progress} style={{ maxWidth: 200 }} />}
-      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-      <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+      {loadingStatus === 'loading'
+        ? <Result icon={<LoadingOutlined />} title="Loading..." />
+        : (
+          <>
+            <p className="ant-upload-drag-icon">
+              {finishedNumberOfFiles || previewLoadingCount ? <LoadingOutlined /> : <InboxOutlined />}
+            </p>
+            {progress && <Progress percent={progress} style={{ maxWidth: 200 }} />}
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-hint">Support for a single or bulk upload.</p>
+          </>
+        )}
     </Dragger>
   )
 }

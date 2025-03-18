@@ -10,7 +10,6 @@ export {
   getSameKeywords,
   invokableCompose,
   isMimeType,
-  isValidResultStatus,
   isVideo,
   isVideoByExt,
   removeEmptyFields,

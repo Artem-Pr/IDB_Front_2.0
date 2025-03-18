@@ -18,9 +18,9 @@ import { deleteConfirmation } from 'src/assets/config/moduleConfig'
 import { DATE_TIME_FORMAT_WITH_MS, DEFAULT_TIME_STAMP } from 'src/constants/dateConstants'
 import { getFolderReducerKeywordsList, getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
 import { getMainPageReducerIsDeleteProcessing, getMainPageReducerIsGalleryLoading } from 'src/redux/reducers/mainPageSlice/selectors'
-import { removeSelectedFiles } from 'src/redux/reducers/mainPageSlice/thunks'
+import { removeSelectedFilesFromMainPage } from 'src/redux/reducers/mainPageSlice/thunks'
 import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
-import { removeFilesFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
+import { removeSelectedFilesFromUploadState } from 'src/redux/reducers/uploadSlice/thunks'
 import {
   getSameKeywords,
   getCurrentFilesArr,
@@ -173,8 +173,8 @@ export const EditMenu = ({ isEditMany }: Props) => {
   const handleDelete = () => {
     const onOk = () => {
       isMainPage
-        ? dispatch(removeSelectedFiles())
-        : dispatch(removeFilesFromUploadState())
+        ? dispatch(removeSelectedFilesFromMainPage())
+        : dispatch(removeSelectedFilesFromUploadState())
     }
     modal.confirm(deleteConfirmation({ onOk, type: 'file' }))
   }

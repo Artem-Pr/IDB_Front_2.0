@@ -4,7 +4,7 @@ import { errorMessage } from 'src/app/common/notifications'
 import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIRequestFromMedia'
 import type { AppThunk } from 'src/redux/store/types'
 
-import { uploadReducerSetUploadingStatus } from '..'
+import { uploadReducerClearSelectedList, uploadReducerClearState, uploadReducerSetUploadingStatus } from '..'
 import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../foldersSlice'
 import { getFolderReducerFolderInfoCurrentFolder, getFolderReducerUpdatedPathsArrFromMediaList } from '../../foldersSlice/selectors'
 import { getUploadReducerFilesArr } from '../selectors'
@@ -25,9 +25,11 @@ export const uploadFiles = (): AppThunk => (dispatch, getState) => {
       dispatch(folderReducerSetPathsArr(updatedPathsArr))
       dispatch(folderReducerSetFolderTree(updatedFolderTree))
       dispatch(uploadReducerSetUploadingStatus('success'))
+      dispatch(uploadReducerClearState())
     })
     .catch(error => {
       dispatch(uploadReducerSetUploadingStatus('error'))
+      dispatch(uploadReducerClearSelectedList())
       console.error(error)
 
       errorMessage(error, 'Upload files error')

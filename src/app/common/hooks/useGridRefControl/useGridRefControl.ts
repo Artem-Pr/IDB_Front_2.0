@@ -1,11 +1,11 @@
-/* eslint-disable no-param-reassign */
 import {
-  useMemo, useEffect, useRef, useState,
+  useMemo, useEffect, useRef, useCallback,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { getMainPageReducerIsGalleryLoading } from 'src/redux/reducers/mainPageSlice/selectors'
-import { sessionReducerSetPreviewSize } from 'src/redux/reducers/sessionSlice'
+import { sessionReducerSetPreviewSize, sessionReducerSetTriggerScrollUp } from 'src/redux/reducers/sessionSlice'
+import { getSessionReducerTriggerScrollUp } from 'src/redux/reducers/sessionSlice/selectors'
 import { getSort } from 'src/redux/selectors'
 
 export const useGridRefControl = () => {
@@ -15,7 +15,7 @@ export const useGridRefControl = () => {
   const dispatch = useDispatch()
   const isGalleryLoading = useSelector(getMainPageReducerIsGalleryLoading)
   const { groupedByDate } = useSelector(getSort)
-  const [scrollUpWhenUpdating, setScrollUpWhenUpdating] = useState(true)
+  const triggerScrollUp = useSelector(getSessionReducerTriggerScrollUp)
 
   const refs = useMemo(
     () => ({
@@ -29,12 +29,13 @@ export const useGridRefControl = () => {
   useEffect(() => {
     const scrollToTop = () => {
       groupedByDate ? imgFirstGroupNameRef.current?.scrollIntoView() : gridRef.current[0]?.scrollIntoView()
+      dispatch(sessionReducerSetTriggerScrollUp(false))
     }
 
-    scrollUpWhenUpdating && !isGalleryLoading && scrollToTop()
-  }, [isGalleryLoading, scrollUpWhenUpdating, groupedByDate])
+    triggerScrollUp && !isGalleryLoading && scrollToTop()
+  }, [isGalleryLoading, groupedByDate, triggerScrollUp, dispatch])
 
-  const onSliderMove = (currentHeight: number) => {
+  const onSliderMove = useCallback((currentHeight: number) => {
     gridRef.current?.forEach(ref => {
       ref && (ref.style.gridTemplateColumns = `repeat(auto-fill,minmax(${currentHeight}px, 1fr))`)
     })
@@ -42,16 +43,15 @@ export const useGridRefControl = () => {
     imgRef.current?.forEach(ref => {
       ref && (ref.style.height = `${currentHeight}px`)
     })
-  }
+  }, [])
 
-  const finishPreviewResize = (currentHeight: number) => {
+  const finishPreviewResize = useCallback((currentHeight: number) => {
     dispatch(sessionReducerSetPreviewSize(currentHeight))
-  }
+  }, [dispatch])
 
   return {
     refs,
     onSliderMove,
     finishPreviewResize,
-    setScrollUpWhenUpdating,
   }
 }

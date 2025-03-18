@@ -11,7 +11,7 @@ import type { AppThunk } from 'src/redux/store/types'
 import { mainPageReducerSetIsGalleryLoading } from '..'
 import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../foldersSlice'
 import { getFolderReducerUpdatedPathsArrFromMediaList } from '../../foldersSlice/selectors'
-import { sessionReducerSetIsTimeDifferenceApplied } from '../../sessionSlice'
+import { sessionReducerSetIsTimeDifferenceApplied, sessionReducerSetTriggerScrollUp } from '../../sessionSlice'
 
 import { fetchPhotos } from './fetchPhotos'
 
@@ -21,6 +21,10 @@ const UPLOADING_ERROR_MESSAGE = 'updating files error'
 export const updatePhotos = (updatedObjArr: UpdatedFileAPIRequest[]): AppThunk => (dispatch, getState) => {
   dispatch(mainPageReducerSetIsGalleryLoading(true))
   dispatch(sessionReducerSetIsTimeDifferenceApplied(false))
+
+  const { scrollUpWhenUpdating } = getState().sessionSliceReducer
+  scrollUpWhenUpdating && dispatch(sessionReducerSetTriggerScrollUp(true))
+
   mainApi
     .updatePhotos(updatedObjArr)
     .then(({ data }) => {

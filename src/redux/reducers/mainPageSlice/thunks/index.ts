@@ -1,4 +1,4 @@
 export { fetchPhotos } from './fetchPhotos'
 export { updatePhotos } from './updatePhotos'
-export { removeSelectedFiles } from './removeCurrentPhoto'
+export { removeSelectedFilesFromMainPage } from './removeSelectedFilesFromMainPage'
 export { fetchMainPageDuplicates } from './fetchMainPageDuplicates'

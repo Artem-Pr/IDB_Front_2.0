@@ -12,6 +12,8 @@ export const getSessionReducerIsTimesDifferenceApplied = (state: RootState) => (
   state.sessionSliceReducer.isTimesDifferenceApplied
 )
 export const getSessionReducerPreviewSize = (state: RootState) => state.sessionSliceReducer.previewSize
+export const getSessionReducerScrollUpWhenUpdating = (state: RootState) => state.sessionSliceReducer.scrollUpWhenUpdating
+export const getSessionReducerTriggerScrollUp = (state: RootState) => state.sessionSliceReducer.triggerScrollUp
 
 export const getSessionReducerIsCurrentPage = createSelector(
   getSessionReducerCurrentPage,

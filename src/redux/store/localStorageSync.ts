@@ -18,6 +18,7 @@ import {
   sessionReducerSetFitContain,
   sessionReducerSetIsDuplicatesChecking,
   sessionReducerSetPreviewSize,
+  sessionReducerSetScrollUpWhenUpdating,
 } from '../reducers/sessionSlice'
 import {
   settingsReducerSetImagePreviewSlideLimits,
@@ -38,6 +39,7 @@ export interface LocalStorageSession {
     fitContain: SessionState['fitContain'],
     isDuplicatesChecking: SessionState['isDuplicatesChecking'],
     previewSize: SessionState['previewSize'],
+    scrollUpWhenUpdating: SessionState['scrollUpWhenUpdating'],
   },
   mainPageSlice: {
     openMenus: MainPageState['openMenus'],
@@ -65,6 +67,7 @@ export const saveLocalStorageSession = (state: RootState) => {
       fitContain: state.sessionSliceReducer.fitContain,
       isDuplicatesChecking: state.sessionSliceReducer.isDuplicatesChecking,
       previewSize: state.sessionSliceReducer.previewSize,
+      scrollUpWhenUpdating: state.sessionSliceReducer.scrollUpWhenUpdating,
     },
     mainPageSlice: {
       openMenus: state.mainPageSliceReducer.openMenus,
@@ -101,6 +104,7 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
   dispatch(sessionReducerSetFitContain(localStorageSession.sessionSlice.fitContain))
   dispatch(sessionReducerSetIsDuplicatesChecking(localStorageSession.sessionSlice.isDuplicatesChecking))
   dispatch(sessionReducerSetPreviewSize(localStorageSession.sessionSlice.previewSize))
+  dispatch(sessionReducerSetScrollUpWhenUpdating(localStorageSession.sessionSlice.scrollUpWhenUpdating))
 
   dispatch(settingsReducerSetImagePreviewSlideLimits(localStorageSession.settingsSlice.imagePreviewSlideLimits))
   dispatch(settingsReducerSetIsVideoPreviewMuted(localStorageSession.settingsSlice.isVideoPreviewMuted))

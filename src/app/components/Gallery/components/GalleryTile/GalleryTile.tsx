@@ -27,7 +27,7 @@ export interface GalleryTileProps {
   index: number
   isEditMode: boolean
   isMainPage: boolean | undefined
-  isShiftHover: boolean
+  isShiftHover: (i: number) => boolean
   mediaFile: Media
   onFullScreenClick: (index: number) => void
   onImageClick: (i: number, preview?: Media) => void
@@ -60,6 +60,7 @@ export const GalleryTile = memo(
     const duplicatesForAllFiles = useSelector(getUploadDuplicateFilesArr)
     const isLoading = useSelector(getSessionReducerIsLoading)
     const isDuplicatesChecking = useSelector(getSessionReducerIsDuplicatesChecking)
+    const isShiftHovered = useMemo(() => isShiftHover(index), [index, isShiftHover])
 
     const extensionTypeTouple = mediaFile.mimetype.split('/')
     const extensionType = extensionTypeTouple[0]
@@ -121,7 +122,7 @@ export const GalleryTile = memo(
           styles.item,
           {
             [styles.loading]: isUploading,
-            [styles.shiftHover]: isShiftHover,
+            [styles.shiftHover]: isShiftHovered,
             active: selectedList.includes(index),
             pointer: isEditMode,
           },

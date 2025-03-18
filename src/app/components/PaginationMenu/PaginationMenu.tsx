@@ -6,6 +6,7 @@ import { Pagination } from 'antd'
 import { mainPageReducerSetGalleryPagination } from 'src/redux/reducers/mainPageSlice'
 import { getMainPageReducerGalleryPagination } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
+import { sessionReducerSetTriggerScrollUp } from 'src/redux/reducers/sessionSlice'
 import { useAppDispatch } from 'src/redux/store/store'
 
 export const PaginationMenu = () => {
@@ -20,6 +21,7 @@ export const PaginationMenu = () => {
       ...(pageSize && { nPerPage: pageSize }),
     }
     dispatch(mainPageReducerSetGalleryPagination(paginationObj))
+    dispatch(sessionReducerSetTriggerScrollUp(true))
     dispatch(fetchPhotos())
   }
 

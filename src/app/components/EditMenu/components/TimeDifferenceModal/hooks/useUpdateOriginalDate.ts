@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import type { Media } from 'src/api/models/media'
+import { getISOStringWithUTC } from 'src/app/common/utils/date'
 import { mainPageReducerSetFilesArr } from 'src/redux/reducers/mainPageSlice'
 import { sessionReducerSetIsTimeDifferenceApplied } from 'src/redux/reducers/sessionSlice'
 import { getSessionReducerIsCurrentPage, getSessionReducerIsTimesDifferenceApplied } from 'src/redux/reducers/sessionSlice/selectors'
@@ -26,7 +27,7 @@ export const useUpdateOriginalDate = () => {
         return isOriginalDateUpdated
           ? {
             ...file,
-            originalDate: originalDatesObj[id] || '-',
+            originalDate: getISOStringWithUTC(originalDatesObj[id]) || '-',
           }
           : file
       }

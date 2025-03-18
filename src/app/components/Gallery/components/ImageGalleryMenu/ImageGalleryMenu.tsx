@@ -39,7 +39,7 @@ export const ImageGalleryMenu = ({
     <button
       onClick={onFullScreenClick}
       type="button"
-      className="image-gallery-icon image-gallery-fullscreen-button"
+      className={cn(styles.fullScreenButton, 'image-gallery-icon image-gallery-fullscreen-button')}
       aria-label="Open Fullscreen"
     >
       <svg

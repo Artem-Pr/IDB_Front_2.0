@@ -12,6 +12,8 @@ export interface State {
   isLoading: boolean
   isTimesDifferenceApplied: boolean
   previewSize: number
+  scrollUpWhenUpdating: boolean
+  triggerScrollUp: boolean
 }
 
 const initialState: State = {
@@ -22,6 +24,8 @@ const initialState: State = {
   isLoading: false,
   isTimesDifferenceApplied: false,
   previewSize: DEFAULT_PREVIEW_SIZE,
+  scrollUpWhenUpdating: true,
+  triggerScrollUp: false,
 }
 
 const sessionSlice = createSlice({
@@ -52,6 +56,12 @@ const sessionSlice = createSlice({
     sessionReducerSetPreviewSize(state, action: PayloadAction<number>) {
       state.previewSize = action.payload
     },
+    sessionReducerSetScrollUpWhenUpdating(state, action: PayloadAction<boolean>) {
+      state.scrollUpWhenUpdating = action.payload
+    },
+    sessionReducerSetTriggerScrollUp(state, action: PayloadAction<boolean>) {
+      state.triggerScrollUp = action.payload
+    },
   },
 })
 
@@ -64,6 +74,8 @@ export const {
   sessionReducerSetIsLoading,
   sessionReducerSetIsTimeDifferenceApplied,
   sessionReducerSetPreviewSize,
+  sessionReducerSetScrollUpWhenUpdating,
+  sessionReducerSetTriggerScrollUp,
 } = sessionSlice.actions
 
 export const sessionSliceReducer = sessionSlice.reducer

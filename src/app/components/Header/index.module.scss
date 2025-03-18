@@ -11,6 +11,14 @@
     position: absolute;
     left: 0;
     width: calc(100% - 450px);
+    height: 512px;
+
+    img {
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100%;
+    }
 }
 
 .title {

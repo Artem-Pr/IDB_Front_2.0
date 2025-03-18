@@ -1,16 +1,17 @@
 import { mainApi } from 'src/api/api'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
+import { getCurrentFilesArr } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'
 
 import { mainPageReducerSetIsDeleteProcessing } from '..'
-import { getMainPageReducerSelectedList, getMainPageReducerFilesArr } from '../selectors'
+import { getMainPageReducerSelectedList } from '../selectors'
 
 import { fetchPhotos } from './fetchPhotos'
 
-export const removeSelectedFiles = (): AppThunk => (dispatch, getState) => {
-  const dSelectedList = getMainPageReducerSelectedList(getState())
-  const downloadingFiles = getMainPageReducerFilesArr(getState())
-  const fileIdsList = dSelectedList.map(index => downloadingFiles[index].id)
+export const removeSelectedFilesFromMainPage = (): AppThunk => (dispatch, getState) => {
+  const mainPageSelectedList = getMainPageReducerSelectedList(getState())
+  const downloadingFiles = getCurrentFilesArr(getState())
+  const fileIdsList = mainPageSelectedList.map(index => downloadingFiles[index].id)
   mainPageReducerSetIsDeleteProcessing(true)
   mainApi
     .deleteFiles(fileIdsList)
