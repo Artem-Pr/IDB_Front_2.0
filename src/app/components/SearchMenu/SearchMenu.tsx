@@ -88,7 +88,7 @@ export const SearchMenu = () => {
   }
 
   const handleSearchingFileNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(mainPageReducerSetSearchFileName(event.target.value.trim()))
+    dispatch(mainPageReducerSetSearchFileName(event.target.value))
   }
 
   const handleIncludeAllTagsChange = (e: CheckboxChangeEvent) => {
@@ -104,7 +104,7 @@ export const SearchMenu = () => {
   }
 
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(mainPageReducerSetDescriptionFilter(e.target.value.trim()))
+    dispatch(mainPageReducerSetDescriptionFilter(e.target.value))
   }
 
   return (

@@ -48,14 +48,14 @@ export const fetchPhotos = (): AppThunk => (dispatch, getState) => {
     .getPhotosByTags({
       filters: {
         ...(rating && { rating }),
-        ...(fileName && { fileName }),
+        ...(fileName && { fileName: fileName.trim() }),
         ...(includeAllSearchTags && { includeAllSearchTags }),
         ...(!isEmpty(searchTags) && { searchTags }),
         ...(!isEmpty(excludeTags) && { excludeTags }),
         ...(!isEmpty(mimetypes) && { mimetypes }),
         ...(dateRange && { dateRange }),
         ...(anyDescription && { anyDescription }),
-        ...(description && !anyDescription && { description }),
+        ...(description && !anyDescription && { description: description.trim() }),
       },
       sorting: {
         sort: prepareSortingList(gallerySortingList),
