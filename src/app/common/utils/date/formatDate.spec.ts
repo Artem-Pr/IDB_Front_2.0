@@ -14,14 +14,25 @@ describe('formatDate', () => {
       .toEqual(expected)
   })
 
-  it('formats a Date object correctly', () => {
-    const date = new Date(2021, 11, 25, 0, 0, 0)
-    const expected = dayjs(date)
-      .utc(false)
-      .format(DATE_TIME_FORMAT)
+  it('formats a datetime string correctly with UTC', () => {
+    const date = '2021-12-25T15:30:45.000Z'
+    const result = formatDate(date, undefined, undefined)
+    expect(result)
+      .toBe('2021.12.25 15:30:45:000')
+  })
+
+  it('formats a Date object correctly with time', () => {
+    const date = new Date(2021, 11, 25, 15, 30, 45, 123)
     const result = formatDate(date)
     expect(result)
-      .toEqual(expected)
+      .toBe('2021.12.25 15:30:45:123')
+  })
+
+  it('formats a dayjs object correctly with time in GMT+0200', () => {
+    const date = dayjs('2021-12-25T15:30:45.000')
+    const result = formatDate(date)
+    expect(result)
+      .toBe('2021.12.25 15:30:45:000')
   })
 
   it('parses and formats according to the given input format', () => {
@@ -38,10 +49,8 @@ describe('formatDate', () => {
     const dateString = '2021:12:25 15:30:34:567'
     const inputFormat = DATE_TIME_FORMAT
     const outputFormat = 'DD/MM/YYYY'
-    const expected = dayjs(dateString, inputFormat)
-      .format(outputFormat)
     const result = formatDate(dateString, inputFormat, outputFormat)
     expect(result)
-      .toEqual(expected)
+      .toBe('25/12/2021')
   })
 })
