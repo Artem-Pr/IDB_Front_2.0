@@ -16,25 +16,31 @@ import { MimeTypes } from 'src/common/constants'
 
 import styles from './GalleryMediaItem.module.scss'
 
-const IPHONE_ROTATION_IDENTIFIER = Object.freeze({
-  Make: 'Apple',
-  CompressorName: 'HEVC',
-  Rotation: 90,
-})
-
-const IPHONE_DEFAULT_ROTATION = Object.freeze({
-  [IPHONE_ROTATION_IDENTIFIER.Rotation]: 180,
-})
+const IPHONE_ROTATION_IDENTIFIERS = Object.freeze([
+  {
+    Make: 'Apple',
+    CompressorName: 'HEVC',
+    Rotation: 90,
+    DefaultRotation: 180,
+  },
+  {
+    Make: 'Apple',
+    CompressorName: 'HEVC',
+    Rotation: 270,
+    DefaultRotation: 180,
+  },
+])
 
 const DEFAULT_SKIP_DURATION = 5
-const needRotateIphoneVideo = (exif?: Media['exif']) => {
+const getDefaultRotation = (exif?: Media['exif']) => {
 //   const iphoneRotation = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
 // && exif.Make === IPHONE_ROTATION_IDENTIFIER.Make
-  const iphoneRotation = exif?.Rotation === IPHONE_ROTATION_IDENTIFIER.Rotation
-&& Boolean(IPHONE_DEFAULT_ROTATION[exif.Rotation])
-&& IPHONE_DEFAULT_ROTATION[exif.Rotation]
+  const matchingIdentifier = IPHONE_ROTATION_IDENTIFIERS.find(
+    identifier => exif?.Rotation === identifier.Rotation
+      && Boolean(identifier.DefaultRotation),
+  )
 
-  return iphoneRotation || undefined
+  return matchingIdentifier?.DefaultRotation
 }
 
 const handleImageOnLoad = (event: SyntheticEvent<HTMLImageElement>) => {
@@ -101,7 +107,7 @@ export const GalleryMediaItem = React.memo(
             <VideoJS
               onReady={handlePlayerReady}
               options={videoJsOptions}
-              defaultRotation={needRotateIphoneVideo(exif)}
+              defaultRotation={getDefaultRotation(exif)}
             />
           </div>
         )}
