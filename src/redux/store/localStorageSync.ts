@@ -23,6 +23,7 @@ import {
 import {
   settingsReducerSetImagePreviewSlideLimits,
   settingsReducerSetIsVideoPreviewMuted,
+  settingsReducerSetIsNewUploader,
 } from '../reducers/settingsSlice'
 import { uploadReducerSetSort } from '../reducers/uploadSlice'
 
@@ -32,6 +33,7 @@ export interface LocalStorageSession {
   settingsSlice: {
     imagePreviewSlideLimits: SettingsState['imagePreviewSlideLimits'],
     isVideoPreviewMuted: SettingsState['isVideoPreviewMuted'],
+    isNewUploader: SettingsState['isNewUploader'],
   },
   sessionSlice: {
     asideMenuWidth: SessionState['asideMenuWidth'],
@@ -60,6 +62,7 @@ export const saveLocalStorageSession = (state: RootState) => {
     settingsSlice: {
       imagePreviewSlideLimits: state.settingsSliceReducer.imagePreviewSlideLimits,
       isVideoPreviewMuted: state.settingsSliceReducer.isVideoPreviewMuted,
+      isNewUploader: state.settingsSliceReducer.isNewUploader,
     },
     sessionSlice: {
       asideMenuWidth: state.sessionSliceReducer.asideMenuWidth,
@@ -108,6 +111,7 @@ export const setDefaultStore = (dispatch: AppDispatch) => {
 
   dispatch(settingsReducerSetImagePreviewSlideLimits(localStorageSession.settingsSlice.imagePreviewSlideLimits))
   dispatch(settingsReducerSetIsVideoPreviewMuted(localStorageSession.settingsSlice.isVideoPreviewMuted))
+  dispatch(settingsReducerSetIsNewUploader(localStorageSession.settingsSlice.isNewUploader))
 
   dispatch(uploadReducerSetSort(localStorageSession.uploadPageSlice.sort))
 }

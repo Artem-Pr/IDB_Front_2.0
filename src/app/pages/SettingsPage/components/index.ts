@@ -1,5 +1,6 @@
 export { CreatePreviews } from './CreatePreviews'
 export { IsVideoPreviewMuted } from './IsVideoPreviewMuted'
+export { IsNewUploader } from './IsNewUploader'
 export { MaxImageSlideLimit } from './MaxImageSlideLimit'
 export { MinImageSlideLimit } from './MinImageSlideLimit'
 export { PaginationOptions } from './PaginationOptions'

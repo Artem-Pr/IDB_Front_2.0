@@ -5,6 +5,7 @@ import cn from 'classnames'
 
 import {
   CreatePreviews,
+  IsNewUploader,
   IsVideoPreviewMuted,
   MaxImageSlideLimit,
   MinImageSlideLimit,
@@ -27,6 +28,10 @@ const settingsList: SettingItem[] = [
   {
     label: 'Is video preview muted',
     component: <IsVideoPreviewMuted />,
+  },
+  {
+    label: 'Use new uploader',
+    component: <IsNewUploader />,
   },
   {
     label: 'Min image slide limit',

@@ -7,6 +7,7 @@ export interface State {
     max: number
   }
   isVideoPreviewMuted: boolean
+  isNewUploader: boolean
   unusedKeywords: string[]
 }
 
@@ -16,6 +17,7 @@ export const initialState: State = {
     max: 300,
   },
   isVideoPreviewMuted: true,
+  isNewUploader: false,
   unusedKeywords: [],
 }
 
@@ -38,6 +40,9 @@ const settingsSlice = createSlice({
     settingsReducerSetIsVideoPreviewMuted(state, action: PayloadAction<boolean>) {
       state.isVideoPreviewMuted = action.payload
     },
+    settingsReducerSetIsNewUploader(state, action: PayloadAction<boolean>) {
+      state.isNewUploader = action.payload
+    },
     settingsReducerDeleteUnusedKeyword(state, action: PayloadAction<string>) {
       state.unusedKeywords = current(state).unusedKeywords.filter(keyword => keyword !== action.payload)
     },
@@ -48,6 +53,7 @@ export const {
   settingsReducerDeleteUnusedKeyword,
   settingsReducerSetImagePreviewSlideLimits,
   settingsReducerSetIsVideoPreviewMuted,
+  settingsReducerSetIsNewUploader,
   settingsReducerSetMaxPreviewSlideLimit,
   settingsReducerSetMinPreviewSlideLimit,
   settingsReducerSetUnusedKeywords,
