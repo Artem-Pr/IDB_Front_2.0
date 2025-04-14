@@ -6,6 +6,7 @@ import { Layout, Result } from 'antd'
 import { MainMenuKeys, PagePaths } from 'src/common/constants'
 import { getFolderReducerFolderInfoCurrentFolder } from 'src/redux/reducers/foldersSlice/selectors'
 import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
+import { getSettingsReducerIsNewUploader } from 'src/redux/reducers/settingsSlice/selectors'
 import {
   uploadReducerAddToSelectedList,
   uploadReducerClearSelectedList,
@@ -27,7 +28,7 @@ import {
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import { removeIntersectingKeywords } from '../../common/utils'
 import {
-  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider,
+  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider, UppyUploader,
 } from '../../components'
 
 const { Content } = Layout
@@ -43,6 +44,7 @@ const UploadPage = () => {
   const openMenus = useSelector(getUploadReducerOpenMenus)
   const selectedList = useSelector(getUploadReducerSelectedList)
   const currentFolderPath = useSelector(getFolderReducerFolderInfoCurrentFolder)
+  const isNewUploader = useSelector(getSettingsReducerIsNewUploader)
   const showTopGalleryMenu = imageArr.length !== 0
 
   useEffect(() => {
@@ -86,7 +88,9 @@ const UploadPage = () => {
       <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       <Layout>
         <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>
-          <DropZone loadingStatus={uploadingStatus} openMenus={openMenus} />
+          {isNewUploader
+            ? <UppyUploader />
+            : <DropZone loadingStatus={uploadingStatus} openMenus={openMenus} /> }
           {uploadingStatus === 'success' && (
             <Result
               status="success"
