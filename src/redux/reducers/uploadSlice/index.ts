@@ -88,6 +88,9 @@ const uploadSlice = createSlice({
     uploadReducerSetCheckDuplicatesInCurrentDir(state, action: PayloadAction<boolean>) {
       state.checkForDuplicatesOnlyInCurrentFolder = action.payload
     },
+    uploadReducerSetShowUppyUploaderModal(state, action: PayloadAction<boolean>) {
+      state.showUppyUploaderModal = action.payload
+    },
   },
 })
 
@@ -111,6 +114,7 @@ export const {
   uploadReducerSetSort,
   uploadReducerSetUploadingStatus,
   uploadReducerUpdateBlobName,
+  uploadReducerSetShowUppyUploaderModal,
 } = uploadSlice.actions
 
 export const uploadPageSliceReducer = uploadSlice.reducer

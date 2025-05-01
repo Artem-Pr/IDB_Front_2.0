@@ -1,0 +1,14 @@
+.uppyUploadBtn {
+    :global {
+        .uppy-FileInput-container {
+            margin: 0;
+        }
+
+        .uppy-FileInput-btn {
+            width: 100%;
+            border-radius: 0;
+            border: none;
+            background: var(--uppy-loader-upload-btn);
+        }
+    }
+}

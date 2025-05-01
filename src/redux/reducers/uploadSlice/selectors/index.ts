@@ -15,6 +15,7 @@ export const getUploadReducerOpenMenus = (state: RootState) => state.uploadPageS
 export const getUploadReducerSelectedList = (state: RootState) => state.uploadPageSliceReducer.selectedList
 export const getUploadReducerSort = (state: RootState) => state.uploadPageSliceReducer.sort
 export const getUploadReducerUploadStatus = (state: RootState) => state.uploadPageSliceReducer.uploadingStatus
+export const getUploadReducerShowUppyUploaderModal = (state: RootState) => state.uploadPageSliceReducer.showUppyUploaderModal
 
 export const getUploadReducerHasFailedUploadingFiles = createSelector(getUploadReducerFilesArr, uploadingFilesArr => (
   uploadingFilesArr.some(({ staticPath }) => !staticPath)

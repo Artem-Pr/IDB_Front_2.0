@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 import { Col, Layout, Row } from 'antd'
 import { Content } from 'antd/es/layout/layout'
@@ -11,7 +11,7 @@ import MatchingNumberOfFiles from './tests/MatchingNumberOfFiles'
 
 import styles from './index.module.scss'
 
-const TestDB = () => (
+const TestDB = memo(() => (
   <Layout>
     <Content className={styles.container}>
       <Row gutter={[16, 16]}>
@@ -32,6 +32,6 @@ const TestDB = () => (
       </Row> */}
     </Content>
   </Layout>
-)
+))
 
 export default TestDB

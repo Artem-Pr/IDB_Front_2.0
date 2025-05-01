@@ -1,0 +1,76 @@
+:global(.ant-modal-wrap):has(.uppyModal) {
+  position: initial;
+}
+
+.uppyModal {
+  position: absolute;
+  bottom: 0;
+  left: auto;
+  right: 0;
+  top: auto;
+  padding: 5px;
+  z-index: 1000;
+
+  :global {
+    .ant-modal-content {
+      padding: 0;
+
+      .anticon {
+        position: absolute;
+        z-index: 1100;
+        font-size: 30px;
+        background: white;
+        border-radius: 50%;
+        color: var(--uppy-loader-modal-grey);
+      }
+
+      .anticon-down-circle {
+        transform: translateX(-50%);
+        left: 50%;
+        top: -17px;
+      }
+
+      .anticon-close-square {
+        right: 5px;
+        top: 6px;
+      }
+
+      .anticon:hover {
+        color: var(--uppy-loader-modal-primary);
+        cursor: pointer;
+      }
+
+      .anticon-close-square[disabled] {
+        color: var(--uppy-loader-modal-disabled);
+        cursor: auto;
+      }
+    }
+
+    .uppy-Dashboard-files {
+      padding: 0;
+    }
+
+    .uppy-Dashboard {
+      height: 500px;
+      transition: all 0.5s ease !important;
+    }
+
+    .uppy-DashboardContent-addMore,
+    .uppy-StatusBar-actionBtn--done {
+      display: none;
+    }
+  }
+
+  &.hidden {
+    :global {
+      .ant-modal-content {
+        .anticon-down-circle {
+          transform: translateX(-50%) rotate(180deg);
+        }
+      }
+      .uppy-Dashboard {
+        height: 88px;
+      }
+    }
+  }
+}

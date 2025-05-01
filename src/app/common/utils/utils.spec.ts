@@ -19,6 +19,7 @@ import {
   getFilesWithUpdatedKeywords,
   getFilePathWithoutName,
   sanitizeDirectory,
+  getNameFromPath,
 } from './utils'
 
 describe('utils: ', () => {
@@ -222,6 +223,42 @@ describe('utils: ', () => {
       const resultFilePath = 'rootDirectory/директория с файлом'
       expect(getFilePathWithoutName(fullFilePath))
         .toBe(resultFilePath)
+    })
+  })
+  describe('getNameFromPath', () => {
+    it('should return the file name from a full path', () => {
+      const path = 'rootDirectory/subDirectory/fileName.txt'
+      const result = getNameFromPath(path)
+      expect(result)
+        .toBe('fileName.txt')
+    })
+
+    it('should return the last part of the path even if it has no extension', () => {
+      const path = 'rootDirectory/subDirectory/fileName'
+      const result = getNameFromPath(path)
+      expect(result)
+        .toBe('fileName')
+    })
+
+    it('should return an empty string for an empty path', () => {
+      const path = ''
+      const result = getNameFromPath(path)
+      expect(result)
+        .toBe('')
+    })
+
+    it('should handle paths with trailing slashes', () => {
+      const path = 'rootDirectory/subDirectory/'
+      const result = getNameFromPath(path)
+      expect(result)
+        .toBe('')
+    })
+
+    it('should handle paths with only a single file name', () => {
+      const path = 'fileName.txt'
+      const result = getNameFromPath(path)
+      expect(result)
+        .toBe('fileName.txt')
     })
   })
 })

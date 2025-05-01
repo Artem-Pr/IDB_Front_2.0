@@ -144,3 +144,7 @@ export const changeExtension = (nameWithExtension: string, newExtension: string)
     .join('.')
   }.${newExtension}`
 )
+
+export const getNameFromPath = (path: string): string => path.split('/')
+  .slice(-1)
+  .join('/')

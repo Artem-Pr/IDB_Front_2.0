@@ -6,6 +6,7 @@ export {
   getFilePathWithoutName,
   getFilesWithUpdatedKeywords,
   getLastItem,
+  getNameFromPath,
   getNameParts,
   getSameKeywords,
   invokableCompose,

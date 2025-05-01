@@ -1,12 +1,5 @@
+import { safetyJSONParse } from 'src/app/common/utils/safetyJSONParse'
 import { LocalStorageSession } from 'src/redux/store/localStorageSync'
-
-const safetyJSONParse = <T>(str: string | null): T | null => {
-  try {
-    return str ? (JSON.parse(str) as T) : null
-  } catch (e) {
-    return null
-  }
-}
 
 export const localStorageAPI = {
   set IDBaseSession(IDBaseSession: LocalStorageSession | null) {

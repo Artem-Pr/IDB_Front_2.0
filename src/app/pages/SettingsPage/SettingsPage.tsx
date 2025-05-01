@@ -1,4 +1,4 @@
-import React, { Fragment, Key } from 'react'
+import React, { Fragment, Key, memo } from 'react'
 
 import { Divider } from 'antd'
 import cn from 'classnames'
@@ -66,7 +66,7 @@ const settingsList: SettingItem[] = [
   },
 ].map((item, key) => ({ ...item, key }))
 
-export const SettingsPage = () => (
+export const SettingsPage = memo(() => (
   <div className={styles.wrapper}>
     <div className={cn(styles.gridWrapper, 'd-grid')}>
       {settingsList.map(({
@@ -82,4 +82,4 @@ export const SettingsPage = () => (
       ))}
     </div>
   </div>
-)
+))

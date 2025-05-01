@@ -14,6 +14,7 @@ export interface State {
   filesArr: Media[]
   uploadingStatus: LoadingStatus
   sort: SortingData
+  showUppyUploaderModal: boolean
 }
 
 export const initialState: State = {
@@ -28,4 +29,5 @@ export const initialState: State = {
     gallerySortingList: defaultGallerySortingList,
     groupedByDate: false,
   },
+  showUppyUploaderModal: false,
 }

@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Layout, Result } from 'antd'
 
+import { UppyUploadButton } from 'src/app/components/UppyUploader/UppyUploadButton'
 import { MainMenuKeys, PagePaths } from 'src/common/constants'
 import { getFolderReducerFolderInfoCurrentFolder } from 'src/redux/reducers/foldersSlice/selectors'
 import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
@@ -28,12 +29,12 @@ import {
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import { removeIntersectingKeywords } from '../../common/utils'
 import {
-  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider, UppyUploader,
+  CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider,
 } from '../../components'
 
 const { Content } = Layout
 
-const UploadPage = () => {
+const UploadPage = memo(() => {
   const { menuRef, handleDividerMove, handleFinishResize } = useMenuResize()
   const { refs, onSliderMove, finishPreviewResize } = useGridRefControl()
   const dispatch = useDispatch()
@@ -89,7 +90,7 @@ const UploadPage = () => {
       <Layout>
         <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>
           {isNewUploader
-            ? <UppyUploader />
+            ? <UppyUploadButton />
             : <DropZone loadingStatus={uploadingStatus} openMenus={openMenus} /> }
           {uploadingStatus === 'success' && (
             <Result
@@ -107,6 +108,6 @@ const UploadPage = () => {
       </Layout>
     </Layout>
   )
-}
+})
 
 export default UploadPage
