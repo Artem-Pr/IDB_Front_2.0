@@ -21,7 +21,7 @@ export class UppyInstance {
   private uppyInstance: UppyType
 
   constructor({
-    isFileAlreadyExist, processResponse, onComplete, onUploadStart, onUploadSuccess,
+    isFileAlreadyExist, processResponse, onComplete, onUploadStart, onUploadSuccess, isGlobalDropZone, onUploadError,
   }: UppyInstanceConstructor) {
     this.uppyInstance = new Uppy({
       ...uppyOptions,
@@ -35,18 +35,22 @@ export class UppyInstance {
         return !isDuplicate
       },
     })
-      .use(DropTarget, {
-        target: document.body,
-      })
       .use<typeof Tus<Metadata, Body>>(Tus, {
       ...tusOptions,
       onAfterResponse(_req, res) {
         const responseBody = safetyJSONParse<{ properties: Media }>(res.getBody())
-        if (responseBody) {
+        if (responseBody?.properties) {
           processResponse(responseBody.properties)
         }
       },
     })
+
+    if (isGlobalDropZone) {
+      this.uppyInstance.use(DropTarget, {
+        target: document.body,
+      })
+    }
+
     this.uppyInstance.on('file-added', uppyFile => {
       this.uppyInstance.setFileMeta(uppyFile.id, {
         changeDate: (uppyFile.data as File).lastModified,
@@ -61,6 +65,9 @@ export class UppyInstance {
     })
     this.uppyInstance.on('upload-success', (file, response) => {
       onUploadSuccess && onUploadSuccess(file, response)
+    })
+    this.uppyInstance.on('upload-error', (file, error) => {
+      onUploadError && onUploadError(file, error)
     })
   }
 

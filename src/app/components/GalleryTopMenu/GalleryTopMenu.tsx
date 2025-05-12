@@ -91,19 +91,17 @@ export const GalleryTopMenu = ({
         </Checkbox>
       </Col>
       {isMainPage && (
-        <>
-          <Col>
-            <Checkbox checked={scrollUpWhenUpdating} onChange={handleSetScrollUpWhenUpdating}>
+        <Col>
+          <Checkbox checked={scrollUpWhenUpdating} onChange={handleSetScrollUpWhenUpdating}>
             Scroll up when updating
-            </Checkbox>
-          </Col>
-          <Col>
-            <Checkbox checked={isDuplicatesChecking} onChange={handleSetIsDuplicatesChecking}>
-            Check duplicates
-            </Checkbox>
-          </Col>
-        </>
+          </Checkbox>
+        </Col>
       )}
+      <Col>
+        <Checkbox checked={isDuplicatesChecking} onChange={handleSetIsDuplicatesChecking}>
+            Check duplicates
+        </Checkbox>
+      </Col>
       <Col>
         {showSlider && (
           <Slider

@@ -11,7 +11,7 @@ import type { Metadata, Body } from './uppyTypes'
 const MAX_FILE_SIZE = 10 // GB
 const TUS_ENDPOINT = `${HOST.HTTP}/tus/upload`
 const TUS_CHUNK_SIZE = 10 // MB
-const TUS_LIMIT_CONCURRENT_UPLOADS = 4
+const TUS_LIMIT_CONCURRENT_UPLOADS = 10
 const ALLOWED_METADATA_FIELDS: Array<keyof Metadata> = ['name', 'type', 'changeDate', 'size']
 
 export const uppyOptions: Omit<UppyOptionsWithOptionalRestrictions<Metadata, Body>, 'onBeforeFileAdded'> = {

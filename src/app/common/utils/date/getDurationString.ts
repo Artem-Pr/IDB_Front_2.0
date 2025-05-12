@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 export const getDurationString = (duration: ReactNode): ReactNode => {
-  if (typeof duration !== 'number') return duration
+  if (typeof duration !== 'number') return 'Format is not supported'
 
   const hours = Math.floor(duration / 3600)
   const minutes = Math.floor((duration % 3600) / 60)

@@ -1,10 +1,19 @@
 import { ReactNode, useMemo } from 'react'
 
+import type { Tags } from 'exiftool-vendored'
+
 import type { Media } from 'src/api/models/media'
 import { formatDate } from 'src/app/common/utils/date'
 
 import { createKeywordsList, createUniqKeywords } from '../helpers'
 import type { PropertiesFieldNames, FieldsLabels } from '../types'
+
+const getDurationNumber = (exif: Tags): number => {
+  if (typeof exif.Duration === 'number') return exif.Duration
+  if (typeof exif.TrackDuration === 'number') return exif.TrackDuration
+  if (typeof exif.MediaDuration === 'number') return exif.MediaDuration
+  return 0
+}
 
 const getDescriptionList = (
   accum: FieldsLabelsWithArrayDescription,
@@ -90,7 +99,7 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
 
     const getOneFieldObjData = (): Partial<FieldsLabels> => {
       const {
-        exif: { Duration, VideoFrameRate, AvgBitrate }, changeDate, originalDate, keywords, description, ...otherFields
+        exif, changeDate, originalDate, keywords, description, ...otherFields
       } = filesArr[selectedList[0]]
 
       return {
@@ -99,9 +108,9 @@ export const usePropertyFields = (filesArr: Media[], selectedList: number[]) => 
         description: description || undefined,
         keywords: createKeywordsList(keywords),
         originalDate: originalDate ? formatDate(originalDate) : undefined,
-        videoDuration: Duration || undefined,
-        videoFrameRate: VideoFrameRate || undefined,
-        avgBitRate: AvgBitrate || undefined,
+        videoDuration: getDurationNumber(exif) || undefined,
+        videoFrameRate: exif.VideoFrameRate || undefined,
+        avgBitRate: exif.AvgBitrate || undefined,
       }
     }
 

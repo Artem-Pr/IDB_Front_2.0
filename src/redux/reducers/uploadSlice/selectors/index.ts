@@ -25,7 +25,7 @@ export const getUploadReducerKeywords = createSelector(
   getUploadReducerFilesArr,
   (uploadingFilesArr): string[] => compose(
     getUniqArr,
-    map((item: Media) => item.keywords || []),
+    map((item: Media) => item?.keywords || []),
   )(uploadingFilesArr),
 )
 

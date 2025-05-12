@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Layout, Result } from 'antd'
+import { Layout } from 'antd'
 
 import { UppyUploadButton } from 'src/app/components/UppyUploader/UppyUploadButton'
 import { MainMenuKeys, PagePaths } from 'src/common/constants'
@@ -92,12 +92,6 @@ const UploadPage = memo(() => {
           {isNewUploader
             ? <UppyUploadButton />
             : <DropZone loadingStatus={uploadingStatus} openMenus={openMenus} /> }
-          {uploadingStatus === 'success' && (
-            <Result
-              status="success"
-              title="Files have been successfully uploaded"
-            />
-          )}
           <CustomAlert message="Edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT)} type="info" />
           <CustomAlert message="Bulk edit mode" hide={!openMenus.includes(MainMenuKeys.EDIT_BULK)} type="success" />
           {showTopGalleryMenu && (

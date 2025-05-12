@@ -1,6 +1,6 @@
 import { mainApi } from 'src/api/api'
 import { createFolderTree } from 'src/app/common/folderTree'
-import { errorMessage } from 'src/app/common/notifications'
+import { errorMessage, successMessage } from 'src/app/common/notifications'
 import { getFileAPIRequestFromMediaList } from 'src/app/common/utils/getFileAPIRequestFromMedia'
 import type { AppThunk } from 'src/redux/store/types'
 
@@ -26,6 +26,8 @@ export const uploadFiles = (): AppThunk => (dispatch, getState) => {
       dispatch(folderReducerSetFolderTree(updatedFolderTree))
       dispatch(uploadReducerSetUploadingStatus('success'))
       dispatch(uploadReducerClearState())
+
+      successMessage('Files have been successfully uploaded')
     })
     .catch(error => {
       dispatch(uploadReducerSetUploadingStatus('error'))

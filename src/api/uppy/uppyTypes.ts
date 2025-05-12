@@ -18,7 +18,9 @@ export type UppyType = Uppy<Metadata, Body>
 
 export interface UppyInstanceConstructor {
   isFileAlreadyExist: (currentFile: UppyFile<Metadata, Body>) => boolean
+  isGlobalDropZone?: boolean
   onComplete?: (result: UploadResult<Metadata, Body>) => void
+  onUploadError?: (file: UppyFile<Metadata, Body> | undefined, error: Error) => void
   onUploadStart?: (file: UppyFile<Metadata, Body>[]) => void
   onUploadSuccess?: (file: UppyFile<Metadata, Body> | undefined, response: NonNullable<UppyFile<Metadata, Body>['response']>) => void
   processResponse: (uploadedMedia: Media) => void
