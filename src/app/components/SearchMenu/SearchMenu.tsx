@@ -30,12 +30,12 @@ import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { getISOStringWithUTC } from '../../common/utils/date'
+import DescriptionAutoComplete from '../DescriptionAutoComplete/DescriptionAutoComplete'
 
 import styles from './index.module.scss'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
-const { TextArea } = Input
 const fileTypes = keys(MimeTypes)
 
 export const SearchMenu = () => {
@@ -103,8 +103,8 @@ export const SearchMenu = () => {
     dispatch(mainPageReducerSetIsAnyDescriptionFilter(e.target.checked))
   }
 
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(mainPageReducerSetDescriptionFilter(e.target.value))
+  const handleDescriptionChange = (value: string) => {
+    dispatch(mainPageReducerSetDescriptionFilter(value))
   }
 
   return (
@@ -181,12 +181,10 @@ export const SearchMenu = () => {
           Any description
         </Checkbox>
       </div>
-      <TextArea
-        style={{ resize: 'vertical' }}
+      <DescriptionAutoComplete
         placeholder="write the description"
         value={description}
         onChange={handleDescriptionChange}
-        maxLength={2000}
         disabled={anyDescription}
       />
 

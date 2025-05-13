@@ -12,6 +12,11 @@ export interface UpdatedFileAPIRequest {
   updatedFields: Partial<UpdatedFields>
 }
 
+interface Pagination {
+  page: number
+  perPage: number
+}
+
 export interface GetPhotosByTagsAPIRequest {
   filters: {
     rating? : number
@@ -33,8 +38,9 @@ export interface GetPhotosByTagsAPIRequest {
     showSubfolders?: boolean
     isDynamicFolders?: boolean
   }
-  pagination: {
-    page: number
-    perPage: number
-  }
+  pagination: Pagination
+}
+
+export interface GetFilesDescriptionAPIRequest extends Pagination {
+  descriptionPart: string
 }

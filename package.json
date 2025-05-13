@@ -25,6 +25,7 @@
     "classnames": "^2.5.1",
     "css-loader": "^6.10.0",
     "dayjs": "^1.11.10",
+    "debounce": "^2.2.0",
     "dotenv": "^16.4.1",
     "eslint": "^8.56.0",
     "file-loader": "^6.2.0",
@@ -129,11 +130,6 @@
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
   },
   "eslintConfig": {
     "extends": "react-app"

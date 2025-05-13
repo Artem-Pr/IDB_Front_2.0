@@ -41,6 +41,7 @@ import {
   getNameParts,
   isVideoByExt,
 } from '../../common/utils'
+import DescriptionAutoComplete from '../DescriptionAutoComplete/DescriptionAutoComplete'
 import { UIKitBtn } from '../UIKit'
 
 import { mediaFields } from './EditMenuConfig'
@@ -48,7 +49,6 @@ import { TimeDifferenceModal } from './components'
 
 import styles from './EditMenu.module.scss'
 
-const { TextArea } = Input
 const CLIPBOARD_TEXT_SPLITTER = ', '
 
 interface Props {
@@ -326,10 +326,10 @@ export const EditMenu = ({ isEditMany }: Props) => {
             <Checkbox>{mediaFields.description.label}</Checkbox>
           </Form.Item>
           <Form.Item className={styles.inputField} name={mediaFields.description.name}>
-            <TextArea
-              className={styles.textArea}
-              maxLength={2000}
+            <DescriptionAutoComplete
               placeholder={mediaFields.description.placeholder}
+              className={styles.inputField}
+              textAreaClassName={styles.textArea}
               showCount
             />
           </Form.Item>

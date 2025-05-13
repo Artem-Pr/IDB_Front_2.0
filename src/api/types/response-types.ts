@@ -22,3 +22,11 @@ export interface DeleteDirectoryApiResponse {
   directoriesToRemove: string[];
   mediaList: Media[];
 }
+
+export interface GetFilesDescriptionAPIResponse {
+  descriptions: string[]
+  page: number
+  perPage: number
+  resultsCount: number
+  totalPages: number
+}

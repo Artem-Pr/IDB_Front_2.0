@@ -8,11 +8,12 @@ import type { MatchingNumberOfFilesTest } from 'src/redux/types/testPageTypes'
 
 import { axiosInstance } from './api-client'
 import type { Media } from './models/media'
-import type { GetPhotosByTagsAPIRequest, UpdatedFileAPIRequest } from './types/request-types'
+import type { GetFilesDescriptionAPIRequest, GetPhotosByTagsAPIRequest, UpdatedFileAPIRequest } from './types/request-types'
 import type {
   CheckedDirectoryAPIResponse,
   CheckOriginalNameDuplicatesAPIResponse,
   DeleteDirectoryApiResponse,
+  GetFilesDescriptionAPIResponse,
   UpdatedFileAPIResponse,
   UploadingFileAPIResponse,
 } from './types/response-types'
@@ -76,6 +77,12 @@ export const mainApi = {
   deleteDirectory(directory: string) {
     return axiosInstance.delete<DeleteDirectoryApiResponse>('/directory', {
       params: { directory },
+    })
+  },
+
+  getFilesDescription(params: GetFilesDescriptionAPIRequest) {
+    return axiosInstance.get<GetFilesDescriptionAPIResponse>('/files/description', {
+      params,
     })
   },
 
