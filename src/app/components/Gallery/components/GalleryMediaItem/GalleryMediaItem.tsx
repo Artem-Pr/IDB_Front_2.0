@@ -21,23 +21,28 @@ const IPHONE_ROTATION_IDENTIFIERS = Object.freeze([
     Make: 'Apple',
     CompressorName: 'HEVC',
     Rotation: 90,
+    LivePhotoAuto: undefined, // Videos from LivePhoto shouldn't be rotated
     DefaultRotation: 180,
   },
   {
     Make: 'Apple',
     CompressorName: 'HEVC',
     Rotation: 270,
+    LivePhotoAuto: undefined,
     DefaultRotation: 180,
   },
 ])
 
 const DEFAULT_SKIP_DURATION = 5
 const getDefaultRotation = (exif?: Media['exif']) => {
-//   const iphoneRotation = exif?.CompressorName === IPHONE_ROTATION_IDENTIFIER.CompressorName
-// && exif.Make === IPHONE_ROTATION_IDENTIFIER.Make
   const matchingIdentifier = IPHONE_ROTATION_IDENTIFIERS.find(
-    identifier => exif?.Rotation === identifier.Rotation
-      && Boolean(identifier.DefaultRotation),
+    identifier => (
+      exif?.Rotation === identifier.Rotation
+      && exif?.CompressorName === identifier.CompressorName
+      && exif?.Make === identifier.Make
+      && exif?.LivePhotoAuto === identifier.LivePhotoAuto
+      && Boolean(identifier.DefaultRotation)
+    ),
   )
 
   return matchingIdentifier?.DefaultRotation

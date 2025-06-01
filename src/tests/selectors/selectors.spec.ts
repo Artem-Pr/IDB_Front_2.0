@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import type { Media } from 'src/api/models/media'
+import { PagePaths } from 'src/common/constants'
 import { getFolderReducerFolderPathsArr, getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
-import { getUploadReducerSameKeywords, getUploadReducerKeywords } from 'src/redux/reducers/uploadSlice/selectors'
+import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
+import { getUploadReducerKeywords } from 'src/redux/reducers/uploadSlice/selectors'
+import { getSameKeywords } from 'src/redux/selectors'
 
 import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../../app/common/tests/mock'
 import { copyByJSON } from '../../app/common/utils'
@@ -56,10 +59,11 @@ describe('selectors: ', () => {
   })
   it('should return intersected keywords', async () => {
     const uploadingFiles: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
-    await store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
-    await store.dispatch(uploadReducerSelectAll())
+    store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
+    store.dispatch(sessionReducerSetCurrentPage(PagePaths.UPLOAD))
+    store.dispatch(uploadReducerSelectAll())
     const initialState = store.getState()
-    const allKeywords = getUploadReducerSameKeywords(initialState)
+    const allKeywords = getSameKeywords(initialState)
     expect(allKeywords)
       .toHaveLength(1)
     expect(allKeywords.includes('Эстония'))

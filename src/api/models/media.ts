@@ -1,4 +1,4 @@
-import type { Tags } from 'exiftool-vendored'
+import type { Tags as ExifToolVendoredTags } from 'exiftool-vendored'
 import { v4 as uuidV4 } from 'uuid'
 
 import { MimeTypes } from 'src/common/constants'
@@ -6,6 +6,9 @@ import { DEFAULT_TIME_STAMP } from 'src/constants/dateConstants'
 
 import type { DuplicateFile } from '../types/types'
 
+export type Tags = ExifToolVendoredTags & {
+  LivePhotoAuto?: number
+}
 type WithNullOnly<T> = Exclude<T, undefined> | null
 type ExifDescription = WithNullOnly<
 Tags['Description' | 'ImageDescription' | 'UserComment' | 'Caption-Abstract']

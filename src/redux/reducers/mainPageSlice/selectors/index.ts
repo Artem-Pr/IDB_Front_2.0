@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
-import { getSameKeywords, getUniqArr } from 'src/app/common/utils'
+import { getUniqArr } from 'src/app/common/utils'
 import type { RootState } from 'src/redux/store/types'
 
 export const getMainPageReducerFilesArr = (state: RootState) => state.mainPageSliceReducer.filesArr
@@ -36,10 +36,4 @@ export const getMainPageReducerKeywords = createSelector(
     getUniqArr,
     map((item: Media) => item.keywords || []),
   )(filesArr),
-)
-
-export const getMainPageReducerSameKeywords = createSelector(
-  getMainPageReducerFilesArr,
-  getMainPageReducerSelectedList,
-  (downloadingFilesArr, mainPageSelectedList) => getSameKeywords(downloadingFilesArr, mainPageSelectedList),
 )

@@ -1,4 +1,4 @@
-import type { Tags } from 'exiftool-vendored'
+import type { Tags } from 'src/api/models/media'
 
 export interface FullExifPayload {
   tempPath: string

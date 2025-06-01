@@ -2,7 +2,7 @@ import { compose, map } from 'ramda'
 import { createSelector } from 'reselect'
 
 import type { Media } from 'src/api/models/media'
-import { getSameKeywords, getUniqArr } from 'src/app/common/utils'
+import { getUniqArr } from 'src/app/common/utils'
 import type { RootState } from 'src/redux/store/types'
 
 export const getUploadReducerPreviewLoadingCount = (state: RootState) => state.uploadPageSliceReducer.previewLoadingCount
@@ -27,9 +27,4 @@ export const getUploadReducerKeywords = createSelector(
     getUniqArr,
     map((item: Media) => item?.keywords || []),
   )(uploadingFilesArr),
-)
-
-export const getUploadReducerSameKeywords = createSelector(
-  [getUploadReducerFilesArr, getUploadReducerSelectedList],
-  (uploadingFilesArr, uploadingSelectedList): string[] => getSameKeywords(uploadingFilesArr, uploadingSelectedList),
 )

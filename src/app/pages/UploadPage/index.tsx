@@ -5,21 +5,14 @@ import { Layout } from 'antd'
 
 import { UppyUploadButton } from 'src/app/components/UppyUploader/UppyUploadButton'
 import { MainMenuKeys, PagePaths } from 'src/common/constants'
-import { getFolderReducerFolderInfoCurrentFolder } from 'src/redux/reducers/foldersSlice/selectors'
 import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
 import { getSettingsReducerIsNewUploader } from 'src/redux/reducers/settingsSlice/selectors'
 import {
   uploadReducerAddToSelectedList,
   uploadReducerClearSelectedList,
   uploadReducerRemoveFromSelectedList,
-  uploadReducerSetOpenMenus,
-  uploadReducerSelectAll,
-  uploadReducerSetFilesArr,
-  uploadReducerClearState,
 } from 'src/redux/reducers/uploadSlice'
 import {
-  getUploadReducerSameKeywords,
-  getUploadReducerKeywords,
   getUploadReducerFilesArr,
   getUploadReducerOpenMenus,
   getUploadReducerSelectedList,
@@ -27,7 +20,6 @@ import {
 } from 'src/redux/reducers/uploadSlice/selectors'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
-import { removeIntersectingKeywords } from '../../common/utils'
 import {
   CustomAlert, DropZone, Gallery, GalleryTopMenu, MainMenu, ResizeDivider,
 } from '../../components'
@@ -39,12 +31,9 @@ const UploadPage = memo(() => {
   const { refs, onSliderMove, finishPreviewResize } = useGridRefControl()
   const dispatch = useDispatch()
   const uploadingStatus = useSelector(getUploadReducerUploadStatus)
-  const uniqKeywords = useSelector(getUploadReducerKeywords)
-  const sameKeywords = useSelector(getUploadReducerSameKeywords)
   const imageArr = useSelector(getUploadReducerFilesArr)
   const openMenus = useSelector(getUploadReducerOpenMenus)
   const selectedList = useSelector(getUploadReducerSelectedList)
-  const currentFolderPath = useSelector(getFolderReducerFolderInfoCurrentFolder)
   const isNewUploader = useSelector(getSettingsReducerIsNewUploader)
   const showTopGalleryMenu = imageArr.length !== 0
 
@@ -66,26 +55,9 @@ const UploadPage = memo(() => {
     isLoading: false,
   }
 
-  const mainMenuProps = {
-    filesArr: imageArr,
-    selectedList,
-    uniqKeywords,
-    sameKeywords,
-    openKeys: openMenus,
-    currentFolderPath,
-    clearSelectedList: () => dispatch(uploadReducerClearSelectedList()),
-    selectAll: () => dispatch(uploadReducerSelectAll()),
-    updateOpenMenus: (value: MainMenuKeys[]) => dispatch(uploadReducerSetOpenMenus(value)),
-    removeKeyword: (keyword: string) => {
-      const filesArrWithoutKeyword = removeIntersectingKeywords([keyword], imageArr)
-      dispatch(uploadReducerSetFilesArr(filesArrWithoutKeyword))
-    },
-    removeFiles: () => dispatch(uploadReducerClearState()),
-  }
-
   return (
     <Layout>
-      <MainMenu {...mainMenuProps} menuRef={menuRef} />
+      <MainMenu menuRef={menuRef} />
       <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       <Layout>
         <Content style={{ gridTemplateRows: 'auto auto auto auto 1fr' }}>

@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 
 import type { Media } from 'src/api/models/media'
 import type { DuplicateFile } from 'src/api/types/types'
+import { getSameKeywords as getSameKeywordsUtil } from 'src/app/common/utils'
 import { MainMenuKeys, Sort } from 'src/common/constants'
 import { DATE_FORMAT } from 'src/constants/dateConstants'
 
@@ -15,11 +16,9 @@ import {
   getMainPageReducerSelectedList,
   getMainPageReducerImagePreview,
   getMainPageReducerSort,
-  getMainPageReducerSameKeywords,
 } from '../reducers/mainPageSlice/selectors'
 import { getSessionReducerIsCurrentPage } from '../reducers/sessionSlice/selectors'
 import {
-  getUploadReducerSameKeywords,
   getUploadReducerKeywords,
   getUploadReducerCheckDuplicatesInCurrentDir,
   getUploadReducerOpenMenus,
@@ -178,16 +177,8 @@ export const getUniqKeywords = createSelector(
 )
 
 export const getSameKeywords = createSelector(
-  [
-    getUploadReducerSameKeywords,
-    getMainPageReducerSameKeywords,
-    getSessionReducerIsCurrentPage,
-  ],
-  (allSameKeywordsUpload, allSameKeywordsDownload, { isMainPage, isUploadPage }): string[] => {
-    if (isMainPage) return allSameKeywordsDownload
-    if (isUploadPage) return allSameKeywordsUpload
-    return []
-  },
+  [getCurrentFilesArr, getCurrentSelectedList],
+  (currentFilesArr, currentSelectedList): string[] => getSameKeywordsUtil(currentFilesArr, currentSelectedList),
 )
 
 export const getSelectedDateList = createSelector(

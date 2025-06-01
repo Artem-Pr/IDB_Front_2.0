@@ -1,5 +1,4 @@
-import type { Tags } from 'exiftool-vendored'
-
+import type { Tags } from 'src/api/models/media'
 import type { Defined, GPSCoordinates } from 'src/redux/types'
 
 export const isGPSExist = <T extends (Pick<Tags, 'GPSLatitude' | 'GPSLongitude'> | Tags | undefined)>(

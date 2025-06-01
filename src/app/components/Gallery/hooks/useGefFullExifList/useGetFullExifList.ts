@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { Tags } from 'exiftool-vendored'
+import type { Tags } from 'src/api/models/media'
 
 import type { GalleryTileProps } from '../../components/GalleryTile/GalleryTile'
 

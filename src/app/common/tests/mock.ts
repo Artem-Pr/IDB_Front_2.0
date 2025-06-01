@@ -1,6 +1,4 @@
-import type { Tags } from 'exiftool-vendored'
-
-import type { Media } from 'src/api/models/media'
+import type { Media, Tags } from 'src/api/models/media'
 import { MimeTypes } from 'src/common/constants'
 import { NameParts } from 'src/redux/types'
 

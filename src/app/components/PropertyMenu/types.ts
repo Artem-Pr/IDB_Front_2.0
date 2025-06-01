@@ -1,8 +1,6 @@
 import { ReactNode } from 'react'
 
-import type { Tags } from 'exiftool-vendored'
-
-import type { Media } from 'src/api/models/media'
+import type { Media, Tags } from 'src/api/models/media'
 
 export interface MediaProperties extends Omit<
 Media, 'id' | 'duplicates' | 'staticPath' | 'staticPreview'
