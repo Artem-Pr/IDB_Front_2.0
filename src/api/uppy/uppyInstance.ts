@@ -19,9 +19,16 @@ const showDuplicatesErrorMessage = (duplicateFileName: string) => {
 
 export class UppyInstance {
   private uppyInstance: UppyType
+  private authorizationHeader: string | undefined
 
   constructor({
-    isFileAlreadyExist, processResponse, onComplete, onUploadStart, onUploadSuccess, isGlobalDropZone, onUploadError,
+    isFileAlreadyExist,
+    processResponse,
+    onComplete,
+    onUploadStart,
+    onUploadSuccess,
+    isGlobalDropZone,
+    onUploadError,
   }: UppyInstanceConstructor) {
     this.uppyInstance = new Uppy({
       ...uppyOptions,
@@ -37,6 +44,12 @@ export class UppyInstance {
     })
       .use<typeof Tus<Metadata, Body>>(Tus, {
       ...tusOptions,
+      onBeforeRequest: req => {
+        if (this.authorizationHeader) {
+          req.setHeader('Authorization', this.authorizationHeader)
+        }
+        console.log('🚀 ~ UppyInstance ~ req:', req.getHeader('Authorization'))
+      },
       onAfterResponse(_req, res) {
         const responseBody = safetyJSONParse<{ properties: Media }>(res.getBody())
         if (responseBody?.properties) {
@@ -69,6 +82,11 @@ export class UppyInstance {
     this.uppyInstance.on('upload-error', (file, error) => {
       onUploadError && onUploadError(file, error)
     })
+  }
+
+  setAccessToken(accessToken: string) {
+    this.authorizationHeader = `Bearer ${accessToken}`
+    // this.uppyInstance.use
   }
 
   applyFileInput(target: string) {

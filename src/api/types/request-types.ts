@@ -4,6 +4,11 @@ import type { SortingFields } from 'src/redux/types'
 
 import type { Media, NullableMedia } from '../models/media'
 
+export interface LoginCredentials {
+  username: string
+  password: string
+}
+
 interface UpdatedFields extends NonNullableFields<Pick<NullableMedia,
 'originalName' | 'filePath' | 'originalDate' | 'keywords' | 'rating' | 'description' | 'timeStamp' | 'changeDate'>> {}
 

@@ -6,7 +6,7 @@ export const DEFAULT_PREVIEW_SIZE = 150
 
 export interface State {
   asideMenuWidth: number
-  currentPage: PagePaths.MAIN | PagePaths.UPLOAD | null
+  currentPage: PagePaths.MAIN | PagePaths.UPLOAD | PagePaths.LOGIN | null
   fitContain: boolean
   isDuplicatesChecking: boolean
   isLoading: boolean
@@ -38,7 +38,7 @@ const sessionSlice = createSlice({
     sessionReducerSetAsideMenuWidth(state, action: PayloadAction<number>) {
       state.asideMenuWidth = action.payload
     },
-    sessionReducerSetCurrentPage(state, action: PayloadAction<PagePaths.MAIN | PagePaths.UPLOAD | null>) {
+    sessionReducerSetCurrentPage(state, action: PayloadAction<State['currentPage']>) {
       state.currentPage = action.payload
     },
     sessionReducerSetFitContain(state, action: PayloadAction<boolean>) {

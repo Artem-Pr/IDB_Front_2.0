@@ -2,6 +2,22 @@ import type { Media } from '../models/media'
 
 import type { DuplicateFile } from './types'
 
+export interface AuthResponse {
+  user: {
+    id: string
+    username: string
+    email: string
+    role: string
+  }
+  accessToken: string
+  refreshToken: string
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string
+  refreshToken: string
+}
+
 export interface UploadingFileAPIResponse {
   properties: Media;
 }

@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from 'uuid'
 
 import { MimeTypes } from 'src/common/constants'
 
-import { HOST } from '../api-client'
+import { HOST } from '../config'
 
 import type { Metadata, Body } from './uppyTypes'
 

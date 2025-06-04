@@ -1,6 +1,6 @@
 import { errorMessage } from '../app/common/notifications'
 
-import { HOST } from './api-client'
+import { HOST } from './config'
 import type { WebSocketAPICallback, WebSocketAPIQuery, WebSocketAPIRequest } from './types/types'
 import { ApiStatus, WebSocketActions } from './types/types'
 

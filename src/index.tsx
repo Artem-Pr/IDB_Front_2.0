@@ -10,6 +10,7 @@ import utc from 'dayjs/plugin/utc'
 import { createRoot } from 'react-dom/client'
 
 import App from './App'
+import { AuthProvider } from './app/contexts/AuthContext'
 import store from './redux/store/store'
 import * as serviceWorker from './serviceWorker'
 
@@ -30,7 +31,9 @@ const root = createRoot(container!)
 root.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </Provider>,
 )

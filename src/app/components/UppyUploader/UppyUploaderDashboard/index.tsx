@@ -8,6 +8,7 @@ import { Dashboard } from '@uppy/react'
 import { Modal } from 'antd'
 import cn from 'classnames'
 
+import { useAuth } from 'src/app/contexts/AuthContext'
 import { UppyInstanceContext } from 'src/common/UppyInstanceContext'
 import { uploadReducerSetShowUppyUploaderModal } from 'src/redux/reducers/uploadSlice'
 import { getUploadReducerShowUppyUploaderModal } from 'src/redux/reducers/uploadSlice/selectors'
@@ -21,6 +22,7 @@ export const UppyUploader = memo(() => {
   const showModal = useSelector(getUploadReducerShowUppyUploaderModal)
   const [collapsed, setCollapsed] = useState(false)
   const [disableCloseButton, setDisableCloseButton] = useState(false)
+  const { isAuthenticated } = useAuth()
 
   useEffect(() => {
     const handleComplete = () => {
@@ -40,6 +42,8 @@ export const UppyUploader = memo(() => {
       uppy?.off('upload-start', handleStart)
     }
   }, [dispatch, uppy])
+
+  if (!isAuthenticated) return null
 
   const handleCollapse = () => {
     setCollapsed(!collapsed)

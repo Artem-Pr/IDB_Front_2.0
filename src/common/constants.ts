@@ -1,9 +1,10 @@
 export enum PagePaths {
   DEFAULT = '/IDB_Front_2.0',
+  LOGIN = '/login',
   MAIN = '/',
-  UPLOAD = '/upload',
   SETTINGS = '/settings',
   TEST_DB = '/test-db',
+  UPLOAD = '/upload',
 }
 
 export enum MainMenuKeys {

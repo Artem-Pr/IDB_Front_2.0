@@ -20,5 +20,6 @@ export const getSessionReducerIsCurrentPage = createSelector(
   currentPageName => ({
     isMainPage: currentPageName === PagePaths.MAIN,
     isUploadPage: currentPageName === PagePaths.UPLOAD,
+    isLoginPage: currentPageName === PagePaths.LOGIN,
   }),
 )

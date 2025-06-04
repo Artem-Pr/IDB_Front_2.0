@@ -7,8 +7,6 @@ import {
   Layout, Modal, Typography,
 } from 'antd'
 
-import { mainApi } from 'src/api/api'
-import { errorMessage } from 'src/app/common/notifications'
 import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
 import {
@@ -20,9 +18,9 @@ import {
   getFolderReducerFolderInfoNumberOfFiles,
   getFolderReducerFolderInfoNumberOfSubdirs,
   getFolderReducerFolderInfoShowInfoModal,
-  getFolderReducerFolderPathsArr,
 } from 'src/redux/reducers/foldersSlice/selectors'
-import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
+import { removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
+import { getSessionReducerIsCurrentPage } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { HeaderMenu } from './HeaderMenu'
@@ -39,8 +37,8 @@ const imageStyle: CSSProperties = { top: `-${getRandomBackgroundPosition()}%` }
 
 export const Header = memo(() => {
   const dispatch = useAppDispatch()
+  const { isLoginPage } = useSelector(getSessionReducerIsCurrentPage)
   const [modal, contextHolder] = Modal.useModal()
-  const directoriesArr = useSelector(getFolderReducerFolderPathsArr)
   const showInfoModal = useSelector(getFolderReducerFolderInfoShowInfoModal)
   const numberOfFiles = useSelector(getFolderReducerFolderInfoNumberOfFiles)
   const numberOfSubdirectories = useSelector(getFolderReducerFolderInfoNumberOfSubdirs)
@@ -55,19 +53,6 @@ export const Header = memo(() => {
     ),
     [numberOfFiles, numberOfSubdirectories],
   )
-
-  useEffect(() => {
-    mainApi
-      .cleanTemp()
-      .catch(err => {
-        console.error(err)
-        errorMessage(err, 'cleaning temp error', 0)
-      })
-  }, [])
-
-  useEffect(() => {
-    !directoriesArr.length && dispatch(fetchPathsList())
-  }, [dispatch, directoriesArr])
 
   useEffect(() => {
     const cleanModalInfo = () => {
@@ -98,7 +83,7 @@ export const Header = memo(() => {
         </div>
       </div>
       <Title className={styles.title}>IDBase</Title>
-      <HeaderMenu />
+      {!isLoginPage && <HeaderMenu />}
       {contextHolder}
     </HeaderLayout>
   )

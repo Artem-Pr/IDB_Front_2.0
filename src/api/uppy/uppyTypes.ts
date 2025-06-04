@@ -24,4 +24,5 @@ export interface UppyInstanceConstructor {
   onUploadStart?: (file: UppyFile<Metadata, Body>[]) => void
   onUploadSuccess?: (file: UppyFile<Metadata, Body> | undefined, response: NonNullable<UppyFile<Metadata, Body>['response']>) => void
   processResponse: (uploadedMedia: Media) => void
+  accessToken?: string
 }
