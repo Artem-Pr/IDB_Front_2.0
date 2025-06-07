@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, {
   MouseEvent, SyntheticEvent, memo, useMemo,
 } from 'react'
@@ -115,7 +114,7 @@ export const GalleryTile = memo(
     }
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+       
       <div
         className={cn(
           styles.item,

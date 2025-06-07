@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import type { MutableRefObject, ReactNode } from 'react'
+import type { JSX, RefObject, ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 
 import {
@@ -36,7 +36,7 @@ export interface MenuItem {
   label: ReactNode
   icon: JSX.Element
   children: ReactNode
-  ref?: MutableRefObject<HTMLDivElement | null>
+  ref?: RefObject<HTMLDivElement | null>
 }
 
 interface MenuItemsProps {
@@ -126,7 +126,7 @@ interface MenuItemReturningValue {
   extraMenu: Pick<MenuItem, 'key' | 'children'>[]
 }
 
-export const useMainMenuItems = (videoPreviewRef?: MutableRefObject<HTMLDivElement | null>): MenuItemReturningValue => {
+export const useMainMenuItems = (videoPreviewRef?: RefObject<HTMLDivElement | null>): MenuItemReturningValue => {
   const { isMainPage, isUploadPage } = useSelector(getSessionReducerIsCurrentPage)
   const previewDuplicatesArr = useSelector(getPreviewDuplicates)
 

@@ -1,6 +1,6 @@
-@import 'vars';
+@use '_vars' as vars;
 
 h1.ant-typography {
   margin: 0;
-  color: $mainTitle;
+  color: vars.$mainTitle;
 }

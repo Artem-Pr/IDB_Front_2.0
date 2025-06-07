@@ -131,18 +131,18 @@ export const getCurrentFilesArrGroupedByDate = createSelector(
   getCurrentFilesArr,
   (currentFilesArr): Record<string, Array<Media & { index: number }>> => currentFilesArr
     .reduce<Record<string, Array<Media & { index: number }>>>((accum, file) => {
-    const originalDateWithoutTime = dayjs(file.originalDate)
-      .startOf('day')
-      .format(DATE_FORMAT)
-    const fileWithIndex = file as Media & { index: number }
+      const originalDateWithoutTime = dayjs(file.originalDate)
+        .startOf('day')
+        .format(DATE_FORMAT)
+      const fileWithIndex = file as Media & { index: number }
 
-    return {
-      ...accum,
-      [originalDateWithoutTime]: accum[originalDateWithoutTime]
-        ? [...accum[originalDateWithoutTime], fileWithIndex]
-        : [fileWithIndex],
-    }
-  }, {}),
+      return {
+        ...accum,
+        [originalDateWithoutTime]: accum[originalDateWithoutTime]
+          ? [...accum[originalDateWithoutTime], fileWithIndex]
+          : [fileWithIndex],
+      }
+    }, {}),
 )
 
 export const getCurrentSelectedList = createSelector(

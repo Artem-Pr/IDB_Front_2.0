@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useCallback, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -41,18 +40,18 @@ const MatchingNumberOfFiles = () => {
 
   const setAction = (type: string) => {
     switch (type) {
-      case 'Folders in config:':
-        return setShowExcessiveFolders_config(!showExcessiveFolders_config)
-      case 'Folders retrieved from the database:':
-        return setShowExcessiveFolders_DB(!showExcessiveFolders_DB)
-      case 'Folders in disk directories:':
-        return setShowExcessiveFolders_Disk(!showExcessiveFolders_Disk)
-      case 'Files in database:':
-        return setShowExcessiveFiles_DB(!showExcessiveFiles_DB)
-      case 'Files in directory:':
-        return setShowExcessiveFiles_Disk(!showExcessiveFiles_Disk)
-      default:
-        return null
+    case 'Folders in config:':
+      return setShowExcessiveFolders_config(!showExcessiveFolders_config)
+    case 'Folders retrieved from the database:':
+      return setShowExcessiveFolders_DB(!showExcessiveFolders_DB)
+    case 'Folders in disk directories:':
+      return setShowExcessiveFolders_Disk(!showExcessiveFolders_Disk)
+    case 'Files in database:':
+      return setShowExcessiveFiles_DB(!showExcessiveFiles_DB)
+    case 'Files in directory:':
+      return setShowExcessiveFiles_Disk(!showExcessiveFiles_Disk)
+    default:
+      return null
     }
   }
 

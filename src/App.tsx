@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 
 import { Layout } from 'antd'
 
@@ -19,12 +19,12 @@ const App = memo(() => {
     <Layout>
       <UppyInstanceContext.Provider value={uppy}>
         <Header />
-        <Switch>
-          <Route exact path="/upload" component={UploadPage} />
-          <Route exact path="/settings" component={SettingsPage} />
-          <Route exact path="/test-db" component={TestDB} />
-          <Route component={MainPage} />
-        </Switch>
+        <Routes>
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/test-db" element={<TestDB />} />
+          <Route element={<MainPage />} />
+        </Routes>
         <UppyUploader />
       </UppyInstanceContext.Provider>
     </Layout>

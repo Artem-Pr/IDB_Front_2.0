@@ -1,4 +1,4 @@
-@import 'vars';
+@use '_vars' as vars;
 
 .ant-layout-content {
   display: grid;
@@ -9,7 +9,7 @@
 }
 
 .ant-layout-sider-light {
-  background: $mainBackground;
+  background: vars.$mainBackground;
   transition: none;
 }
 .ant-spin-nested-loading {
@@ -17,10 +17,10 @@
   overflow-y: auto;
 }
 .ant-layout-sider-light .ant-layout-sider-trigger {
-  background: $mainBackground;
+  background: vars.$mainBackground;
 }
 .ant-layout-sider-light .ant-layout-sider-zero-width-trigger {
-  background: $mainBackground;
+  background: vars.$mainBackground;
 }
 .ant-menu-sub.ant-menu-inline {
   background: inherit;

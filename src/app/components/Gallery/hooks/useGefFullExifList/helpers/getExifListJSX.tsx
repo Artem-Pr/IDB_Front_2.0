@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
+import type { JSX, ReactNode } from 'react'
 
 import type { Tags } from 'src/api/models/media'
 

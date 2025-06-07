@@ -36,14 +36,14 @@ export class UppyInstance {
       },
     })
       .use<typeof Tus<Metadata, Body>>(Tus, {
-      ...tusOptions,
-      onAfterResponse(_req, res) {
-        const responseBody = safetyJSONParse<{ properties: Media }>(res.getBody())
-        if (responseBody?.properties) {
-          processResponse(responseBody.properties)
-        }
-      },
-    })
+        ...tusOptions,
+        onAfterResponse(_req, res) {
+          const responseBody = safetyJSONParse<{ properties: Media }>(res.getBody())
+          if (responseBody?.properties) {
+            processResponse(responseBody.properties)
+          }
+        },
+      })
 
     if (isGlobalDropZone) {
       this.uppyInstance.use(DropTarget, {

@@ -1,6 +1,3 @@
-/* eslint-disable react/no-unused-class-component-methods */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-multi-assign */
 import React, {
   useCallback, useEffect, useRef,
 } from 'react'
@@ -65,7 +62,7 @@ export const VideoJS = ({
   options,
 }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLDivElement>(null)
-  const playerRef = useRef<Player | null>()
+  const playerRef = useRef<Player | null>(null)
 
   const handlePlayerReady = useCallback((player: Player) => {
     player.on('waiting', () => {
@@ -117,7 +114,7 @@ export const VideoJS = ({
       player?.autoplay(options.autoplay)
       player?.src(options.sources)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [options, videoRef])
 
   // Dispose the Video.js player when the functional component unmounts

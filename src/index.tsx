@@ -14,7 +14,7 @@ import store from './redux/store/store'
 import * as serviceWorker from './serviceWorker'
 
 import './styles/index.scss'
-import 'react-image-gallery/styles/scss/image-gallery.scss'
+// import 'react-image-gallery/styles/scss/image-gallery.scss'
 import 'video.js/dist/video-js.css'
 
 dayjs.extend(duration)
@@ -24,7 +24,6 @@ dayjs.extend(customParseFormat)
 dayjs.tz.setDefault('UTC')
 
 const container = document.querySelector('#root')
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(container!)
 
 root.render(

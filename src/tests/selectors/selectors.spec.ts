@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 import type { Media } from 'src/api/models/media'
 import { PagePaths } from 'src/common/constants'
 import { getFolderReducerFolderPathsArr, getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'

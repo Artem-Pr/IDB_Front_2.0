@@ -1,10 +1,10 @@
-@import 'vars';
-@import 'shortClasses';
-@import 'typography';
-@import 'layout';
-@import 'modal';
-@import 'imageGallery';
-@import 'form';
+@use '_vars';
+@use '_shortClasses';
+@use '_typography';
+@use '_layout';
+@use '_modal';
+@use '_imageGallery';
+@use '_form';
 
 body {
   margin: 0;

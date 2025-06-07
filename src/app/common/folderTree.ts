@@ -123,9 +123,9 @@ export const getDirAndSubfolders = (directory: string): string[] => sanitizeDire
   .split('/')
   .filter(Boolean)
   .reduce<string[]>((accum, currentDir) => {
-  if (!accum.length) return [currentDir]
-  return [...accum, `${accum.at(-1)}/${currentDir}`]
-}, [])
+    if (!accum.length) return [currentDir]
+    return [...accum, `${accum.at(-1)}/${currentDir}`]
+  }, [])
 
 export const addNewPathToPathsArr = (pathsArr: string[], newPath: string): string[] => {
   const newFolderWithSubDirectories = getDirAndSubfolders(newPath)

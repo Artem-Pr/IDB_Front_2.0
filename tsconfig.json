@@ -55,7 +55,7 @@
   "include": [
     "src/**/*",
     "src/**/*.json",
-    ".eslintrc.js",
+    "eslint.config.mjs",
     "rspack.config.js",
   ],
   "exclude": [

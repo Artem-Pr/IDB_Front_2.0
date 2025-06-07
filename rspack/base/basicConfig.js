@@ -2,6 +2,9 @@ const {paths} = require('../variables.js');
 
 module.exports = (isDevelopment) => ({
   entry: paths.entry,
+  experiments: {
+    css: true,
+  },
   resolve: {
       extensions: [".tsx", ".ts", ".jsx", ".js", ".json", ".png", "jpg", ".scss"],
       alias: {
