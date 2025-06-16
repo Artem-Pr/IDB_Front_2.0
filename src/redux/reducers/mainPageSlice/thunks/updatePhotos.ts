@@ -1,6 +1,6 @@
 import { AxiosError, HttpStatusCode } from 'axios'
 
-import { mainApi } from 'src/api/api'
+import { mainApi } from 'src/api/requests/api-requests'
 import type { UpdatedFileAPIRequest } from 'src/api/types/request-types'
 import type { CheckOriginalNameDuplicatesAPIResponse } from 'src/api/types/response-types'
 import type { ErrorResponse } from 'src/api/types/types'

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
-import { PagePaths, MainMenuKeys } from 'src/common/constants'
+import { MainMenuKeys } from 'src/common/constants'
 import {
   mainPageReducerClearState,
   mainPageReducerClearSelectedList,
@@ -20,13 +20,14 @@ import {
 } from 'src/redux/reducers/uploadSlice'
 import { getCurrentFilesArr } from 'src/redux/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
+import { Paths } from 'src/routes/paths'
 
 import { removeIntersectingKeywords } from '../utils'
 
 export const useCurrentPage = () => {
   const { pathname } = useLocation()
 
-  return pathname as PagePaths
+  return pathname as Paths
 }
 
 export const useSelectAll = () => {

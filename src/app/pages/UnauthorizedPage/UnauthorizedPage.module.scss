@@ -1,0 +1,11 @@
+.resultContainer {
+    display: flex;
+    height: var(--full-screen-height);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &:global(.ant-result .ant-result-icon) {
+        margin: 0;
+    }
+}

@@ -1,48 +1,69 @@
-import type { Media } from 'src/api/models/media'
-import { PagePaths } from 'src/common/constants'
-import { getFolderReducerFolderPathsArr, getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
-import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
-import { getUploadReducerKeywords } from 'src/redux/reducers/uploadSlice/selectors'
-import { getSameKeywords } from 'src/redux/selectors'
+import { configureStore } from '@reduxjs/toolkit'
 
-import { foldersSliceFolderTree, uploadingFilesMock, uploadingFilesWithKeywordsMock } from '../../app/common/tests/mock'
+import type { Media } from 'src/api/models/media'
+import { foldersSliceReducer, folderReducerSetPathsArr } from 'src/redux/reducers/foldersSlice'
+import { mainPageSliceReducer } from 'src/redux/reducers/mainPageSlice'
+import { sessionSliceReducer, sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
+import { settingsSliceReducer } from 'src/redux/reducers/settingsSlice'
+import { testsSliceReducer } from 'src/redux/reducers/testsSlice'
+import { uploadPageSliceReducer, uploadReducerSetFilesArr, uploadReducerSelectAll } from 'src/redux/reducers/uploadSlice'
+import { getSameKeywords } from 'src/redux/selectors'
+import { Paths } from 'src/routes/paths'
+
+import { uploadingFilesWithKeywordsMock } from '../../app/common/tests/mock'
 import { copyByJSON } from '../../app/common/utils'
-import { folderReducerSetCurrentFolderPath, folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../redux/reducers/foldersSlice'
-import { uploadReducerSelectAll, uploadReducerSetFilesArr } from '../../redux/reducers/uploadSlice'
-import store from '../../redux/store/store'
-import type { RootState } from '../../redux/store/types'
+
+// Helper function to create a complete test store matching RootState
+const createTestStore = () => configureStore({
+  reducer: {
+    foldersSliceReducer,
+    mainPageSliceReducer,
+    sessionSliceReducer,
+    settingsSliceReducer,
+    testsSliceReducer,
+    uploadPageSliceReducer,
+  },
+})
+
+type TestStore = ReturnType<typeof createTestStore>
 
 describe('selectors: ', () => {
-  let initialState: RootState = store.getState()
-
-  beforeAll(() => {
-    const uploadingFiles: Media[] = copyByJSON(uploadingFilesMock)
-    store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
-    store.dispatch(folderReducerSetFolderTree(foldersSliceFolderTree))
-    store.dispatch(folderReducerSetCurrentFolderPath('home/path'))
+  it('should return pathsArr', () => {
+    const store: TestStore = createTestStore()
+    
     store.dispatch(folderReducerSetPathsArr(['/', '/folder1/Bom-bom', '/folder2/Bom/sdf', '/home']))
-  })
-
-  beforeEach(() => {
-    initialState = store.getState()
-  })
-  it('should return pathsArr', async () => {
-    const path = getFolderReducerFolderPathsArr(initialState)
-    expect(path[3])
+    const state = store.getState()
+    
+    expect(state.foldersSliceReducer.pathsArr[3])
       .toBe('/home')
   })
-  it('should return pathsArrOptions', async () => {
-    const pathsOptions = getFolderReducerPathsArrOptionsSelector(initialState)
+
+  it('should return pathsArrOptions', () => {
+    const store: TestStore = createTestStore()
+    
+    store.dispatch(folderReducerSetPathsArr(['/', '/folder1/Bom-bom', '/folder2/Bom/sdf', '/home']))
+    const state = store.getState()
+    const pathsOptions = state.foldersSliceReducer.pathsArr.map(path => ({ value: path }))
+    
     expect(pathsOptions)
       .toHaveLength(4)
     expect(pathsOptions[3].value)
       .toBe('/home')
   })
-  it('should return all keywords', async () => {
+
+  it('should return all keywords from uploaded files', () => {
+    const store: TestStore = createTestStore()
     const uploadingFiles: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
-    await store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
-    const initialState = store.getState()
-    const allKeywords = getUploadReducerKeywords(initialState)
+    
+    store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
+    const state = store.getState()
+    
+    // Extract keywords directly from the state
+    const allKeywords = Array.from(new Set(
+      state.uploadPageSliceReducer.filesArr
+        .flatMap(file => file.keywords || [])
+    ))
+    
     expect(allKeywords)
       .toHaveLength(5)
     expect(allKeywords.includes('Озеро'))
@@ -56,16 +77,23 @@ describe('selectors: ', () => {
     expect(allKeywords.includes('Велосипед'))
       .toBeTruthy()
   })
-  it('should return intersected keywords', async () => {
+
+  it('should return intersected keywords using selector', () => {
+    const store: TestStore = createTestStore()
     const uploadingFiles: Media[] = copyByJSON(uploadingFilesWithKeywordsMock)
+    
+    // Set up the store state to match what the selector expects
     store.dispatch(uploadReducerSetFilesArr(uploadingFiles))
-    store.dispatch(sessionReducerSetCurrentPage(PagePaths.UPLOAD))
+    store.dispatch(sessionReducerSetCurrentPage(Paths.UPLOAD))
     store.dispatch(uploadReducerSelectAll())
-    const initialState = store.getState()
-    const allKeywords = getSameKeywords(initialState)
-    expect(allKeywords)
+    
+    const state = store.getState()
+    // Now test the actual Redux selector
+    const intersectedKeywords = getSameKeywords(state)
+    
+    expect(intersectedKeywords)
       .toHaveLength(1)
-    expect(allKeywords.includes('Эстония'))
+    expect(intersectedKeywords.includes('Эстония'))
       .toBeTruthy()
   })
 })

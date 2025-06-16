@@ -1,6 +1,6 @@
 .sider {
   left: 0;
-  min-height: calc(100vh - 64px);
+  min-height: var(--full-screen-height);
   min-width: 200px !important;
   overflow: auto;
   transition: all 0.05s !important;

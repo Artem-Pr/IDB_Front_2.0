@@ -1,5 +1,5 @@
 .container {
-  height: calc(100vh - 64px);
+  height: var(--full-screen-height);
   padding: 20px;
   overflow: scroll;
 }

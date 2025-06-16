@@ -1,6 +1,6 @@
 import type { HookAPI } from 'antd/es/modal/useModal'
 
-import { mainApi } from 'src/api/api'
+import { mainApi } from 'src/api/requests/api-requests'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import { deleteConfirmation } from 'src/assets/config/moduleConfig'

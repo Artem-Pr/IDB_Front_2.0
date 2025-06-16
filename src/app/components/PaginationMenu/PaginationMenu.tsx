@@ -22,7 +22,7 @@ export const PaginationMenu = () => {
     }
     dispatch(mainPageReducerSetGalleryPagination(paginationObj))
     dispatch(sessionReducerSetTriggerScrollUp(true))
-    dispatch(fetchPhotos())
+    dispatch(fetchPhotos(paginationObj.currentPage))
   }
 
   return (

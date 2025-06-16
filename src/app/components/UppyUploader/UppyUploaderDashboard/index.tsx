@@ -1,6 +1,4 @@
-import React, {
-  memo, useContext, useEffect, useState,
-} from 'react'
+import React, { memo, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { CloseSquareOutlined, DownCircleOutlined } from '@ant-design/icons'
@@ -8,16 +6,18 @@ import { Dashboard } from '@uppy/react'
 import { Modal } from 'antd'
 import cn from 'classnames'
 
-import { UppyInstanceContext } from 'src/common/UppyInstanceContext'
 import { uploadReducerSetShowUppyUploaderModal } from 'src/redux/reducers/uploadSlice'
 import { getUploadReducerShowUppyUploaderModal } from 'src/redux/reducers/uploadSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
+
+import { useUppyUploader } from '../hooks/useUppyUploader'
 
 import styles from './index.module.scss'
 
 export const UppyUploader = memo(() => {
   const dispatch = useAppDispatch()
-  const uppy = useContext(UppyInstanceContext)
+  // const uppy = useContext(UppyInstanceContext)
+  const { uppyInstance } = useUppyUploader()
   const showModal = useSelector(getUploadReducerShowUppyUploaderModal)
   const [collapsed, setCollapsed] = useState(false)
   const [disableCloseButton, setDisableCloseButton] = useState(false)
@@ -30,34 +30,34 @@ export const UppyUploader = memo(() => {
       setDisableCloseButton(true)
     }
 
-    if (uppy) {
-      uppy.on('complete', handleComplete)
-      uppy.on('upload-start', handleStart)
+    if (uppyInstance) {
+      uppyInstance.on('complete', handleComplete)
+      uppyInstance.on('upload-start', handleStart)
     }
 
     return () => {
-      uppy?.off('complete', handleComplete)
-      uppy?.off('upload-start', handleStart)
+      uppyInstance?.off('complete', handleComplete)
+      uppyInstance?.off('upload-start', handleStart)
     }
-  }, [dispatch, uppy])
+  }, [dispatch, uppyInstance])
 
   const handleCollapse = () => {
     setCollapsed(!collapsed)
   }
 
   const handleClose = () => {
-    const currentProgress = uppy?.getState().totalProgress
+    const currentProgress = uppyInstance?.getState().totalProgress
     if (currentProgress === 100) {
       dispatch(uploadReducerSetShowUppyUploaderModal(false))
     }
   }
 
   const handleAfterClose = () => {
-    uppy?.clear()
+    uppyInstance?.clear()
   }
 
   return (
-    uppy && (
+    uppyInstance && (
       <Modal
         cancelButtonProps={{ disabled: true }}
         className={cn(styles.uppyModal, { [styles.hidden]: collapsed })}
@@ -72,7 +72,7 @@ export const UppyUploader = memo(() => {
           <DownCircleOutlined onClick={handleCollapse} />
           <CloseSquareOutlined disabled={disableCloseButton} onClick={handleClose} />
           <Dashboard
-            uppy={uppy}
+            uppy={uppyInstance}
             proudlyDisplayPoweredByUppy={false}
             showProgressDetails
           />

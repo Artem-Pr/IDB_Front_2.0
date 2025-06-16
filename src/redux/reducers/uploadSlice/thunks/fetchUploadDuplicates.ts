@@ -1,5 +1,5 @@
-import { mainApi } from 'src/api/api'
 import type { Media } from 'src/api/models/media'
+import { mainApi } from 'src/api/requests/api-requests'
 import type { DuplicateFile } from 'src/api/types/types'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'

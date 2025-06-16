@@ -19,9 +19,12 @@ describe('safetyJSONParse', () => {
   })
 
   it('should return null for invalid JSON string', () => {
+    const consoleSpy = jest.spyOn(console, 'error')
+      .mockImplementation()
     const invalidJSON = '{ invalid json }'
     expect(safetyJSONParse(invalidJSON))
       .toBeNull()
+    consoleSpy.mockRestore()
   })
 
   it('should correctly parse array JSON string', () => {

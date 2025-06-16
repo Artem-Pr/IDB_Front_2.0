@@ -1,13 +1,17 @@
 import React, {
-  CSSProperties, memo, useEffect, useMemo,
+  CSSProperties, useEffect, useMemo,
 } from 'react'
 import { useSelector } from 'react-redux'
+import { Outlet } from 'react-router-dom'
 
 import {
-  Layout, Modal, Typography,
+  Layout as AntLayout, Modal, Spin, Typography,
 } from 'antd'
+import type { AxiosError } from 'axios'
+import { HttpStatusCode } from 'axios'
 
-import { mainApi } from 'src/api/api'
+import { mainApi } from 'src/api/requests/api-requests'
+import { useIsAuthenticated } from 'src/app/common/hooks'
 import { errorMessage } from 'src/app/common/notifications'
 import { checkFolderConfirmation, deleteMessageConst } from 'src/assets/config/moduleConfig'
 import HeaderBackgroundImage from 'src/assets/svg-icons-html/header-image.svg'
@@ -23,9 +27,11 @@ import {
   getFolderReducerFolderPathsArr,
 } from 'src/redux/reducers/foldersSlice/selectors'
 import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice/thunks'
+import { getSessionReducerIsLoading } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
 import { HeaderMenu } from './HeaderMenu'
+import { UserDropdownMenu } from './components'
 
 import styles from './index.module.scss'
 
@@ -33,13 +39,15 @@ function getRandomBackgroundPosition() {
   return Math.floor(Math.random() * 50)
 }
 
-const { Header: HeaderLayout } = Layout
+const { Header: HeaderLayout } = AntLayout
 const { Title } = Typography
 const imageStyle: CSSProperties = { top: `-${getRandomBackgroundPosition()}%` }
 
-export const Header = memo(() => {
+export const Layout = () => {
   const dispatch = useAppDispatch()
+  const isAuthenticated = useIsAuthenticated()
   const [modal, contextHolder] = Modal.useModal()
+  const loading = useSelector(getSessionReducerIsLoading)
   const directoriesArr = useSelector(getFolderReducerFolderPathsArr)
   const showInfoModal = useSelector(getFolderReducerFolderInfoShowInfoModal)
   const numberOfFiles = useSelector(getFolderReducerFolderInfoNumberOfFiles)
@@ -56,19 +64,23 @@ export const Header = memo(() => {
     [numberOfFiles, numberOfSubdirectories],
   )
 
+  // TODO: move this logic to hook
   useEffect(() => {
-    mainApi
+    isAuthenticated && mainApi
       .cleanTemp()
-      .catch(err => {
+      .catch((err: AxiosError) => {
         console.error(err)
-        errorMessage(err, 'cleaning temp error', 0)
+        if (err?.status !== HttpStatusCode.Unauthorized) {
+          errorMessage(err, 'cleaning temp error', 0)
+        }
       })
-  }, [])
+  }, [isAuthenticated])
 
-  useEffect(() => {
-    !directoriesArr.length && dispatch(fetchPathsList())
-  }, [dispatch, directoriesArr])
+  useEffect(() => {    
+    isAuthenticated && !directoriesArr.length && dispatch(fetchPathsList())
+  }, [dispatch, directoriesArr, isAuthenticated])
 
+  // TODO: move this logic to hook
   useEffect(() => {
     const cleanModalInfo = () => {
       dispatch(folderReducerSetNumberOfFilesInDirectory(0))
@@ -87,19 +99,30 @@ export const Header = memo(() => {
   }, [content, dispatch, modal, numberOfFiles, numberOfSubdirectories, showInfoModal])
 
   return (
-    <HeaderLayout className={styles.header}>
-      <div className={styles.backgroundImage}>
-        <div className="position-relative h-100 w-100">
-          <img
-            alt="header-background"
-            style={imageStyle}
-            src={HeaderBackgroundImage}
-          />
-        </div>
+    <AntLayout>
+      <div className="App">
+        <HeaderLayout className={styles.header}>
+          <div className={styles.backgroundImage}>
+            <div className="position-relative h-100 w-100">
+              <img
+                alt="header-background"
+                style={imageStyle}
+                src={HeaderBackgroundImage}
+              />
+            </div>
+          </div>
+          <Title className={styles.title}>IDBase</Title>
+          <HeaderMenu />
+          <UserDropdownMenu />
+          {contextHolder}
+        </HeaderLayout>
       </div>
-      <Title className={styles.title}>IDBase</Title>
-      <HeaderMenu />
-      {contextHolder}
-    </HeaderLayout>
+      <Spin
+        spinning={loading}
+        tip="Loading..."
+      >
+        <Outlet />
+      </Spin>
+    </AntLayout>
   )
-})
+}

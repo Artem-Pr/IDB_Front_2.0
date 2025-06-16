@@ -1,4 +1,7 @@
-import { mainApi } from 'src/api/api'
+import type { AxiosError } from 'axios'
+import { HttpStatusCode } from 'axios'
+
+import { mainApi } from 'src/api/requests/api-requests'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
@@ -12,5 +15,9 @@ export const fetchPathsList = (): AppThunk => dispatch => {
       data.length && dispatch(folderReducerSetPathsArr(data))
       data.length && dispatch(folderReducerSetFolderTree(createFolderTree(data)))
     })
-    .catch(error => errorMessage(error, 'Error when getting Paths: '))
+    .catch((error: AxiosError) => {
+      if (error?.status !== HttpStatusCode.Unauthorized) {
+        errorMessage(error, 'Error when getting Paths: ')
+      }
+    })
 }

@@ -1,6 +1,18 @@
+import { JwtPayload } from 'jwt-decode'
+
 import type { Media } from '../models/media'
 
 import type { DuplicateFile } from './types'
+
+export interface TokenPayload extends JwtPayload {
+    email: string,
+    role: string,
+}
+
+export interface AuthTokens {
+  accessToken: string
+  refreshToken: string
+}
 
 export interface UploadingFileAPIResponse {
   properties: Media;

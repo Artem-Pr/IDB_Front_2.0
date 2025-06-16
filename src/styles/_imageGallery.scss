@@ -1,5 +1,7 @@
 .image-gallery {
+  width: 100%;
   height: 100%;
+  background: black;
 
   & .image-gallery-content {
     display: grid;
@@ -26,16 +28,59 @@
 
 .image-gallery-slide {
   height: 100%;
+  background: black;
 }
-.image-gallery-slide .image-gallery-image {
-  height: 100%;
+
+.image-gallery-image {
+  object-fit: contain;
 }
 
 .image-gallery-content .image-gallery-slide .image-gallery-image {
   max-height: 100%;
 }
 
-.image-gallery-thumbnail .image-gallery-thumbnail-image {
-  max-height: 200px;
-  object-fit: contain;
+.image-gallery-thumbnail {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  border: 3px solid transparent;
+  transition: border 0.3s ease-out;
+  cursor: pointer;
+
+  &.active {
+    border: 3px solid #1890ff;
+  }
+
+  &:hover {
+    border: 3px solid #1890ff;
+  }
+}
+
+.image-gallery-thumbnail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-gallery-fullscreen-button,
+.image-gallery-left-nav,
+.image-gallery-right-nav {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-out;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.image-gallery-index {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
 }

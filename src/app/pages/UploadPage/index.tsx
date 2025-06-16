@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Layout } from 'antd'
 
 import { UppyUploadButton } from 'src/app/components/UppyUploader/UppyUploadButton'
-import { MainMenuKeys, PagePaths } from 'src/common/constants'
+import { MainMenuKeys } from 'src/common/constants'
 import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
 import { getSettingsReducerIsNewUploader } from 'src/redux/reducers/settingsSlice/selectors'
 import {
@@ -18,6 +18,7 @@ import {
   getUploadReducerSelectedList,
   getUploadReducerUploadStatus,
 } from 'src/redux/reducers/uploadSlice/selectors'
+import { Paths } from 'src/routes/paths'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import {
@@ -38,7 +39,7 @@ const UploadPage = memo(() => {
   const showTopGalleryMenu = imageArr.length !== 0
 
   useEffect(() => {
-    dispatch(sessionReducerSetCurrentPage(PagePaths.UPLOAD))
+    dispatch(sessionReducerSetCurrentPage(Paths.UPLOAD))
 
     return () => {
       dispatch(sessionReducerSetCurrentPage(null))

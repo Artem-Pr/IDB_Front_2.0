@@ -1,6 +1,6 @@
 import { difference } from 'ramda'
 
-import { mainApi } from 'src/api/api'
+import { mainApi } from 'src/api/requests/api-requests'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'

@@ -14,7 +14,7 @@ const CheckFilesWithSameNames = () => {
   return (
     <Card
       title="Check for files with the same name"
-      bordered={false}
+      variant="borderless"
       extra={(
         <Button type="primary" href={`/main?comparison=true&folder=${currentFilePath}`} ghost>
           Start test

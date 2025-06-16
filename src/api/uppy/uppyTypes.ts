@@ -1,6 +1,7 @@
 import type { UploadResult, Uppy, UppyFile } from '@uppy/core'
+import type { TusOptions } from '@uppy/tus'
 
-import { MimeTypes } from 'src/common/constants'
+import type { MimeTypes } from 'src/common/constants'
 
 import type { FileNameWithExt, Media } from '../models/media'
 
@@ -15,13 +16,16 @@ export type MetadataObject = {
 }
 export type Metadata = Partial<MetadataObject>
 export type UppyType = Uppy<Metadata, Body>
+export type CurrentUppyFile = UppyFile<Metadata, Body>
+export type TusOpt = TusOptions<Metadata, Body>
 
 export interface UppyInstanceConstructor {
-  isFileAlreadyExist: (currentFile: UppyFile<Metadata, Body>) => boolean
+  // currentStore: ReduxStore,
+  isFileAlreadyExist: (currentFile: CurrentUppyFile) => boolean
   isGlobalDropZone?: boolean
   onComplete?: (result: UploadResult<Metadata, Body>) => void
-  onUploadError?: (file: UppyFile<Metadata, Body> | undefined, error: Error) => void
-  onUploadStart?: (file: UppyFile<Metadata, Body>[]) => void
-  onUploadSuccess?: (file: UppyFile<Metadata, Body> | undefined, response: NonNullable<UppyFile<Metadata, Body>['response']>) => void
+  onUploadError?: (file: CurrentUppyFile | undefined, error: Error) => void
+  onUploadStart?: (file: CurrentUppyFile[]) => void
+  onUploadSuccess?: (file: CurrentUppyFile | undefined, response: NonNullable<CurrentUppyFile['response']>) => void
   processResponse: (uploadedMedia: Media) => void
 }

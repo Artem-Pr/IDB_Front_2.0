@@ -1,10 +1,6 @@
-import axios from 'axios'
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
-export const HOST = Object.freeze({
-  HTTP: process.env.BACKEND_URL || '0.0.0.0',
-  WEB_SOCKET: process.env.BACKEND_WEB_SOCKET_URL || '0.0.0.0',
-})
+import { RequestUrl } from '../requests/api-requests-url-list'
 
 interface Aborter {
   [key: string]: AbortController | null
@@ -12,11 +8,7 @@ interface Aborter {
 
 let cancelController: Aborter = {}
 
-const exceptionUrlList = ['/upload-file']
-
-export const axiosInstance = axios.create({
-  baseURL: HOST.HTTP,
-})
+const exceptionUrlList = [RequestUrl.UPLOAD_FILE, RequestUrl.REFRESH_TOKENS, RequestUrl.LOGIN, RequestUrl.LOGOUT]
 
 const cancelAborterItem = (url: string) => {
   cancelController[url]?.abort()
@@ -36,17 +28,14 @@ const getAbortControllerSignal = (url: string) => {
   return cancelController[url]?.signal
 }
 
-const setAbortController = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => (
+export const setAbortController = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => (
   config.url && !exceptionUrlList.includes(config.url)
     ? { ...config, signal: getAbortControllerSignal(config.url) }
     : config
 )
 
-const resetAbortController = (response: AxiosResponse) => {
+export const resetAbortController = (response: AxiosResponse) => {
   const responseUrl = response.config.url
   responseUrl && removeAborterItem(responseUrl)
   return response
 }
-
-axiosInstance.interceptors.request.use(setAbortController)
-axiosInstance.interceptors.response.use(resetAbortController)

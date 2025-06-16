@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux'
 
 import { Layout } from 'antd'
 
-import { MainMenuKeys, PagePaths } from 'src/common/constants'
+import { MainMenuKeys } from 'src/common/constants'
 import { getMainPageReducerFilesArr, getMainPageReducerOpenMenus } from 'src/redux/reducers/mainPageSlice/selectors'
 import { fetchPhotos } from 'src/redux/reducers/mainPageSlice/thunks'
 import { sessionReducerSetCurrentPage } from 'src/redux/reducers/sessionSlice'
 import { useAppDispatch } from 'src/redux/store/store'
+import { Paths } from 'src/routes/paths'
 
 import { useMenuResize, useGridRefControl } from '../../common/hooks'
 import {
@@ -29,7 +30,7 @@ const MainPage = () => {
   const imageArr = useSelector(getMainPageReducerFilesArr)
 
   useEffect(() => {
-    dispatch(sessionReducerSetCurrentPage(PagePaths.MAIN))
+    dispatch(sessionReducerSetCurrentPage(Paths.MAIN))
 
     return () => {
       dispatch(sessionReducerSetCurrentPage(null))
@@ -43,6 +44,7 @@ const MainPage = () => {
   return (
     <Layout>
       <MainMenu menuRef={menuRef} videoPreviewRef={videoPreviewRef} />
+      {/* <div style={{ height: 'var(--full-screen-height)' }}> */}
       <div style={{ height: 'calc(100vh - 64px)' }}>
         <ResizeDivider onDividerMove={handleDividerMove} onMouseUp={handleFinishResize} />
       </div>

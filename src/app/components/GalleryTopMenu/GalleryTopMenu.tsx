@@ -75,7 +75,7 @@ export const GalleryTopMenu = ({
 
   const handleSetIsDuplicatesChecking = () => {
     dispatch(sessionReducerSetIsDuplicatesChecking(!isDuplicatesChecking))
-    !isDuplicatesChecking && dispatch(fetchMainPageDuplicates(mediaFiles))
+    isMainPage && !isDuplicatesChecking && dispatch(fetchMainPageDuplicates(mediaFiles))
   }
 
   return (

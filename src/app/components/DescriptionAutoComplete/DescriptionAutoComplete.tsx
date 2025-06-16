@@ -3,7 +3,7 @@ import React, { useState, useCallback, useMemo } from 'react'
 import { AutoComplete, Input } from 'antd'
 import debounce from 'debounce'
 
-import { mainApi } from 'src/api/api'
+import { mainApi } from 'src/api/requests/api-requests'
 import { warningMessage } from 'src/app/common/notifications'
 
 const { TextArea } = Input

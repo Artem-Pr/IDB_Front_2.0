@@ -12,8 +12,11 @@ $tileExtensionBackground: rgba(64, 64, 64, 25%);
 $tileVideoColor: red;
 
 :root {
+  --full-screen-height: calc(100vh - 64px);
+
   --primary: #1890ff;
   --main-title: white;
+  --header-title-color: #fff;
   --logo-text-shadow: 1px 1px 2px black;;
   --dark-border: black;
   --main-background: #e6e6e6;

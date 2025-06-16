@@ -1,8 +1,17 @@
 import { createSelector } from 'reselect'
 
-import { PagePaths } from 'src/common/constants'
 import type { RootState } from 'src/redux/store/types'
+import { Paths } from 'src/routes/paths'
 
+export const getSessionReducerAuth = (state: RootState) => state.sessionSliceReducer.auth
+export const getSessionReducerAccessToken = (state: RootState) => state.sessionSliceReducer.auth.accessToken
+export const getSessionReducerRefreshToken = (state: RootState) => state.sessionSliceReducer.auth.refreshToken
+export const getSessionReducerPermissions = (state: RootState) => state.sessionSliceReducer.auth.permissions
+export const getSessionReducerExpiration = (state: RootState) => state.sessionSliceReducer.auth.expiration
+export const getSessionReducerUser = (state: RootState) => state.sessionSliceReducer.user
+export const getSessionReducerUserEmail = (state: RootState) => state.sessionSliceReducer.user.email
+export const getSessionReducerUserId = (state: RootState) => state.sessionSliceReducer.user.id
+export const getSessionReducerUserName = (state: RootState) => state.sessionSliceReducer.user.name
 export const getSessionReducerAsideMenuWidth = (state: RootState) => state.sessionSliceReducer.asideMenuWidth
 export const getSessionReducerCurrentPage = (state: RootState) => state.sessionSliceReducer.currentPage
 export const getSessionReducerFitContain = (state: RootState) => state.sessionSliceReducer.fitContain
@@ -18,7 +27,8 @@ export const getSessionReducerTriggerScrollUp = (state: RootState) => state.sess
 export const getSessionReducerIsCurrentPage = createSelector(
   getSessionReducerCurrentPage,
   currentPageName => ({
-    isMainPage: currentPageName === PagePaths.MAIN,
-    isUploadPage: currentPageName === PagePaths.UPLOAD,
+    isMainPage: currentPageName === Paths.MAIN,
+    isUploadPage: currentPageName === Paths.UPLOAD,
+    isLoginPage: currentPageName === Paths.LOGIN,
   }),
 )

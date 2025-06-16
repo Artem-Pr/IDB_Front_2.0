@@ -1,4 +1,4 @@
-import { mainApi } from 'src/api/api'
+import { mainApi } from 'src/api/requests/api-requests'
 import { errorMessage, successMessage } from 'src/app/common/notifications'
 import { getCurrentFilesArr } from 'src/redux/selectors'
 import type { AppThunk } from 'src/redux/store/types'

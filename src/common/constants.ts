@@ -1,11 +1,3 @@
-export enum PagePaths {
-  DEFAULT = '/IDB_Front_2.0',
-  MAIN = '/',
-  UPLOAD = '/upload',
-  SETTINGS = '/settings',
-  TEST_DB = '/test-db',
-}
-
 export enum MainMenuKeys {
   SORT = 'sort',
   FILTER = 'filter',

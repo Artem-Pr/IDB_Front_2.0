@@ -1,5 +1,5 @@
 .wrapper {
-  height: calc(100vh - 64px);
+  height: var(--full-screen-height);
   padding: 20px;
   overflow-y: scroll;
   background: var(--settings-page-background);

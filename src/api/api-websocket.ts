@@ -1,6 +1,6 @@
 import { errorMessage } from '../app/common/notifications'
 
-import { HOST } from './api-client'
+import { HOST } from './api-instance'
 import type { WebSocketAPICallback, WebSocketAPIQuery, WebSocketAPIRequest } from './types/types'
 import { ApiStatus, WebSocketActions } from './types/types'
 
@@ -35,7 +35,7 @@ export const initWebSocket = <T = undefined>(
 ) => {
   const errorHandler = (errorTitle: string, error: Error, response?: WebSocketAPIRequest<T>) => {
     console.error(error, response?.data.data)
-    errorMessage(new Error(error.message), errorTitle, 100)
+    errorMessage(new Error(error?.message), errorTitle, 100)
     response && onMessage(response.data)
   }
 

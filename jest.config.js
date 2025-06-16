@@ -165,11 +165,13 @@ module.exports = {
     transform: {
         "^.+\\.(ts|tsx)?$": "ts-jest",
         '^.+\\.(js|jsx)$': 'babel-jest',
-        ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
+        ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$": "jest-transform-stub",
     },
 
     // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-    transformIgnorePatterns: ['<rootDir>/node_modules/'],
+    transformIgnorePatterns: [
+        '<rootDir>/node_modules/(?!@uppy)',
+    ],
 
     // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
     // unmockedModulePathPatterns: undefined,

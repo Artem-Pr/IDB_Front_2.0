@@ -64,7 +64,7 @@ const MatchingNumberOfFiles = () => {
     <Card
       className={styles.card}
       title="Test for matching the number of files"
-      bordered={false}
+      variant="borderless"
       extra={(
         <Button type="primary" ghost onClick={handleCheckNumberOfFiles}>
           Start test

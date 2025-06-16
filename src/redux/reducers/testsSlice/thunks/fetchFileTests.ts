@@ -1,4 +1,4 @@
-import { testApi } from 'src/api/api'
+import { testApi } from 'src/api/requests/api-requests'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
 

@@ -3,14 +3,14 @@ import { useLocation } from 'react-router-dom'
 
 import { Menu } from 'antd'
 
-import { PagePaths } from 'src/common/constants'
+import { Paths } from 'src/routes/paths'
 
 import { PageMenuItems } from './PageMenuItems'
 
-const menuStyle = { width: 400 }
+const menuStyle: React.CSSProperties = { width: 400, marginLeft: 'auto' }
 
 export const HeaderMenu = () => {
-  const { pathname } = useLocation() as { pathname: PagePaths }
+  const { pathname } = useLocation() as { pathname: Paths }
   const defaultKeys = useMemo(() => [pathname], [pathname])
 
   return (

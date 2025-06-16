@@ -1,8 +1,8 @@
 import type { RcFile } from 'antd/es/upload'
 
-import { mainApi } from 'src/api/api'
 import type { Media } from 'src/api/models/media'
 import { MediaInstance } from 'src/api/models/media'
+import { mainApi } from 'src/api/requests/api-requests'
 import { errorMessage } from 'src/app/common/notifications'
 import imagePlaceholderFailedUploading from 'src/assets/svg-icons-html/image-placeholder-failed-upload3.svg'
 import type { AppThunk } from 'src/redux/store/types'

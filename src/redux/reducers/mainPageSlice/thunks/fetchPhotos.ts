@@ -1,8 +1,8 @@
 import { isEmpty } from 'ramda'
 
-import { mainApi } from 'src/api/api'
 import { prepareSortingList } from 'src/api/helpers'
 import type { Media } from 'src/api/models/media'
+import { mainApi } from 'src/api/requests/api-requests'
 import { createFolderTree } from 'src/app/common/folderTree'
 import { errorMessage } from 'src/app/common/notifications'
 import type { AppThunk } from 'src/redux/store/types'
@@ -19,7 +19,7 @@ import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../fold
 
 import { fetchMainPageDuplicates } from './fetchMainPageDuplicates'
 
-export const fetchPhotos = (): AppThunk => (dispatch, getState) => {
+export const fetchPhotos = (currentPage: number = 1): AppThunk => (dispatch, getState) => {
   const {
     mainPageSliceReducer: mainPageReducer,
     foldersSliceReducer: { currentFolderInfo },
@@ -40,7 +40,7 @@ export const fetchPhotos = (): AppThunk => (dispatch, getState) => {
     galleryPagination,
     sort: { gallerySortingList, randomSort },
   } = mainPageReducer
-  const { currentPage, nPerPage } = galleryPagination
+  const { nPerPage } = galleryPagination
   const folderPath = currentFolderInfo.currentFolderPath
   const { showSubfolders, isDynamicFolders } = currentFolderInfo
   dispatch(mainPageReducerSetIsGalleryLoading(true))
@@ -94,6 +94,6 @@ export const fetchPhotos = (): AppThunk => (dispatch, getState) => {
         errorMessage(error, 'downloading files error: ')
         dispatch(mainPageReducerSetIsGalleryLoading(false))
       }
-      error.message !== 'canceled' && showError()
+      error?.message !== 'canceled' && showError()
     })
 }
