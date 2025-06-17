@@ -69,7 +69,7 @@ export const Layout = () => {
     isAuthenticated && mainApi
       .cleanTemp()
       .catch((err: AxiosError) => {
-        console.error(err)
+        console.info("🚀 ~ 'cleaning temp error':", err)
         if (err?.status !== HttpStatusCode.Unauthorized) {
           errorMessage(err, 'cleaning temp error', 0)
         }

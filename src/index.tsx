@@ -15,7 +15,7 @@ import store from './redux/store/store'
 import * as serviceWorker from './serviceWorker'
 
 import './styles/index.scss'
-// import 'react-image-gallery/styles/scss/image-gallery.scss'
+import 'react-image-gallery/styles/css/image-gallery.css'
 import 'video.js/dist/video-js.css'
 
 dayjs.extend(duration)
