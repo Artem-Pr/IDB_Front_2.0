@@ -6,7 +6,11 @@ import type { ReduxStore } from 'src/redux/store/types'
 import { RequestUrl } from '../requests/api-requests-url-list'
 
 import { refreshTokens } from './helpers'
-import type { RequestConfigWithIsRefreshTokenInfo } from './types'
+import type { RequestConfigWithIsRefreshTokenInfo, AuthenticationFailureError } from './types'
+
+const isAuthenticationFailureError = (error: any): error is AuthenticationFailureError => {
+  return error?.isAuthFailure === true
+}
 
 export const refreshTokensIfAccessTokenExpired = async (
   error: AxiosError,
@@ -30,9 +34,19 @@ export const refreshTokensIfAccessTokenExpired = async (
 
   if (isNotLoginError) {
     if (isAccessTokenError) {
-      return refreshTokens(axiosRequestConfig, currentStore, error)
+      try {
+        return await refreshTokens(axiosRequestConfig, currentStore, error)
+      } catch (refreshError) {
+        // If it's an AuthenticationFailureError, reject with the auth error
+        // This will be caught by the .catch() block and handled by our global errorMessage function
+        if (isAuthenticationFailureError(refreshError)) {
+          return Promise.reject(refreshError)
+        }
+        // Re-throw other types of errors
+        throw refreshError
+      }
     }
-  } {
-    return Promise.reject(error)
   }
+  
+  return Promise.reject(error)
 }

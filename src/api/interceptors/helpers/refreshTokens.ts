@@ -7,7 +7,7 @@ import { getSessionReducerRefreshToken } from 'src/redux/reducers/sessionSlice/s
 import { logout, setAllTokens } from 'src/redux/reducers/sessionSlice/thunks'
 import type { ReduxStore } from 'src/redux/store/types'
 
-import { RequestConfigWithIsRefreshTokenInfo } from '../types'
+import { RequestConfigWithIsRefreshTokenInfo, AuthenticationFailureError } from '../types'
 
 // Single promise that will be shared across all concurrent refresh attempts
 let refreshPromise: Promise<boolean> | null = null
@@ -18,7 +18,7 @@ const handleRefreshResult = async (
   error: AxiosError,
 ): Promise<AxiosResponse> => {
   if (!success) {
-    return Promise.reject()
+    throw new AuthenticationFailureError('Session expired, please login again')
   }
 
   config.isTokensRefreshed = true

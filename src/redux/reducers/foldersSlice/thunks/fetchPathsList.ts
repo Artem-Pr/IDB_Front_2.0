@@ -1,5 +1,4 @@
 import type { AxiosError } from 'axios'
-import { HttpStatusCode } from 'axios'
 
 import { mainApi } from 'src/api/requests/api-requests'
 import { createFolderTree } from 'src/app/common/folderTree'
@@ -16,8 +15,6 @@ export const fetchPathsList = (): AppThunk => dispatch => {
       data.length && dispatch(folderReducerSetFolderTree(createFolderTree(data)))
     })
     .catch((error: AxiosError) => {
-      if (error?.status !== HttpStatusCode.Unauthorized) {
-        errorMessage(error, 'Error when getting Paths: ')
-      }
+      errorMessage(error, 'Error when getting Paths: ')
     })
 }

@@ -1,4 +1,5 @@
 import type { AuthTokens } from "src/api/types/response-types"
+import { resetAuthErrorFlag } from "src/app/common/notifications"
 import { saveTokensInLocalStorage } from "src/common/localStorageService"
 import type { AppThunk } from "src/redux/store/types"
 
@@ -10,6 +11,7 @@ export const setAllTokens = (tokens: AuthTokens | undefined): AppThunk => (
       dispatch(sessionReducerSetAccessToken(tokens.accessToken))
       dispatch(sessionReducerSetRefreshToken(tokens.refreshToken))
       saveTokensInLocalStorage(tokens)
+      resetAuthErrorFlag()
     }
   }
 )
