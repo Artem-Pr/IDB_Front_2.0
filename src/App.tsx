@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 
-import { Header } from './app/components'
+import { Layout } from './app/components'
 import { PrivateRoute } from './routes/PrivateRoute'
 import { routes } from './routes/routes'
 
@@ -10,7 +10,7 @@ const App = () => {
     <Routes>
       <Route 
         path="/" 
-        element={<Header />}
+        element={<Layout />}
       >
         {routes.map((route, i) => {
           if (route.permission) {

@@ -1,0 +1,42 @@
+.filterItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #40a9ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.selectors {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.propertySelector {
+  width: 100%;
+}
+
+.valueCondition {
+  width: 100%;
+}
+
+.deleteButton {
+  flex-shrink: 0;
+  color: #ff4d4f;
+  margin-top: 4px;
+  
+  &:hover {
+    color: #ff7875;
+    background-color: #fff2f0;
+  }
+} 

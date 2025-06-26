@@ -40,6 +40,7 @@ export const initialState: State = {
     dateRange: null,
     anyDescription: false,
     description: '',
+    exifFilters: [],
   },
   galleryPagination: {
     currentPage: 1,

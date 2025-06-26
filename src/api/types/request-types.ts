@@ -17,6 +17,18 @@ interface Pagination {
   perPage: number
 }
 
+export interface GetExifKeysAPIRequest extends Pagination {
+  searchTerm?: string
+}
+
+export interface GetExifValuesAPIRequest extends Pagination {
+  exifPropertyName: string
+}
+
+export interface GetExifValueRangeAPIRequest {
+  exifPropertyName: string
+}
+
 export interface GetPhotosByTagsAPIRequest {
   filters: {
     rating? : number

@@ -12,7 +12,7 @@ import type {
 
 import { defaultGallerySortingList } from './helpers'
 import { initialState } from './mainPageState'
-import type { SearchMenu } from './types'
+import type { SearchMenu, ExifFilter } from './types'
 
 const mainPageSlice = createSlice({
   name: 'mainPage',
@@ -94,6 +94,24 @@ const mainPageSlice = createSlice({
     mainPageReducerSetDescriptionFilter(state, action: PayloadAction<string>) {
       state.searchMenu.description = action.payload
     },
+    mainPageReducerAddExifFilter(state, action: PayloadAction<ExifFilter>) {
+      state.searchMenu.exifFilters.push(action.payload)
+    },
+    mainPageReducerUpdateExifFilter(state, action: PayloadAction<{ id: string; updates: Partial<ExifFilter> }>) {
+      const index = state.searchMenu.exifFilters.findIndex(filter => filter.id === action.payload.id)
+      if (index !== -1) {
+        state.searchMenu.exifFilters[index] = {
+          ...state.searchMenu.exifFilters[index],
+          ...action.payload.updates,
+        }
+      }
+    },
+    mainPageReducerRemoveExifFilter(state, action: PayloadAction<string>) {
+      state.searchMenu.exifFilters = state.searchMenu.exifFilters.filter(filter => filter.id !== action.payload)
+    },
+    mainPageReducerResetExifFilters(state) {
+      state.searchMenu.exifFilters = []
+    },
     mainPageReducerResetSearchMenu(state) {
       state.searchMenu = initialState.searchMenu
     },
@@ -138,11 +156,14 @@ const mainPageSlice = createSlice({
 })
 
 export const {
+  mainPageReducerAddExifFilter,
   mainPageReducerAddToSelectedList,
   mainPageReducerClearPreview,
   mainPageReducerClearSelectedList,
   mainPageReducerClearState,
+  mainPageReducerRemoveExifFilter,
   mainPageReducerRemoveFromSelectedList,
+  mainPageReducerResetExifFilters,
   mainPageReducerResetSearchMenu,
   mainPageReducerResetSort,
   mainPageReducerSelectAll,
@@ -171,6 +192,7 @@ export const {
   mainPageReducerSetSort,
   mainPageReducerStartVideoPreview,
   mainPageReducerStopVideoPreview,
+  mainPageReducerUpdateExifFilter,
 } = mainPageSlice.actions
 
 export const mainPageSliceReducer = mainPageSlice.reducer

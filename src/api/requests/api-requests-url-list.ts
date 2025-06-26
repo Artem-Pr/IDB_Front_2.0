@@ -13,6 +13,11 @@ export const enum RequestUrl {
     DELETE_FILE = '/delete-files',
     FILES_DESCRIPTION = '/files/description',
 
+    // EXIF
+    EXIF_KEYS = '/exif-keys',
+    EXIF_VALUES = '/exif-values',
+    EXIF_VALUE_RANGE = '/exif-value-range',
+
     // temporary files
     UPLOAD_FILE = '/upload-file',
     CLEAN_TEMP = '/clean-temp',

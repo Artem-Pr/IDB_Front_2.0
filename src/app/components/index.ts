@@ -1,4 +1,4 @@
-export { Layout as Header } from './Layout'
+export { Layout } from './Layout'
 export { default as MainMenu } from './MainMenu'
 export { default as DropZone } from './DropZone'
 export { default as Gallery } from './Gallery'

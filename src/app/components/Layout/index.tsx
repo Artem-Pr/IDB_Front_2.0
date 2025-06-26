@@ -30,6 +30,8 @@ import { fetchPathsList, removeDirectory } from 'src/redux/reducers/foldersSlice
 import { getSessionReducerIsLoading } from 'src/redux/reducers/sessionSlice/selectors'
 import { useAppDispatch } from 'src/redux/store/store'
 
+import { UppyUploader } from '../UppyUploader/UppyUploaderDashboard'
+
 import { HeaderMenu } from './HeaderMenu'
 import { UserDropdownMenu } from './components'
 
@@ -100,29 +102,28 @@ export const Layout = () => {
 
   return (
     <AntLayout>
-      <div className="App">
-        <HeaderLayout className={styles.header}>
-          <div className={styles.backgroundImage}>
-            <div className="position-relative h-100 w-100">
-              <img
-                alt="header-background"
-                style={imageStyle}
-                src={HeaderBackgroundImage}
-              />
-            </div>
+      <HeaderLayout className={styles.header}>
+        <div className={styles.backgroundImage}>
+          <div className="position-relative h-100 w-100">
+            <img
+              alt="header-background"
+              style={imageStyle}
+              src={HeaderBackgroundImage}
+            />
           </div>
-          <Title className={styles.title}>IDBase</Title>
-          <HeaderMenu />
-          <UserDropdownMenu />
-          {contextHolder}
-        </HeaderLayout>
-      </div>
+        </div>
+        <Title className={styles.title}>IDBase</Title>
+        <HeaderMenu />
+        <UserDropdownMenu />
+        {contextHolder}
+      </HeaderLayout>
       <Spin
         spinning={loading}
         tip="Loading..."
       >
         <Outlet />
       </Spin>
+      <UppyUploader />
     </AntLayout>
   )
 }

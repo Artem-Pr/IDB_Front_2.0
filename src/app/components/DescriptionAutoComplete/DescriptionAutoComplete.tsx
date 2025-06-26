@@ -1,15 +1,8 @@
-import React, { useState, useCallback, useMemo } from 'react'
-
-import { AutoComplete, Input } from 'antd'
-import debounce from 'debounce'
+import React, { useCallback } from 'react'
 
 import { mainApi } from 'src/api/requests/api-requests'
 import { warningMessage } from 'src/app/common/notifications'
-
-const { TextArea } = Input
-
-const PAGE_SIZE = 50
-const DEBOUNCE_DELAY = 500
+import { AutoCompleteTextArea } from 'src/app/components/UIKit'
 
 interface DescriptionAutoCompleteProps {
   value?: string
@@ -30,96 +23,49 @@ const DescriptionAutoComplete: React.FC<DescriptionAutoCompleteProps> = ({
   disabled,
   showCount,
 }) => {
-  const [options, setOptions] = useState<{ value: string }[]>([])
-  const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [hasMore, setHasMore] = useState(true)
-
-  const performSearch = useCallback((searchValue: string) => {
-    setPage(1)
-    setHasMore(true)
-    setLoading(true)
-    setOptions([])
-    mainApi.getFilesDescription({
-      descriptionPart: searchValue,
-      page: 1,
-      perPage: PAGE_SIZE,
-    })
-      .then(res => {
-        const descriptions = res.data.descriptions || []
-        setOptions(descriptions.map(item => ({ value: item })))
-        setHasMore(descriptions.length === PAGE_SIZE)
-      })
-      .catch(error => {
-        warningMessage(error, 'Failed to load descriptions')
-        setOptions([])
-      })
-      .finally(() => setLoading(false))
-  }, [])
-
-  const debouncedSearch = useMemo(
-    () => debounce((searchValue: string) => {
-      performSearch(searchValue)
-    }, DEBOUNCE_DELAY),
-    [performSearch],
-  )
-
-  const handleSearch = useCallback(
-    (searchValue: string) => {
-      debouncedSearch(searchValue)
+  const searchFunction = useCallback(
+    async (searchValue: string, page: number, perPage: number) => {
+      try {
+        const response = await mainApi.getFilesDescription({
+          descriptionPart: searchValue,
+          page,
+          perPage,
+        })
+        
+        const descriptions = response.data.descriptions || []
+        return {
+          data: {
+            items: descriptions,
+            hasMore: descriptions.length === perPage,
+          },
+        }
+      } catch (error) {
+        warningMessage(error as Error, 'Failed to load descriptions')
+        return {
+          data: {
+            items: [],
+            hasMore: false,
+          },
+        }
+      }
     },
-    [debouncedSearch],
+    []
   )
-
-  const handlePopupScroll = (e: React.UIEvent<HTMLElement, UIEvent>) => {
-    const { target } = e
-    const scrollElement = target as HTMLElement
-    const { scrollTop, scrollHeight, clientHeight } = scrollElement
-    if (scrollHeight - scrollTop <= clientHeight * 1.5 && !loading && hasMore) {
-      setLoading(true)
-      mainApi.getFilesDescription({
-        descriptionPart: value || '',
-        page: page + 1,
-        perPage: PAGE_SIZE,
-      })
-        .then(res => {
-          const descriptions = res.data.descriptions || []
-          setOptions(prev => {
-            const prevValues = new Set(prev?.map(opt => opt.value))
-            const newOptions = descriptions
-              .filter(item => !prevValues.has(item))
-              .map(item => ({ value: item }))
-            return prev ? [...prev, ...newOptions] : newOptions
-          })
-          setHasMore(descriptions.length === PAGE_SIZE)
-          setPage(prev => prev + 1)
-        })
-        .catch(error => {
-          warningMessage(error, 'Failed to load more descriptions')
-        })
-        .finally(() => setLoading(false))
-    }
-  }
 
   return (
-    <AutoComplete
+    <AutoCompleteTextArea
       value={value}
       onChange={onChange}
+      placeholder={placeholder}
       className={className}
+      textAreaClassName={textAreaClassName}
       disabled={disabled}
-      style={{ height: '100%', width: '100%' }}
-      options={options}
-      onSearch={handleSearch}
-      onPopupScroll={handlePopupScroll}
-      notFoundContent={loading ? 'Loading...' : 'No results'}
-      maxLength={2000}
-    >
-      <TextArea
-        className={textAreaClassName}
-        placeholder={placeholder}
-        showCount={showCount}
-      />
-    </AutoComplete>
+      showCount={showCount}
+      searchFunction={searchFunction}
+      notFoundText="No results"
+      pageSize={50}
+      debounceDelay={500}
+    />
   )
 }
 

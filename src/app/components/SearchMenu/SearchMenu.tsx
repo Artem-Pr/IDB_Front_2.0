@@ -32,6 +32,8 @@ import { useAppDispatch } from 'src/redux/store/store'
 import { getISOStringWithUTC } from '../../common/utils/date'
 import DescriptionAutoComplete from '../DescriptionAutoComplete/DescriptionAutoComplete'
 
+import { ExifFiltersContainer } from './ExifFilters'
+
 import styles from './index.module.scss'
 
 const { Option } = Select
@@ -187,6 +189,8 @@ export const SearchMenu = () => {
         onChange={handleDescriptionChange}
         disabled={anyDescription}
       />
+
+      <ExifFiltersContainer />
 
       <div className="d-flex justify-content-end gap-10 margin-top-10">
         <Button onClick={handleResetFilters}>Reset</Button>

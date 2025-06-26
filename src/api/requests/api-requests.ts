@@ -8,6 +8,9 @@ import type { MatchingNumberOfFilesTest } from 'src/redux/types/testPageTypes'
 
 import type { Media } from '../models/media'
 import type { 
+  GetExifKeysAPIRequest,
+  GetExifValuesAPIRequest,
+  GetExifValueRangeAPIRequest,
   GetFilesDescriptionAPIRequest, 
   GetPhotosByTagsAPIRequest, 
   UpdatedFileAPIRequest 
@@ -16,6 +19,9 @@ import type {
   CheckedDirectoryAPIResponse,
   CheckOriginalNameDuplicatesAPIResponse,
   DeleteDirectoryApiResponse,
+  GetExifKeysAPIResponse,
+  GetExifValuesAPIResponse,
+  GetExifValueRangeAPIResponse,
   GetFilesDescriptionAPIResponse,
   UpdatedFileAPIResponse,
   UploadingFileAPIResponse,
@@ -99,6 +105,24 @@ export const mainApi = {
 
   getFilesDescription(params: GetFilesDescriptionAPIRequest) {
     return APIInstance.get<GetFilesDescriptionAPIResponse>(RequestUrl.FILES_DESCRIPTION, {
+      params,
+    })
+  },
+
+  getExifKeys(params: GetExifKeysAPIRequest) {
+    return APIInstance.get<GetExifKeysAPIResponse>(RequestUrl.EXIF_KEYS, {
+      params,
+    })
+  },
+
+  getExifValues(params: GetExifValuesAPIRequest) {
+    return APIInstance.get<GetExifValuesAPIResponse>(RequestUrl.EXIF_VALUES, {
+      params,
+    })
+  },
+
+  getExifValueRange(params: GetExifValueRangeAPIRequest) {
+    return APIInstance.get<GetExifValueRangeAPIResponse>(RequestUrl.EXIF_VALUE_RANGE, {
       params,
     })
   },

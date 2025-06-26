@@ -16,7 +16,6 @@ import styles from './index.module.scss'
 
 export const UppyUploader = memo(() => {
   const dispatch = useAppDispatch()
-  // const uppy = useContext(UppyInstanceContext)
   const { uppyInstance } = useUppyUploader()
   const showModal = useSelector(getUploadReducerShowUppyUploaderModal)
   const [collapsed, setCollapsed] = useState(false)

@@ -1,5 +1,7 @@
 import { JwtPayload } from 'jwt-decode'
 
+import { ExifValueType } from 'src/common/constants'
+
 import type { Media } from '../models/media'
 
 import type { DuplicateFile } from './types'
@@ -41,4 +43,35 @@ export interface GetFilesDescriptionAPIResponse {
   perPage: number
   resultsCount: number
   totalPages: number
+}
+
+export interface ExifKeyItem {
+  _id: string
+  name: string
+  type: ExifValueType
+}
+
+export interface GetExifKeysAPIResponse {
+  exifKeys: ExifKeyItem[]
+  page: number
+  perPage: number
+  resultsCount: number
+  totalPages: number
+}
+
+export interface GetExifValuesAPIResponse {
+  values: (string | number)[]
+  page: number
+  perPage: number
+  totalCount: number
+  totalPages: number
+  exifPropertyName: string
+  valueType: ExifValueType
+}
+
+export interface GetExifValueRangeAPIResponse {
+  minValue: number
+  maxValue: number
+  exifPropertyName: string
+  count: number
 }
