@@ -39,7 +39,7 @@ export const AutoCompleteTextArea: React.FC<AutoCompleteTextAreaProps> = ({
   pageSize = 50,
   debounceDelay = 500,
 }) => {
-  const { options, loading, handleSearch, handlePopupScroll } = useAutocompleteData({
+  const { options, loading, handleSearch, handlePopupScroll, handleFocus } = useAutocompleteData({
     searchFunction,
     pageSize,
     debounceDelay,
@@ -55,6 +55,7 @@ export const AutoCompleteTextArea: React.FC<AutoCompleteTextAreaProps> = ({
       options={options}
       onSearch={handleSearch}
       onPopupScroll={handlePopupScroll}
+      onFocus={handleFocus}
       notFoundContent={loading ? 'Loading...' : notFoundText}
       maxLength={maxLength}
     >

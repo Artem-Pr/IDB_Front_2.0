@@ -14,6 +14,7 @@ interface UseAutocompleteDataReturn {
   hasMore: boolean
   handleSearch: (searchValue: string) => void
   handlePopupScroll: (e: React.UIEvent<HTMLElement, UIEvent>) => void
+  handleFocus: () => void
 }
 
 export const useAutocompleteData = <T extends { name?: string; value?: string }>({
@@ -92,11 +93,18 @@ export const useAutocompleteData = <T extends { name?: string; value?: string }>
     }
   }, [searchFunction, currentSearchValue, page, pageSize, loading, hasMore])
 
+  const handleFocus = useCallback(() => {
+    if (options.length === 0 && !loading) {
+      performSearch('')
+    }
+  }, [options, loading, performSearch])
+
   return {
     options,
     loading,
     hasMore,
     handleSearch,
     handlePopupScroll,
+    handleFocus,
   }
 } 

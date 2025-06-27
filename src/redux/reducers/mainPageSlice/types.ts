@@ -3,7 +3,7 @@ import { MimeTypes, ExifValueType } from 'src/common/constants'
 export interface ExifFilterCondition {
   isExist?: boolean // for NOT_SUPPORTED type
   values?: (string | number)[] // for STRING, STRING_ARRAY, NUMBER (multiselect mode)
-  textValue?: string // for LONG_STRING type
+  textValues?: string[] // for LONG_STRING type
   rangeMode?: boolean // for NUMBER type
   rangeValues?: [number, number] // for NUMBER type in range mode
 }

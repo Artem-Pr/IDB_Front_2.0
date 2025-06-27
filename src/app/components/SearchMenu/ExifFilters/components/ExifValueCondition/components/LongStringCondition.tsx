@@ -1,5 +1,8 @@
 import React, { useCallback } from 'react'
 
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
+
 import { mainApi } from 'src/api/requests/api-requests'
 import { warningMessage } from 'src/app/common/notifications'
 import { AutoCompleteTextArea } from 'src/app/components/UIKit'
@@ -16,6 +19,8 @@ export const LongStringCondition: React.FC<LongStringConditionProps> = ({
   onChange,
   propertyName,
 }) => {
+  const textValues = value.textValues || ['']
+
   const searchFunction = useCallback(
     async (searchValue: string, page: number, perPage: number) => {
       try {
@@ -23,6 +28,7 @@ export const LongStringCondition: React.FC<LongStringConditionProps> = ({
           exifPropertyName: propertyName,
           page,
           perPage,
+          searchTerm: searchValue,
         })
         
         const values = response.data.values || []
@@ -48,22 +54,59 @@ export const LongStringCondition: React.FC<LongStringConditionProps> = ({
     [propertyName]
   )
 
-  const handleChange = (textValue: string) => {
+  const handleChange = (index: number, newValue: string) => {
+    const newTextValues = [...textValues]
+    newTextValues[index] = newValue
     onChange({
       ...value,
-      textValue,
+      textValues: newTextValues,
+    })
+  }
+
+  const handleAdd = () => {
+    onChange({
+      ...value,
+      textValues: [...textValues, ''],
+    })
+  }
+
+  const handleRemove = (index: number) => {
+    const newTextValues = [...textValues]
+    newTextValues.splice(index, 1)
+    onChange({
+      ...value,
+      textValues: newTextValues,
     })
   }
 
   return (
-    <AutoCompleteTextArea
-      placeholder={`Enter ${propertyName} value`}
-      value={value.textValue || ''}
-      onChange={handleChange}
-      searchFunction={searchFunction}
-      notFoundText={`No ${propertyName} values found`}
-      pageSize={50}
-      debounceDelay={500}
-    />
+    <div className="d-flex flex-column gap-10">
+      {textValues.map((text, index) => (
+        <div key={index} className="d-flex align-items-center gap-10">
+          <AutoCompleteTextArea
+            placeholder={`Enter ${propertyName} value`}
+            value={text}
+            onChange={newValue => handleChange(index, newValue)}
+            searchFunction={searchFunction}
+            notFoundText={`No ${propertyName} values found`}
+            pageSize={50}
+            debounceDelay={500}
+          />
+          {textValues.length > 1 && (
+            <MinusCircleOutlined
+              className="dynamic-delete-button"
+              onClick={() => handleRemove(index)}
+            />
+          )}
+        </div>
+      ))}
+      <Button
+        type="dashed"
+        onClick={handleAdd}
+        icon={<PlusOutlined />}
+      >
+        {`Add ${propertyName} value`}
+      </Button>
+    </div>
   )
 } 

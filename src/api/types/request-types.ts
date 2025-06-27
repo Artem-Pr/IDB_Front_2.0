@@ -23,6 +23,7 @@ export interface GetExifKeysAPIRequest extends Pagination {
 
 export interface GetExifValuesAPIRequest extends Pagination {
   exifPropertyName: string
+  searchTerm?: string
 }
 
 export interface GetExifValueRangeAPIRequest {
