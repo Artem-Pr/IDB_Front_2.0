@@ -6,7 +6,6 @@ import type { ExifFilter, ExifFilterCondition } from 'src/redux/reducers/mainPag
 import { LongStringCondition } from './components/LongStringCondition'
 import { NotSupportedCondition } from './components/NotSupportedCondition'
 import { NumberCondition } from './components/NumberCondition/NumberCondition'
-import { StringArrayCondition } from './components/StringArrayCondition'
 import { StringCondition } from './components/StringCondition'
 
 interface ExifValueConditionProps {
@@ -37,8 +36,6 @@ export const ExifValueCondition: React.FC<ExifValueConditionProps> = ({
     return <LongStringCondition {...commonProps} />
     
   case ExifValueType.STRING_ARRAY:
-    return <StringArrayCondition {...commonProps} />
-    
   case ExifValueType.STRING:
     return <StringCondition {...commonProps} />
     

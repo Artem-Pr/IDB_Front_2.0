@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 
 import { Select } from 'antd'
 
 import { mainApi } from 'src/api/requests/api-requests'
-import { warningMessage } from 'src/app/common/notifications'
+import { useAutocompleteData } from 'src/app/common/hooks/useAutocompleteData'
 import type { ExifFilterCondition } from 'src/redux/reducers/mainPageSlice/types'
 
 interface StringConditionProps {
@@ -17,31 +17,29 @@ export const StringCondition: React.FC<StringConditionProps> = ({
   onChange,
   propertyName,
 }) => {
-  const [options, setOptions] = useState<{ label: string; value: string | number }[]>([])
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (propertyName) {
-      setLoading(true)
-      mainApi.getExifValues({
-        exifPropertyName: propertyName,
-        page: 1,
-        perPage: 100, // Get more values for string fields
-      })
-        .then(response => {
-          const values = response.data.values || []
-          setOptions(values.map(val => ({
-            label: String(val),
-            value: val,
-          })))
-        })
-        .catch(error => {
-          warningMessage(error as Error, `Failed to load values for ${propertyName}`)
-          setOptions([])
-        })
-        .finally(() => setLoading(false))
+  const searchFunction = useCallback(async (searchValue: string, page: number, perPage: number) => {
+    const response = await mainApi.getExifValues({
+      exifPropertyName: propertyName,
+      searchTerm: searchValue,
+      page,
+      perPage,
+    })
+    
+    return {
+      data: {
+        items: response.data.values.map(val => ({ value: String(val) })),
+        hasMore: response.data.values.length === perPage,
+      },
     }
   }, [propertyName])
+  
+  const {
+    options,
+    loading,
+    handleSearch,
+    handlePopupScroll,
+    handleFocus,
+  } = useAutocompleteData({ searchFunction })
 
   const handleChange = (selectedValues: (string | number)[]) => {
     onChange({
@@ -52,19 +50,19 @@ export const StringCondition: React.FC<StringConditionProps> = ({
 
   return (
     <Select
-      mode="tags"
+      mode="multiple"
       style={{ width: '100%' }}
       placeholder={`Select ${propertyName} values`}
       value={value.values || []}
       onChange={handleChange}
-      options={options}
+      onSearch={handleSearch}
+      onFocus={handleFocus}
+      onPopupScroll={handlePopupScroll}
       loading={loading}
       allowClear
       showSearch
-      filterOption={(input, option) =>
-        (option?.label ?? '').toLowerCase()
-          .includes(input.toLowerCase())
-      }
+      filterOption={false}
+      options={options}
     />
   )
 } 
