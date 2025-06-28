@@ -16,6 +16,7 @@ import {
   mainPageReducerSetRawFiles,
 } from '..'
 import { folderReducerSetFolderTree, folderReducerSetPathsArr } from '../../foldersSlice'
+import { prepareExifFilters } from '../helpers'
 
 import { fetchMainPageDuplicates } from './fetchMainPageDuplicates'
 
@@ -36,6 +37,7 @@ export const fetchPhotos = (currentPage: number = 1): AppThunk => (dispatch, get
       description,
       rating,
       anyDescription,
+      exifFilters,
     },
     galleryPagination,
     sort: { gallerySortingList, randomSort },
@@ -56,6 +58,7 @@ export const fetchPhotos = (currentPage: number = 1): AppThunk => (dispatch, get
         ...(dateRange && { dateRange }),
         ...(anyDescription && { anyDescription }),
         ...(description && !anyDescription && { description: description.trim() }),
+        ...(!isEmpty(exifFilters) && { exif: prepareExifFilters(exifFilters) }),
       },
       sorting: {
         sort: prepareSortingList(gallerySortingList),

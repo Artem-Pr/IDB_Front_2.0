@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { DeleteOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
+import { Button, Switch } from 'antd'
 
 import { mainPageReducerRemoveExifFilter, mainPageReducerUpdateExifFilter } from 'src/redux/reducers/mainPageSlice'
 import type { ExifFilter, ExifFilterCondition } from 'src/redux/reducers/mainPageSlice/types'
@@ -25,6 +25,15 @@ export const ExifFilterItem: React.FC<ExifFilterItemProps> = ({
 
   const handleRemoveFilter = () => {
     dispatch(mainPageReducerRemoveExifFilter(filter.id))
+  }
+
+  const handleDisabledChange = (isDisabled: boolean) => {
+    dispatch(mainPageReducerUpdateExifFilter({
+      id: filter.id,
+      updates: {
+        isDisabled,
+      },
+    }))
   }
 
   const handlePropertyChange = (propertyName: string, propertyType: any) => {
@@ -54,6 +63,20 @@ export const ExifFilterItem: React.FC<ExifFilterItemProps> = ({
 
   return (
     <div className={styles.filterItem}>
+      <div className={styles.header}>
+        <Switch
+          size="small"
+          checked={!filter.isDisabled}
+          onChange={checked => handleDisabledChange(!checked)}
+        />
+        <Button
+          type="text"
+          icon={<DeleteOutlined />}
+          onClick={handleRemoveFilter}
+          className={styles.deleteButton}
+          size="small"
+        />
+      </div>
       <div className={styles.selectors}>
         <div className={styles.propertySelector}>
           <ExifPropertySelector
@@ -72,14 +95,6 @@ export const ExifFilterItem: React.FC<ExifFilterItemProps> = ({
           </div>
         )}
       </div>
-      
-      <Button
-        type="text"
-        icon={<DeleteOutlined />}
-        onClick={handleRemoveFilter}
-        className={styles.deleteButton}
-        size="small"
-      />
     </div>
   )
 } 

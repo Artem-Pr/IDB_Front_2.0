@@ -50,19 +50,20 @@ export const StringCondition: React.FC<StringConditionProps> = ({
 
   return (
     <Select
+      allowClear
+      filterOption={false}
+      loading={loading}
       mode="multiple"
-      style={{ width: '100%' }}
-      placeholder={`Select ${propertyName} values`}
-      value={value.values || []}
+      notFoundContent={loading ? 'Loading...' : 'No results'}
       onChange={handleChange}
-      onSearch={handleSearch}
       onFocus={handleFocus}
       onPopupScroll={handlePopupScroll}
-      loading={loading}
-      allowClear
-      showSearch
-      filterOption={false}
+      onSearch={handleSearch}
       options={options}
+      placeholder={`Select ${propertyName} values`}
+      showSearch
+      style={{ width: '100%' }}
+      value={value.values || []}
     />
   )
 } 

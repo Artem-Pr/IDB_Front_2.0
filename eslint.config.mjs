@@ -104,7 +104,7 @@ export default tseslint.config(
 
       // Disallow unused variables with TypeScript-specific rule https://typescript-eslint.io/rules/no-unused-vars
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn'],
+      '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
 
       // Allow use of 'any' type (should be avoided when possible) https://typescript-eslint.io/rules/no-explicit-any
       '@typescript-eslint/no-explicit-any': ['off', { ignoreRestArgs: true }],

@@ -1,1 +1,2 @@
-export { defaultGallerySortingList } from './defaultGallerySortingList'
+export * from './defaultGallerySortingList'
+export * from './prepareExifFilters'

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { Select, Checkbox, InputNumber, Space } from 'antd'
 
 import { mainApi } from 'src/api/requests/api-requests'
+import { useAutocompleteData } from 'src/app/common/hooks/useAutocompleteData'
 import { warningMessage } from 'src/app/common/notifications'
 import type { ExifFilterCondition } from 'src/redux/reducers/mainPageSlice/types'
 
@@ -19,73 +20,80 @@ export const NumberCondition: React.FC<NumberConditionProps> = ({
   onChange,
   propertyName,
 }) => {
-  const [options, setOptions] = useState<{ label: string; value: number }[]>([])
-  const [loading, setLoading] = useState(false)
   const [rangeInfo, setRangeInfo] = useState<{ min: number; max: number } | null>(null)
   const [rangeLoading, setRangeLoading] = useState(false)
 
   const isRangeMode = value.rangeMode || false
 
-  // Fetch available number values for multiselect mode
-  useEffect(() => {
-    if (propertyName && !isRangeMode) {
-      setLoading(true)
-      mainApi.getExifValues({
-        exifPropertyName: propertyName,
-        page: 1,
-        perPage: 100,
-      })
-        .then(response => {
-          const values = response.data.values || []
-          setOptions(values
-            .filter(val => typeof val === 'number')
-            .map(val => ({
-              label: String(val),
-              value: val as number,
-            }))
-          )
-        })
-        .catch(error => {
-          warningMessage(error as Error, `Failed to load values for ${propertyName}`)
-          setOptions([])
-        })
-        .finally(() => setLoading(false))
+  const searchFunction = useCallback(async (searchValue: string, page: number, perPage: number) => {
+    const response = await mainApi.getExifValues({
+      exifPropertyName: propertyName,
+      searchTerm: searchValue,
+      page,
+      perPage,
+    })
+    
+    return {
+      data: {
+        items: response.data.values.map(val => ({ value: String(val) })),
+        hasMore: response.data.values.length === perPage,
+      },
     }
-  }, [propertyName, isRangeMode])
+  }, [propertyName])
+  
+  const {
+    options,
+    loading,
+    handleSearch,
+    handlePopupScroll,
+    handleFocus,
+  } = useAutocompleteData({ searchFunction })
 
-  // Fetch range info when switching to range mode
+  // Fetch range info when switching to range mode, and clean it up when mode is disabled or property changes.
   useEffect(() => {
-    if (propertyName && isRangeMode && !rangeInfo) {
+    if (propertyName && isRangeMode) {
       setRangeLoading(true)
       mainApi.getExifValueRange({
         exifPropertyName: propertyName,
       })
         .then(response => {
+          const { minValue, maxValue } = response.data
           setRangeInfo({
-            min: response.data.minValue,
-            max: response.data.maxValue,
+            min: minValue,
+            max: maxValue,
+          })
+          onChange({
+            ...value,
+            rangeValues: [minValue, maxValue],
           })
         })
         .catch(error => {
           warningMessage(error as Error, `Failed to load range for ${propertyName}`)
+          setRangeInfo(null)
         })
         .finally(() => setRangeLoading(false))
+    } else {
+      setRangeInfo(null)
     }
-  }, [propertyName, isRangeMode, rangeInfo])
+  }, [propertyName, isRangeMode])
 
   const handleRangeModeChange = (checked: boolean) => {
     onChange({
       ...value,
       rangeMode: checked,
-      rangeValues: checked ? [rangeInfo?.min || 0, rangeInfo?.max || 100] : undefined,
+      rangeValues: undefined,
       values: checked ? undefined : [],
     })
   }
 
-  const handleMultiselectChange = (selectedValues: number[]) => {
+  const handleMultiselectChange = (selectedValues: string[]) => {
+    const validNumbers = selectedValues
+      .map(Number)
+      .filter(num => !isNaN(num))
+      
     onChange({
       ...value,
-      values: selectedValues,
+      values: validNumbers,
     })
   }
 
@@ -141,19 +149,20 @@ export const NumberCondition: React.FC<NumberConditionProps> = ({
         ) 
         : (
           <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            placeholder={`Select ${propertyName} values`}
-            value={value.values?.filter(v => typeof v === 'number') || []}
-            onChange={handleMultiselectChange}
-            options={options}
-            loading={loading || rangeLoading}
             allowClear
+            filterOption={false}
+            loading={loading || rangeLoading}
+            mode="multiple"
+            notFoundContent={loading ? 'Loading...' : 'No results'}
+            onChange={handleMultiselectChange}
+            onFocus={handleFocus}
+            onPopupScroll={handlePopupScroll}
+            onSearch={handleSearch}
+            options={options}
+            placeholder={`Select ${propertyName} values`}
             showSearch
-            filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase()
-                .includes(input.toLowerCase())
-            }
+            style={{ width: '100%' }}
+            value={value.values?.map(String) || []}
           />
         )}
     </div>

@@ -13,6 +13,7 @@ export interface ExifFilter {
   propertyName: string // selected EXIF property name
   propertyType: ExifValueType // type of the EXIF property
   condition: ExifFilterCondition // filter condition based on property type
+  isDisabled?: boolean
 }
 
 export interface SearchMenu {
