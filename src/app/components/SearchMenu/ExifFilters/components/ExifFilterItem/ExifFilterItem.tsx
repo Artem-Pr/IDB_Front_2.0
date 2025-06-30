@@ -63,12 +63,19 @@ export const ExifFilterItem: React.FC<ExifFilterItemProps> = ({
 
   return (
     <div className={styles.filterItem}>
-      <div className={styles.header}>
+      <div className={styles.topRow}>
         <Switch
           size="small"
           checked={!filter.isDisabled}
           onChange={checked => handleDisabledChange(!checked)}
         />
+        <div className={styles.propertySelector}>
+          <ExifPropertySelector
+            value={filter.propertyName}
+            onChange={handlePropertyChange}
+            excludedProperties={excludedPropertyNames}
+          />
+        </div>
         <Button
           type="text"
           icon={<DeleteOutlined />}
@@ -77,24 +84,15 @@ export const ExifFilterItem: React.FC<ExifFilterItemProps> = ({
           size="small"
         />
       </div>
-      <div className={styles.selectors}>
-        <div className={styles.propertySelector}>
-          <ExifPropertySelector
-            value={filter.propertyName}
-            onChange={handlePropertyChange}
-            excludedProperties={excludedPropertyNames}
+
+      {filter.propertyName && (
+        <div className={styles.valueCondition}>
+          <ExifValueCondition
+            filter={filter}
+            onChange={handleConditionChange}
           />
         </div>
-        
-        {filter.propertyName && (
-          <div className={styles.valueCondition}>
-            <ExifValueCondition
-              filter={filter}
-              onChange={handleConditionChange}
-            />
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 } 

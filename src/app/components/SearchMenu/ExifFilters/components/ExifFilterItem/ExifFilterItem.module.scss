@@ -15,24 +15,14 @@
   }
 }
 
-.header {
+.topRow {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
-  gap: 8px;
-}
-
-.selectors {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
   gap: 8px;
 }
 
 .propertySelector {
-  width: 100%;
+  flex: 1;
 }
 
 .valueCondition {

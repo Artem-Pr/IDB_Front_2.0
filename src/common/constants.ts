@@ -37,8 +37,8 @@ export enum MimeTypes {
 
 export enum ExifValueType {
   STRING = 'string',
-  LONG_STRING = 'long_string',
   NUMBER = 'number',
-  STRING_ARRAY = 'string[]',
-  NOT_SUPPORTED = 'NOT_SUPPORTED',
+  STRING_ARRAY = 'string_array',
+  LONG_STRING = 'long_string',
+  NOT_SUPPORTED = 'not_supported',
 }
