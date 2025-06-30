@@ -9,6 +9,7 @@ import { Button, List, Progress } from 'antd'
 
 import { initWebSocket } from 'src/api/api-websocket'
 import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types/types'
+import store from 'src/redux/store/store'
 
 import styles from './SyncPreviews.module.scss'
 
@@ -18,26 +19,32 @@ const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
   || status === ApiStatus.ERROR
   || status === ApiStatus.PENDING_ERROR
 
+type WebSocketInstance = {
+  send: (sendData: any) => void;
+  close: () => void
+}
+
 export const SyncPreviews = memo(() => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
   const [showMessageList, setShowMessageList] = useState(false)
   const [status, setStatus] = useState<ApiStatus>(ApiStatus.READY)
-  const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
+  const [webSocket, setWebSocket] = useState<WebSocketInstance | null>(null)
 
   const refreshWebSocketInstance = useCallback(() => {
     webSocket?.close()
     setWebSocket(null)
-    setStatus(ApiStatus.READY)
+    setStatus(ApiStatus.READY) 
   }, [webSocket])
 
   useEffect(() => {
     isStopped(status) && refreshWebSocketInstance()
   }, [refreshWebSocketInstance, status])
 
-  const handleProcessStart = () => {
+  const handleProcessStart = async () => {
     setMessages([])
     setProgress(0)
+    setStatus(ApiStatus.INIT)
 
     const onMessage = (action: WebSocketAPICallback) => {
       setMessages(prevMessages => [
@@ -48,9 +55,17 @@ export const SyncPreviews = memo(() => {
       setStatus(action.status)
     }
 
-    const ws = initWebSocket(WebSocketActions.SYNC_PREVIEWS, { onMessage, onError: refreshWebSocketInstance })
-    setWebSocket(ws)
-    setStatus(ApiStatus.INIT)
+    try {
+      const ws = await initWebSocket(
+        WebSocketActions.SYNC_PREVIEWS, 
+        { onMessage, onError: refreshWebSocketInstance },
+        store
+      )
+      setWebSocket(ws)
+    } catch (error) {
+      console.error('Failed to initialize WebSocket:', error)
+      setStatus(ApiStatus.ERROR)
+    }
   }
 
   const handleShowMessageListToggle = () => {

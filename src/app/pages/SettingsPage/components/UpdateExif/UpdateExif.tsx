@@ -12,6 +12,7 @@ import { initWebSocket } from 'src/api/api-websocket'
 import { ApiStatus, WebSocketActions, WebSocketAPICallback } from 'src/api/types/types'
 import { MimeTypes } from 'src/common/constants'
 import { getFolderReducerPathsArrOptionsSelector } from 'src/redux/reducers/foldersSlice/selectors'
+import store from 'src/redux/store/store'
 
 import styles from './UpdateExif.module.scss'
 
@@ -27,6 +28,11 @@ const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
   || status === ApiStatus.DONE
   || status === ApiStatus.ERROR
 
+type WebSocketInstance = {
+  send: (sendData: any) => void;
+  close: () => void
+}
+
 export const UpdateExif = memo(() => {
   const options = useSelector(getFolderReducerPathsArrOptionsSelector)
   const [mimeTypes, setMimeTypes] = useState<MimeTypes[]>([])
@@ -35,7 +41,7 @@ export const UpdateExif = memo(() => {
   const [progress, setProgress] = useState(0)
   const [showMessageList, setShowMessageList] = useState(false)
   const [status, setStatus] = useState<ApiStatus>(ApiStatus.READY)
-  const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
+  const [webSocket, setWebSocket] = useState<WebSocketInstance | null>(null)
 
   const processing = isProcessing(status)
 
@@ -71,9 +77,10 @@ export const UpdateExif = memo(() => {
       })
   }
 
-  const startProcess = () => {
+  const startProcess = async () => {
     setMessages([])
     setProgress(0)
+    setStatus(ApiStatus.INIT)
 
     const onMessage = (action: WebSocketAPICallback) => {
       setMessages(prevMessages => [
@@ -89,13 +96,17 @@ export const UpdateExif = memo(() => {
       stopProcess()
     }
 
-    const ws = initWebSocket(WebSocketActions.UPDATE_EXIF, {
-      onMessage,
-      onError,
-      data: { folderPath, mimeTypes },
-    })
-    setWebSocket(ws)
-    setStatus(ApiStatus.INIT)
+    try {
+      const ws = await initWebSocket(WebSocketActions.UPDATE_EXIF, {
+        onMessage,
+        onError,
+        data: { folderPath, mimeTypes },
+      }, store)
+      setWebSocket(ws)
+    } catch (error) {
+      console.error('Failed to initialize WebSocket:', error)
+      setStatus(ApiStatus.ERROR)
+    }
   }
 
   const handleShowMessageListToggle = () => {

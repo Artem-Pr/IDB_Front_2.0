@@ -7,6 +7,7 @@ import {
 import { initWebSocket } from '../../../../../api/api-websocket'
 import type { FilesTestAPIData } from '../../../../../api/api-websocket'
 import { ApiStatus, WebSocketActions, WebSocketAPICallback } from '../../../../../api/types/types'
+import store from '../../../../../redux/store/store'
 import TableCollapse from '../../gridItems/TableCollaps'
 import TableRow from '../../gridItems/TableRow'
 
@@ -18,11 +19,16 @@ const isStopped = (status: ApiStatus) => status === ApiStatus.STOPPED
   || status === ApiStatus.ERROR
   || status === ApiStatus.PENDING_ERROR
 
+type WebSocketInstance = {
+  send: (sendData: any) => void;
+  close: () => void
+}
+
 export const FilesTest = () => {
   const [messages, setMessages] = useState<string[]>([])
   const [progress, setProgress] = useState(0)
   const [status, setStatus] = useState<ApiStatus>(ApiStatus.READY)
-  const [webSocket, setWebSocket] = useState<ReturnType<typeof initWebSocket> | null>(null)
+  const [webSocket, setWebSocket] = useState<WebSocketInstance | null>(null)
   const [testData, setTestData] = useState<FilesTestAPIData>()
   const [showExcessiveFolders_config, setShowExcessiveFolders_config] = useState(false)
   const [showExcessiveFolders_DB, setShowExcessiveFolders_DB] = useState(false)
@@ -57,9 +63,10 @@ export const FilesTest = () => {
     isStopped(status) && refreshWebSocketInstance()
   }, [refreshWebSocketInstance, status])
 
-  const handleProcessStart = () => {
+  const handleProcessStart = async () => {
     setMessages([])
     setProgress(0)
+    setStatus(ApiStatus.INIT)
 
     const onMessage = ({
       message, progress: newProgress, status: newStatus, data,
@@ -73,9 +80,17 @@ export const FilesTest = () => {
       setStatus(newStatus)
     }
 
-    const ws = initWebSocket(WebSocketActions.FILES_TEST, { onMessage, onError: refreshWebSocketInstance })
-    setWebSocket(ws)
-    setStatus(ApiStatus.INIT)
+    try {
+      const ws = await initWebSocket(
+        WebSocketActions.FILES_TEST, 
+        { onMessage, onError: refreshWebSocketInstance },
+        store
+      )
+      setWebSocket(ws)
+    } catch (error) {
+      console.error('Failed to initialize WebSocket:', error)
+      setStatus(ApiStatus.ERROR)
+    }
   }
 
   return (
